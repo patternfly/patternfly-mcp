@@ -1,10 +1,119 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
+exports[`parseCliOptions should attempt to parse args with --allowed-hosts 1`] = `
+{
+  "docsHost": false,
+  "http": {
+    "allowedHosts": [
+      "localhost",
+      "127.0.0.1",
+    ],
+    "allowedOrigins": undefined,
+    "host": undefined,
+    "port": undefined,
+  },
+  "isHttp": true,
+  "logging": {
+    "level": "info",
+    "logger": "@patternfly/patternfly-mcp",
+    "protocol": false,
+    "stderr": false,
+    "transport": "stdio",
+  },
+}
+`;
+
+exports[`parseCliOptions should attempt to parse args with --allowed-origins 1`] = `
+{
+  "docsHost": false,
+  "http": {
+    "allowedHosts": undefined,
+    "allowedOrigins": [
+      "https://app.com",
+      "https://admin.app.com",
+    ],
+    "host": undefined,
+    "port": undefined,
+  },
+  "isHttp": true,
+  "logging": {
+    "level": "info",
+    "logger": "@patternfly/patternfly-mcp",
+    "protocol": false,
+    "stderr": false,
+    "transport": "stdio",
+  },
+}
+`;
+
 exports[`parseCliOptions should attempt to parse args with --docs-host flag 1`] = `
 {
   "docsHost": true,
+  "http": undefined,
+  "isHttp": false,
   "logging": {
     "level": "info",
+    "logger": "@patternfly/patternfly-mcp",
+    "protocol": false,
+    "stderr": false,
+    "transport": "stdio",
+  },
+}
+`;
+
+exports[`parseCliOptions should attempt to parse args with --http and --host 1`] = `
+{
+  "docsHost": false,
+  "http": {
+    "allowedHosts": undefined,
+    "allowedOrigins": undefined,
+    "host": "0.0.0.0",
+    "port": undefined,
+  },
+  "isHttp": true,
+  "logging": {
+    "level": "info",
+    "logger": "@patternfly/patternfly-mcp",
+    "protocol": false,
+    "stderr": false,
+    "transport": "stdio",
+  },
+}
+`;
+
+exports[`parseCliOptions should attempt to parse args with --http and --port 1`] = `
+{
+  "docsHost": false,
+  "http": {
+    "allowedHosts": undefined,
+    "allowedOrigins": undefined,
+    "host": undefined,
+    "port": undefined,
+  },
+  "isHttp": true,
+  "logging": {
+    "level": "info",
+    "logger": "@patternfly/patternfly-mcp",
+    "protocol": false,
+    "stderr": false,
+    "transport": "stdio",
+  },
+}
+`;
+
+exports[`parseCliOptions should attempt to parse args with --http flag 1`] = `
+{
+  "docsHost": false,
+  "http": {
+    "allowedHosts": undefined,
+    "allowedOrigins": undefined,
+    "host": undefined,
+    "port": undefined,
+  },
+  "isHttp": true,
+  "logging": {
+    "level": "info",
+    "logger": "@patternfly/patternfly-mcp",
     "protocol": false,
     "stderr": false,
     "transport": "stdio",
@@ -15,8 +124,11 @@ exports[`parseCliOptions should attempt to parse args with --docs-host flag 1`] 
 exports[`parseCliOptions should attempt to parse args with --log-level flag 1`] = `
 {
   "docsHost": false,
+  "http": undefined,
+  "isHttp": false,
   "logging": {
     "level": "warn",
+    "logger": "@patternfly/patternfly-mcp",
     "protocol": false,
     "stderr": false,
     "transport": "stdio",
@@ -27,8 +139,11 @@ exports[`parseCliOptions should attempt to parse args with --log-level flag 1`] 
 exports[`parseCliOptions should attempt to parse args with --log-stderr flag and --log-protocol flag 1`] = `
 {
   "docsHost": false,
+  "http": undefined,
+  "isHttp": false,
   "logging": {
     "level": "info",
+    "logger": "@patternfly/patternfly-mcp",
     "protocol": true,
     "stderr": true,
     "transport": "stdio",
@@ -39,8 +154,11 @@ exports[`parseCliOptions should attempt to parse args with --log-stderr flag and
 exports[`parseCliOptions should attempt to parse args with --verbose flag 1`] = `
 {
   "docsHost": false,
+  "http": undefined,
+  "isHttp": false,
   "logging": {
     "level": "debug",
+    "logger": "@patternfly/patternfly-mcp",
     "protocol": false,
     "stderr": false,
     "transport": "stdio",
@@ -51,8 +169,11 @@ exports[`parseCliOptions should attempt to parse args with --verbose flag 1`] = 
 exports[`parseCliOptions should attempt to parse args with --verbose flag and --log-level flag 1`] = `
 {
   "docsHost": false,
+  "http": undefined,
+  "isHttp": false,
   "logging": {
     "level": "debug",
+    "logger": "@patternfly/patternfly-mcp",
     "protocol": false,
     "stderr": false,
     "transport": "stdio",
@@ -63,8 +184,11 @@ exports[`parseCliOptions should attempt to parse args with --verbose flag and --
 exports[`parseCliOptions should attempt to parse args with other arguments 1`] = `
 {
   "docsHost": false,
+  "http": undefined,
+  "isHttp": false,
   "logging": {
     "level": "info",
+    "logger": "@patternfly/patternfly-mcp",
     "protocol": false,
     "stderr": false,
     "transport": "stdio",
@@ -75,8 +199,11 @@ exports[`parseCliOptions should attempt to parse args with other arguments 1`] =
 exports[`parseCliOptions should attempt to parse args without --docs-host flag 1`] = `
 {
   "docsHost": false,
+  "http": undefined,
+  "isHttp": false,
   "logging": {
     "level": "info",
+    "logger": "@patternfly/patternfly-mcp",
     "protocol": false,
     "stderr": false,
     "transport": "stdio",

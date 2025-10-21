@@ -270,13 +270,13 @@ exports[`Logging should allow setting logging options, default 1`] = `[]`;
 
 exports[`Logging should allow setting logging options, stderr 1`] = `
 [
-  "[INFO]:	Registered tool: usePatternFlyDocs
+  "[INFO]: Registered tool: usePatternFlyDocs
 ",
-  "[INFO]:	Registered tool: fetchDocs
+  "[INFO]: Registered tool: fetchDocs
 ",
-  "[INFO]:	Registered tool: componentSchemas
+  "[INFO]: Registered tool: componentSchemas
 ",
-  "[INFO]:	PatternFly MCP server running on stdio
+  "[INFO]: @patternfly/patternfly-mcp server running on stdio transport
 ",
 ]
 `;
@@ -288,7 +288,7 @@ exports[`Logging should allow setting logging options, with mcp protocol 1`] = `
   {
     "method": "notifications/message",
     "params": {
-      "data": "PatternFly MCP server running on stdio",
+      "data": "@patternfly/patternfly-mcp server running on stdio transport",
       "level": "info",
       "logger": "@patternfly/patternfly-mcp",
     },

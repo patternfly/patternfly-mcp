@@ -219,6 +219,6 @@ export const startServer = async ({
     stderrLogs: () => stderrLogs.slice(),
     protocolLogs: () => protocolLogs.slice(),
     stop,
-    close: stop
+    close: stop // Alias for stop, align with the http transport client
   };
 };

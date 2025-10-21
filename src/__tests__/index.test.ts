@@ -1,7 +1,7 @@
-import { main, start, type CliOptions } from '../index';
+import { main, start, type PfMcpOptions, type CliOptions } from '../index';
 import { parseCliOptions, type GlobalOptions } from '../options';
 import { DEFAULT_OPTIONS } from '../options.defaults';
-import { setOptions } from '../options.context';
+import { getSessionOptions, runWithSession, setOptions } from '../options.context';
 import { runServer } from '../server';
 
 // Mock dependencies
@@ -12,6 +12,8 @@ jest.mock('../server');
 const mockParseCliOptions = parseCliOptions as jest.MockedFunction<typeof parseCliOptions>;
 const mockSetOptions = setOptions as jest.MockedFunction<typeof setOptions>;
 const mockRunServer = runServer as jest.MockedFunction<typeof runServer>;
+const mockGetSessionOptions = getSessionOptions as jest.MockedFunction<typeof getSessionOptions>;
+const mockRunWithSession = runWithSession as jest.MockedFunction<typeof runWithSession>;
 
 describe('main', () => {
   let consoleErrorSpy: jest.SpyInstance;
@@ -35,19 +37,34 @@ describe('main', () => {
 
       return { docsHost: false, logging: defaultLogging } as unknown as CliOptions;
     });
+
     mockSetOptions.mockImplementation(options => {
       callOrder.push('set');
 
       return Object.freeze({ ...DEFAULT_OPTIONS, ...options }) as unknown as GlobalOptions;
     });
+
+    mockGetSessionOptions.mockReturnValue({
+      sessionId: 'test-session-id',
+      channelName: 'patternfly-mcp:test-session-id'
+    } as any);
+
+    mockRunWithSession.mockImplementation(async (_session, callback: any) => await callback());
+
+    const mockServerInstance = {
+      stop: jest.fn().mockResolvedValue(undefined),
+      isRunning: jest.fn().mockReturnValue(true),
+      onLog: jest.fn()
+    };
+
     mockRunServer.mockImplementation(async () => {
       callOrder.push('run');
 
-      return {
-        stop: jest.fn().mockResolvedValue(undefined),
-        isRunning: jest.fn().mockReturnValue(true)
-      };
+      return mockServerInstance;
     });
+
+    // Also mock runServer.memo since index.ts uses runServer.memo
+    (mockRunServer as any).memo = mockRunServer;
   });
 
   afterEach(() => {
@@ -145,9 +162,9 @@ describe('main', () => {
 });
 
 describe('type exports', () => {
-  it('should export CliOptions type', () => {
+  it('should export PfMcpOptions type', () => {
     // TypeScript compilation will fail if the type is unavailable
-    const options: Partial<CliOptions> = { docsHost: true };
+    const options: PfMcpOptions = { docsHost: true };
 
     expect(options).toBeDefined();
   });

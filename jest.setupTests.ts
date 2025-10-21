@@ -6,6 +6,23 @@
 process.env.NODE_ENV = 'local';
 
 /**
+ * Note: Mock child_process to avoid issues with execSync in tests
+ */
+jest.mock('child_process', () => ({
+  ...jest.requireActual('child_process'),
+  execSync: (...args: any) => `<execSync>${JSON.stringify(args)}</execSync>`
+}));
+
+/**
+ * Note: Mock pid-port to avoid ES module import issues in Jest
+ * - Returns undefined to simulate port is free (no process found)
+ */
+jest.mock('pid-port', () => ({
+  __esModule: true,
+  portToPid: jest.fn().mockResolvedValue(undefined)
+}));
+
+/**
  * Note: Mock @patternfly/patternfly-component-schemas/json to avoid top-level await issues in Jest
  * - Individual tests can override mock
  */

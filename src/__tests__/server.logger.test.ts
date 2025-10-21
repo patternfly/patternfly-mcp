@@ -1,5 +1,5 @@
 import diagnostics_channel from 'node:diagnostics_channel';
-import { getOptions, setOptions } from '../options.context';
+import { getLoggerOptions, setOptions } from '../options.context';
 import { toMcpLevel, registerMcpSubscriber, createServerLogger } from '../server.logger';
 import { log } from '../logger';
 
@@ -50,8 +50,8 @@ describe('registerMcpSubscriber', () => {
   });
 
   it('should attempt to subscribe and unsubscribe from a channel', () => {
-    const options = getOptions();
-    const unsubscribe = registerMcpSubscriber((() => {}) as any, options);
+    const loggingSession = getLoggerOptions();
+    const unsubscribe = registerMcpSubscriber((() => {}) as any, loggingSession);
 
     unsubscribe();
 
@@ -80,20 +80,20 @@ describe('createServerLogger', () => {
   it.each([
     {
       description: 'with stderr, and emulated channel to pass checks',
-      options: { logging: { channelName: 'loremIpsum', stderr: true, protocol: false } }
+      options: { channelName: 'loremIpsum', stderr: true, protocol: false }
     },
     {
       description: 'with stderr, protocol, and emulated channel to pass checks',
-      options: { logging: { channelName: 'loremIpsum', stderr: true, protocol: true } }
+      options: { channelName: 'loremIpsum', stderr: true, protocol: true }
     },
     {
       description: 'with no logging options',
-      options: { logging: {} },
+      options: {},
       stderr: false
     }
   ])('should attempt to subscribe and unsubscribe from a channel, $description', ({ options }) => {
     // Use channelName to pass conditions
-    const unsubscribe = createServerLogger((() => {}) as any, options as any);
+    const { unsubscribe } = createServerLogger((() => {}) as any, options as any);
 
     unsubscribe();
 
@@ -104,24 +104,62 @@ describe('createServerLogger', () => {
   });
 
   it('should return a memoized server logger that avoids duplicate sinks; teardown stops emissions', () => {
-    setOptions({ logging: { stderr: true, level: 'info' } as any });
+    setOptions({ logging: { stderr: true, level: 'debug' } as any });
 
     const stderrSpy = jest.spyOn(process.stderr, 'write').mockImplementation(() => true as any);
     class MockServer { sendLoggingMessage = jest.fn(async () => {}); }
     const server = new MockServer() as any;
 
-    const unsubscribeCallOne = createServerLogger.memo(server);
-    const unsubscribeCallTwo = createServerLogger.memo(server);
+    // Create a single memoized server logger with two server-level subscription handlers
+    const { subscribe: subscribeCallOne, unsubscribe: unsubscribeAllCallOne } = createServerLogger.memo(server);
+    const { subscribe: subscribeCallTwo, unsubscribe: unsubscribeAllCallTwo } = createServerLogger.memo(server);
+
+    // Create two lower-level subscription handlers
+    const mockHandlerOne = jest.fn();
+    const mockHandlerTwo = jest.fn();
+    const unsubscribeMockHandlerOne = subscribeCallOne(mockHandlerOne);
+    const unsubscribeMockHandlerTwo = subscribeCallTwo(mockHandlerTwo);
+
+    log.debug('a');
+
+    expect(mockHandlerOne).toHaveBeenCalledTimes(1);
+    expect(mockHandlerTwo).toHaveBeenCalledTimes(1);
+
+    // This removes the subscription for mockHandlerOne
+    unsubscribeMockHandlerOne();
+
+    log.debug('b');
+
+    // This was removed earlier by the "unsubscribeMockHandlerOne()" call above
+    expect(mockHandlerOne).toHaveBeenCalledTimes(1);
+    // This continues to be called
+    expect(mockHandlerTwo).toHaveBeenCalledTimes(2);
 
     log.info('lorem ipsum, dolor sit info');
 
-    expect(unsubscribeCallOne).toBe(unsubscribeCallTwo);
+    expect(unsubscribeAllCallOne).toBe(unsubscribeAllCallTwo);
 
     log.info('dolor sit amet');
 
-    unsubscribeCallOne();
+    // This removes all subscriptions
+    unsubscribeAllCallOne();
 
     log.info('hello world!');
+
+    // This shouldn't throw an error since all subscriptions were removed
+    unsubscribeAllCallTwo();
+
+    log.debug('c');
+
+    // This was removed earlier by the "unsubscribeMockHandlerOne()" call above
+    expect(mockHandlerOne).toHaveBeenCalledTimes(1);
+    // This was removed by the "unsubscribeAllCallOne()" call above
+    expect(mockHandlerTwo).toHaveBeenCalledTimes(4);
+
+    // This shouldn't throw an error since all subscriptions were removed
+    unsubscribeMockHandlerTwo();
+
+    log.info('goodbye world!');
 
     expect(stderrSpy.mock.calls).toMatchSnapshot('stderr');
 

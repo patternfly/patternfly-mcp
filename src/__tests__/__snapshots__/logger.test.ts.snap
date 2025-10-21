@@ -3,7 +3,7 @@
 exports[`createLogger should activate stderr subscriber writes only at or above level: stderr 1`] = `
 [
   [
-    "[INFO]:	lorem ipsum	:123 {"a":1}
+    "[INFO]: lorem ipsum	:123 {"a":1}
 ",
   ],
 ]
@@ -154,7 +154,7 @@ exports[`publish should attempt to create a log entry, msg 1`] = `
 exports[`registerStderrSubscriber should activate stderr subscriber writes only at or above level: stderr 1`] = `
 [
   [
-    "[INFO]:	lorem ipsum	:123 {"a":1}
+    "[INFO]: lorem ipsum	:123 {"a":1}
 ",
   ],
 ]
