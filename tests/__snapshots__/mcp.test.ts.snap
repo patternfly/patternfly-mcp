@@ -1,0 +1,392 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`External URLs should fetch a document 1`] = `
+[
+  "# Example Fixture",
+  "This is a local offline fixture used by the MCP external URLs test.",
+  "It includes the token PatternFly to satisfy test assertions.",
+]
+`;
+
+exports[`Hosted mode, --docs-host should read llms-files and includes expected tokens 1`] = `
+[
+  "# @patternfly/react-core 6.0.0",
+  "## Components",
+  "[@patternfly/AboutModal - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/about-modal/about-modal.md)",
+  "[@patternfly/AboutModal - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/about-modal/about-modal.md)",
+  "[@patternfly/AboutModal - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/AboutModal/examples/AboutModal.md)",
+  "[@patternfly/Accordion - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/accordion/accordion.md)",
+  "[@patternfly/Accordion - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/accordion/accordion.md)",
+  "[@patternfly/Accordion - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Accordion/examples/Accordion.md)",
+  "[@patternfly/ActionList - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/action-list/action-list.md)",
+  "[@patternfly/ActionList - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/action-list/action-list.md)",
+  "[@patternfly/ActionList - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/ActionList/examples/ActionList.md)",
+  "[@patternfly/Alert - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/alert/alert.md)",
+  "[@patternfly/Alert - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/alert/alert.md)",
+  "[@patternfly/Alert - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Alert/examples/Alert.md)",
+  "[@patternfly/ApplicationLauncher - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/application-launcher/application-launcher.md)",
+  "[@patternfly/ApplicationLauncher - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/application-launcher/application-launcher.md)",
+  "[@patternfly/ApplicationLauncher - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/ApplicationLauncher/examples/ApplicationLauncher.md)",
+  "[@patternfly/Avatar - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/avatar/avatar.md)",
+  "[@patternfly/Avatar - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/avatar/avatar.md)",
+  "[@patternfly/Avatar - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Avatar/examples/Avatar.md)",
+  "[@patternfly/BackToTop - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/back-to-top/back-to-top.md)",
+  "[@patternfly/BackToTop - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/back-to-top/back-to-top.md)",
+  "[@patternfly/BackToTop - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/BackToTop/examples/BackToTop.md)",
+  "[@patternfly/Backdrop - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/backdrop/backdrop.md)",
+  "[@patternfly/Backdrop - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/backdrop/backdrop.md)",
+  "[@patternfly/Backdrop - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Backdrop/examples/Backdrop.md)",
+  "[@patternfly/BackgroundImage - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/background-image/background-image.md)",
+  "[@patternfly/BackgroundImage - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/background-image/background-image.md)",
+  "[@patternfly/BackgroundImage - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/BackgroundImage/examples/BackgroundImage.md)",
+  "[@patternfly/Badge - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/badge/badge.md)",
+  "[@patternfly/Badge - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/badge/badge.md)",
+  "[@patternfly/Badge - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Badge/examples/Badge.md)",
+  "[@patternfly/Banner - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/banner/banner.md)",
+  "[@patternfly/Banner - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/banner/banner.md)",
+  "[@patternfly/Banner - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Banner/examples/Banner.md)",
+  "[@patternfly/Brand - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/brand/brand.md)",
+  "[@patternfly/Brand - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/brand/brand.md)",
+  "[@patternfly/Brand - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Brand/examples/Brand.md)",
+  "[@patternfly/Breadcrumb - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/breadcrumb/breadcrumb.md)",
+  "[@patternfly/Breadcrumb - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/breadcrumb/breadcrumb.md)",
+  "[@patternfly/Breadcrumb - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Breadcrumb/examples/Breadcrumb.md)",
+  "[@patternfly/Button - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/button/button.md)",
+  "[@patternfly/Button - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/button/button.md)",
+  "[@patternfly/Button - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Button/examples/Button.md)",
+  "[@patternfly/CalendarMonth - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/calendar-month/calendar-month.md)",
+  "[@patternfly/CalendarMonth - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/calendar-month/calendar-month.md)",
+  "[@patternfly/CalendarMonth - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/CalendarMonth/examples/CalendarMonth.md)",
+  "[@patternfly/Card - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/card/card.md)",
+  "[@patternfly/Card - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/card/card.md)",
+  "[@patternfly/Card - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Card/examples/Card.md)",
+  "[@patternfly/Checkbox - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/checkbox/checkbox.md)",
+  "[@patternfly/Checkbox - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/checkbox/checkbox.md)",
+  "[@patternfly/Checkbox - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Checkbox/examples/Checkbox.md)",
+  "[@patternfly/ChipDeprecated - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/chip-deprecated/chip-deprecated.md)",
+  "[@patternfly/ChipDeprecated - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/chip-deprecated/chip-deprecated.md)",
+  "[@patternfly/ChipDeprecated - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/ChipDeprecated/examples/ChipDeprecated.md)",
+  "[@patternfly/ClipboardCopy - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/clipboard-copy/clipboard-copy.md)",
+  "[@patternfly/ClipboardCopy - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/clipboard-copy/clipboard-copy.md)",
+  "[@patternfly/ClipboardCopy - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/ClipboardCopy/examples/ClipboardCopy.md)",
+  "[@patternfly/CodeBlock - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/code-block/code-block.md)",
+  "[@patternfly/CodeBlock - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/code-block/code-block.md)",
+  "[@patternfly/CodeBlock - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/CodeBlock/examples/CodeBlock.md)",
+  "[@patternfly/CodeEditor - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/code-editor/code-editor.md)",
+  "[@patternfly/CodeEditor - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/code-editor/code-editor.md)",
+  "[@patternfly/CodeEditor - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/CodeEditor/examples/CodeEditor.md)",
+  "[@patternfly/Content - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/content/content.md)",
+  "[@patternfly/Content - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/content/content.md)",
+  "[@patternfly/Content - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Content/examples/Content.md)",
+  "[@patternfly/DataList - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/data-list/data-list.md)",
+  "[@patternfly/DataList - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/data-list/data-list.md)",
+  "[@patternfly/DataList - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/DataList/examples/DataList.md)",
+  "[@patternfly/DatePicker - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/date-picker/date-picker.md)",
+  "[@patternfly/DatePicker - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/date-picker/date-picker.md)",
+  "[@patternfly/DatePicker - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/DatePicker/examples/DatePicker.md)",
+  "[@patternfly/DateTimePicker - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/date-time-picker/date-time-picker.md)",
+  "[@patternfly/DateTimePicker - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/date-time-picker/date-time-picker.md)",
+  "[@patternfly/DateTimePicker - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/DateTimePicker/examples/DateTimePicker.md)",
+  "[@patternfly/DescriptionList - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/description-list/description-list.md)",
+  "[@patternfly/DescriptionList - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/description-list/description-list.md)",
+  "[@patternfly/DescriptionList - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/DescriptionList/examples/DescriptionList.md)",
+  "[@patternfly/Divider - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/divider/divider.md)",
+  "[@patternfly/Divider - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/divider/divider.md)",
+  "[@patternfly/Divider - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Divider/examples/Divider.md)",
+  "[@patternfly/DragAndDrop - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/drag-and-drop/drag-and-drop.md)",
+  "[@patternfly/DragAndDrop - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/drag-and-drop/drag-and-drop.md)",
+  "[@patternfly/DragAndDrop - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/DragAndDrop/examples/DragAndDrop.md)",
+  "[@patternfly/Drawer - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/drawer/drawer.md)",
+  "[@patternfly/Drawer - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/drawer/drawer.md)",
+  "[@patternfly/Drawer - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Drawer/examples/Drawer.md)",
+  "[@patternfly/Dropdown - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/dropdown/dropdown.md)",
+  "[@patternfly/Dropdown - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/dropdown/dropdown.md)",
+  "[@patternfly/Dropdown - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Dropdown/examples/Dropdown.md)",
+  "[@patternfly/DualListSelector - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/dual-list-selector/dual-list-selector.md)",
+  "[@patternfly/DualListSelector - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/dual-list-selector/dual-list-selector.md)",
+  "[@patternfly/DualListSelector - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/DualListSelector/examples/DualListSelector.md)",
+  "[@patternfly/EmptyState - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/empty-state/empty-state.md)",
+  "[@patternfly/EmptyState - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/empty-state/empty-state.md)",
+  "[@patternfly/EmptyState - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/EmptyState/examples/EmptyState.md)",
+  "[@patternfly/ExpandableSection - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/expandable-section/expandable-section.md)",
+  "[@patternfly/ExpandableSection - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/expandable-section/expandable-section.md)",
+  "[@patternfly/ExpandableSection - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/ExpandableSection/examples/ExpandableSection.md)",
+  "[@patternfly/FileUpload - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/file-upload/file-upload.md)",
+  "[@patternfly/FileUpload - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/file-upload/file-upload.md)",
+  "[@patternfly/FileUpload - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/FileUpload/examples/FileUpload.md)",
+  "[@patternfly/Form - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/form/form.md)",
+  "[@patternfly/Form - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/form/form.md)",
+  "[@patternfly/Form - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Form/examples/Form.md)",
+  "[@patternfly/FormControl - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/form-control/form-control.md)",
+  "[@patternfly/FormControl - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/form-control/form-control.md)",
+  "[@patternfly/FormControl - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/FormControl/examples/FormControl.md)",
+  "[@patternfly/FormSelect - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/form-select/form-select.md)",
+  "[@patternfly/FormSelect - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/form-select/form-select.md)",
+  "[@patternfly/FormSelect - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/FormSelect/examples/FormSelect.md)",
+  "[@patternfly/HelperText - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/helper-text/helper-text.md)",
+  "[@patternfly/HelperText - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/helper-text/helper-text.md)",
+  "[@patternfly/HelperText - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/HelperText/examples/HelperText.md)",
+  "[@patternfly/Hint - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/hint/hint.md)",
+  "[@patternfly/Hint - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/hint/hint.md)",
+  "[@patternfly/Hint - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Hint/examples/Hint.md)",
+  "[@patternfly/Icon - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/icon/icon.md)",
+  "[@patternfly/Icon - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/icon/icon.md)",
+  "[@patternfly/Icon - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Icon/examples/Icon.md)",
+  "[@patternfly/InlineEdit - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/inline-edit/inline-edit.md)",
+  "[@patternfly/InlineEdit - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/inline-edit/inline-edit.md)",
+  "[@patternfly/InlineEdit - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/InlineEdit/examples/InlineEdit.md)",
+  "[@patternfly/InputGroup - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/input-group/input-group.md)",
+  "[@patternfly/InputGroup - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/input-group/input-group.md)",
+  "[@patternfly/InputGroup - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/InputGroup/examples/InputGroup.md)",
+  "[@patternfly/JumpLinks - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/jump-links/jump-links.md)",
+  "[@patternfly/JumpLinks - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/jump-links/jump-links.md)",
+  "[@patternfly/JumpLinks - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/JumpLinks/examples/JumpLinks.md)",
+  "[@patternfly/Label - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/label/label.md)",
+  "[@patternfly/Label - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/label/label.md)",
+  "[@patternfly/Label - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Label/examples/Label.md)",
+  "[@patternfly/List - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/list/list.md)",
+  "[@patternfly/List - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/list/list.md)",
+  "[@patternfly/List - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/List/examples/List.md)",
+  "[@patternfly/LoginPage - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/login-page/login-page.md)",
+  "[@patternfly/LoginPage - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/login-page/login-page.md)",
+  "[@patternfly/LoginPage - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/LoginPage/examples/LoginPage.md)",
+  "[@patternfly/Masthead - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/masthead/masthead.md)",
+  "[@patternfly/Masthead - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/masthead/masthead.md)",
+  "[@patternfly/Masthead - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Masthead/examples/Masthead.md)",
+  "[@patternfly/Menu - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/menu/menu.md)",
+  "[@patternfly/Menu - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/menu/menu.md)",
+  "[@patternfly/Menu - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Menu/examples/Menu.md)",
+  "[@patternfly/MenuToggle - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/menu-toggle/menu-toggle.md)",
+  "[@patternfly/MenuToggle - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/menu-toggle/menu-toggle.md)",
+  "[@patternfly/MenuToggle - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/MenuToggle/examples/MenuToggle.md)",
+  "[@patternfly/Modal - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/modal/modal.md)",
+  "[@patternfly/Modal - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/modal/modal.md)",
+  "[@patternfly/Modal - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Modal/examples/Modal.md)",
+  "[@patternfly/Navigation - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/navigation/navigation.md)",
+  "[@patternfly/Navigation - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/navigation/navigation.md)",
+  "[@patternfly/Navigation - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Navigation/examples/Navigation.md)",
+  "[@patternfly/NotificationBadge - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/notification-badge/notification-badge.md)",
+  "[@patternfly/NotificationBadge - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/notification-badge/notification-badge.md)",
+  "[@patternfly/NotificationBadge - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/NotificationBadge/examples/NotificationBadge.md)",
+  "[@patternfly/NotificationDrawer - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/notification-drawer/notification-drawer.md)",
+  "[@patternfly/NotificationDrawer - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/notification-drawer/notification-drawer.md)",
+  "[@patternfly/NotificationDrawer - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/NotificationDrawer/examples/NotificationDrawer.md)",
+  "[@patternfly/NumberInput - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/number-input/number-input.md)",
+  "[@patternfly/NumberInput - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/number-input/number-input.md)",
+  "[@patternfly/NumberInput - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/NumberInput/examples/NumberInput.md)",
+  "[@patternfly/OverflowMenu - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/overflow-menu/overflow-menu.md)",
+  "[@patternfly/OverflowMenu - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/overflow-menu/overflow-menu.md)",
+  "[@patternfly/OverflowMenu - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/OverflowMenu/examples/OverflowMenu.md)",
+  "[@patternfly/Page - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/page/page.md)",
+  "[@patternfly/Page - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/page/page.md)",
+  "[@patternfly/Page - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Page/examples/Page.md)",
+  "[@patternfly/Pagination - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/pagination/pagination.md)",
+  "[@patternfly/Pagination - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/pagination/pagination.md)",
+  "[@patternfly/Pagination - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Pagination/examples/Pagination.md)",
+  "[@patternfly/Panel - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/panel/panel.md)",
+  "[@patternfly/Panel - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/panel/panel.md)",
+  "[@patternfly/Panel - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Panel/examples/Panel.md)",
+  "[@patternfly/Popover - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/popover/popover.md)",
+  "[@patternfly/Popover - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/popover/popover.md)",
+  "[@patternfly/Popover - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Popover/examples/Popover.md)",
+  "[@patternfly/Progress - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/progress/progress.md)",
+  "[@patternfly/Progress - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/progress/progress.md)",
+  "[@patternfly/Progress - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Progress/examples/Progress.md)",
+  "[@patternfly/ProgressStepper - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/progress-stepper/progress-stepper.md)",
+  "[@patternfly/ProgressStepper - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/progress-stepper/progress-stepper.md)",
+  "[@patternfly/ProgressStepper - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/ProgressStepper/examples/ProgressStepper.md)",
+  "[@patternfly/Radio - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/radio/radio.md)",
+  "[@patternfly/Radio - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/radio/radio.md)",
+  "[@patternfly/Radio - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Radio/examples/Radio.md)",
+  "[@patternfly/SearchInput - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/search-input/search-input.md)",
+  "[@patternfly/SearchInput - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/search-input/search-input.md)",
+  "[@patternfly/SearchInput - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/SearchInput/examples/SearchInput.md)",
+  "[@patternfly/Select - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/select/select.md)",
+  "[@patternfly/Select - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/select/select.md)",
+  "[@patternfly/Select - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Select/examples/Select.md)",
+  "[@patternfly/Sidebar - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/sidebar/sidebar.md)",
+  "[@patternfly/Sidebar - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/sidebar/sidebar.md)",
+  "[@patternfly/Sidebar - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Sidebar/examples/Sidebar.md)",
+  "[@patternfly/SimpleList - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/simple-list/simple-list.md)",
+  "[@patternfly/SimpleList - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/simple-list/simple-list.md)",
+  "[@patternfly/SimpleList - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/SimpleList/examples/SimpleList.md)",
+  "[@patternfly/Skeleton - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/skeleton/skeleton.md)",
+  "[@patternfly/Skeleton - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/skeleton/skeleton.md)",
+  "[@patternfly/Skeleton - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Skeleton/examples/Skeleton.md)",
+  "[@patternfly/SkipToContent - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/skip-to-content/skip-to-content.md)",
+  "[@patternfly/SkipToContent - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/skip-to-content/skip-to-content.md)",
+  "[@patternfly/SkipToContent - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/SkipToContent/examples/SkipToContent.md)",
+  "[@patternfly/Slider - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/slider/slider.md)",
+  "[@patternfly/Slider - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/slider/slider.md)",
+  "[@patternfly/Slider - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Slider/examples/Slider.md)",
+  "[@patternfly/Spinner - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/spinner/spinner.md)",
+  "[@patternfly/Spinner - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/spinner/spinner.md)",
+  "[@patternfly/Spinner - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Spinner/examples/Spinner.md)",
+  "[@patternfly/Switch - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/switch/switch.md)",
+  "[@patternfly/Switch - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/switch/switch.md)",
+  "[@patternfly/Switch - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Switch/examples/Switch.md)",
+  "[@patternfly/Table - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/table/table.md)",
+  "[@patternfly/Table - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/table/table.md)",
+  "[@patternfly/Table - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Table/examples/Table.md)",
+  "[@patternfly/Tabs - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/tabs/tabs.md)",
+  "[@patternfly/Tabs - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/tabs/tabs.md)",
+  "[@patternfly/Tabs - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Tabs/examples/Tabs.md)",
+  "[@patternfly/TextArea - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/text-area/text-area.md)",
+  "[@patternfly/TextArea - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/text-area/text-area.md)",
+  "[@patternfly/TextArea - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/TextArea/examples/TextArea.md)",
+  "[@patternfly/TextInput - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/text-input/text-input.md)",
+  "[@patternfly/TextInput - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/text-input/text-input.md)",
+  "[@patternfly/TextInput - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/TextInput/examples/TextInput.md)",
+  "[@patternfly/TextInputGroup - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/text-input-group/text-input-group.md)",
+  "[@patternfly/TextInputGroup - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/text-input-group/text-input-group.md)",
+  "[@patternfly/TextInputGroup - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/TextInputGroup/examples/TextInputGroup.md)",
+  "[@patternfly/TileDeprecated - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/tile-deprecated/tile-deprecated.md)",
+  "[@patternfly/TileDeprecated - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/tile-deprecated/tile-deprecated.md)",
+  "[@patternfly/TileDeprecated - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/TileDeprecated/examples/TileDeprecated.md)",
+  "[@patternfly/TimePicker - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/time-picker/time-picker.md)",
+  "[@patternfly/TimePicker - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/time-picker/time-picker.md)",
+  "[@patternfly/TimePicker - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/TimePicker/examples/TimePicker.md)",
+  "[@patternfly/Timestamp - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/timestamp/timestamp.md)",
+  "[@patternfly/Timestamp - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/timestamp/timestamp.md)",
+  "[@patternfly/Timestamp - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Timestamp/examples/Timestamp.md)",
+  "[@patternfly/Title - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/title/title.md)",
+  "[@patternfly/Title - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/title/title.md)",
+  "[@patternfly/Title - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Title/examples/Title.md)",
+  "[@patternfly/ToggleGroup - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/toggle-group/toggle-group.md)",
+  "[@patternfly/ToggleGroup - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/toggle-group/toggle-group.md)",
+  "[@patternfly/ToggleGroup - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/ToggleGroup/examples/ToggleGroup.md)",
+  "[@patternfly/Toolbar - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/toolbar/toolbar.md)",
+  "[@patternfly/Toolbar - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/toolbar/toolbar.md)",
+  "[@patternfly/Toolbar - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Toolbar/examples/Toolbar.md)",
+  "[@patternfly/Tooltip - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/tooltip/tooltip.md)",
+  "[@patternfly/Tooltip - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/tooltip/tooltip.md)",
+  "[@patternfly/Tooltip - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Tooltip/examples/Tooltip.md)",
+  "[@patternfly/TreeView - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/tree-view/tree-view.md)",
+  "[@patternfly/TreeView - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/tree-view/tree-view.md)",
+  "[@patternfly/TreeView - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/TreeView/examples/TreeView.md)",
+  "[@patternfly/Truncate - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/truncate/truncate.md)",
+  "[@patternfly/Truncate - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/truncate/truncate.md)",
+  "[@patternfly/Truncate - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Truncate/examples/Truncate.md)",
+  "[@patternfly/Wizard - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/wizard/wizard.md)",
+  "[@patternfly/Wizard - Accessibility](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/wizard/wizard.md)",
+  "[@patternfly/Wizard - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-core/src/components/Wizard/examples/Wizard.md)",
+  "## Layouts",
+]
+`;
+
+exports[`PatternFly MCP should concatenate headers and separator with two local files 1`] = `
+"# Documentation from documentation/guidelines/README.md
+
+# PatternFly Guidelines
+
+Core development rules for AI coders building PatternFly React applications.
+
+## Related Files
+
+- [**Component Rules**](./component-architecture.md) - Component structure requirements
+- [**Styling Rules**](./styling-standards.md) - CSS and styling requirements
+- [**Layout Rules**](../components/layout/README.md) - Page structure requirements
+
+## Essential Rules
+
+### Version Requirements
+
+- ✅ **ALWAYS use PatternFly v6** - Use \`pf-v6-\` prefixed classes only
+- ❌ **NEVER use legacy versions** - No \`pf-v5-\`, \`pf-v4-\`, or \`pf-c-\` classes
+- ✅ **Match component and CSS versions** - Ensure compatibility
+
+### Component Usage Rules
+
+- ✅ **Use PatternFly components first** - Before creating custom solutions
+- ✅ **Compose components** - Build complex UIs by combining PatternFly components
+- ❌ **Don't override component internals** - Use provided props and APIs
+
+### Tokenss
+- ✅ **ALWAYS use PatternFly tokens** - Use \`pf-t-\` prefixed classes over \`pf-v6-\` classes (e.g., \`var(--pf-t--global--spacer--sm)\` not \`var(--pf-v6-global--spacer--sm)\`)
+
+### Text Components (v6+)
+\`\`\`jsx
+// ✅ Correct
+import { Content } from '@patternfly/react-core';
+<Content component="h1">Title</Content>
+
+// ❌ Wrong - Don't use old Text components
+<Text component="h1">Title</Text>
+\`\`\`
+
+### Icon Usage
+\`\`\`jsx
+// ✅ Correct - Wrap with Icon component
+import { Icon } from '@patternfly/react-core';
+import { UserIcon } from '@patternfly/react-icons';
+<Icon size="md"><UserIcon /></Icon>
+\`\`\`
+
+### Styling Rules
+
+- ✅ **Use PatternFly utilities** - Before writing custom CSS
+- ✅ **Use semantic design tokens** for custom CSS (e.g., \`var(--pf-t--global--text--color--regular)\`), not base tokens with numbers (e.g., \`--pf-t--global--text--color--100\`) or hardcoded values
+- ❌ **Don't mix PatternFly versions** - Stick to v6 throughout
+
+### Documentation Requirements
+
+1. **Check [PatternFly.org](https://www.patternfly.org/) first** - Primary source for APIs
+2. **Check the [PatternFly React GitHub repository](https://github.com/patternfly/patternfly-react)** for the latest source code, examples, and release notes
+3. **Use "View Code" sections** - Copy working examples
+4. **Reference version-specific docs** - Match your project's PatternFly version
+5. **Provide context to AI** - Share links and code snippets when asking for help
+
+> For the most up-to-date documentation, use both the official docs and the source repositories. When using AI tools, encourage them to leverage context7 to fetch the latest documentation from these sources.
+
+### Accessibility Requirements
+
+- ✅ **WCAG 2.1 AA compliance** - All components must meet standards
+- ✅ **Proper ARIA labels** - Use semantic markup and labels
+- ✅ **Keyboard navigation** - Ensure full keyboard accessibility
+- ✅ **Focus management** - Logical focus order and visible indicators
+
+## Quality Checklist
+
+- [ ] Uses PatternFly v6 classes only
+- [ ] Components render correctly across browsers
+- [ ] Responsive on mobile and desktop
+- [ ] Keyboard navigation works
+- [ ] Screen readers can access content
+- [ ] No console errors or warnings
+- [ ] Performance is acceptable
+
+## When Issues Occur
+
+1. **Check [PatternFly.org](https://www.patternfly.org/)** - Verify component API
+2. **Inspect elements** - Use browser dev tools for PatternFly classes
+3. **Search [GitHub issues](https://github.com/patternfly/patternfly-react/issues)** - Look for similar problems
+4. **Provide context** - Share code snippets and error messages
+
+See [Common Issues](../troubleshooting/common-issues.md) for specific problems.
+
+---
+
+# Documentation from documentation/components/README.md
+
+# PatternFly React Components
+
+You can find documentation on PatternFly's components at [PatternFly All components documentation](https://www.patternfly.org/components/all-components)
+
+## Specific info on Components
+
+- [AboutModal](https://www.patternfly.org/components/about-modal)
+- [Accordion](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/accordion/accordion.md)
+- [ActionList](https://www.patternfly.org/components/action-list)
+- [Alert](https://www.patternfly.org/components/alert)
+- [ApplicationLauncher](https://www.patternfly.org/components/application-launcher)
+"
+`;
+
+exports[`PatternFly MCP should expose expected tools and stable shape 1`] = `
+{
+  "toolNames": [
+    "fetchDocs",
+    "usePatternFlyDocs",
+  ],
+}
+`;

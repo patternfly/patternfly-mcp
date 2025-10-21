@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`docsLayout should return specific properties 1`] = `
+{
+  "LAYOUT_DOCS": [
+    "[@patternfly/Bullseye - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/bullseye.md)",
+    "[@patternfly/Flex - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/flex.md)",
+    "[@patternfly/Gallery - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/gallery.md)",
+    "[@patternfly/Grid - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/grid.md)",
+    "[@patternfly/Level - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/level.md)",
+    "[@patternfly/Split - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/split.md)",
+    "[@patternfly/Stack - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/stack.md)",
+  ],
+}
+`;

@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`processDocsFunction should handle errors gracefully: errors 1`] = `
+"# Documentation from good-file.md
+
+success content
+
+---
+
+❌ Failed to load bad-file.md: Error: File not found"
+`;
+
+exports[`processDocsFunction should process local and remote inputs, duplicate files and URLS 1`] = `
+"# Documentation from file.md
+
+local file content
+
+---
+
+# Documentation from https://example.com/remote.md
+
+fetched content"
+`;
+
+exports[`processDocsFunction should process local and remote inputs, files and URLS 1`] = `
+"# Documentation from local-file.md
+
+local file content
+
+---
+
+# Documentation from https://example.com/remote.md
+
+fetched content"
+`;
+
+exports[`processDocsFunction should process local and remote inputs, filter empty strings 1`] = `
+"# Documentation from file.md
+
+local file content
+
+---
+
+# Documentation from file2.md
+
+local file content"
+`;
+
+exports[`resolveLocalPathFunction should return a consistent path, with docsHost false 1`] = `"documentation/README.md"`;
+
+exports[`resolveLocalPathFunction should return a consistent path, with docsHost true 1`] = `"/llms-files/react-core/6.0.0/llms.txt"`;

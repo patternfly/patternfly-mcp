@@ -1,0 +1,1 @@
+# @patternfly/react-table 6.0.0

@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`docsLocal should return specific properties 1`] = `
+{
+  "LOCAL_DOCS": [
+    "[@patternfly/react-charts](/documentation/charts/README.md)",
+    "[@patternfly/react-chatbot](/documentation/chatbot/README.md)",
+    "[@patternfly/react-component-groups](/documentation/component-groups/README.md)",
+    "[@patternfly/react-components](/documentation/components/README.md)",
+    "[@patternfly/react-guidelines](/documentation/guidelines/README.md)",
+    "[@patternfly/react-resources](/documentation/resources/README.md)",
+    "[@patternfly/react-setup](/documentation/setup/README.md)",
+    "[@patternfly/react-troubleshooting](/documentation/troubleshooting/README.md)",
+  ],
+}
+`;

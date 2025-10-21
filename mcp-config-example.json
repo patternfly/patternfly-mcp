@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "patternfly-docs": {
+      "command": "npx",
+      "args": ["@jephilli-patternfly-docs/mcp"],
+      "description": "PatternFly React development rules and documentation"
+    }
+  }
+} 

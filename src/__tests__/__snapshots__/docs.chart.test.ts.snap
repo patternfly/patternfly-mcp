@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`docsChart should return specific properties 1`] = `
+{
+  "CHART_DOCS": [
+    "[@patternfly/Charts - Colors for Charts](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src/victory/components/ChartTheme/examples/ChartTheme.md)",
+    "[@patternfly/Charts - Target Chart](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src/charts/area-chart/area-chart.md)",
+    "[@patternfly/Charts - Bar Chart](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src/charts/bar-chart/bar-chart.md)",
+    "[@patternfly/Charts - Box Plot Chart](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src/charts/ChartBoxPlot/examples/ChartBoxPlot.md)",
+    "[@patternfly/Charts - Bullet Chart](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src/charts/bullet-chart/bullet-chart.md)",
+    "[@patternfly/Charts - Donut Chart](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src/charts/donut-chart/donut-chart.md)",
+    "[@patternfly/Charts - Donut Utilization Chart](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src/charts/donut-utilization-chart/donut-utilization-chart.md)",
+    "[@patternfly/Charts - Line Chart](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src/charts/line-chart/line-chart.md)",
+    "[@patternfly/Charts - Pie Chart](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src/charts/pie-chart/pie-chart.md)",
+    "[@patternfly/Charts - Scatter Chart](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src/charts/scatter-chart/scatter-chart.md)",
+    "[@patternfly/Charts - Sparkline Chart](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src/charts/sparkline-chart/sparkline-chart.md)",
+    "[@patternfly/Charts - Stack Chart](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src/charts/stacked-chart/stacked-chart.md)",
+    "[@patternfly/Charts - Threshold Chart](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src/charts/threshold-chart/threshold-chart.md)",
+    "[@patternfly/Charts - Legend](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src/charts/legend-chart/legend-chart.md)",
+    "[@patternfly/Charts - Tooltip](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src/charts/tooltip-chart/tooltip-chart.md)",
+  ],
+}
+`;
