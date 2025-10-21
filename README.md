@@ -45,14 +45,14 @@ npm run start:dev
 ### Use via npx (after publishing)
 
 ```bash
-npx @jephilli-patternfly-docs/mcp
+npx @patternfly/patternfly-mcp
 ```
 
 Or install locally in a project and run:
 
 ```bash
-npm install @jephilli-patternfly-docs/mcp
-npx @jephilli-patternfly-docs/mcp
+npm install @patternfly/patternfly-mcp
+npx @patternfly/patternfly-mcp
 ```
 
 ## Scripts
@@ -111,7 +111,7 @@ If you run the server with --docs-host, local paths you pass in urlList are reso
 Example:
 
 ```bash
-npx @jephilli-patternfly-docs/mcp --docs-host
+npx @patternfly/patternfly-mcp --docs-host
 ```
 
 Then, passing a local path such as react-core/6.0.0/llms.txt in urlList will load from llms-files/react-core/6.0.0/llms.txt.
@@ -127,7 +127,7 @@ Most MCP clients use a JSON configuration that tells the client how to start thi
   "mcpServers": {
     "patternfly-docs": {
       "command": "npx",
-      "args": ["-y", "@jephilli-patternfly-docs/mcp@latest"],
+      "args": ["-y", "@patternfly/patternfly-mcp@latest"],
       "description": "PatternFly React development rules and documentation"
     }
   }
@@ -141,7 +141,7 @@ Most MCP clients use a JSON configuration that tells the client how to start thi
   "mcpServers": {
     "patternfly-docs": {
       "command": "npx",
-      "args": ["-y", "@jephilli-patternfly-docs/mcp@latest", "--docs-host"],
+      "args": ["-y", "@patternfly/patternfly-mcp@latest", "--docs-host"],
       "description": "PatternFly docs (docs-host mode)"
     }
   }
@@ -207,10 +207,10 @@ Example (ESM):
 
 ```js
 // Prefer the public export subpath
-import { runServer } from '@jephilli-patternfly-docs/mcp/server';
+import { runServer } from '@patternfly/patternfly-mcp/server';
 
 // Or from the package root (index.ts re-exports it)
-import { runServer } from '@jephilli-patternfly-docs/mcp';
+import { runServer } from '@patternfly/patternfly-mcp';
 
 // Starts the MCP server and listens on stdio
 await runServer();
@@ -247,7 +247,7 @@ npm publish
 
 After publishing, users can run your MCP server with:
 ```bash
-npx @jephilli-patternfly-docs/mcp
+npx @patternfly/patternfly-mcp
 ```
 
 ## Contributing

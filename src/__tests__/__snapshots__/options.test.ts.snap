@@ -6,7 +6,7 @@ exports[`freezeOptions should return frozen options with consistent properties: 
   "docsHost": true,
   "docsPath": "/documentation",
   "llmsFilesPath": "/llms-files",
-  "name": "@jephilli-patternfly-docs/mcp",
+  "name": "@patternfly/patternfly-mcp",
   "pfExternal": "https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content",
   "pfExternalAccessibility": "https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility",
   "pfExternalCharts": "https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src",
@@ -46,7 +46,7 @@ exports[`freezeOptions should return frozen options with consistent properties: 
     },
   },
   "urlRegex": /\\^\\(https\\?:\\)\\\\/\\\\//i,
-  "version": "1.1.0",
+  "version": "0.0.0",
 }
 `;
 
@@ -61,7 +61,7 @@ exports[`options should return specific properties 1`] = `
     "contextPath": "/",
     "docsPath": "/documentation",
     "llmsFilesPath": "/llms-files",
-    "name": "@jephilli-patternfly-docs/mcp",
+    "name": "@patternfly/patternfly-mcp",
     "pfExternal": "https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content",
     "pfExternalAccessibility": "https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility",
     "pfExternalCharts": "https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src",
@@ -101,7 +101,7 @@ exports[`options should return specific properties 1`] = `
       },
     },
     "urlRegex": /\\^\\(https\\?:\\)\\\\/\\\\//i,
-    "version": "1.1.0",
+    "version": "0.0.0",
   },
   "PF_EXTERNAL": "https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content",
   "PF_EXTERNAL_ACCESSIBILITY": "https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility",

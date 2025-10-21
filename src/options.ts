@@ -160,7 +160,7 @@ const OPTIONS: GlobalOptions = {
   separator: DEFAULT_SEPARATOR,
   urlRegex: URL_REGEX,
   name: packageJson.name,
-  version: packageJson.version,
+  version: (process.env.NODE_ENV === 'local' && '0.0.0') || packageJson.version,
   repoName: process.cwd()?.split?.('/')?.pop?.()?.trim?.(),
   contextPath: (process.env.NODE_ENV === 'local' && '/') || process.cwd(),
   docsPath: (process.env.NODE_ENV === 'local' && '/documentation') || join(process.cwd(), 'documentation'),
