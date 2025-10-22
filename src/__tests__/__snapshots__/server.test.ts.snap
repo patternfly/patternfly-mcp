@@ -21,6 +21,69 @@ exports[`runServer should attempt to run server, create transport, connect, and 
       },
     ],
   ],
+  "process": [
+    [
+      "SIGINT",
+      [Function],
+    ],
+  ],
+  "registerTool": [],
+}
+`;
+
+exports[`runServer should attempt to run server, disable SIGINT handler: console 1`] = `
+{
+  "info": [],
+  "log": [
+    [
+      "PatternFly MCP server running on stdio",
+    ],
+  ],
+  "mcpServer": [
+    [
+      {
+        "name": "@patternfly/patternfly-mcp",
+        "version": "0.0.0",
+      },
+      {
+        "capabilities": {
+          "tools": {},
+        },
+      },
+    ],
+  ],
+  "process": [],
+  "registerTool": [],
+}
+`;
+
+exports[`runServer should attempt to run server, enable SIGINT handler explicitly: console 1`] = `
+{
+  "info": [],
+  "log": [
+    [
+      "PatternFly MCP server running on stdio",
+    ],
+  ],
+  "mcpServer": [
+    [
+      {
+        "name": "@patternfly/patternfly-mcp",
+        "version": "0.0.0",
+      },
+      {
+        "capabilities": {
+          "tools": {},
+        },
+      },
+    ],
+  ],
+  "process": [
+    [
+      "SIGINT",
+      [Function],
+    ],
+  ],
   "registerTool": [],
 }
 `;
@@ -48,6 +111,12 @@ exports[`runServer should attempt to run server, register a tool: console 1`] = 
           "tools": {},
         },
       },
+    ],
+  ],
+  "process": [
+    [
+      "SIGINT",
+      [Function],
     ],
   ],
   "registerTool": [
@@ -89,6 +158,12 @@ exports[`runServer should attempt to run server, register multiple tools: consol
           "tools": {},
         },
       },
+    ],
+  ],
+  "process": [
+    [
+      "SIGINT",
+      [Function],
     ],
   ],
   "registerTool": [
@@ -133,6 +208,12 @@ exports[`runServer should attempt to run server, use custom options: console 1`]
       },
     ],
   ],
+  "process": [
+    [
+      "SIGINT",
+      [Function],
+    ],
+  ],
   "registerTool": [],
 }
 `;
@@ -163,6 +244,12 @@ exports[`runServer should attempt to run server, use default tools: console 1`] 
           "tools": {},
         },
       },
+    ],
+  ],
+  "process": [
+    [
+      "SIGINT",
+      [Function],
     ],
   ],
   "registerTool": [
