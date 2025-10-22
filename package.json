@@ -5,8 +5,7 @@
   "main": "dist/index.js",
   "type": "module",
   "exports": {
-    ".": "./dist/index.js",
-    "./server": "./dist/server.js"
+    ".": "./dist/index.js"
   },
   "bin": {
     "patternfly-mcp": "dist/index.js",

@@ -201,20 +201,26 @@ npx @modelcontextprotocol/inspector-cli \
 
 ## Programmatic usage (advanced)
 
-The `runServer` function is exported via the package exports map. You can import it from the dedicated subpath or the package root.
+The package provides programmatic access through the `start()` function (or `main()` as an alternative):
 
-Example (ESM):
+```typescript
+import { start, main, type CliOptions } from '@patternfly/patternfly-mcp';
 
-```js
-// Prefer the public export subpath
-import { runServer } from '@patternfly/patternfly-mcp/server';
+// Use with default options (equivalent to CLI without flags)
+await start();
 
-// Or from the package root (index.ts re-exports it)
-import { runServer } from '@patternfly/patternfly-mcp';
+// Override CLI options programmatically
+await start({ docsHost: true });
 
-// Starts the MCP server and listens on stdio
-await runServer();
-// Server runs until interrupted (Ctrl+C)
+// Multiple options can be overridden
+await start({ 
+  docsHost: true,
+  // Future CLI options can be added here
+});
+
+// TypeScript users can use the CliOptions type for type safety
+const options: Partial<CliOptions> = { docsHost: true };
+await start(options);
 ```
 
 ## Returned content details
