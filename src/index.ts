@@ -1,18 +1,23 @@
 #!/usr/bin/env node
 
-import { freezeOptions, parseCliOptions } from './options';
+import { freezeOptions, parseCliOptions, type CliOptions } from './options';
 import { runServer } from './server';
 
 /**
- * Main function - CLI entry point
+ * Main function - CLI entry point with optional programmatic overrides
+ *
+ * @param programmaticOptions - Optional programmatic options that override CLI options
  */
-const main = async (): Promise<void> => {
+const main = async (programmaticOptions?: Partial<CliOptions>): Promise<void> => {
   try {
-    // Temporary parse for CLI options until we move to yargs or commander
+    // Parse CLI options
     const cliOptions = parseCliOptions();
 
+    // Merge programmatic options with CLI options (programmatic takes precedence)
+    const finalOptions = { ...cliOptions, ...programmaticOptions };
+
     // Freeze options to prevent further changes
-    freezeOptions(cliOptions);
+    freezeOptions(finalOptions);
 
     // Create and run the server
     await runServer();
@@ -30,4 +35,4 @@ if (process.env.NODE_ENV !== 'local') {
   });
 }
 
-export { main, runServer };
+export { main, main as start, type CliOptions };

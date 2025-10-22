@@ -201,20 +201,45 @@ npx @modelcontextprotocol/inspector-cli \
 
 ## Programmatic usage (advanced)
 
-The `runServer` function is exported via the package exports map. You can import it from the dedicated subpath or the package root.
-
-Example (ESM):
+The package provides programmatic access through the `start()` function (or `main()`), which allows you to override CLI options:
 
 ```js
-// Prefer the public export subpath
-import { runServer } from '@patternfly/patternfly-mcp/server';
+// Import the start function (or use 'main' as an alternative)
+import { start, main, type CliOptions } from '@patternfly/patternfly-mcp';
 
-// Or from the package root (index.ts re-exports it)
-import { runServer } from '@patternfly/patternfly-mcp';
+// Use with default options (equivalent to CLI without flags)
+await start();
+// or
+await main();
 
-// Starts the MCP server and listens on stdio
-await runServer();
-// Server runs until interrupted (Ctrl+C)
+// Override CLI options programmatically
+await start({ docsHost: true });
+// or
+await main({ docsHost: true });
+// Server runs with --docs-host equivalent enabled
+```
+
+### Programmatic Option Overrides
+
+You can override any CLI options when using the `start()` or `main()` function:
+
+```js
+import { start, main, type CliOptions } from '@patternfly/patternfly-mcp';
+
+// Override docsHost option
+await start({ docsHost: true });
+// or
+await main({ docsHost: true });
+
+// Multiple options can be overridden
+await start({ 
+  docsHost: true,
+  // Future CLI options can be added here
+});
+
+// TypeScript users can use the CliOptions type for type safety
+const options: Partial<CliOptions> = { docsHost: true };
+await start(options);
 ```
 
 ## Returned content details
