@@ -11,8 +11,8 @@ exports[`runServer should attempt to run server, create transport, connect, and 
   "mcpServer": [
     [
       {
-        "name": "@jephilli-patternfly-docs/mcp",
-        "version": "1.1.0",
+        "name": "@patternfly/patternfly-mcp",
+        "version": "0.0.0",
       },
       {
         "capabilities": {
@@ -40,8 +40,8 @@ exports[`runServer should attempt to run server, register a tool: console 1`] = 
   "mcpServer": [
     [
       {
-        "name": "@jephilli-patternfly-docs/mcp",
-        "version": "1.1.0",
+        "name": "@patternfly/patternfly-mcp",
+        "version": "0.0.0",
       },
       {
         "capabilities": {
@@ -81,8 +81,8 @@ exports[`runServer should attempt to run server, register multiple tools: consol
   "mcpServer": [
     [
       {
-        "name": "@jephilli-patternfly-docs/mcp",
-        "version": "1.1.0",
+        "name": "@patternfly/patternfly-mcp",
+        "version": "0.0.0",
       },
       {
         "capabilities": {
@@ -155,8 +155,8 @@ exports[`runServer should attempt to run server, use default tools: console 1`] 
   "mcpServer": [
     [
       {
-        "name": "@jephilli-patternfly-docs/mcp",
-        "version": "1.1.0",
+        "name": "@patternfly/patternfly-mcp",
+        "version": "0.0.0",
       },
       {
         "capabilities": {
