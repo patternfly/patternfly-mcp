@@ -1,55 +1,5 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`freezeOptions should return frozen options with consistent properties: frozen 1`] = `
-{
-  "contextPath": "/",
-  "docsHost": true,
-  "docsPath": "/documentation",
-  "llmsFilesPath": "/llms-files",
-  "name": "@patternfly/patternfly-mcp",
-  "pfExternal": "https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content",
-  "pfExternalAccessibility": "https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility",
-  "pfExternalCharts": "https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src",
-  "pfExternalChartsComponents": "https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src/victory/components",
-  "pfExternalChartsDesign": "https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src/charts",
-  "pfExternalDesign": "https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines",
-  "pfExternalDesignComponents": "https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components",
-  "pfExternalDesignLayouts": "https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts",
-  "repoName": "patternfly-mcp",
-  "resourceMemoOptions": {
-    "fetchUrl": {
-      "cacheErrors": false,
-      "cacheLimit": 100,
-      "expire": 180000,
-    },
-    "readFile": {
-      "cacheErrors": false,
-      "cacheLimit": 50,
-      "expire": 120000,
-    },
-  },
-  "separator": "
-
----
-
-",
-  "toolMemoOptions": {
-    "fetchDocs": {
-      "cacheErrors": false,
-      "cacheLimit": 15,
-      "expire": 60000,
-    },
-    "usePatternFlyDocs": {
-      "cacheErrors": false,
-      "cacheLimit": 10,
-      "expire": 60000,
-    },
-  },
-  "urlRegex": /\\^\\(https\\?:\\)\\\\/\\\\//i,
-  "version": "0.0.0",
-}
-`;
-
 exports[`options should return specific properties 1`] = `
 {
   "DEFAULT_SEPARATOR": "
@@ -136,8 +86,9 @@ exports[`options should return specific properties 1`] = `
     },
   },
   "URL_REGEX": /\\^\\(https\\?:\\)\\\\/\\\\//i,
-  "freezeOptions": [Function],
+  "generateSessionId": [Function],
   "parseCliOptions": [Function],
+  "setOptions": [Function],
 }
 `;
 
@@ -156,5 +107,55 @@ exports[`parseCliOptions should attempt to parse args with other arguments 1`] =
 exports[`parseCliOptions should attempt to parse args without --docs-host flag 1`] = `
 {
   "docsHost": false,
+}
+`;
+
+exports[`setOptions should return options with consistent properties: options 1`] = `
+{
+  "contextPath": "/",
+  "docsHost": true,
+  "docsPath": "/documentation",
+  "llmsFilesPath": "/llms-files",
+  "name": "@patternfly/patternfly-mcp",
+  "pfExternal": "https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content",
+  "pfExternalAccessibility": "https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility",
+  "pfExternalCharts": "https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src",
+  "pfExternalChartsComponents": "https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src/victory/components",
+  "pfExternalChartsDesign": "https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src/charts",
+  "pfExternalDesign": "https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines",
+  "pfExternalDesignComponents": "https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components",
+  "pfExternalDesignLayouts": "https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts",
+  "repoName": "patternfly-mcp",
+  "resourceMemoOptions": {
+    "fetchUrl": {
+      "cacheErrors": false,
+      "cacheLimit": 100,
+      "expire": 180000,
+    },
+    "readFile": {
+      "cacheErrors": false,
+      "cacheLimit": 50,
+      "expire": 120000,
+    },
+  },
+  "separator": "
+
+---
+
+",
+  "toolMemoOptions": {
+    "fetchDocs": {
+      "cacheErrors": false,
+      "cacheLimit": 15,
+      "expire": 60000,
+    },
+    "usePatternFlyDocs": {
+      "cacheErrors": false,
+      "cacheLimit": 10,
+      "expire": 60000,
+    },
+  },
+  "urlRegex": /\\^\\(https\\?:\\)\\\\/\\\\//i,
+  "version": "0.0.0",
 }
 `;

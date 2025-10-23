@@ -143,16 +143,30 @@ export const startServer = async ({
 
     isClosed = true;
 
-    try {
-      proc.kill(signal);
-    } catch {
-      // ignore
-    }
+    // Clear all pending timeouts first
+    clearAllPending('Server stopping.');
 
-    proc.on('close', () => {
-      clearAllPending('Process closed.');
+    try {
+      // Try graceful shutdown first
+      proc.kill(signal);
+
+      // Set a timeout to force kill if graceful shutdown doesn't work
+      const forceKillTimer = setTimeout(() => {
+        try {
+          proc.kill('SIGKILL');
+        } catch {
+          // ignore
+        }
+      }, 1000);
+
+      proc.on('close', () => {
+        clearTimeout(forceKillTimer);
+        resolve();
+      });
+    } catch {
+      // If kill fails, just resolve
       resolve();
-    });
+    }
   });
 
   const send: StdioClient['send'] = (request, { timeoutMs = 20000 } = {}) => new Promise((resolve, reject) => {

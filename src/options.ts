@@ -1,5 +1,6 @@
 import { join } from 'node:path';
 import packageJson from '../package.json';
+import { generateHash } from './server.helpers';
 
 /**
  * CLI options that users can set via command line arguments
@@ -31,6 +32,7 @@ interface AppDefaults {
   contextPath: string;
   docsPath: string;
   llmsFilesPath: string;
+  sessionId?: string;
 }
 
 /**
@@ -145,6 +147,7 @@ const PF_EXTERNAL_CHARTS_DESIGN = `${PF_EXTERNAL_CHARTS}/charts`;
  * @property {string} contextPath - Current working directory.
  * @property {string} docsPath - Path to the documentation directory.
  * @property {string} llmsFilesPath - Path to the LLMs files directory.
+ * @property {string} [sessionId] - Unique session identifier.
  */
 const OPTIONS: GlobalOptions = {
   pfExternal: PF_EXTERNAL,
@@ -176,21 +179,38 @@ const parseCliOptions = (): CliOptions => ({
 });
 
 /**
+ * Generate a unique session ID
+ */
+const generateSessionId = (): string => {
+  const timestamp = Date.now();
+  const randomNumber = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+  const data = `session_${timestamp}_${randomNumber}`;
+
+  return generateHash(data);
+};
+
+/**
  * Make global options immutable after combining CLI options with app defaults.
  *
  * @param cliOptions
  */
-const freezeOptions = (cliOptions: CliOptions) => {
-  Object.assign(OPTIONS, {
-    ...cliOptions
-  });
+const setOptions = (cliOptions: CliOptions) => {
+  // Create fresh instance using spread syntax for cleaner code
+  const freshOptions = { ...structuredClone(OPTIONS), ...cliOptions };
 
-  return Object.freeze(OPTIONS);
+  // Generate a new session ID for this fresh instance
+  freshOptions.sessionId = generateSessionId();
+
+  // Update the global OPTIONS reference
+  Object.assign(OPTIONS, freshOptions);
+
+  return freshOptions;
 };
 
 export {
+  generateSessionId,
   parseCliOptions,
-  freezeOptions,
+  setOptions,
   OPTIONS,
   PF_EXTERNAL,
   PF_EXTERNAL_CHARTS,
