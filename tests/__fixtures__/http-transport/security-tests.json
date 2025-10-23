@@ -1,0 +1,52 @@
+{
+  "invalidHosts": [
+    "malicious.com:3000",
+    "evil.example.com:3000",
+    "attacker.com:3000",
+    "phishing.site:3000"
+  ],
+  "invalidOrigins": [
+    "https://malicious.com",
+    "https://evil.example.com",
+    "https://attacker.com",
+    "https://phishing.site"
+  ],
+  "validHosts": [
+    "localhost:3000",
+    "127.0.0.1:3000",
+    "localhost",
+    "127.0.0.1"
+  ],
+  "validOrigins": [
+    "https://app.com",
+    "https://admin.app.com",
+    "https://localhost:3000",
+    "https://127.0.0.1:3000"
+  ],
+  "testScenarios": [
+    {
+      "name": "valid_localhost",
+      "host": "localhost:3000",
+      "origin": "https://localhost:3000",
+      "expectedResult": "success"
+    },
+    {
+      "name": "valid_127_0_0_1",
+      "host": "127.0.0.1:3000",
+      "origin": "https://127.0.0.1:3000",
+      "expectedResult": "success"
+    },
+    {
+      "name": "invalid_malicious_host",
+      "host": "malicious.com:3000",
+      "origin": "https://localhost:3000",
+      "expectedResult": "rejected"
+    },
+    {
+      "name": "invalid_malicious_origin",
+      "host": "localhost:3000",
+      "origin": "https://malicious.com",
+      "expectedResult": "rejected"
+    }
+  ]
+}

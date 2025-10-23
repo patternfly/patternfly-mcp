@@ -2,11 +2,11 @@
  *  Requires: npm run build prior to running Jest.
  */
 
-import { startServer, type StdioClient } from './utils/stdioClient';
+import { startServer, type StdioTransportClient } from './utils/stdioTransportClient';
 import { loadFixture, startHttpFixture } from './utils/httpFixtureServer';
 
-describe('PatternFly MCP', () => {
-  let client: StdioClient;
+describe('PatternFly MCP, STDIO', () => {
+  let client: StdioTransportClient;
 
   beforeEach(async () => {
     client = await startServer();
@@ -46,7 +46,7 @@ describe('PatternFly MCP', () => {
 });
 
 describe('Hosted mode, --docs-host', () => {
-  let client: StdioClient;
+  let client: StdioTransportClient;
 
   beforeEach(async () => {
     client = await startServer({ args: ['--docs-host'] });
@@ -74,7 +74,7 @@ describe('Hosted mode, --docs-host', () => {
 describe('External URLs', () => {
   let fixture: { baseUrl: string; close: () => Promise<void>; };
   let url: string;
-  let client: StdioClient;
+  let client: StdioTransportClient;
 
   beforeEach(async () => {
     client = await startServer();

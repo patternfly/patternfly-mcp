@@ -2,6 +2,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { usePatternFlyDocsTool } from './tool.patternFlyDocs';
 import { fetchDocsTool } from './tool.fetchDocs';
+import { startHttpTransport } from './server.http';
 import { OPTIONS } from './options';
 
 type McpTool = [string, { description: string; inputSchema: any }, (args: any) => Promise<any>];
@@ -46,10 +47,17 @@ const runServer = async (options = OPTIONS, {
       process.exit(0);
     });
 
-    const transport = new StdioServerTransport();
+    // Choose transport based on CLI options
+    if (options.http) {
+      // HTTP transport - uses default parameter pattern
+      await startHttpTransport(server, options);
+    } else {
+      // Stdio transport (existing)
+      const transport = new StdioServerTransport();
 
-    await server.connect(transport);
-    console.log('PatternFly MCP server running on stdio');
+      await server.connect(transport);
+      console.log('PatternFly MCP server running on stdio');
+    }
   } catch (error) {
     console.error('Error creating MCP server:', error);
     throw error;
