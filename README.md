@@ -10,6 +10,7 @@ The Model Context Protocol (MCP) is an open standard that enables AI assistants 
 
 - **TypeScript**: Full type safety and modern JavaScript features
 - **PatternFly Documentation Access**: Browse, search, and retrieve PatternFly development rules
+- **Component Schemas**: Access JSON Schema validation for PatternFly React components
 - **Comprehensive Rule Coverage**: Access setup, guidelines, components, charts, chatbot, and troubleshooting documentation
 - **Smart Search**: Find specific rules and patterns across all documentation
 - **Error Handling**: Robust error handling with proper MCP error codes
@@ -192,6 +193,18 @@ npx @modelcontextprotocol/inspector-cli \
     "https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/components/about-modal/about-modal.md",
     "https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/accessibility/components/about-modal/about-modal.md"
   ]'
+```
+
+componentSchemas (get component JSON Schema):
+
+```bash
+npx @modelcontextprotocol/inspector-cli \
+  --config ./mcp-config.json \
+  --server patternfly-docs \
+  --cli \
+  --method tools/call \
+  --tool-name componentSchemas \
+  --tool-arg componentName='Button'
 ```
 
 ## Environment variables
