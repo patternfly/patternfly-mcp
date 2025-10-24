@@ -1,10 +1,5 @@
 import { z } from 'zod';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore - No type definitions available for @patternfly/patternfly-component-schemas
-import {
-  componentNames,
-  getComponentSchema
-} from '@patternfly/patternfly-component-schemas';
+import { componentNames, getComponentSchema } from '@patternfly/patternfly-component-schemas';
 import type { McpToolCreator } from './server';
 
 const ComponentSchemasInputSchema = z.object({
