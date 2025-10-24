@@ -15,5 +15,8 @@ export default {
         tsconfig: '<rootDir>/tsconfig.json'
       }
     ]
-  }
+  },
+  transformIgnorePatterns: [
+    'node_modules/(?!(@patternfly/patternfly-component-schemas)/)'
+  ]
 };
