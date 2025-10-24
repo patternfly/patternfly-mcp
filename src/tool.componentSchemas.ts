@@ -57,11 +57,13 @@ function searchComponents(
     if (componentLower === queryLower) {
       score = 1000;
       matchType = 'exact';
+    // eslint-disable-next-line @stylistic/brace-style
     }
     // Starts with query (high priority)
     else if (componentLower.startsWith(queryLower)) {
       score = 900 - queryLower.length;
       matchType = 'prefix';
+    // eslint-disable-next-line @stylistic/brace-style
     }
     // Contains query (medium priority)
     else if (componentLower.includes(queryLower)) {
