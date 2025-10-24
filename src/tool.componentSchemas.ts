@@ -1,17 +1,17 @@
-import { z } from "zod";
+import { z } from 'zod';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore - No type definitions available for @patternfly/patternfly-component-schemas
 import {
   componentNames,
-  getComponentSchema,
-} from "@patternfly/patternfly-component-schemas";
-import type { McpToolCreator } from "./server";
+  getComponentSchema
+} from '@patternfly/patternfly-component-schemas';
+import type { McpToolCreator } from './server';
 
 const ComponentSchemasInputSchema = z.object({
   action: z
-    .enum(["list", "get", "search"])
+    .enum(['list', 'get', 'search'])
     .describe(
-      "Action to perform: list all components, get specific component schema, or search components with fuzzy matching"
+      'Action to perform: list all components, get specific component schema, or search components with fuzzy matching'
     ),
   componentName: z
     .string()
@@ -28,13 +28,14 @@ const ComponentSchemasInputSchema = z.object({
   limit: z
     .number()
     .optional()
-    .describe("Maximum number of search results to return (default: 10)"),
+    .describe('Maximum number of search results to return (default: 10)')
 });
 
 type ComponentSchemasInput = z.infer<typeof ComponentSchemasInputSchema>;
 
 /**
  * Simple fuzzy search for component names
+ *
  * @param query - Search query string
  * @param components - Array of component names to search
  * @param limit - Maximum number of results to return
@@ -50,23 +51,24 @@ function searchComponents(
   for (const component of components) {
     const componentLower = component.toLowerCase();
     let score = 0;
-    let matchType = "";
+    let matchType = '';
 
     // Exact match (highest priority)
     if (componentLower === queryLower) {
       score = 1000;
-      matchType = "exact";
+      matchType = 'exact';
     }
     // Starts with query (high priority)
     else if (componentLower.startsWith(queryLower)) {
       score = 900 - queryLower.length;
-      matchType = "prefix";
+      matchType = 'prefix';
     }
     // Contains query (medium priority)
     else if (componentLower.includes(queryLower)) {
       const index = componentLower.indexOf(queryLower);
+
       score = 800 - index - queryLower.length;
-      matchType = "contains";
+      matchType = 'contains';
     }
 
     if (score > 0) {
@@ -83,40 +85,40 @@ function searchComponents(
  * Provides JSON Schema validation and documentation for PatternFly React components
  */
 const componentSchemasTool: McpToolCreator = () => [
-  "component-schemas",
+  'component-schemas',
   {
     description:
-      "Access PatternFly component schemas for validation and documentation. Can list all available components, search with fuzzy matching, or get detailed schema for a specific component.",
+      'Access PatternFly component schemas for validation and documentation. Can list all available components, search with fuzzy matching, or get detailed schema for a specific component.',
     inputSchema: ComponentSchemasInputSchema.describe(
-      "Input for component schemas tool"
-    ),
+      'Input for component schemas tool'
+    )
   },
   async (args: ComponentSchemasInput) => {
     try {
       const { action, componentName, query, limit = 10 } = args;
 
-      if (action === "list") {
+      if (action === 'list') {
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 {
-                  action: "list",
+                  action: 'list',
                   totalComponents: componentNames.length,
                   components: componentNames.sort(),
                   description:
-                    "Available PatternFly React components with JSON Schema validation",
+                    'Available PatternFly React components with JSON Schema validation'
                 },
                 null,
                 2
-              ),
-            },
-          ],
+              )
+            }
+          ]
         };
       }
 
-      if (action === "search") {
+      if (action === 'search') {
         if (!query) {
           throw new Error('query is required when action is "search"');
         }
@@ -126,24 +128,24 @@ const componentSchemasTool: McpToolCreator = () => [
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 {
-                  action: "search",
+                  action: 'search',
                   query,
                   totalResults: searchResults.length,
                   results: searchResults,
-                  description: `Search results for "${query}"`,
+                  description: `Search results for "${query}"`
                 },
                 null,
                 2
-              ),
-            },
-          ],
+              )
+            }
+          ]
         };
       }
 
-      if (action === "get") {
+      if (action === 'get') {
         if (!componentName) {
           throw new Error('componentName is required when action is "get"');
         }
@@ -160,25 +162,25 @@ const componentSchemasTool: McpToolCreator = () => [
           return {
             content: [
               {
-                type: "text",
+                type: 'text',
                 text: JSON.stringify(
                   {
                     error: `Component "${componentName}" not found`,
-                    suggestions: suggestions.map((s) => ({
+                    suggestions: suggestions.map(s => ({
                       name: s.name,
                       matchType: s.matchType,
-                      confidence: Math.round((s.score / 1000) * 100),
+                      confidence: Math.round((s.score / 1000) * 100)
                     })),
                     suggestion:
                       suggestions.length > 0
                         ? `Did you mean "${suggestions[0]?.name}"? Use the "search" action for more options.`
-                        : 'Use the "search" action to find similar components.',
+                        : 'Use the "search" action to find similar components.'
                   },
                   null,
                   2
-                ),
-              },
-            ],
+                )
+              }
+            ]
           };
         }
 
@@ -187,53 +189,53 @@ const componentSchemasTool: McpToolCreator = () => [
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 {
-                  action: "get",
+                  action: 'get',
                   componentName: componentSchema.componentName,
                   propsCount: componentSchema.propsCount,
                   requiredProps: componentSchema.requiredProps || [],
                   schema: componentSchema.schema,
-                  description: `JSON Schema for ${componentName} component props`,
+                  description: `JSON Schema for ${componentName} component props`
                 },
                 null,
                 2
-              ),
-            },
-          ],
+              )
+            }
+          ]
         };
       }
 
       throw new Error(`Unknown action: ${action}`);
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : "Unknown error occurred";
+        error instanceof Error ? error.message : 'Unknown error occurred';
 
       return {
         content: [
           {
-            type: "text",
+            type: 'text',
             text: JSON.stringify(
               {
                 error: errorMessage,
                 usage: {
-                  listComponents: { action: "list" },
-                  searchComponents: { action: "search", query: "button" },
+                  listComponents: { action: 'list' },
+                  searchComponents: { action: 'search', query: 'button' },
                   getComponentSchema: {
-                    action: "get",
-                    componentName: "Button",
-                  },
-                },
+                    action: 'get',
+                    componentName: 'Button'
+                  }
+                }
               },
               null,
               2
-            ),
-          },
-        ],
+            )
+          }
+        ]
       };
     }
-  },
+  }
 ];
 
 export { componentSchemasTool };
