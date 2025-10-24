@@ -2,6 +2,11 @@
 
 You can find documentation on PatternFly's components at [PatternFly All components documentation](https://www.patternfly.org/components/all-components)
 
+## Component Schemas
+
+For structured component metadata and JSON Schema validation, see:
+- [Component Schemas Tool](./component-schemas.md) - Access JSON schemas for all 462+ PatternFly components
+
 ## Specific info on Components
 
 - [AboutModal](https://www.patternfly.org/components/about-modal)
