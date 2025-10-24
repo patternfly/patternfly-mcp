@@ -44,7 +44,7 @@
     "documentation",
     "react"
   ],
-  "author": "Jeff Phillips",
+  "author": "Red Hat",
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.19.1",
