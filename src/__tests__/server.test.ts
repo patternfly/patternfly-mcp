@@ -16,6 +16,7 @@ describe('runServer', () => {
   let consoleInfoSpy: jest.SpyInstance;
   let consoleLogSpy: jest.SpyInstance;
   let consoleErrorSpy: jest.SpyInstance;
+  let processOnSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -37,12 +38,16 @@ describe('runServer', () => {
     consoleInfoSpy = jest.spyOn(console, 'info').mockImplementation();
     consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
     consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+    // Spy on process.on method
+    processOnSpy = jest.spyOn(process, 'on').mockImplementation();
   });
 
   afterEach(() => {
     consoleInfoSpy.mockRestore();
     consoleLogSpy.mockRestore();
     consoleErrorSpy.mockRestore();
+    processOnSpy.mockRestore();
   });
 
   it.each([
@@ -90,16 +95,34 @@ describe('runServer', () => {
           jest.fn()
         ])
       ]
+    },
+    {
+      description: 'disable SIGINT handler',
+      options: undefined,
+      tools: [],
+      enableSigint: false
+    },
+    {
+      description: 'enable SIGINT handler explicitly',
+      options: undefined,
+      tools: [],
+      enableSigint: true
     }
-  ])('should attempt to run server, $description', async ({ options, tools }) => {
-    await runServer(options as GlobalOptions, (tools && { tools }) || undefined);
+  ])('should attempt to run server, $description', async ({ options, tools, enableSigint }) => {
+    const settings = {
+      ...(tools && { tools }),
+      ...(enableSigint !== undefined && { enableSigint })
+    };
+
+    await runServer(options as GlobalOptions, Object.keys(settings).length > 0 ? settings : undefined);
 
     expect(MockStdioServerTransport).toHaveBeenCalled();
     expect({
       info: consoleInfoSpy.mock.calls,
       registerTool: mockServer.registerTool.mock.calls,
       mcpServer: MockMcpServer.mock.calls,
-      log: consoleLogSpy.mock.calls
+      log: consoleLogSpy.mock.calls,
+      process: processOnSpy.mock.calls
     }).toMatchSnapshot('console');
   });
 
