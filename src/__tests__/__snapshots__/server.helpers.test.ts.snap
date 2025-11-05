@@ -1,5 +1,279 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
+exports[`findClosest should attempt to find a closest match, empty haystack 1`] = `
+{
+  "match": null,
+  "query": "Button",
+}
+`;
+
+exports[`findClosest should attempt to find a closest match, empty needle 1`] = `
+{
+  "match": "Badge",
+  "query": "",
+}
+`;
+
+exports[`findClosest should attempt to find a closest match, exact match 1`] = `
+{
+  "match": "Alert",
+  "query": "Alert",
+}
+`;
+
+exports[`findClosest should attempt to find a closest match, match spacing 1`] = `
+{
+  "match": "dolor sit",
+  "query": "dolor sit",
+}
+`;
+
+exports[`findClosest should attempt to find a closest match, multiple matches 1`] = `
+{
+  "match": "Badge",
+  "query": "badge",
+}
+`;
+
+exports[`findClosest should attempt to find a closest match, multiple matches with case insensitive search 1`] = `
+{
+  "match": "Badge",
+  "query": "BADGE",
+}
+`;
+
+exports[`findClosest should attempt to find a closest match, non-existent needle 1`] = `
+{
+  "match": "Alert",
+  "query": "lorem",
+}
+`;
+
+exports[`findClosest should attempt to find a closest match, non-existent needle with case insensitive search 1`] = `
+{
+  "match": "Alert",
+  "query": "LOREM",
+}
+`;
+
+exports[`findClosest should attempt to find a closest match, partial query 1`] = `
+{
+  "match": "Button",
+  "query": "but",
+}
+`;
+
+exports[`findClosest should attempt to find a closest match, typo 1`] = `
+{
+  "match": "Button",
+  "query": "buton",
+}
+`;
+
+exports[`fuzzySearch should fuzzy match, contains match multiple 1`] = `
+[
+  {
+    "distance": 6,
+    "item": "AlertGroup",
+    "matchType": "contains",
+  },
+  {
+    "distance": 6,
+    "item": "BadgeGroup",
+    "matchType": "contains",
+  },
+  {
+    "distance": 7,
+    "item": "ButtonGroup",
+    "matchType": "contains",
+  },
+]
+`;
+
+exports[`fuzzySearch should fuzzy match, empty items 1`] = `[]`;
+
+exports[`fuzzySearch should fuzzy match, empty query 1`] = `[]`;
+
+exports[`fuzzySearch should fuzzy match, empty query extended distance 1`] = `
+[
+  {
+    "distance": 4,
+    "item": "Card",
+    "matchType": "prefix",
+  },
+  {
+    "distance": 5,
+    "item": "Alert",
+    "matchType": "prefix",
+  },
+  {
+    "distance": 5,
+    "item": "Badge",
+    "matchType": "prefix",
+  },
+  {
+    "distance": 6,
+    "item": "Button",
+    "matchType": "prefix",
+  },
+  {
+    "distance": 10,
+    "item": "AlertGroup",
+    "matchType": "prefix",
+  },
+  {
+    "distance": 10,
+    "item": "BadgeGroup",
+    "matchType": "prefix",
+  },
+  {
+    "distance": 10,
+    "item": "CardHeader",
+    "matchType": "prefix",
+  },
+  {
+    "distance": 11,
+    "item": "ButtonGroup",
+    "matchType": "prefix",
+  },
+]
+`;
+
+exports[`fuzzySearch should fuzzy match, exact match 1`] = `
+[
+  {
+    "distance": 0,
+    "item": "Button",
+    "matchType": "exact",
+  },
+]
+`;
+
+exports[`fuzzySearch should fuzzy match, exact match case-insensitive 1`] = `
+[
+  {
+    "distance": 0,
+    "item": "Button",
+    "matchType": "exact",
+  },
+]
+`;
+
+exports[`fuzzySearch should fuzzy match, fuzzy match within distance 1`] = `
+[
+  {
+    "distance": 5,
+    "item": "Badge",
+    "matchType": "fuzzy",
+  },
+  {
+    "distance": 6,
+    "item": "Alert",
+    "matchType": "fuzzy",
+  },
+  {
+    "distance": 6,
+    "item": "Card",
+    "matchType": "fuzzy",
+  },
+  {
+    "distance": 8,
+    "item": "AlertGroup",
+    "matchType": "fuzzy",
+  },
+  {
+    "distance": 8,
+    "item": "BadgeGroup",
+    "matchType": "fuzzy",
+  },
+  {
+    "distance": 10,
+    "item": "CardHeader",
+    "matchType": "fuzzy",
+  },
+]
+`;
+
+exports[`fuzzySearch should fuzzy match, match within max results 1`] = `
+[
+  {
+    "distance": 3,
+    "item": "Card",
+    "matchType": "contains",
+  },
+  {
+    "distance": 4,
+    "item": "Alert",
+    "matchType": "prefix",
+  },
+]
+`;
+
+exports[`fuzzySearch should fuzzy match, match within restricted distance 1`] = `
+[
+  {
+    "distance": 0,
+    "item": "Button",
+    "matchType": "exact",
+  },
+]
+`;
+
+exports[`fuzzySearch should fuzzy match, multiple words 1`] = `
+[
+  {
+    "distance": 10,
+    "item": "Lorem Ipsum Dolor Sit",
+    "matchType": "contains",
+  },
+]
+`;
+
+exports[`fuzzySearch should fuzzy match, prefix match 1`] = `
+[
+  {
+    "distance": 3,
+    "item": "Button",
+    "matchType": "prefix",
+  },
+]
+`;
+
+exports[`fuzzySearch should fuzzy match, prefix match multiple 1`] = `
+[
+  {
+    "distance": 2,
+    "item": "Button",
+    "matchType": "prefix",
+  },
+  {
+    "distance": 7,
+    "item": "ButtonGroup",
+    "matchType": "prefix",
+  },
+]
+`;
+
+exports[`fuzzySearch should fuzzy match, single item 1`] = `
+[
+  {
+    "distance": 0,
+    "item": "BUTTON",
+    "matchType": "exact",
+  },
+]
+`;
+
+exports[`fuzzySearch should fuzzy match, trimmed query 1`] = `
+[
+  {
+    "distance": 0,
+    "item": "Button",
+    "matchType": "exact",
+  },
+]
+`;
+
 exports[`generateHash should minimally generate a consistent hash: hash, object and primitive values 1`] = `
 {
   "valueArray": "0e8e2b3096e6aee20e3cd10b7788ce3d72502061",
