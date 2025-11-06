@@ -4,6 +4,10 @@ describe('normalizeString', () => {
   it('should normalize a string', () => {
     expect(normalizeString('résumé')).toBe(normalizeString('resume'));
   });
+
+  it('should have memo property', () => {
+    expect(normalizeString.memo).toBeDefined();
+  });
 });
 
 describe('findClosest', () => {
@@ -69,12 +73,27 @@ describe('findClosest', () => {
       description: 'match spacing',
       query: 'dolor sit',
       items: ['sit', 'dolor', 'dolor sit']
+    },
+    {
+      description: 'all empty string items',
+      query: 'test',
+      items: ['', '', '']
     }
   ])('should attempt to find a closest match, $description', ({ query, items }) => {
     expect({
       query,
       match: findClosest(query, items as string[])
     }).toMatchSnapshot();
+  });
+
+  it('should handle normalizeFn errors in findClosest', () => {
+    const throwingNormalizeFn = () => {
+      throw new Error('Normalization failed');
+    };
+
+    expect(() => {
+      findClosest('button', ['Button', 'Badge'], { normalizeFn: throwingNormalizeFn });
+    }).toThrow('Normalization failed');
   });
 });
 
@@ -281,8 +300,26 @@ describe('fuzzySearch', () => {
       query: 'resume',
       items: ['Résumé', 'resume', 'RESUME'],
       options: undefined
+    },
+    {
+      description: 'deduplicate by normalized value',
+      query: 'button',
+      items: ['Button', 'button', 'BUTTON'],
+      options: {
+        deduplicateByNormalized: true
+      }
     }
   ])('should fuzzy match, $description', ({ query, items, options }) => {
     expect(fuzzySearch(query, items as string[], options)).toMatchSnapshot();
+  });
+
+  it('should handle normalizeFn errors in fuzzySearch', () => {
+    const throwingNormalizeFn = () => {
+      throw new Error('Normalization failed');
+    };
+
+    expect(() => {
+      fuzzySearch('button', ['Button', 'Badge'], { normalizeFn: throwingNormalizeFn });
+    }).toThrow('Normalization failed');
   });
 });

@@ -1,4 +1,13 @@
 import { distance, closest } from 'fastest-levenshtein';
+import { memo } from './server.caching';
+
+/**
+ * normalizeString function interface
+ */
+interface NormalizeString {
+  (str: string): string;
+  memo: (str: string) => string;
+}
 
 /**
  * Options for closest search
@@ -28,6 +37,7 @@ interface FuzzySearchResult {
  * - `maxResults` - Maximum number of results to return
  * - `normalizeFn` - Function to normalize strings (default: `normalizeString`)
  * - `isExactMatch` | `isPrefixMatch` | `isSuffixMatch` | `isContainsMatch` | `isFuzzyMatch` - Enable specific match modes
+ * - `deduplicateByNormalized` - If true, deduplicate results by normalized value instead of original string (default: false)
  */
 interface FuzzySearchOptions {
   maxDistance?: number;
@@ -38,6 +48,7 @@ interface FuzzySearchOptions {
   isSuffixMatch?: boolean;
   isContainsMatch?: boolean;
   isFuzzyMatch?: boolean;
+  deduplicateByNormalized?: boolean;
 }
 
 /**
@@ -45,10 +56,11 @@ interface FuzzySearchOptions {
  *
  * - Functions `findClosest` and `fuzzySearch` use this internally.
  * - Can be overridden in the `findClosest` and `fuzzySearch` related options for custom normalization.
+ * - Function has a `memo` property to allow use as a memoized function.
  *
  * @param str
  */
-const normalizeString = (str: string) => String(str || '')
+const normalizeString: NormalizeString = (str: string) => String(str || '')
   .trim()
   .toLowerCase()
   .normalize('NFKD')
@@ -57,9 +69,17 @@ const normalizeString = (str: string) => String(str || '')
   .replace(/\s+/g, ' ');
 
 /**
+ * Memoized version of normalizeString
+ */
+normalizeString.memo = memo(normalizeString, { cacheLimit: 25 });
+
+/**
  * Find the closest match using fastest-levenshtein's closest function.
  *
- * - Returns the first original item whose normalized value equals the best normalized candidate.
+ * - Returns the **first** original item whose normalized value equals the best normalized candidate.
+ * - If multiple items normalize to the same value, only the first occurrence in the array is returned.
+ * - For multiple matches, use `fuzzySearch` instead.
+ * - Null/undefined items are normalized to empty strings to prevent runtime errors.
  *
  * @param query - Search query string
  * @param items - Array of strings to search
@@ -76,7 +96,7 @@ const findClosest = (
   query: string,
   items: string[] = [],
   {
-    normalizeFn = normalizeString
+    normalizeFn = normalizeString.memo
   }: ClosestSearchOptions = {}
 ) => {
   const normalizedQuery = normalizeFn(query);
@@ -85,7 +105,7 @@ const findClosest = (
     return null;
   }
 
-  const normalizedItems = items.map(item => (item ? normalizeFn(item) : item));
+  const normalizedItems = items.map(item => (item ? normalizeFn(item) : ''));
   const closestMatch = closest(normalizedQuery, normalizedItems);
 
   return items[normalizedItems.indexOf(closestMatch)] || null;
@@ -97,9 +117,9 @@ const findClosest = (
  * - Exact/prefix/suffix/contains are evaluated first with constant distances (0/1/1/2).
  * - Fuzzy distance is computed only when earlier classifications fail and only when the
  *   string length delta is within `maxDistance` (cheap lower-bound check).
- * - Global filter `distance <= maxDistance` applies to all match types.
- * - Empty-query fallback: if `query` normalizes to `''` and `isFuzzyMatch` is true,
- *   items with length `<= maxDistance` can match (since `distance('', s) = s.length`).
+ * - Global filter: result included only if its type is enabled AND distance <= maxDistance.
+ * - Negative `maxDistance` values intentionally filter out all results, including exact matches.
+ * - Empty-query fallback is allowed when `isFuzzyMatch` is true (items with length <= maxDistance can match).
  *
  * @param query - Search query string
  * @param items - Array of strings to search
@@ -121,12 +141,13 @@ const fuzzySearch = (
   {
     maxDistance = 3,
     maxResults = 10,
-    normalizeFn = normalizeString,
+    normalizeFn = normalizeString.memo,
     isExactMatch = true,
     isPrefixMatch = true,
     isSuffixMatch = true,
     isContainsMatch = true,
-    isFuzzyMatch = false
+    isFuzzyMatch = false,
+    deduplicateByNormalized = false
   }: FuzzySearchOptions = {}
 ): FuzzySearchResult[] => {
   const normalizedQuery = normalizeFn(query);
@@ -134,13 +155,14 @@ const fuzzySearch = (
   const results: FuzzySearchResult[] = [];
 
   items?.forEach(item => {
-    if (seenItem.has(item)) {
+    const normalizedItem = normalizeFn(item);
+    const deduplicationKey = deduplicateByNormalized ? normalizedItem : item;
+
+    if (seenItem.has(deduplicationKey)) {
       return;
     }
 
-    seenItem.add(item);
-
-    const normalizedItem = normalizeFn(item);
+    seenItem.add(deduplicationKey);
     let editDistance = 0;
     let matchType: FuzzySearchResult['matchType'] | undefined;
 
@@ -195,6 +217,7 @@ export {
   normalizeString,
   fuzzySearch,
   findClosest,
+  type NormalizeString,
   type ClosestSearchOptions,
   type FuzzySearchResult,
   type FuzzySearchOptions

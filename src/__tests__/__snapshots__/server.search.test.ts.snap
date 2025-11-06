@@ -1,5 +1,12 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
+exports[`findClosest should attempt to find a closest match, all empty string items 1`] = `
+{
+  "match": null,
+  "query": "test",
+}
+`;
+
 exports[`findClosest should attempt to find a closest match, empty haystack 1`] = `
 {
   "match": null,
@@ -100,6 +107,16 @@ exports[`fuzzySearch should fuzzy match, contains match multiple 1`] = `
     "distance": 1,
     "item": "ButtonGroup",
     "matchType": "suffix",
+  },
+]
+`;
+
+exports[`fuzzySearch should fuzzy match, deduplicate by normalized value 1`] = `
+[
+  {
+    "distance": 0,
+    "item": "Button",
+    "matchType": "exact",
   },
 ]
 `;
