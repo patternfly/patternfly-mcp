@@ -8,17 +8,10 @@ import { fuzzySearch } from './server.search';
 
 /**
  * Component schema type from @patternfly/patternfly-component-schemas
- * This is the JSON Schema object returned directly from getComponentSchema
+ * Derives from the getComponentSchema() return type. When the package exports
+ * official typings, this will stay in sync automatically.
  */
-type ComponentSchema = {
-  $schema: string;
-  type: string;
-  title: string;
-  description: string;
-  properties: Record<string, any>;
-  additionalProperties?: boolean;
-  required?: string[];
-};
+type ComponentSchema = Awaited<ReturnType<typeof getComponentSchema>>;
 
 /**
  * componentSchemas tool function (tuple pattern)
