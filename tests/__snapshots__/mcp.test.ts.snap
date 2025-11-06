@@ -385,6 +385,7 @@ You can find documentation on PatternFly's components at [PatternFly All compone
 exports[`PatternFly MCP should expose expected tools and stable shape 1`] = `
 {
   "toolNames": [
+    "componentSchemas",
     "fetchDocs",
     "usePatternFlyDocs",
   ],

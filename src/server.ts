@@ -2,11 +2,12 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { usePatternFlyDocsTool } from './tool.patternFlyDocs';
 import { fetchDocsTool } from './tool.fetchDocs';
+import { componentSchemasTool } from './tool.componentSchemas';
 import { OPTIONS } from './options';
 
 type McpTool = [string, { description: string; inputSchema: any }, (args: any) => Promise<any>];
 
-type McpToolCreator = () => McpTool;
+type McpToolCreator = (options?: any) => McpTool;
 
 /**
  * Server instance with shutdown capability
@@ -35,7 +36,8 @@ interface ServerInstance {
 const runServer = async (options = OPTIONS, {
   tools = [
     usePatternFlyDocsTool,
-    fetchDocsTool
+    fetchDocsTool,
+    componentSchemasTool
   ],
   enableSigint = true
 }: { tools?: McpToolCreator[]; enableSigint?: boolean } = {}): Promise<ServerInstance> => {
