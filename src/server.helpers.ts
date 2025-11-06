@@ -103,18 +103,24 @@ const fuzzySearch = (
 
   items.forEach(item => {
     const itemLower = item.toLowerCase();
-    const editDistance = distance(queryLower, itemLower);
+    let editDistance = 0;
+    let matchType: FuzzySearchResult['matchType'] | undefined;
 
-    let matchType: FuzzySearchResult['matchType'];
-
-    if (editDistance === 0) {
+    if (itemLower === queryLower) {
       matchType = 'exact';
     } else if (itemLower.startsWith(queryLower)) {
       matchType = 'prefix';
+      editDistance = distance(queryLower, itemLower);
     } else if (itemLower.includes(queryLower)) {
       matchType = 'contains';
-    } else {
+      editDistance = distance(queryLower, itemLower);
+    } else if (isFuzzyMatch) {
       matchType = 'fuzzy';
+      editDistance = distance(queryLower, itemLower);
+    }
+
+    if (matchType === undefined) {
+      return;
     }
 
     const isIncluded = (matchType === 'exact' && isExactMatch) || (matchType === 'prefix' && isPrefixMatch) || (matchType === 'contains' && isContainsMatch) || (matchType === 'fuzzy' && isFuzzyMatch);
