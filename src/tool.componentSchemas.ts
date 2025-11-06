@@ -23,7 +23,11 @@ type ComponentSchema = {
 /**
  * componentSchemas tool function (tuple pattern)
  *
- * @param options
+ * Creates an MCP tool that retrieves JSON Schema for PatternFly React components.
+ * Uses fuzzy search to handle typos and case variations, with related fallback suggestions.
+ *
+ * @param options - Optional configuration options (defaults to OPTIONS)
+ * @returns {McpTool} MCP tool tuple [name, schema, callback]
  */
 const componentSchemasTool = (options = OPTIONS): McpTool => {
   const memoGetComponentSchema = memo(
