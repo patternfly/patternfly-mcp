@@ -68,7 +68,7 @@ const runServer = async (options = OPTIONS, {
     );
 
     tools.forEach(toolCreator => {
-      const [name, schema, callback] = toolCreator(options);
+      const [name, schema, callback] = toolCreator();
 
       console.info(`Registered tool: ${name}`);
       server?.registerTool(name, schema, callback);
