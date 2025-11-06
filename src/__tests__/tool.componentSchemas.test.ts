@@ -59,6 +59,11 @@ describe('componentSchemasTool, callback', () => {
       componentName: null
     },
     {
+      description: 'with empty componentName',
+      error: 'No similar components found',
+      componentName: ''
+    },
+    {
       description: 'with non-string componentName',
       error: 'Missing required parameter: componentName',
       componentName: 123
