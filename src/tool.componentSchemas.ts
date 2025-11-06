@@ -51,7 +51,8 @@ const componentSchemasTool = (options = OPTIONS): McpTool => {
     if (exactMatch === undefined) {
       const fuzzyResults = fuzzySearch(trimmedComponentName, componentNames, {
         maxDistance: 3,
-        maxResults: 5
+        maxResults: 5,
+        isFuzzyMatch: true
       });
 
       const suggestions = fuzzyResults.map(result => result.item);
