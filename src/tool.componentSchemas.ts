@@ -49,7 +49,7 @@ const componentSchemasTool = (options = OPTIONS): McpTool => {
       deduplicateByNormalized: true
     });
 
-    const exact = results.find(r => r.matchType === 'exact');
+    const exact = results.find(result => result.matchType === 'exact');
 
     if (exact) {
       let componentSchema: ComponentSchema;
@@ -73,7 +73,7 @@ const componentSchemasTool = (options = OPTIONS): McpTool => {
       };
     }
 
-    const suggestions = results.map(r => r.item).slice(0, 3);
+    const suggestions = results.map(result => result.item).slice(0, 3);
     const suggestionMessage = suggestions.length
       ? `Did you mean ${suggestions.map(suggestion => `"${suggestion}"`).join(', ')}?`
       : 'No similar components found.';
