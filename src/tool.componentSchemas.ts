@@ -41,53 +41,47 @@ const componentSchemasTool = (options = OPTIONS): McpTool => {
       );
     }
 
-    // Trim componentName (user input) to handle accidental spaces, but don't trim componentNames
-    // (authoritative data) to preserve them as-is
-    const trimmedComponentName = componentName.trim();
+    // Use fuzzySearch with `isFuzzyMatch` to handle exact and intentional suggestions in one pass
+    const results = fuzzySearch(componentName, componentNames, {
+      maxDistance: 3,
+      maxResults: 5,
+      isFuzzyMatch: true,
+      deduplicateByNormalized: true
+    });
 
-    // Try an exact match first (case-insensitive)
-    const exactMatch = componentNames.find(name => name.toLowerCase() === trimmedComponentName.toLowerCase());
+    const exact = results.find(r => r.matchType === 'exact');
 
-    if (exactMatch === undefined) {
-      const fuzzyResults = fuzzySearch(trimmedComponentName, componentNames, {
-        maxDistance: 3,
-        maxResults: 5,
-        isFuzzyMatch: true
-      });
+    if (exact) {
+      let componentSchema: ComponentSchema;
 
-      const suggestions = fuzzyResults.map(result => result.item);
+      try {
+        componentSchema = await memoGetComponentSchema(exact.item);
+      } catch (error) {
+        throw new McpError(
+          ErrorCode.InternalError,
+          `Failed to fetch component schema: ${error}`
+        );
+      }
 
-      const suggestionMessage = suggestions.length > 0
-        ? `Did you mean "${suggestions.shift()}"?`
-        : 'No similar components found.';
-
-      throw new McpError(
-        ErrorCode.InvalidParams,
-        `Component "${trimmedComponentName}" not found. ${suggestionMessage}`
-      );
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(componentSchema, null, 2)
+          }
+        ]
+      };
     }
 
-    // Get schema using a memoized function
-    let componentSchema: ComponentSchema;
+    const suggestions = results.map(r => r.item).slice(0, 3);
+    const suggestionMessage = suggestions.length
+      ? `Did you mean ${suggestions.map(suggestion => `"${suggestion}"`).join(', ')}?`
+      : 'No similar components found.';
 
-    try {
-      componentSchema = await memoGetComponentSchema(exactMatch);
-    } catch (error) {
-      throw new McpError(
-        ErrorCode.InternalError,
-        `Failed to fetch component schema: ${error}`
-      );
-    }
-
-    // Return schema as JSON string (schema is already the JSON Schema object)
-    return {
-      content: [
-        {
-          type: 'text',
-          text: JSON.stringify(componentSchema, null, 2)
-        }
-      ]
-    };
+    throw new McpError(
+      ErrorCode.InvalidParams,
+      `Component "${componentName.trim()}" not found. ${suggestionMessage}`
+    );
   };
 
   return [
