@@ -7,9 +7,7 @@ import { memo } from './server.caching';
 import { fuzzySearch } from './server.search';
 
 /**
- * Component schema type from @patternfly/patternfly-component-schemas
- * Derives from the getComponentSchema() return type. When the package exports
- * official typings, this will stay in sync automatically.
+ * Derive the component schema type from @patternfly/patternfly-component-schemas
  */
 type ComponentSchema = Awaited<ReturnType<typeof getComponentSchema>>;
 
