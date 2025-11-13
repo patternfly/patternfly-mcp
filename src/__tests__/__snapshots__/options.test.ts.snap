@@ -2,18 +2,33 @@
 
 exports[`parseCliOptions should attempt to parse args with --docs-host flag 1`] = `
 {
+  "allowedHosts": undefined,
+  "allowedOrigins": undefined,
   "docsHost": true,
+  "host": "localhost",
+  "http": false,
+  "port": 3000,
 }
 `;
 
 exports[`parseCliOptions should attempt to parse args with other arguments 1`] = `
 {
+  "allowedHosts": undefined,
+  "allowedOrigins": undefined,
   "docsHost": false,
+  "host": "localhost",
+  "http": false,
+  "port": 3000,
 }
 `;
 
 exports[`parseCliOptions should attempt to parse args without --docs-host flag 1`] = `
 {
+  "allowedHosts": undefined,
+  "allowedOrigins": undefined,
   "docsHost": false,
+  "host": "localhost",
+  "http": false,
+  "port": 3000,
 }
 `;
