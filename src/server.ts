@@ -4,10 +4,11 @@ import { usePatternFlyDocsTool } from './tool.patternFlyDocs';
 import { fetchDocsTool } from './tool.fetchDocs';
 import { componentSchemasTool } from './tool.componentSchemas';
 import { getOptions, runWithOptions } from './options.context';
+import { type GlobalOptions } from './options';
 
 type McpTool = [string, { description: string; inputSchema: any }, (args: any) => Promise<any>];
 
-type McpToolCreator = (options?: any) => McpTool;
+type McpToolCreator = (options?: GlobalOptions) => McpTool;
 
 /**
  * Server instance with shutdown capability
