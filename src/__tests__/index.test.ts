@@ -1,21 +1,26 @@
 import { main, start, type CliOptions } from '../index';
-import { parseCliOptions, freezeOptions, type GlobalOptions } from '../options';
+import { parseCliOptions, type GlobalOptions } from '../options';
+import { DEFAULT_OPTIONS } from '../options.defaults';
+import { setOptions } from '../options.context';
 import { runServer } from '../server';
 
 // Mock dependencies
 jest.mock('../options');
+jest.mock('../options.context');
 jest.mock('../server');
 
 const mockParseCliOptions = parseCliOptions as jest.MockedFunction<typeof parseCliOptions>;
-const mockFreezeOptions = freezeOptions as jest.MockedFunction<typeof freezeOptions>;
+const mockSetOptions = setOptions as jest.MockedFunction<typeof setOptions>;
 const mockRunServer = runServer as jest.MockedFunction<typeof runServer>;
 
 describe('main', () => {
   let consoleErrorSpy: jest.SpyInstance;
   let processExitSpy: jest.SpyInstance;
+  let callOrder: string[] = [];
 
   beforeEach(() => {
     jest.clearAllMocks();
+    callOrder = [];
 
     // Mock process.exit to prevent actual exit
     processExitSpy = jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
@@ -24,34 +29,29 @@ describe('main', () => {
     consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
     // Setup default mocks
-    mockParseCliOptions.mockReturnValue({ docsHost: false });
-    mockFreezeOptions.mockReturnValue({} as GlobalOptions);
-    mockRunServer.mockResolvedValue({
-      stop: jest.fn().mockResolvedValue(undefined),
-      isRunning: jest.fn().mockReturnValue(true)
+    mockParseCliOptions.mockImplementation(() => {
+      callOrder.push('parse');
+
+      return { docsHost: false };
+    });
+    mockSetOptions.mockImplementation(options => {
+      callOrder.push('set');
+
+      return Object.freeze({ ...DEFAULT_OPTIONS, ...options }) as unknown as GlobalOptions;
+    });
+    mockRunServer.mockImplementation(async () => {
+      callOrder.push('run');
+
+      return {
+        stop: jest.fn().mockResolvedValue(undefined),
+        isRunning: jest.fn().mockReturnValue(true)
+      };
     });
   });
 
   afterEach(() => {
     consoleErrorSpy.mockRestore();
     processExitSpy.mockRestore();
-  });
-
-  it('should attempt to freeze options with parsed CLI options', async () => {
-    const cliOptions = { docsHost: true };
-
-    mockParseCliOptions.mockReturnValue(cliOptions);
-
-    await main();
-
-    expect(mockFreezeOptions).toHaveBeenCalledWith(cliOptions);
-  });
-
-  it('should attempt to parse CLI options and run the server', async () => {
-    await main();
-
-    expect(mockParseCliOptions).toHaveBeenCalled();
-    expect(mockRunServer).toHaveBeenCalled();
   });
 
   it('should handle server startup errors', async () => {
@@ -65,149 +65,87 @@ describe('main', () => {
     expect(processExitSpy).toHaveBeenCalledWith(1);
   });
 
-  it('should handle parseCliOptions errors', async () => {
-    const error = new Error('Failed to parse CLI options');
-
-    mockParseCliOptions.mockImplementation(() => {
+  it.each([
+    {
+      description: 'parseCliOptions',
+      error: new Error('Failed to parse CLI options'),
+      message: 'Failed to start server:',
+      method: main
+    },
+    {
+      description: 'setOptions',
+      error: new Error('Failed to set options'),
+      message: 'Failed to start server:',
+      method: main
+    },
+    {
+      description: 'parseCliOptions, with start alias',
+      error: new Error('Failed to parse CLI options'),
+      message: 'Failed to start server:',
+      method: start
+    },
+    {
+      description: 'setOptions, with start alias',
+      error: new Error('Failed to set options'),
+      message: 'Failed to start server:',
+      method: start
+    }
+  ])('should handle errors, $description', async ({ error, message, method }) => {
+    mockSetOptions.mockImplementation(() => {
       throw error;
     });
 
-    await main();
+    await method();
 
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to start server:', error);
+    expect(consoleErrorSpy).toHaveBeenCalledWith(message, error);
     expect(processExitSpy).toHaveBeenCalledWith(1);
   });
 
-  it('should handle freezeOptions errors', async () => {
-    const error = new Error('Failed to freeze options');
-
-    mockFreezeOptions.mockImplementation(() => {
-      throw error;
-    });
-
-    await main();
-
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to start server:', error);
-    expect(processExitSpy).toHaveBeenCalledWith(1);
-  });
-
-  it('should execute steps in correct order', async () => {
-    const callOrder: string[] = [];
-
+  it.each([
+    {
+      description: 'merge programmatic options with CLI options',
+      programmaticOptions: { docsHost: true },
+      cliOptions: { docsHost: false },
+      method: main
+    },
+    {
+      description: 'with empty programmatic options',
+      programmaticOptions: {},
+      cliOptions: { docsHost: true },
+      method: main
+    },
+    {
+      description: 'with undefined programmatic options',
+      programmaticOptions: undefined,
+      cliOptions: { docsHost: false },
+      method: main
+    },
+    {
+      description: 'merge programmatic options with CLI options, with start alias',
+      programmaticOptions: { docsHost: true },
+      cliOptions: { docsHost: false },
+      method: start
+    }
+  ])('should merge default, cli and programmatic options, $description', async ({ programmaticOptions, cliOptions, method }) => {
     mockParseCliOptions.mockImplementation(() => {
       callOrder.push('parse');
 
-      return { docsHost: false };
+      return cliOptions;
     });
 
-    mockFreezeOptions.mockImplementation(() => {
-      callOrder.push('freeze');
+    await method(programmaticOptions);
 
-      return {} as GlobalOptions;
-    });
-
-    mockRunServer.mockImplementation(async () => {
-      callOrder.push('run');
-
-      return {
-        stop: jest.fn().mockResolvedValue(undefined),
-        isRunning: jest.fn().mockReturnValue(true)
-      };
-    });
-
-    await main();
-
-    expect(callOrder).toEqual(['parse', 'freeze', 'run']);
-  });
-
-  it('should merge programmatic options with CLI options', async () => {
-    const cliOptions = { docsHost: false };
-    const programmaticOptions = { docsHost: true };
-
-    mockParseCliOptions.mockReturnValue(cliOptions);
-
-    await main(programmaticOptions);
-
-    // Should merge CLI options with programmatic options (programmatic takes precedence)
-    expect(mockFreezeOptions).toHaveBeenCalledWith({ docsHost: true });
-  });
-
-  it('should work with empty programmatic options', async () => {
-    const cliOptions = { docsHost: true };
-
-    mockParseCliOptions.mockReturnValue(cliOptions);
-
-    await main({});
-
-    expect(mockFreezeOptions).toHaveBeenCalledWith({ docsHost: true });
-  });
-
-  it('should work with undefined programmatic options', async () => {
-    const cliOptions = { docsHost: false };
-
-    mockParseCliOptions.mockReturnValue(cliOptions);
-
-    await main();
-
-    expect(mockFreezeOptions).toHaveBeenCalledWith({ docsHost: false });
-  });
-});
-
-describe('start alias', () => {
-  let consoleErrorSpy: jest.SpyInstance;
-  let processExitSpy: jest.SpyInstance;
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-
-    // Mock process.exit to prevent actual exit
-    processExitSpy = jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
-
-    // Mock console.error
-    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-
-    // Setup default mocks
-    mockParseCliOptions.mockReturnValue({ docsHost: false });
-    mockFreezeOptions.mockReturnValue({} as GlobalOptions);
-    mockRunServer.mockResolvedValue({
-      stop: jest.fn().mockResolvedValue(undefined),
-      isRunning: jest.fn().mockReturnValue(true)
-    });
-  });
-
-  afterEach(() => {
-    consoleErrorSpy.mockRestore();
-    processExitSpy.mockRestore();
-  });
-
-  it('should be equivalent to main function', async () => {
-    const cliOptions = { docsHost: true };
-
-    mockParseCliOptions.mockReturnValue(cliOptions);
-
-    await start();
-
-    expect(mockParseCliOptions).toHaveBeenCalled();
-    expect(mockFreezeOptions).toHaveBeenCalledWith(cliOptions);
-    expect(mockRunServer).toHaveBeenCalled();
-  });
-
-  it('should accept programmatic options like main', async () => {
-    const cliOptions = { docsHost: false };
-    const programmaticOptions = { docsHost: true };
-
-    mockParseCliOptions.mockReturnValue(cliOptions);
-
-    await start(programmaticOptions);
-
-    expect(mockFreezeOptions).toHaveBeenCalledWith({ docsHost: true });
+    expect({
+      methodRegistersAs: method.name,
+      sequence: callOrder,
+      calls: mockSetOptions.mock.calls
+    }).toMatchSnapshot();
   });
 });
 
 describe('type exports', () => {
   it('should export CliOptions type', () => {
-    // This test ensures the type is properly exported
-    // TypeScript compilation will fail if the type is not available
+    // TypeScript compilation will fail if the type is unavailable
     const options: Partial<CliOptions> = { docsHost: true };
 
     expect(options).toBeDefined();

@@ -126,7 +126,7 @@ exports[`runServer should attempt to run server, register a tool: console 1`] = 
         "description": "Lorem Ipsum",
         "inputSchema": {},
       },
-      [MockFunction],
+      [Function],
     ],
   ],
 }
@@ -173,7 +173,7 @@ exports[`runServer should attempt to run server, register multiple tools: consol
         "description": "Lorem Ipsum",
         "inputSchema": {},
       },
-      [MockFunction],
+      [Function],
     ],
     [
       "dolorSit",
@@ -181,7 +181,7 @@ exports[`runServer should attempt to run server, register multiple tools: consol
         "description": "Dolor Sit",
         "inputSchema": {},
       },
-      [MockFunction],
+      [Function],
     ],
   ],
 }

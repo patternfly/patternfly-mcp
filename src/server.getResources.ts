@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { OPTIONS } from './options';
+import { getOptions } from './options.context';
+import { RESOURCE_MEMO_OPTIONS } from './options.defaults';
 import { memo } from './server.caching';
 
 /**
@@ -11,9 +12,9 @@ import { memo } from './server.caching';
 const readLocalFileFunction = async (filePath: string) => await readFile(filePath, 'utf-8');
 
 /**
- * Memoized version of readLocalFileFunction
+ * Memoized version of readLocalFileFunction. Use default memo options.
  */
-readLocalFileFunction.memo = memo(readLocalFileFunction, OPTIONS.resourceMemoOptions.readFile);
+readLocalFileFunction.memo = memo(readLocalFileFunction, RESOURCE_MEMO_OPTIONS.readFile);
 
 /**
  * Fetch content from a URL with timeout and error handling
@@ -42,9 +43,9 @@ const fetchUrlFunction = async (url: string) => {
 };
 
 /**
- * Memoized version of fetchUrlFunction
+ * Memoized version of fetchUrlFunction. Use default memo options.
  */
-fetchUrlFunction.memo = memo(fetchUrlFunction, OPTIONS.resourceMemoOptions.fetchUrl);
+fetchUrlFunction.memo = memo(fetchUrlFunction, RESOURCE_MEMO_OPTIONS.fetchUrl);
 
 /**
  * Resolve a local path depending on docs host flag
@@ -52,8 +53,12 @@ fetchUrlFunction.memo = memo(fetchUrlFunction, OPTIONS.resourceMemoOptions.fetch
  * @param relativeOrAbsolute
  * @param options
  */
-const resolveLocalPathFunction = (relativeOrAbsolute: string, options = OPTIONS) =>
-  (options.docsHost && join(options.llmsFilesPath, relativeOrAbsolute)) || relativeOrAbsolute;
+const resolveLocalPathFunction = (relativeOrAbsolute: string, options = getOptions()) => {
+  const useHost = Boolean(options?.docsHost);
+  const base = options?.llmsFilesPath;
+
+  return (useHost && join(base, relativeOrAbsolute)) || relativeOrAbsolute;
+};
 
 /**
  * Normalize inputs, load all in parallel, and return a joined string.
@@ -63,7 +68,7 @@ const resolveLocalPathFunction = (relativeOrAbsolute: string, options = OPTIONS)
  */
 const processDocsFunction = async (
   inputs: string[],
-  options = OPTIONS
+  options = getOptions()
 ) => {
   const seen = new Set<string>();
   const list = inputs

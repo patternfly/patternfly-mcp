@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js';
 import { componentNames, getComponentSchema } from '@patternfly/patternfly-component-schemas/json';
 import { type McpTool } from './server';
-import { OPTIONS } from './options';
+import { getOptions } from './options.context';
 import { memo } from './server.caching';
 import { fuzzySearch } from './server.search';
 
@@ -20,10 +20,10 @@ type ComponentSchema = Awaited<ReturnType<typeof getComponentSchema>>;
  * @param options - Optional configuration options (defaults to OPTIONS)
  * @returns {McpTool} MCP tool tuple [name, schema, callback]
  */
-const componentSchemasTool = (options = OPTIONS): McpTool => {
+const componentSchemasTool = (options = getOptions()): McpTool => {
   const memoGetComponentSchema = memo(
     async (componentName: string): Promise<ComponentSchema> => getComponentSchema(componentName),
-    options.toolMemoOptions.fetchDocs // Use the same memo options as fetchDocs
+    options?.toolMemoOptions?.fetchDocs // Use the same memo options as fetchDocs
   );
 
   const callback = async (args: any = {}) => {

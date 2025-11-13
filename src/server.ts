@@ -3,7 +3,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { usePatternFlyDocsTool } from './tool.patternFlyDocs';
 import { fetchDocsTool } from './tool.fetchDocs';
 import { componentSchemasTool } from './tool.componentSchemas';
-import { OPTIONS } from './options';
+import { getOptions, runWithOptions } from './options.context';
 
 type McpTool = [string, { description: string; inputSchema: any }, (args: any) => Promise<any>];
 
@@ -33,7 +33,7 @@ interface ServerInstance {
  * @param settings.tools
  * @param settings.enableSigint
  */
-const runServer = async (options = OPTIONS, {
+const runServer = async (options = getOptions(), {
   tools = [
     usePatternFlyDocsTool,
     fetchDocsTool,
@@ -68,10 +68,10 @@ const runServer = async (options = OPTIONS, {
     );
 
     tools.forEach(toolCreator => {
-      const [name, schema, callback] = toolCreator();
+      const [name, schema, callback] = toolCreator(options);
 
       console.info(`Registered tool: ${name}`);
-      server?.registerTool(name, schema, callback);
+      server?.registerTool(name, schema, (args = {}) => runWithOptions(options, async () => await callback(args)));
     });
 
     if (enableSigint) {

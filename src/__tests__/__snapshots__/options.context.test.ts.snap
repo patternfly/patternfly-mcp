@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`apply context options should set and get basic options, confirm by applying a potential property outside of typings 1`] = `"lorem = ipsum"`;
+
+exports[`apply context options should set and get basic options, default 1`] = `"docsHost = true"`;
+
+exports[`apply context options should set and get basic options, multiple property updates 1`] = `"name = ipsum"`;
+
+exports[`apply context options should set and get basic options, multiple property updates 2`] = `"name = dolor sit amet"`;
+
+exports[`apply context options should set and get basic options, multiple property updates 3`] = `"name = consectetur adipiscing elit"`;

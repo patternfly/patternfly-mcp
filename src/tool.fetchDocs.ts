@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js';
 import { type McpTool } from './server';
 import { processDocsFunction } from './server.getResources';
-import { OPTIONS } from './options';
+import { getOptions } from './options.context';
 import { memo } from './server.caching';
 
 /**
@@ -10,8 +10,8 @@ import { memo } from './server.caching';
  *
  * @param options
  */
-const fetchDocsTool = (options = OPTIONS): McpTool => {
-  const memoProcess = memo(processDocsFunction, options.toolMemoOptions.fetchDocs);
+const fetchDocsTool = (options = getOptions()): McpTool => {
+  const memoProcess = memo(processDocsFunction, options?.toolMemoOptions?.fetchDocs);
 
   const callback = async (args: any = {}) => {
     const { urlList } = args;
