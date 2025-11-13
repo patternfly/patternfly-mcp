@@ -1,4 +1,4 @@
-import { PF_EXTERNAL_CHARTS_COMPONENTS, PF_EXTERNAL_CHARTS_DESIGN } from './options';
+import { PF_EXTERNAL_CHARTS_COMPONENTS, PF_EXTERNAL_CHARTS_DESIGN } from './options.defaults';
 
 const CHART_DOCS = [
   `[@patternfly/Charts - Colors for Charts](${PF_EXTERNAL_CHARTS_COMPONENTS}/ChartTheme/examples/ChartTheme.md)`,

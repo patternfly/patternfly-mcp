@@ -5,8 +5,8 @@ import { type McpTool } from './server';
 import { COMPONENT_DOCS } from './docs.component';
 import { LAYOUT_DOCS } from './docs.layout';
 import { CHART_DOCS } from './docs.chart';
-import { LOCAL_DOCS } from './docs.local';
-import { OPTIONS } from './options';
+import { getLocalDocs } from './docs.local';
+import { getOptions } from './options.context';
 import { processDocsFunction } from './server.getResources';
 import { memo } from './server.caching';
 
@@ -15,8 +15,8 @@ import { memo } from './server.caching';
  *
  * @param options
  */
-const usePatternFlyDocsTool = (options = OPTIONS): McpTool => {
-  const memoProcess = memo(processDocsFunction, options.toolMemoOptions.usePatternFlyDocs);
+const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
+  const memoProcess = memo(processDocsFunction, options?.toolMemoOptions?.usePatternFlyDocs);
 
   const callback = async (args: any = {}) => {
     const { urlList } = args;
@@ -62,7 +62,7 @@ const usePatternFlyDocsTool = (options = OPTIONS): McpTool => {
             ${COMPONENT_DOCS.join('\n')}
             ${LAYOUT_DOCS.join('\n')}
             ${CHART_DOCS.join('\n')}
-            ${LOCAL_DOCS.join('\n')}
+            ${getLocalDocs().join('\n')}
           `
         }
 

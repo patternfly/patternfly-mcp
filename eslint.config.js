@@ -65,6 +65,7 @@ export default [
   {
     files: ['**/*.test.ts'],
     rules: {
+      '@typescript-eslint/no-explicit-any': 0,
       'no-sparse-arrays': 0
     }
   }

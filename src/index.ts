@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-import { freezeOptions, parseCliOptions, type CliOptions } from './options';
+import { parseCliOptions, type CliOptions } from './options';
+import { setOptions } from './options.context';
 import { runServer, type ServerInstance } from './server';
 
 /**
@@ -14,13 +15,9 @@ const main = async (programmaticOptions?: Partial<CliOptions>): Promise<ServerIn
     // Parse CLI options
     const cliOptions = parseCliOptions();
 
-    // Merge programmatic options with CLI options (programmatic takes precedence)
-    const finalOptions = { ...cliOptions, ...programmaticOptions };
+    // Apply options to context. setOptions merges with DEFAULT_OPTIONS internally
+    setOptions({ ...cliOptions, ...programmaticOptions });
 
-    // Freeze options to prevent further changes
-    freezeOptions(finalOptions);
-
-    // Create and return server-instance
     return await runServer();
   } catch (error) {
     console.error('Failed to start server:', error);

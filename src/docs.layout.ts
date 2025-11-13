@@ -1,4 +1,4 @@
-import { PF_EXTERNAL_DESIGN_LAYOUTS } from './options';
+import { PF_EXTERNAL_DESIGN_LAYOUTS } from './options.defaults';
 
 const LAYOUT_DOCS = [
   `[@patternfly/Bullseye - Design Guidelines](${PF_EXTERNAL_DESIGN_LAYOUTS}/bullseye.md)`,

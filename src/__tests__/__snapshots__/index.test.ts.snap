@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`main should merge default, cli and programmatic options, merge programmatic options with CLI options 1`] = `
+{
+  "calls": [
+    [
+      {
+        "docsHost": true,
+      },
+    ],
+  ],
+  "methodRegistersAs": "main",
+  "sequence": [
+    "parse",
+    "set",
+    "run",
+  ],
+}
+`;
+
+exports[`main should merge default, cli and programmatic options, merge programmatic options with CLI options, with start alias 1`] = `
+{
+  "calls": [
+    [
+      {
+        "docsHost": true,
+      },
+    ],
+  ],
+  "methodRegistersAs": "main",
+  "sequence": [
+    "parse",
+    "set",
+    "run",
+  ],
+}
+`;
+
+exports[`main should merge default, cli and programmatic options, with empty programmatic options 1`] = `
+{
+  "calls": [
+    [
+      {
+        "docsHost": true,
+      },
+    ],
+  ],
+  "methodRegistersAs": "main",
+  "sequence": [
+    "parse",
+    "set",
+    "run",
+  ],
+}
+`;
+
+exports[`main should merge default, cli and programmatic options, with undefined programmatic options 1`] = `
+{
+  "calls": [
+    [
+      {
+        "docsHost": false,
+      },
+    ],
+  ],
+  "methodRegistersAs": "main",
+  "sequence": [
+    "parse",
+    "set",
+    "run",
+  ],
+}
+`;

@@ -1,4 +1,4 @@
-import { PF_EXTERNAL_ACCESSIBILITY, PF_EXTERNAL_DESIGN_COMPONENTS } from './options';
+import { PF_EXTERNAL_ACCESSIBILITY, PF_EXTERNAL_DESIGN_COMPONENTS } from './options.defaults';
 
 const COMPONENT_DOCS = [
   `[@patternfly/AboutModal - Design Guidelines](${PF_EXTERNAL_DESIGN_COMPONENTS}/about-modal/about-modal.md)`,

@@ -1,11 +1,4 @@
-import * as options from '../options';
-import { parseCliOptions, freezeOptions, OPTIONS } from '../options';
-
-describe('options', () => {
-  it('should return specific properties', () => {
-    expect(options).toMatchSnapshot();
-  });
-});
+import { parseCliOptions } from '../options';
 
 describe('parseCliOptions', () => {
   const originalArgv = process.argv;
@@ -33,15 +26,5 @@ describe('parseCliOptions', () => {
     const result = parseCliOptions();
 
     expect(result).toMatchSnapshot();
-  });
-});
-
-describe('freezeOptions', () => {
-  it('should return frozen options with consistent properties', () => {
-    const result = freezeOptions({ docsHost: true });
-
-    expect(Object.isFrozen(result)).toBe(true);
-    expect(result).toBe(OPTIONS);
-    expect(result).toMatchSnapshot('frozen');
   });
 });
