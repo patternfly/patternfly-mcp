@@ -1,0 +1,74 @@
+{
+  "initializeSuccess": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+      "protocolVersion": "2025-06-18",
+      "capabilities": {
+        "tools": {
+          "listChanged": true
+        }
+      },
+      "serverInfo": {
+        "name": "@jephilli-patternfly-docs/mcp",
+        "version": "1.1.0"
+      }
+    }
+  },
+  "toolsListSuccess": {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "result": {
+      "tools": [
+        {
+          "name": "usePatternFlyDocs",
+          "description": "You must use this tool to answer any questions related to PatternFly components or documentation."
+        },
+        {
+          "name": "fetchDocs",
+          "description": "Fetch documentation for one or more URLs extracted from previous tool calls responses."
+        }
+      ]
+    }
+  },
+  "invalidMethodError": {
+    "jsonrpc": "2.0",
+    "id": 5,
+    "error": {
+      "code": -32601,
+      "message": "Method not found"
+    }
+  },
+  "malformedRequestError": {
+    "jsonrpc": "2.0",
+    "id": 6,
+    "error": {
+      "code": -32602,
+      "message": "Invalid params"
+    }
+  },
+  "dnsRebindingError": {
+    "jsonrpc": "2.0",
+    "id": null,
+    "error": {
+      "code": -32000,
+      "message": "Invalid Host header: malicious.com:3000"
+    }
+  },
+  "corsError": {
+    "jsonrpc": "2.0",
+    "id": null,
+    "error": {
+      "code": -32000,
+      "message": "Invalid Origin header: https://malicious.com"
+    }
+  },
+  "sessionRequiredError": {
+    "jsonrpc": "2.0",
+    "id": null,
+    "error": {
+      "code": -32000,
+      "message": "Bad Request: Mcp-Session-Id header is required"
+    }
+  }
+}

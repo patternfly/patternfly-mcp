@@ -2,13 +2,17 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { runServer } from '../server';
 import { type GlobalOptions } from '../options';
+import { getOptions } from '../options.context';
+import { startHttpTransport, type HttpServerHandle } from '../server.http';
 
 // Mock dependencies
 jest.mock('@modelcontextprotocol/sdk/server/mcp.js');
 jest.mock('@modelcontextprotocol/sdk/server/stdio.js');
+jest.mock('../server.http');
 
 const MockMcpServer = McpServer as jest.MockedClass<typeof McpServer>;
 const MockStdioServerTransport = StdioServerTransport as jest.MockedClass<typeof StdioServerTransport>;
+const MockStartHttpTransport = startHttpTransport as jest.MockedFunction<typeof startHttpTransport>;
 
 describe('runServer', () => {
   let mockServer: any;
@@ -134,7 +138,7 @@ describe('runServer', () => {
     });
 
     await expect(runServer(undefined, { tools: [] })).rejects.toThrow('Server creation failed');
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Error creating MCP server:', error);
+    expect(consoleErrorSpy).toHaveBeenCalledWith(`Error creating ${getOptions().name} server:`, error);
   });
 
   it('should handle errors during connection', async () => {
@@ -143,6 +147,66 @@ describe('runServer', () => {
     mockServer.connect.mockRejectedValue(error);
 
     await expect(runServer(undefined, { tools: [] })).rejects.toThrow('Connection failed');
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Error creating MCP server:', error);
+    expect(consoleErrorSpy).toHaveBeenCalledWith(`Error creating ${getOptions().name} server:`, error);
+  });
+
+  describe('HTTP transport mode', () => {
+    let mockHttpHandle: HttpServerHandle;
+    let mockClose: jest.Mock;
+
+    beforeEach(() => {
+      mockClose = jest.fn().mockResolvedValue(undefined);
+      mockHttpHandle = {
+        close: mockClose
+      };
+      MockStartHttpTransport.mockResolvedValue(mockHttpHandle);
+    });
+
+    it('should start HTTP transport when http option is enabled', async () => {
+      const options = { http: true, port: 3000, host: 'localhost' } as GlobalOptions;
+
+      const serverInstance = await runServer(options, { tools: [], allowProcessExit: false });
+
+      expect(MockStartHttpTransport).toHaveBeenCalledWith(mockServer, options);
+      expect(serverInstance.isRunning()).toBe(true);
+    });
+
+    it('should close HTTP server handle when stop() is called', async () => {
+      const options = { http: true, port: 3000, host: 'localhost' } as GlobalOptions;
+
+      const serverInstance = await runServer(options, { tools: [], allowProcessExit: false });
+
+      expect(serverInstance.isRunning()).toBe(true);
+
+      await serverInstance.stop();
+
+      expect(mockClose).toHaveBeenCalled();
+      expect(serverInstance.isRunning()).toBe(false);
+    });
+
+    it('should close HTTP server before closing MCP server', async () => {
+      const options = { http: true, port: 3000, host: 'localhost' } as GlobalOptions;
+
+      const serverInstance = await runServer(options, { tools: [], allowProcessExit: false });
+
+      // Track call order
+      const callOrder: string[] = [];
+
+      mockClose.mockImplementation(async () => {
+        callOrder.push('http-close');
+
+        return Promise.resolve();
+      });
+
+      mockServer.close.mockImplementation(async () => {
+        callOrder.push('mcp-close');
+
+        return Promise.resolve();
+      });
+
+      await serverInstance.stop();
+
+      expect(callOrder).toEqual(['http-close', 'mcp-close']);
+    });
   });
 });
