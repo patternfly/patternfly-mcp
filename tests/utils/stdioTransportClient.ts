@@ -45,7 +45,7 @@ interface PendingEntry {
   timer: NodeJS.Timeout;
 }
 
-export interface StdioClient {
+export interface StdioTransportClient {
   proc: ChildProcessWithoutNullStreams;
   send: (request: RpcRequest, opts?: { timeoutMs?: number }) => Promise<RpcResponse>;
   stop: (signal?: NodeJS.Signals) => Promise<void>;
@@ -80,7 +80,7 @@ export const startServer = async ({
   serverPath = process.env.SERVER_PATH || 'dist/index.js',
   args = [],
   env = {}
-}: StartOptions = {}): Promise<StdioClient> => {
+}: StartOptions = {}): Promise<StdioTransportClient> => {
   const proc: ChildProcessWithoutNullStreams = spawn(command, [serverPath, ...args], {
     stdio: ['pipe', 'pipe', 'pipe'],
     env: { ...process.env, ...env }
@@ -155,7 +155,7 @@ export const startServer = async ({
     });
   });
 
-  const send: StdioClient['send'] = (request, { timeoutMs = 20000 } = {}) => new Promise((resolve, reject) => {
+  const send: StdioTransportClient['send'] = (request, { timeoutMs = 20000 } = {}) => new Promise((resolve, reject) => {
     if (!request || typeof request !== 'object') {
       return reject(new Error('Invalid request'));
     }

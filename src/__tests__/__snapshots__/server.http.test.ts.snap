@@ -1,0 +1,87 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`SAME_SERVER_TOKENS should list predictable values 1`] = `
+[
+  "dist/index.js",
+  "patternfly-mcp",
+  "pf-mcp",
+  "pfmcp",
+]
+`;
+
+exports[`formatPortConflictError should return a formatted message, is NOT the same mcp server 1`] = `
+"
+Port 3000 is already in use.
+
+	This may be a different process. To use this port, you will need to:
+	1. Stop the process
+	2. Or use a different port: --port <different-port>"
+`;
+
+exports[`formatPortConflictError should return a formatted message, is same mcp server 1`] = `
+"
+Port 3000 is already in use.
+	Process: PID 123456789
+	Command: node dist/index.js --http
+
+	This appears to be another instance of the server.
+	Recommended:
+	1. Rerun with the --kill-existing flag to stop it automatically.
+	2. Or use a different port: --port <different-port>"
+`;
+
+exports[`formatPortConflictError should return a formatted message, processInfo is missing 1`] = `
+"
+Port 3000 is already in use.
+
+	This may be a different process. To use this port, you will need to:
+	1. Stop the process
+	2. Or use a different port: --port <different-port>"
+`;
+
+exports[`getProcessOnPort should attempt to find a process listening on a port: ps fallback 1`] = `
+{
+  "command": "<execSync>["ps -p 123456789 -o command=",{"encoding":"utf8","stdio":["ignore","pipe","ignore"]}]</execSync>",
+  "pid": 123456789,
+}
+`;
+
+exports[`startHttpTransport should start HTTP server, with port and host: server setup 1`] = `
+{
+  "serverClose": [
+    [
+      [Function],
+    ],
+  ],
+  "setupHandlers": [
+    [
+      "error",
+      [Function],
+    ],
+  ],
+  "setupServer": [
+    [
+      {
+        "handleRequest": [MockFunction],
+        "sessionId": "test-session-123",
+      },
+    ],
+    [
+      3000,
+      "localhost",
+      [Function],
+    ],
+  ],
+  "setupTransport": [
+    [
+      {
+        "enableDnsRebindingProtection": true,
+        "enableJsonResponse": false,
+        "onsessionclosed": [Function],
+        "onsessioninitialized": [Function],
+        "sessionIdGenerator": [Function],
+      },
+    ],
+  ],
+}
+`;

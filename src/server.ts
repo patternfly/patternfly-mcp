@@ -5,6 +5,7 @@ import { fetchDocsTool } from './tool.fetchDocs';
 import { componentSchemasTool } from './tool.componentSchemas';
 import { getOptions, runWithOptions } from './options.context';
 import { type GlobalOptions } from './options';
+import { startHttpTransport, type HttpServerHandle } from './server.http';
 
 type McpTool = [string, { description: string; inputSchema: any }, (args: any) => Promise<any>];
 
@@ -21,7 +22,7 @@ interface ServerInstance {
   stop(): Promise<void>;
 
   /**
-   * Check if server is running
+   * Is the server running?
    */
   isRunning(): boolean;
 }
@@ -33,6 +34,7 @@ interface ServerInstance {
  * @param settings
  * @param settings.tools
  * @param settings.enableSigint
+ * @param settings.allowProcessExit
  */
 const runServer = async (options = getOptions(), {
   tools = [
@@ -40,18 +42,28 @@ const runServer = async (options = getOptions(), {
     fetchDocsTool,
     componentSchemasTool
   ],
-  enableSigint = true
-}: { tools?: McpToolCreator[]; enableSigint?: boolean } = {}): Promise<ServerInstance> => {
+  enableSigint = true,
+  allowProcessExit = true
+}: { tools?: McpToolCreator[]; enableSigint?: boolean, allowProcessExit?: boolean } = {}): Promise<ServerInstance> => {
   let server: McpServer | null = null;
   let transport: StdioServerTransport | null = null;
+  let httpHandle: HttpServerHandle | null = null;
   let running = false;
 
   const stopServer = async () => {
     if (server && running) {
+      if (httpHandle) {
+        await httpHandle.close();
+        httpHandle = null;
+      }
+
       await server?.close();
       running = false;
-      console.log('PatternFly MCP server stopped');
-      process.exit(0);
+      console.log(`${options.name} server stopped`);
+
+      if (allowProcessExit) {
+        process.exit(0);
+      }
     }
   };
 
@@ -79,14 +91,20 @@ const runServer = async (options = getOptions(), {
       process.on('SIGINT', async () => stopServer());
     }
 
-    transport = new StdioServerTransport();
+    if (options.http) {
+      httpHandle = await startHttpTransport(server, options);
+      // HTTP transport logs its own message
+    } else {
+      transport = new StdioServerTransport();
 
-    await server.connect(transport);
+      await server.connect(transport);
+      // STDIO log
+      console.log(`${options.name} server running on stdio`);
+    }
 
     running = true;
-    console.log('PatternFly MCP server running on stdio');
   } catch (error) {
-    console.error('Error creating MCP server:', error);
+    console.error(`Error creating ${options.name} server:`, error);
     throw error;
   }
 
