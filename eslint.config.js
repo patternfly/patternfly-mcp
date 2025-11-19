@@ -16,10 +16,12 @@ export default [
   {
     files: ['**/*.ts'],
     rules: {
+      curly: [2, 'all'],
       'no-unused-vars': 0,
       'no-undef': 0,
       'import/no-unresolved': 0,
       'jsdoc/require-returns': 0,
+      'jsdoc/require-returns-type': 0,
       'jsdoc/require-param-type': 0
     }
   },
@@ -63,9 +65,14 @@ export default [
 
   // Test files
   {
-    files: ['**/*.test.ts'],
+    files: [
+      '**/*.test.ts',
+      'tests/**/*.ts',
+      '**/__tests__/**/*test.ts'
+    ],
     rules: {
       '@typescript-eslint/no-explicit-any': 0,
+      '@typescript-eslint/ban-ts-comment': 1,
       'no-sparse-arrays': 0
     }
   }

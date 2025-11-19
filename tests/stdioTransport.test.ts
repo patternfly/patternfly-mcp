@@ -1,12 +1,12 @@
 /**
  *  Requires: npm run build prior to running Jest.
  */
+import { startServer, type StdioTransportClient } from './utils/stdioTransportClient';
+import { loadFixture } from './utils/fixtures';
+import { setupFetchMock } from './utils/fetchMock';
 
-import { startServer, type StdioClient } from './utils/stdioClient';
-import { loadFixture, startHttpFixture } from './utils/httpFixtureServer';
-
-describe('PatternFly MCP', () => {
-  let client: StdioClient;
+describe('PatternFly MCP, STDIO', () => {
+  let client: StdioTransportClient;
 
   beforeEach(async () => {
     client = await startServer();
@@ -28,17 +28,17 @@ describe('PatternFly MCP', () => {
       }
     };
 
-    const resp = await client.send(req);
-    const text = resp?.result?.content?.[0]?.text || '';
+    const response = await client.send(req);
+    const text = response?.result?.content?.[0]?.text || '';
 
     expect(text.startsWith('# Documentation from')).toBe(true);
     expect(text).toMatchSnapshot();
   });
 
   it('should expose expected tools and stable shape', async () => {
-    const resp = await client.send({ method: 'tools/list' });
-    const tools = resp?.result?.tools || [];
-    const toolNames = tools.map(tool => tool.name).sort();
+    const response = await client.send({ method: 'tools/list' });
+    const tools = response?.result?.tools || [];
+    const toolNames = tools.map((tool: any) => tool.name).sort();
 
     expect(toolNames).toEqual(expect.arrayContaining(['usePatternFlyDocs', 'fetchDocs']));
     expect({ toolNames }).toMatchSnapshot();
@@ -46,7 +46,7 @@ describe('PatternFly MCP', () => {
 });
 
 describe('Hosted mode, --docs-host', () => {
-  let client: StdioClient;
+  let client: StdioTransportClient;
 
   beforeEach(async () => {
     client = await startServer({ args: ['--docs-host'] });
@@ -72,9 +72,9 @@ describe('Hosted mode, --docs-host', () => {
 });
 
 describe('External URLs', () => {
-  let fixture: { baseUrl: string; close: () => Promise<void>; };
+  let fetchMock: Awaited<ReturnType<typeof setupFetchMock>> | undefined;
   let url: string;
-  let client: StdioClient;
+  let client: StdioTransportClient;
 
   beforeEach(async () => {
     client = await startServer();
@@ -83,23 +83,21 @@ describe('External URLs', () => {
   afterEach(async () => client.stop());
 
   beforeAll(async () => {
-    const body = loadFixture('README.md');
-
-    fixture = await startHttpFixture({
-      routes: {
-        '/readme': {
+    // Note: The helper creates index-based paths based on routing (/0, /1, etc.), so we use /0 for the first route
+    fetchMock = await setupFetchMock({
+      routes: [
+        {
+          url: /\/readme$/,
           status: 200,
           headers: { 'Content-Type': 'text/markdown; charset=utf-8' },
-          body
+          body: loadFixture('README.md')
         }
-      }
+      ]
     });
-    url = `${fixture.baseUrl}/readme`;
+    url = `${fetchMock.fixture.baseUrl}/0`;
   });
 
-  afterAll(async () => {
-    await fixture.close();
-  });
+  afterAll(async () => fetchMock?.cleanup());
 
   it('should fetch a document', async () => {
     const req = {
