@@ -144,6 +144,11 @@ export interface FetchMockResult {
 /**
  * Set up fetch mocking with route-based configuration
  *
+ * Useful when
+ * - You need different responses for different URLs
+ * - You need custom status codes or headers per route
+ * - You need more control over routing
+ *
  * @param options - Fetch mock configuration
  * @returns Cleanup function and fixture server instance
  */
@@ -238,6 +243,11 @@ export const setupFetchMock = async (options: FetchMockSetup = {}): Promise<Fetc
 
 /**
  * Simple fetch mock that routes all remote URLs to a single fixture
+ *
+ * Useful when
+ * - You need the same response for all external requests
+ * - You want a quick mock without route configuration
+ * - Testing scenarios where the response content doesn't matter
  *
  * @param body - Response body for all intercepted requests
  * @param options - Additional options
