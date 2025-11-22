@@ -1,29 +1,295 @@
-import { generateHash, isPromise } from '../server.helpers';
+import { generateHash, hashCode, isPlainObject, isPromise } from '../server.helpers';
 
 describe('generateHash', () => {
-  it('should minimally generate a consistent hash', () => {
-    expect({
-      valueObject: generateHash({ lorem: 'ipsum', dolor: ['sit', null, undefined, 1, () => 'hello world'] }),
-      valueObjectConfirm:
-        generateHash({ lorem: 'ipsum', dolor: ['sit', null, undefined, 1, () => 'hello world'] }) ===
-        generateHash({ lorem: 'ipsum', dolor: ['sit', null, undefined, 1, () => 'hello world'] }),
-      valueObjectConfirmSort:
-        generateHash({ lorem: 'ipsum', dolor: ['sit', null, undefined, 1, () => 'hello world'] }) ===
-        generateHash({ dolor: ['sit', null, undefined, 1, () => 'hello world'], lorem: 'ipsum' }),
-      valueInt: generateHash(200),
-      valueFloat: generateHash(20.000006),
-      valueNull: generateHash(null),
-      valueUndefined: generateHash(undefined),
-      valueArray: generateHash([1, 2, 3]),
-      valueArraySort: generateHash([3, 2, 1]),
-      valueArrayConfirmSort: generateHash([1, 2, 3]) !== generateHash([3, 2, 1]),
-      valueSet: generateHash(new Set([1, 2, 3])),
-      valueSetConfirmSort: generateHash(new Set([1, 2, 3])) === generateHash(new Set([3, 2, 1])),
-      valueSymbol: generateHash(Symbol('lorem ipsum')),
-      valueSymbolUndefined: generateHash(Symbol('lorem ipsum')) === generateHash(undefined),
-      valueBoolTrue: generateHash(true),
-      valueBoolFalse: generateHash(false)
-    }).toMatchSnapshot('hash, object and primitive values');
+  it.each([
+    {
+      description: 'null',
+      value: null,
+      comparisonValue: undefined,
+      expectedComparison: false,
+      expectedUndefined: false
+    },
+    {
+      description: 'undefined',
+      value: undefined,
+      comparisonValue: null,
+      expectedComparison: false,
+      expectedUndefined: true
+    },
+    {
+      description: 'string',
+      value: 'lorem ipsum',
+      comparisonValue: 'ipsum lorem',
+      expectedComparison: false,
+      expectedUndefined: false
+    },
+    {
+      description: 'number, int',
+      value: 200,
+      comparisonValue: 200.000006,
+      expectedComparison: false,
+      expectedUndefined: false
+    },
+    {
+      description: 'number, float',
+      value: 200.000006,
+      comparisonValue: 200,
+      expectedComparison: false,
+      expectedUndefined: false
+    },
+    {
+      description: 'number, NaN',
+      value: NaN,
+      comparisonValue: null,
+      expectedComparison: false,
+      expectedUndefined: false
+    },
+    {
+      description: 'number, Infinity',
+      value: Infinity,
+      comparisonValue: null,
+      expectedComparison: false,
+      expectedUndefined: false
+    },
+    {
+      description: 'number, negative Infinity',
+      value: -Infinity,
+      comparisonValue: null,
+      expectedComparison: false,
+      expectedUndefined: false
+    },
+    {
+      description: 'number, negative zero',
+      value: -0,
+      comparisonValue: 0,
+      expectedComparison: false,
+      expectedUndefined: false
+    },
+    {
+      description: 'number, negative zero inside array',
+      value: [-0],
+      comparisonValue: [0],
+      expectedComparison: false,
+      expectedUndefined: false
+    },
+    {
+      description: 'boolean',
+      value: true,
+      comparisonValue: false,
+      expectedComparison: false,
+      expectedUndefined: false
+    },
+    {
+      description: 'bigint',
+      value: BigInt(200),
+      comparisonValue: BigInt(201),
+      expectedComparison: false,
+      expectedUndefined: false
+    },
+    {
+      description: 'function',
+      value: () => 'lorem ipsum',
+      comparisonValue: () => 'ipsum lorem',
+      expectedComparison: false,
+      expectedUndefined: false
+    },
+    {
+      description: 'symbols, different instances BUT with same string will return the same',
+      value: Symbol('lorem ipsum'),
+      comparisonValue: Symbol('lorem ipsum'),
+      expectedComparison: true,
+      expectedUndefined: false
+    },
+    {
+      description: 'symbols, different instances AND with different strings will NOT return the same',
+      value: Symbol('lorem ipsum'),
+      comparisonValue: Symbol('ipsum lorem'),
+      expectedComparison: false,
+      expectedUndefined: false
+    },
+    {
+      description: 'array, same order',
+      value: [1, 2, 3],
+      comparisonValue: [1, 2, 3],
+      expectedComparison: true,
+      expectedUndefined: false
+    },
+    {
+      description: 'array, reversed order',
+      value: [1, 2, 3],
+      comparisonValue: [3, 2, 1],
+      expectedComparison: false,
+      expectedUndefined: false
+    },
+    {
+      description: 'array of objects, same order',
+      value: [{ 1: 'lorem' }, { 2: 'ipsum' }],
+      comparisonValue: [{ 1: 'lorem' }, { 2: 'ipsum' }],
+      expectedComparison: true,
+      expectedUndefined: false
+    },
+    {
+      description: 'array of objects, reversed order',
+      value: [{ 1: 'lorem' }, { 2: 'ipsum' }],
+      comparisonValue: [{ 2: 'ipsum' }, { 1: 'lorem' }],
+      expectedComparison: false,
+      expectedUndefined: false
+    },
+    {
+      description: 'error',
+      value: new Error('lorem ipsum'),
+      comparisonValue: new Error('ipsum lorem'),
+      expectedComparison: false,
+      expectedUndefined: false
+    },
+    {
+      description: 'date',
+      value: new Date('2023-01-01'),
+      comparisonValue: new Date('2023-01-02'),
+      expectedComparison: false,
+      expectedUndefined: false
+    },
+    {
+      description: 'regex',
+      value: /lorem/g,
+      comparisonValue: /ipsum/g,
+      expectedComparison: false,
+      expectedUndefined: false
+    },
+    {
+      description: 'map, same order',
+      value: new Map([['lorem', 1], ['ipsum', 2]]),
+      comparisonValue: new Map([['lorem', 1], ['ipsum', 2]]),
+      expectedComparison: true,
+      expectedUndefined: false
+    },
+    {
+      description: 'map, reversed order',
+      value: new Map([['lorem', 1], ['ipsum', 2]]),
+      comparisonValue: new Map([['ipsum', 2], ['lorem', 1]]),
+      expectedComparison: true,
+      expectedUndefined: false
+    },
+    {
+      description: 'map with number vs string number',
+      value: new Map([[1, 'a']]),
+      comparisonValue: new Map([['1', 'a']]),
+      expectedComparison: false,
+      expectedUndefined: false
+    },
+    {
+      description: 'map of objects, same order',
+      value: new Map([['lorem', { 1: 'lorem' }], ['ipsum', { 2: 'ipsum' }]]),
+      comparisonValue: new Map([['lorem', { 1: 'lorem' }], ['ipsum', { 2: 'ipsum' }]]),
+      expectedComparison: true,
+      expectedUndefined: false
+    },
+    {
+      description: 'map of objects, reversed order',
+      value: new Map([['lorem', { 1: 'lorem' }], ['ipsum', { 2: 'ipsum' }]]),
+      comparisonValue: new Map([['ipsum', { 2: 'ipsum' }], ['lorem', { 1: 'lorem' }]]),
+      expectedComparison: true,
+      expectedUndefined: false
+    },
+    {
+      description: 'set, same order',
+      value: new Set([1, 2, 3]),
+      comparisonValue: new Set([1, 2, 3]),
+      expectedComparison: true,
+      expectedUndefined: false
+    },
+    {
+      description: 'set, reversed order',
+      value: new Set([1, 2, 3]),
+      comparisonValue: new Set([3, 2, 1]),
+      expectedComparison: true,
+      expectedUndefined: false
+    },
+    {
+      description: 'set of objects, same order',
+      value: new Set([{ 1: 'lorem' }, { 2: 'ipsum' }]),
+      comparisonValue: new Set([{ 1: 'lorem' }, { 2: 'ipsum' }]),
+      expectedComparison: true,
+      expectedUndefined: false
+    },
+    {
+      description: 'set of objects, reversed order',
+      value: new Set([{ 1: 'lorem' }, { 2: 'ipsum' }]),
+      comparisonValue: new Set([{ 2: 'ipsum' }, { 1: 'lorem' }]),
+      expectedComparison: true,
+      expectedUndefined: false
+    },
+    {
+      description: 'plain object',
+      value: { lorem: 'ipsum' },
+      comparisonValue: { dolor: 'sit amet' },
+      expectedComparison: false,
+      expectedUndefined: false
+    },
+    {
+      description: 'plain object with nested values, same order',
+      value: { lorem: 'ipsum', dolor: ['sit', null, undefined, 1, () => 'sit amet'] },
+      comparisonValue: { lorem: 'ipsum', dolor: ['sit', null, undefined, 1, () => 'sit amet'] },
+      expectedComparison: true,
+      expectedUndefined: false
+    },
+    {
+      description: 'plain object with nested values, reversed order',
+      value: { lorem: 'ipsum', dolor: ['sit', null, undefined, 1, () => 'sit amet'] },
+      comparisonValue: { dolor: ['sit', null, undefined, 1, () => 'sit amet'], lorem: 'ipsum' },
+      expectedComparison: true,
+      expectedUndefined: false
+    },
+    {
+      description: 'circular reference',
+      value: (() => {
+        const obj: any = {};
+
+        obj.a = { b: obj };
+
+        return obj;
+      })(),
+      comparisonValue: (() => {
+        const obj: any = {};
+
+        obj.a = { b: obj };
+
+        return obj;
+      })(),
+      expectedComparison: true,
+      expectedUndefined: false
+    }
+  ])('should generate a consistent hash, $description', ({ value, comparisonValue, expectedComparison, expectedUndefined }) => {
+    expect(generateHash(value) === generateHash(undefined)).toBe(expectedUndefined);
+    expect(generateHash(value) === generateHash(comparisonValue)).toBe(expectedComparison);
+    expect(generateHash(value)).toMatchSnapshot();
+  });
+});
+
+describe('hashCode', () => {
+  it.each([
+    {
+      description: 'string',
+      param: 'lorem ipsum'
+    },
+    {
+      description: 'number',
+      param: 200
+    },
+    {
+      description: 'undefined',
+      param: undefined
+    },
+    {
+      description: 'null',
+      param: null
+    },
+    {
+      description: 'JSON string',
+      param: JSON.stringify({ lorem: 'ipsum' })
+    }
+  ])('should generate a consistent hash code, $description', ({ param }) => {
+    expect(hashCode(param)).toBe(hashCode(param));
   });
 });
 
@@ -31,20 +297,72 @@ describe('isPromise', () => {
   it.each([
     {
       description: 'Promise.resolve',
-      func: Promise.resolve(),
+      param: Promise.resolve(),
       value: true
     },
     {
       description: 'async function',
-      func: async () => {},
+      param: async () => {},
       value: true
     },
     {
       description: 'non-promise',
-      func: () => 'lorem',
+      param: () => 'lorem',
       value: false
     }
-  ])('should determine a promise for $description', ({ func, value }) => {
-    expect(isPromise(func)).toBe(value);
+  ])('should determine a promise for $description', ({ param, value }) => {
+    expect(isPromise(param)).toBe(value);
+  });
+});
+
+describe('isPlainObject', () => {
+  it.each([
+    {
+      description: 'plain object, empty',
+      param: {},
+      value: true
+    },
+    {
+      description: 'plain object',
+      param: { 1: 'lorem', 2: 'ipsum' },
+      value: true
+    },
+    {
+      description: 'create object',
+      param: Object.create(null),
+      value: true
+    },
+    {
+      description: 'array',
+      param: [],
+      value: false
+    },
+    {
+      description: 'null',
+      param: null,
+      value: false
+    },
+    {
+      description: 'undefined',
+      param: undefined,
+      value: false
+    },
+    {
+      description: 'NaN',
+      param: NaN,
+      value: false
+    },
+    {
+      description: 'function',
+      param: () => 'lorem',
+      value: false
+    },
+    {
+      description: 'date',
+      param: new Date('2023-01-01'),
+      value: false
+    }
+  ])('should determine a plain object for $description', ({ param, value }) => {
+    expect(isPlainObject(param)).toBe(value);
   });
 });

@@ -1,73 +1,810 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`memo should clear cache on inactivity, async: cache list length 1`] = `
+exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLimit with NO cacheErrors, error last: async 1`] = `
 [
-  2,
-  2,
-  4,
-  4,
-  6,
-  6,
-  2,
-  2,
-  4,
-  4,
-  6,
-  6,
+  {
+    "all": [
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+      {
+        "status": "fulfilled",
+        "value": "1",
+      },
+    ],
+    "remaining": [],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+      {
+        "status": "fulfilled",
+        "value": "1",
+      },
+    ],
+  },
 ]
 `;
 
-exports[`memo should memoize a function, async 1`] = `
+exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLimit with NO cacheErrors, error last: sync 1`] = `
 [
   {
+    "all": [
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+      {
+        "status": "fulfilled",
+        "value": "1",
+      },
+    ],
+    "remaining": [],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+      {
+        "status": "fulfilled",
+        "value": "1",
+      },
+    ],
+  },
+]
+`;
+
+exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLimit with NO cacheErrors: async 1`] = `
+[
+  {
+    "all": [
+      {
+        "status": "fulfilled",
+        "value": "4",
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+      {
+        "status": "fulfilled",
+        "value": "1",
+      },
+    ],
+    "remaining": [],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": "4",
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+      {
+        "status": "fulfilled",
+        "value": "1",
+      },
+    ],
+  },
+]
+`;
+
+exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLimit with NO cacheErrors: sync 1`] = `
+[
+  {
+    "all": [
+      {
+        "status": "fulfilled",
+        "value": "4",
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+      {
+        "status": "fulfilled",
+        "value": "1",
+      },
+    ],
+    "remaining": [],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": "4",
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+      {
+        "status": "fulfilled",
+        "value": "1",
+      },
+    ],
+  },
+]
+`;
+
+exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLimit with cacheErrors, error last: async 1`] = `
+[
+  {
+    "all": [
+      {
+        "reason": [Error: onCacheRollout-3],
+        "status": "rejected",
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+      {
+        "status": "fulfilled",
+        "value": "1",
+      },
+    ],
+    "remaining": [],
+    "removed": [
+      {
+        "reason": [Error: onCacheRollout-3],
+        "status": "rejected",
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+      {
+        "status": "fulfilled",
+        "value": "1",
+      },
+    ],
+  },
+]
+`;
+
+exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLimit with cacheErrors, error last: sync 1`] = `
+[
+  {
+    "all": [
+      {
+        "status": "fulfilled",
+        "value": [Function],
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+      {
+        "status": "fulfilled",
+        "value": "1",
+      },
+    ],
+    "remaining": [],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": [Function],
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+      {
+        "status": "fulfilled",
+        "value": "1",
+      },
+    ],
+  },
+]
+`;
+
+exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLimit with cacheErrors: async 1`] = `
+[
+  {
+    "all": [
+      {
+        "status": "fulfilled",
+        "value": "4",
+      },
+      {
+        "reason": [Error: onCacheRollout-3],
+        "status": "rejected",
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+    ],
+    "remaining": [],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": "4",
+      },
+      {
+        "reason": [Error: onCacheRollout-3],
+        "status": "rejected",
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+    ],
+  },
+]
+`;
+
+exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLimit with cacheErrors: sync 1`] = `
+[
+  {
+    "all": [
+      {
+        "status": "fulfilled",
+        "value": "4",
+      },
+      {
+        "status": "fulfilled",
+        "value": [Function],
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+    ],
+    "remaining": [],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": "4",
+      },
+      {
+        "status": "fulfilled",
+        "value": [Function],
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+    ],
+  },
+]
+`;
+
+exports[`memo should clear cache on inactivity and fire "onCacheExpire", default with NO cacheErrors, error last: async 1`] = `
+[
+  {
+    "all": [],
+    "remaining": [],
+    "removed": [],
+  },
+]
+`;
+
+exports[`memo should clear cache on inactivity and fire "onCacheExpire", default with NO cacheErrors, error last: sync 1`] = `
+[
+  {
+    "all": [],
+    "remaining": [],
+    "removed": [],
+  },
+]
+`;
+
+exports[`memo should clear cache on inactivity and fire "onCacheExpire", default with NO cacheErrors: async 1`] = `
+[
+  {
+    "all": [
+      {
+        "status": "fulfilled",
+        "value": "3",
+      },
+    ],
+    "remaining": [],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": "3",
+      },
+    ],
+  },
+]
+`;
+
+exports[`memo should clear cache on inactivity and fire "onCacheExpire", default with NO cacheErrors: sync 1`] = `
+[
+  {
+    "all": [
+      {
+        "status": "fulfilled",
+        "value": "3",
+      },
+    ],
+    "remaining": [],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": "3",
+      },
+    ],
+  },
+]
+`;
+
+exports[`memo should clear cache on inactivity and fire "onCacheExpire", default with cacheErrors, error last: async 1`] = `
+[
+  {
+    "all": [
+      {
+        "reason": [Error: onCacheRollout-2],
+        "status": "rejected",
+      },
+    ],
+    "remaining": [],
+    "removed": [
+      {
+        "reason": [Error: onCacheRollout-2],
+        "status": "rejected",
+      },
+    ],
+  },
+]
+`;
+
+exports[`memo should clear cache on inactivity and fire "onCacheExpire", default with cacheErrors, error last: sync 1`] = `
+[
+  {
+    "all": [
+      {
+        "status": "fulfilled",
+        "value": [Function],
+      },
+    ],
+    "remaining": [],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": [Function],
+      },
+    ],
+  },
+]
+`;
+
+exports[`memo should clear cache on inactivity and fire "onCacheExpire", default with cacheErrors: async 1`] = `
+[
+  {
+    "all": [
+      {
+        "status": "fulfilled",
+        "value": "3",
+      },
+    ],
+    "remaining": [],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": "3",
+      },
+    ],
+  },
+]
+`;
+
+exports[`memo should clear cache on inactivity and fire "onCacheExpire", default with cacheErrors: sync 1`] = `
+[
+  {
+    "all": [
+      {
+        "status": "fulfilled",
+        "value": "3",
+      },
+    ],
+    "remaining": [],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": "3",
+      },
+    ],
+  },
+]
+`;
+
+exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple entries removed, errors cached: async 1`] = `
+[
+  {
+    "remaining": [
+      {
+        "status": "fulfilled",
+        "value": "3",
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+      {
+        "reason": [Error: onCacheRollout-1],
+        "status": "rejected",
+      },
+    ],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": "undefined",
+      },
+    ],
+  },
+  {
+    "remaining": [
+      {
+        "status": "fulfilled",
+        "value": "4",
+      },
+      {
+        "status": "fulfilled",
+        "value": "3",
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+    ],
+    "removed": [
+      {
+        "reason": [Error: onCacheRollout-1],
+        "status": "rejected",
+      },
+    ],
+  },
+]
+`;
+
+exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple entries removed, errors cached: sync 1`] = `
+[
+  {
+    "remaining": [
+      {
+        "status": "fulfilled",
+        "value": "3",
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+      {
+        "status": "fulfilled",
+        "value": [Function],
+      },
+    ],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": "undefined",
+      },
+    ],
+  },
+  {
+    "remaining": [
+      {
+        "status": "fulfilled",
+        "value": "4",
+      },
+      {
+        "status": "fulfilled",
+        "value": "3",
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+    ],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": [Function],
+      },
+    ],
+  },
+]
+`;
+
+exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple entries removed, errors not cached: async 1`] = `
+[
+  {
+    "remaining": [
+      {
+        "status": "fulfilled",
+        "value": "4",
+      },
+      {
+        "status": "fulfilled",
+        "value": "3",
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+    ],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": "undefined",
+      },
+    ],
+  },
+]
+`;
+
+exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple entries removed, errors not cached: sync 1`] = `
+[
+  {
+    "remaining": [
+      {
+        "status": "fulfilled",
+        "value": "4",
+      },
+      {
+        "status": "fulfilled",
+        "value": "3",
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+    ],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": "undefined",
+      },
+    ],
+  },
+]
+`;
+
+exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple entries removed: async 1`] = `
+[
+  {
+    "remaining": [
+      {
+        "status": "fulfilled",
+        "value": "3",
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+      {
+        "status": "fulfilled",
+        "value": "1",
+      },
+    ],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": "undefined",
+      },
+    ],
+  },
+  {
+    "remaining": [
+      {
+        "status": "fulfilled",
+        "value": "4",
+      },
+      {
+        "status": "fulfilled",
+        "value": "3",
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+    ],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": "1",
+      },
+    ],
+  },
+]
+`;
+
+exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple entries removed: sync 1`] = `
+[
+  {
+    "remaining": [
+      {
+        "status": "fulfilled",
+        "value": "3",
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+      {
+        "status": "fulfilled",
+        "value": "1",
+      },
+    ],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": "undefined",
+      },
+    ],
+  },
+  {
+    "remaining": [
+      {
+        "status": "fulfilled",
+        "value": "4",
+      },
+      {
+        "status": "fulfilled",
+        "value": "3",
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+    ],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": "1",
+      },
+    ],
+  },
+]
+`;
+
+exports[`memo should fire "onCacheRollout" callback on cache rollout, no entries removed: async 1`] = `[]`;
+
+exports[`memo should fire "onCacheRollout" callback on cache rollout, no entries removed: sync 1`] = `[]`;
+
+exports[`memo should fire "onCacheRollout" callback on cache rollout, one entry removed: async 1`] = `
+[
+  {
+    "remaining": [
+      {
+        "status": "fulfilled",
+        "value": "3",
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+      {
+        "status": "fulfilled",
+        "value": "1",
+      },
+    ],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": "undefined",
+      },
+    ],
+  },
+]
+`;
+
+exports[`memo should fire "onCacheRollout" callback on cache rollout, one entry removed: sync 1`] = `
+[
+  {
+    "remaining": [
+      {
+        "status": "fulfilled",
+        "value": "3",
+      },
+      {
+        "status": "fulfilled",
+        "value": "2",
+      },
+      {
+        "status": "fulfilled",
+        "value": "1",
+      },
+    ],
+    "removed": [
+      {
+        "status": "fulfilled",
+        "value": "undefined",
+      },
+    ],
+  },
+]
+`;
+
+exports[`memo should memoize a function, cacheLimit: async 1`] = `
+[
+  {
+    "cacheKeys": [
+      "97d170e1550eee4afc0af065b78cda302a97674c",
+    ],
     "cacheLength": 4,
     "errorValue": undefined,
     "successValue": "[EMPTY]",
     "type": "memo promise",
   },
   {
+    "cacheKeys": [
+      "97d170e1550eee4afc0af065b78cda302a97674c",
+    ],
     "cacheLength": 4,
     "errorValue": undefined,
     "successValue": "[EMPTY]",
     "type": "memo promise",
   },
   {
+    "cacheKeys": [
+      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
+      "97d170e1550eee4afc0af065b78cda302a97674c",
+    ],
     "cacheLength": 4,
     "errorValue": undefined,
     "successValue": "1",
     "type": "memo promise",
   },
   {
+    "cacheKeys": [
+      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
+      "97d170e1550eee4afc0af065b78cda302a97674c",
+    ],
     "cacheLength": 4,
     "errorValue": undefined,
     "successValue": "1",
     "type": "memo promise",
   },
   {
+    "cacheKeys": [
+      "2499831338ca5dc8c44f3d063e076799bea9bdff",
+      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
+    ],
     "cacheLength": 4,
     "errorValue": undefined,
     "successValue": "2",
     "type": "memo promise",
   },
   {
+    "cacheKeys": [
+      "2499831338ca5dc8c44f3d063e076799bea9bdff",
+      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
+    ],
     "cacheLength": 4,
     "errorValue": undefined,
     "successValue": "2",
     "type": "memo promise",
   },
   {
+    "cacheKeys": [
+      "f1e31df9806ce94c5bdbbfff9608324930f4d3f1",
+      "2499831338ca5dc8c44f3d063e076799bea9bdff",
+    ],
     "cacheLength": 4,
     "errorValue": undefined,
     "successValue": "3",
     "type": "memo promise",
   },
   {
+    "cacheKeys": [
+      "f1e31df9806ce94c5bdbbfff9608324930f4d3f1",
+      "2499831338ca5dc8c44f3d063e076799bea9bdff",
+    ],
     "cacheLength": 4,
     "errorValue": undefined,
     "successValue": "3",
     "type": "memo promise",
   },
   {
+    "cacheKeys": [
+      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
+      "f1e31df9806ce94c5bdbbfff9608324930f4d3f1",
+    ],
     "cacheLength": 4,
     "errorValue": undefined,
     "successValue": "1",
@@ -76,39 +813,310 @@ exports[`memo should memoize a function, async 1`] = `
 ]
 `;
 
-exports[`memo should memoize a function, async bypass memoization when cacheLimit is zero 1`] = `
+exports[`memo should memoize a function, cacheLimit: sync 1`] = `
 [
   {
+    "cacheKeys": [
+      "97d170e1550eee4afc0af065b78cda302a97674c",
+    ],
+    "cacheLength": 4,
+    "errorValue": undefined,
+    "successValue": "[EMPTY]",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "97d170e1550eee4afc0af065b78cda302a97674c",
+    ],
+    "cacheLength": 4,
+    "errorValue": undefined,
+    "successValue": "[EMPTY]",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
+      "97d170e1550eee4afc0af065b78cda302a97674c",
+    ],
+    "cacheLength": 4,
+    "errorValue": undefined,
+    "successValue": "1",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
+      "97d170e1550eee4afc0af065b78cda302a97674c",
+    ],
+    "cacheLength": 4,
+    "errorValue": undefined,
+    "successValue": "1",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "2499831338ca5dc8c44f3d063e076799bea9bdff",
+      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
+    ],
+    "cacheLength": 4,
+    "errorValue": undefined,
+    "successValue": "2",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "2499831338ca5dc8c44f3d063e076799bea9bdff",
+      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
+    ],
+    "cacheLength": 4,
+    "errorValue": undefined,
+    "successValue": "2",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "f1e31df9806ce94c5bdbbfff9608324930f4d3f1",
+      "2499831338ca5dc8c44f3d063e076799bea9bdff",
+    ],
+    "cacheLength": 4,
+    "errorValue": undefined,
+    "successValue": "3",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "f1e31df9806ce94c5bdbbfff9608324930f4d3f1",
+      "2499831338ca5dc8c44f3d063e076799bea9bdff",
+    ],
+    "cacheLength": 4,
+    "errorValue": undefined,
+    "successValue": "3",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
+      "f1e31df9806ce94c5bdbbfff9608324930f4d3f1",
+    ],
+    "cacheLength": 4,
+    "errorValue": undefined,
+    "successValue": "1",
+    "type": "memo",
+  },
+]
+`;
+
+exports[`memo should memoize a function, default: async 1`] = `
+[
+  {
+    "cacheKeys": [
+      "97d170e1550eee4afc0af065b78cda302a97674c",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "[EMPTY]",
+    "type": "memo promise",
+  },
+  {
+    "cacheKeys": [
+      "97d170e1550eee4afc0af065b78cda302a97674c",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "[EMPTY]",
+    "type": "memo promise",
+  },
+  {
+    "cacheKeys": [
+      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "1",
+    "type": "memo promise",
+  },
+  {
+    "cacheKeys": [
+      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "1",
+    "type": "memo promise",
+  },
+  {
+    "cacheKeys": [
+      "2499831338ca5dc8c44f3d063e076799bea9bdff",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "2",
+    "type": "memo promise",
+  },
+  {
+    "cacheKeys": [
+      "2499831338ca5dc8c44f3d063e076799bea9bdff",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "2",
+    "type": "memo promise",
+  },
+  {
+    "cacheKeys": [
+      "f1e31df9806ce94c5bdbbfff9608324930f4d3f1",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "3",
+    "type": "memo promise",
+  },
+  {
+    "cacheKeys": [
+      "f1e31df9806ce94c5bdbbfff9608324930f4d3f1",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "3",
+    "type": "memo promise",
+  },
+  {
+    "cacheKeys": [
+      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "1",
+    "type": "memo promise",
+  },
+]
+`;
+
+exports[`memo should memoize a function, default: sync 1`] = `
+[
+  {
+    "cacheKeys": [
+      "97d170e1550eee4afc0af065b78cda302a97674c",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "[EMPTY]",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "97d170e1550eee4afc0af065b78cda302a97674c",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "[EMPTY]",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "1",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "1",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "2499831338ca5dc8c44f3d063e076799bea9bdff",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "2",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "2499831338ca5dc8c44f3d063e076799bea9bdff",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "2",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "f1e31df9806ce94c5bdbbfff9608324930f4d3f1",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "3",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "f1e31df9806ce94c5bdbbfff9608324930f4d3f1",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "3",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "1",
+    "type": "memo",
+  },
+]
+`;
+
+exports[`memo should memoize a function, disable memoization when cacheLimit is zero: async 1`] = `
+[
+  {
+    "cacheKeys": [],
     "cacheLength": 0,
     "errorValue": undefined,
     "successValue": "[EMPTY]",
     "type": "memo bypass",
   },
   {
+    "cacheKeys": [],
     "cacheLength": 0,
     "errorValue": undefined,
     "successValue": "[EMPTY]",
     "type": "memo bypass",
   },
   {
+    "cacheKeys": [],
     "cacheLength": 0,
     "errorValue": undefined,
     "successValue": "1",
     "type": "memo bypass",
   },
   {
+    "cacheKeys": [],
     "cacheLength": 0,
     "errorValue": undefined,
     "successValue": "1",
     "type": "memo bypass",
   },
   {
+    "cacheKeys": [],
     "cacheLength": 0,
     "errorValue": "2",
     "successValue": undefined,
     "type": "memo bypass",
   },
   {
+    "cacheKeys": [],
     "cacheLength": 0,
     "errorValue": "2",
     "successValue": undefined,
@@ -117,133 +1125,31 @@ exports[`memo should memoize a function, async bypass memoization when cacheLimi
 ]
 `;
 
-exports[`memo should memoize a function, async errors 1`] = `
+exports[`memo should memoize a function, disable memoization when cacheLimit is zero: sync 1`] = `
 [
   {
-    "cacheLength": 4,
-    "errorValue": "[EMPTY]",
-    "successValue": undefined,
-    "type": "memo promise",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": "[EMPTY]",
-    "successValue": undefined,
-    "type": "memo promise",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": "4",
-    "successValue": undefined,
-    "type": "memo promise",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": "4",
-    "successValue": undefined,
-    "type": "memo promise",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": "5",
-    "successValue": undefined,
-    "type": "memo promise",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": "5",
-    "successValue": undefined,
-    "type": "memo promise",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": "6",
-    "successValue": undefined,
-    "type": "memo promise",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": "6",
-    "successValue": undefined,
-    "type": "memo promise",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": "4",
-    "successValue": undefined,
-    "type": "memo promise",
-  },
-]
-`;
-
-exports[`memo should memoize a function, async errors NOT cached 1`] = `
-[
-  {
-    "cacheLength": 4,
-    "errorValue": "7",
-    "successValue": undefined,
-    "type": "memo promise",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": "7",
-    "successValue": undefined,
-    "type": "memo promise",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": undefined,
-    "successValue": "8",
-    "type": "memo promise",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": undefined,
-    "successValue": "8",
-    "type": "memo promise",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": "9",
-    "successValue": undefined,
-    "type": "memo promise",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": "9",
-    "successValue": undefined,
-    "type": "memo promise",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": "7",
-    "successValue": undefined,
-    "type": "memo promise",
-  },
-]
-`;
-
-exports[`memo should memoize a function, bypass memoization when cacheLimit is zero 1`] = `
-[
-  {
+    "cacheKeys": [],
     "cacheLength": 0,
     "errorValue": undefined,
     "successValue": "[EMPTY]",
     "type": "memo bypass",
   },
   {
+    "cacheKeys": [],
     "cacheLength": 0,
     "errorValue": undefined,
     "successValue": "[EMPTY]",
     "type": "memo bypass",
   },
   {
+    "cacheKeys": [],
     "cacheLength": 0,
     "errorValue": undefined,
     "successValue": "1",
     "type": "memo bypass",
   },
   {
+    "cacheKeys": [],
     "cacheLength": 0,
     "errorValue": undefined,
     "successValue": "1",
@@ -252,167 +1158,331 @@ exports[`memo should memoize a function, bypass memoization when cacheLimit is z
 ]
 `;
 
-exports[`memo should memoize a function, sync 1`] = `
+exports[`memo should memoize a function, errors NOT cached: async 1`] = `
 [
   {
-    "cacheLength": 4,
-    "errorValue": undefined,
-    "successValue": "[EMPTY]",
-    "type": "memo",
+    "cacheKeys": [
+      "7f0204faf934498c81fdd57f586030926ad7184c",
+    ],
+    "cacheLength": 6,
+    "errorValue": "7",
+    "successValue": undefined,
+    "type": "memo promise",
   },
   {
-    "cacheLength": 4,
-    "errorValue": undefined,
-    "successValue": "[EMPTY]",
-    "type": "memo",
+    "cacheKeys": [
+      "7f0204faf934498c81fdd57f586030926ad7184c",
+    ],
+    "cacheLength": 6,
+    "errorValue": "7",
+    "successValue": undefined,
+    "type": "memo promise",
   },
   {
-    "cacheLength": 4,
+    "cacheKeys": [
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+    ],
+    "cacheLength": 6,
     "errorValue": undefined,
-    "successValue": "1",
-    "type": "memo",
+    "successValue": "8",
+    "type": "memo promise",
   },
   {
-    "cacheLength": 4,
+    "cacheKeys": [
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+    ],
+    "cacheLength": 6,
     "errorValue": undefined,
-    "successValue": "1",
-    "type": "memo",
+    "successValue": "8",
+    "type": "memo promise",
   },
   {
-    "cacheLength": 4,
-    "errorValue": undefined,
-    "successValue": "2",
-    "type": "memo",
+    "cacheKeys": [
+      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+    ],
+    "cacheLength": 6,
+    "errorValue": "9",
+    "successValue": undefined,
+    "type": "memo promise",
   },
   {
-    "cacheLength": 4,
-    "errorValue": undefined,
-    "successValue": "2",
-    "type": "memo",
+    "cacheKeys": [
+      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+    ],
+    "cacheLength": 6,
+    "errorValue": "9",
+    "successValue": undefined,
+    "type": "memo promise",
   },
   {
-    "cacheLength": 4,
-    "errorValue": undefined,
-    "successValue": "3",
-    "type": "memo",
+    "cacheKeys": [
+      "7f0204faf934498c81fdd57f586030926ad7184c",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+    ],
+    "cacheLength": 6,
+    "errorValue": "7",
+    "successValue": undefined,
+    "type": "memo promise",
   },
   {
-    "cacheLength": 4,
+    "cacheKeys": [
+      "e9310b0c165be166c43d717718981dd6c9379fbe",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+    ],
+    "cacheLength": 6,
     "errorValue": undefined,
-    "successValue": "3",
-    "type": "memo",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": undefined,
-    "successValue": "1",
-    "type": "memo",
+    "successValue": "10",
+    "type": "memo promise",
   },
 ]
 `;
 
-exports[`memo should memoize a function, sync errors 1`] = `
+exports[`memo should memoize a function, errors NOT cached: sync 1`] = `
 [
   {
+    "cacheKeys": [],
     "cacheLength": 4,
-    "errorValue": "[EMPTY]",
-    "successValue": undefined,
-    "type": "memo error",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": "[EMPTY]",
-    "successValue": undefined,
-    "type": "memo error",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": "4",
-    "successValue": undefined,
-    "type": "memo error",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": "4",
-    "successValue": undefined,
-    "type": "memo error",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": "5",
-    "successValue": undefined,
-    "type": "memo error",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": "5",
-    "successValue": undefined,
-    "type": "memo error",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": "6",
-    "successValue": undefined,
-    "type": "memo error",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": "6",
-    "successValue": undefined,
-    "type": "memo error",
-  },
-  {
-    "cacheLength": 4,
-    "errorValue": "4",
-    "successValue": undefined,
-    "type": "memo error",
-  },
-]
-`;
-
-exports[`memo should memoize a function, sync errors NOT cached 1`] = `
-[
-  {
-    "cacheLength": 2,
     "errorValue": "7",
     "successValue": undefined,
     "type": "memo error",
   },
   {
-    "cacheLength": 2,
+    "cacheKeys": [],
+    "cacheLength": 4,
     "errorValue": "7",
     "successValue": undefined,
     "type": "memo error",
   },
   {
-    "cacheLength": 4,
+    "cacheKeys": [
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+    ],
+    "cacheLength": 6,
     "errorValue": undefined,
     "successValue": "8",
     "type": "memo",
   },
   {
-    "cacheLength": 4,
+    "cacheKeys": [
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+    ],
+    "cacheLength": 6,
     "errorValue": undefined,
     "successValue": "8",
     "type": "memo",
   },
   {
-    "cacheLength": 2,
+    "cacheKeys": [
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+    ],
+    "cacheLength": 4,
     "errorValue": "9",
     "successValue": undefined,
     "type": "memo error",
   },
   {
-    "cacheLength": 2,
+    "cacheKeys": [
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+    ],
+    "cacheLength": 4,
     "errorValue": "9",
     "successValue": undefined,
     "type": "memo error",
   },
   {
-    "cacheLength": 2,
+    "cacheKeys": [
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+    ],
+    "cacheLength": 4,
     "errorValue": "7",
     "successValue": undefined,
     "type": "memo error",
+  },
+  {
+    "cacheKeys": [
+      "e9310b0c165be166c43d717718981dd6c9379fbe",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+    ],
+    "cacheLength": 6,
+    "errorValue": undefined,
+    "successValue": "10",
+    "type": "memo",
+  },
+]
+`;
+
+exports[`memo should memoize a function, errors cached: async 1`] = `
+[
+  {
+    "cacheKeys": [
+      "7f0204faf934498c81fdd57f586030926ad7184c",
+    ],
+    "cacheLength": 6,
+    "errorValue": "7",
+    "successValue": undefined,
+    "type": "memo promise",
+  },
+  {
+    "cacheKeys": [
+      "7f0204faf934498c81fdd57f586030926ad7184c",
+    ],
+    "cacheLength": 6,
+    "errorValue": "7",
+    "successValue": undefined,
+    "type": "memo promise",
+  },
+  {
+    "cacheKeys": [
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+      "7f0204faf934498c81fdd57f586030926ad7184c",
+    ],
+    "cacheLength": 6,
+    "errorValue": undefined,
+    "successValue": "8",
+    "type": "memo promise",
+  },
+  {
+    "cacheKeys": [
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+      "7f0204faf934498c81fdd57f586030926ad7184c",
+    ],
+    "cacheLength": 6,
+    "errorValue": undefined,
+    "successValue": "8",
+    "type": "memo promise",
+  },
+  {
+    "cacheKeys": [
+      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+      "7f0204faf934498c81fdd57f586030926ad7184c",
+    ],
+    "cacheLength": 6,
+    "errorValue": "9",
+    "successValue": undefined,
+    "type": "memo promise",
+  },
+  {
+    "cacheKeys": [
+      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+      "7f0204faf934498c81fdd57f586030926ad7184c",
+    ],
+    "cacheLength": 6,
+    "errorValue": "9",
+    "successValue": undefined,
+    "type": "memo promise",
+  },
+  {
+    "cacheKeys": [
+      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+      "7f0204faf934498c81fdd57f586030926ad7184c",
+    ],
+    "cacheLength": 6,
+    "errorValue": "7",
+    "successValue": undefined,
+    "type": "memo promise",
+  },
+  {
+    "cacheKeys": [
+      "e9310b0c165be166c43d717718981dd6c9379fbe",
+      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+    ],
+    "cacheLength": 6,
+    "errorValue": undefined,
+    "successValue": "10",
+    "type": "memo promise",
+  },
+]
+`;
+
+exports[`memo should memoize a function, errors cached: sync 1`] = `
+[
+  {
+    "cacheKeys": [
+      "7f0204faf934498c81fdd57f586030926ad7184c",
+    ],
+    "cacheLength": 6,
+    "errorValue": "7",
+    "successValue": undefined,
+    "type": "memo error",
+  },
+  {
+    "cacheKeys": [
+      "7f0204faf934498c81fdd57f586030926ad7184c",
+    ],
+    "cacheLength": 6,
+    "errorValue": "7",
+    "successValue": undefined,
+    "type": "memo error",
+  },
+  {
+    "cacheKeys": [
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+      "7f0204faf934498c81fdd57f586030926ad7184c",
+    ],
+    "cacheLength": 6,
+    "errorValue": undefined,
+    "successValue": "8",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+      "7f0204faf934498c81fdd57f586030926ad7184c",
+    ],
+    "cacheLength": 6,
+    "errorValue": undefined,
+    "successValue": "8",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+      "7f0204faf934498c81fdd57f586030926ad7184c",
+    ],
+    "cacheLength": 6,
+    "errorValue": "9",
+    "successValue": undefined,
+    "type": "memo error",
+  },
+  {
+    "cacheKeys": [
+      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+      "7f0204faf934498c81fdd57f586030926ad7184c",
+    ],
+    "cacheLength": 6,
+    "errorValue": "9",
+    "successValue": undefined,
+    "type": "memo error",
+  },
+  {
+    "cacheKeys": [
+      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+      "7f0204faf934498c81fdd57f586030926ad7184c",
+    ],
+    "cacheLength": 6,
+    "errorValue": "7",
+    "successValue": undefined,
+    "type": "memo error",
+  },
+  {
+    "cacheKeys": [
+      "e9310b0c165be166c43d717718981dd6c9379fbe",
+      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+    ],
+    "cacheLength": 6,
+    "errorValue": undefined,
+    "successValue": "10",
+    "type": "memo",
   },
 ]
 `;

@@ -1,22 +1,71 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`generateHash should minimally generate a consistent hash: hash, object and primitive values 1`] = `
-{
-  "valueArray": "0e8e2b3096e6aee20e3cd10b7788ce3d72502061",
-  "valueArrayConfirmSort": true,
-  "valueArraySort": "3c7765817d3c04f1104093994b6db4371672d3f7",
-  "valueBoolFalse": "c0338288abd30f72cd65dad83833448f345f78fa",
-  "valueBoolTrue": "d991ef01679b350a728c665383abb257cfeca53a",
-  "valueFloat": "ba0abc40d5bc3a257ecf9396e3b2525d7fff76c9",
-  "valueInt": "17dada6f0f5fe358d94f7b0849d17fc8b4c5ce1f",
-  "valueNull": "f7fd41b8a32014e6ccd665899be623c6d5c99d43",
-  "valueObject": "5a7036ff63f04efcc11d6b68eb97a4b9989d1a45",
-  "valueObjectConfirm": true,
-  "valueObjectConfirmSort": false,
-  "valueSet": "86838cc5365d6e9d59fb005d2353dde173712a8a",
-  "valueSetConfirmSort": true,
-  "valueSymbol": "bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f",
-  "valueSymbolUndefined": true,
-  "valueUndefined": "bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f",
-}
-`;
+exports[`generateHash should generate a consistent hash, array of objects, reversed order 1`] = `"06202b82cd89a6fcd7fa23b2f18e971670a1a7e6"`;
+
+exports[`generateHash should generate a consistent hash, array of objects, same order 1`] = `"06202b82cd89a6fcd7fa23b2f18e971670a1a7e6"`;
+
+exports[`generateHash should generate a consistent hash, array, reversed order 1`] = `"9ef50cc82ae474279fb8e82896142702bccbb33a"`;
+
+exports[`generateHash should generate a consistent hash, array, same order 1`] = `"9ef50cc82ae474279fb8e82896142702bccbb33a"`;
+
+exports[`generateHash should generate a consistent hash, bigint 1`] = `"b78029581c6dfdf18a0d1aac46ab6db99857352a"`;
+
+exports[`generateHash should generate a consistent hash, boolean 1`] = `"5ffe533b830f08a0326348a9160afafc8ada44db"`;
+
+exports[`generateHash should generate a consistent hash, circular reference 1`] = `"c1de315e4682f69d3704339f7e564ef74e81d29f"`;
+
+exports[`generateHash should generate a consistent hash, date 1`] = `"ea45cc0aaf078c41d281bc969b1e21d66aaff9c4"`;
+
+exports[`generateHash should generate a consistent hash, error 1`] = `"231aa275786b4856cfaf512aad2c3e4c59147f58"`;
+
+exports[`generateHash should generate a consistent hash, function 1`] = `"adf4394f45bb2dee237a9c9dadc2883a31ae7b18"`;
+
+exports[`generateHash should generate a consistent hash, map of objects, reversed order 1`] = `"d7534cc9388daa961fe01876d91a001b9d02bf1d"`;
+
+exports[`generateHash should generate a consistent hash, map of objects, same order 1`] = `"d7534cc9388daa961fe01876d91a001b9d02bf1d"`;
+
+exports[`generateHash should generate a consistent hash, map with number vs string number 1`] = `"05103e8b4f9b402e4e105ce29df53b8088417ddc"`;
+
+exports[`generateHash should generate a consistent hash, map, reversed order 1`] = `"c9eeacc4516e41a78667977243637cfb357d90ac"`;
+
+exports[`generateHash should generate a consistent hash, map, same order 1`] = `"c9eeacc4516e41a78667977243637cfb357d90ac"`;
+
+exports[`generateHash should generate a consistent hash, null 1`] = `"cc05f953e4621d654a1d43e39e1d6e6c6e7a0fc3"`;
+
+exports[`generateHash should generate a consistent hash, number, Infinity 1`] = `"8e277d4bfce0a1cb296114da4e9bf35325b6622d"`;
+
+exports[`generateHash should generate a consistent hash, number, NaN 1`] = `"bd0232df3e7c88859c4ede3dbfe3adbbb453413b"`;
+
+exports[`generateHash should generate a consistent hash, number, float 1`] = `"4d0db10189f2d1123b8cc3662d6efa722dcda187"`;
+
+exports[`generateHash should generate a consistent hash, number, int 1`] = `"9f9af029585ba014e07cd3910ca976cf56160616"`;
+
+exports[`generateHash should generate a consistent hash, number, negative Infinity 1`] = `"4bb1bdf868dc0daa4333ce0792fbb259772fe8c3"`;
+
+exports[`generateHash should generate a consistent hash, number, negative zero 1`] = `"eb46b7bb25a84f2342ca26dcc3767aa219ba4387"`;
+
+exports[`generateHash should generate a consistent hash, number, negative zero inside array 1`] = `"5437d2bd40f9815cc024cc0978053e1de30eff8f"`;
+
+exports[`generateHash should generate a consistent hash, plain object 1`] = `"f6c24541e7d20e6c541a08c6c51f39163d414361"`;
+
+exports[`generateHash should generate a consistent hash, plain object with nested values, reversed order 1`] = `"db24bc1ae2d7f644dac2582d96a2bafa13a81e80"`;
+
+exports[`generateHash should generate a consistent hash, plain object with nested values, same order 1`] = `"db24bc1ae2d7f644dac2582d96a2bafa13a81e80"`;
+
+exports[`generateHash should generate a consistent hash, regex 1`] = `"c93bde1202770e81192f329e00d776453fdb539b"`;
+
+exports[`generateHash should generate a consistent hash, set of objects, reversed order 1`] = `"99ee65bbcc2b8c6694e201c2e9e6442582f9b973"`;
+
+exports[`generateHash should generate a consistent hash, set of objects, same order 1`] = `"99ee65bbcc2b8c6694e201c2e9e6442582f9b973"`;
+
+exports[`generateHash should generate a consistent hash, set, reversed order 1`] = `"eacc79e3a94672558bd2a81d42eeed3664906fae"`;
+
+exports[`generateHash should generate a consistent hash, set, same order 1`] = `"eacc79e3a94672558bd2a81d42eeed3664906fae"`;
+
+exports[`generateHash should generate a consistent hash, string 1`] = `"8af0dd24cbbe67fa6c55e2641f1e93b76f888ae5"`;
+
+exports[`generateHash should generate a consistent hash, symbols, different instances AND with different strings will NOT return the same 1`] = `"b3f594684e6b3954940c8f206a54a79f153a2424"`;
+
+exports[`generateHash should generate a consistent hash, symbols, different instances BUT with same string will return the same 1`] = `"b3f594684e6b3954940c8f206a54a79f153a2424"`;
+
+exports[`generateHash should generate a consistent hash, undefined 1`] = `"19dafbceef2fcb380547ee9dc4c690a2f9e08d07"`;
