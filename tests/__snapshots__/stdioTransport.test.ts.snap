@@ -387,6 +387,8 @@ exports[`PatternFly MCP, STDIO should expose expected tools and stable shape 1`]
   "toolNames": [
     "componentSchemas",
     "fetchDocs",
+    "getAvailableModulesTool",
+    "getComponentSourceCode",
     "usePatternFlyDocs",
   ],
 }

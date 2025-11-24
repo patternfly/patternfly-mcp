@@ -230,6 +230,12 @@ exports[`runServer should attempt to run server, use default tools: console 1`] 
     [
       "Registered tool: componentSchemas",
     ],
+    [
+      "Registered tool: getAvailableModulesTool",
+    ],
+    [
+      "Registered tool: getComponentSourceCode",
+    ],
   ],
   "log": [
     [
@@ -636,6 +642,60 @@ exports[`runServer should attempt to run server, use default tools: console 1`] 
       "componentSchemas",
       {
         "description": "Get JSON Schema for a PatternFly React component. Returns prop definitions, types, and validation rules. Use this for structured component metadata, not documentation.",
+        "inputSchema": {
+          "componentName": ZodString {
+            "_def": {
+              "checks": [],
+              "coerce": false,
+              "description": "Name of the PatternFly component (e.g., "Button", "Table")",
+              "typeName": "ZodString",
+            },
+            "and": [Function],
+            "array": [Function],
+            "brand": [Function],
+            "catch": [Function],
+            "default": [Function],
+            "describe": [Function],
+            "isNullable": [Function],
+            "isOptional": [Function],
+            "nullable": [Function],
+            "nullish": [Function],
+            "optional": [Function],
+            "or": [Function],
+            "parse": [Function],
+            "parseAsync": [Function],
+            "pipe": [Function],
+            "promise": [Function],
+            "readonly": [Function],
+            "refine": [Function],
+            "refinement": [Function],
+            "safeParse": [Function],
+            "safeParseAsync": [Function],
+            "spa": [Function],
+            "superRefine": [Function],
+            "transform": [Function],
+            "~standard": {
+              "validate": [Function],
+              "vendor": "zod",
+              "version": 1,
+            },
+          },
+        },
+      },
+      [Function],
+    ],
+    [
+      "getAvailableModulesTool",
+      {
+        "description": "Retrieves a list of available Patternfly react-core modules in the current environment.",
+        "inputSchema": {},
+      },
+      [Function],
+    ],
+    [
+      "getComponentSourceCode",
+      {
+        "description": "Retrieve a source code of a specified Patternfly react-core module in the current environment.",
         "inputSchema": {
           "componentName": ZodString {
             "_def": {

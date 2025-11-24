@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`getAvailableModulesTool should have a consistent return structure: structure 1`] = `
+[
+  "getAvailableModulesTool",
+  {
+    "description": "Retrieves a list of available Patternfly react-core modules in the current environment.",
+    "inputSchema": {},
+  },
+  [Function],
+]
+`;
+
+exports[`getAvailableModulesTool, callback should handle modules with special characters in names 1`] = `
+{
+  "content": [
+    {
+      "text": "Button-Group;Data.Table;Nav_Item",
+      "type": "text",
+    },
+  ],
+}
+`;
+
+exports[`getAvailableModulesTool, callback should return empty string when modules map is empty 1`] = `
+{
+  "content": [
+    {
+      "text": "",
+      "type": "text",
+    },
+  ],
+}
+`;
+
+exports[`getAvailableModulesTool, callback should return modules list separated by semicolons 1`] = `
+{
+  "content": [
+    {
+      "text": "Button;Card;Table",
+      "type": "text",
+    },
+  ],
+}
+`;
