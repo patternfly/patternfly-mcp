@@ -38,7 +38,7 @@ describe('getAvailableModulesTool, callback', () => {
     mockGetLocalModulesMap.mockResolvedValue(mockModulesMap);
 
     const [, , callback] = getAvailableModulesTool();
-    const result = await callback({});
+    const result = await callback({ packageName: '@patternfly/react-core' });
 
     expect(mockGetLocalModulesMap).toHaveBeenCalledWith('@patternfly/react-core');
     expect(result).toMatchSnapshot();
@@ -48,7 +48,7 @@ describe('getAvailableModulesTool, callback', () => {
     mockGetLocalModulesMap.mockResolvedValue({});
 
     const [, , callback] = getAvailableModulesTool();
-    const result = await callback({});
+    const result = await callback({ packageName: '@patternfly/react-core' });
 
     expect(result).toMatchSnapshot();
   });
@@ -63,7 +63,7 @@ describe('getAvailableModulesTool, callback', () => {
     mockGetLocalModulesMap.mockResolvedValue(mockModulesMap);
 
     const [, , callback] = getAvailableModulesTool();
-    const result = await callback({});
+    const result = await callback({ packageName: '@patternfly/react-core' });
 
     expect(result).toMatchSnapshot();
   });
@@ -86,8 +86,8 @@ describe('getAvailableModulesTool, callback', () => {
 
     const [, , callback] = getAvailableModulesTool();
 
-    await expect(callback({})).rejects.toThrow(McpError);
-    await expect(callback({})).rejects.toThrow('Failed to retrieve available modules');
+    await expect(callback({ packageName: '@patternfly/react-core' })).rejects.toThrow(McpError);
+    await expect(callback({ packageName: '@patternfly/react-core' })).rejects.toThrow('Failed to retrieve available modules');
   });
 
   it('should always call with @patternfly/react-core package', async () => {
@@ -95,7 +95,7 @@ describe('getAvailableModulesTool, callback', () => {
 
     const [, , callback] = getAvailableModulesTool();
 
-    await callback({});
+    await callback({ packageName: '@patternfly/react-core' });
 
     expect(mockGetLocalModulesMap).toHaveBeenCalledWith('@patternfly/react-core');
     expect(mockGetLocalModulesMap).toHaveBeenCalledTimes(1);

@@ -1,4 +1,5 @@
 import { ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js';
+import { z } from 'zod';
 
 import { type McpTool } from './server';
 import { memo } from './server.caching';
@@ -9,12 +10,20 @@ export const getAvailableModulesTool = (): McpTool => {
     getLocalModulesMap
   );
 
-  const callback = async () => {
+  const callback = async (args: any = {}) => {
+    const { packageName } = args;
+
+    if (typeof packageName !== 'string') {
+      throw new McpError(
+        ErrorCode.InvalidParams,
+        `Missing required parameter: packageName (must be a string): ${packageName}`
+      );
+    }
     let modulesList : string[] = [];
 
     try {
       // should be extended for other packages in the future
-      const modulesMap = await memoGetModulesMap('@patternfly/react-core');
+      const modulesMap = await memoGetModulesMap(packageName);
 
       // no need to return paths, just the module names, reduce the context size
       modulesList = Object.keys(modulesMap);
@@ -40,7 +49,9 @@ export const getAvailableModulesTool = (): McpTool => {
     'getAvailableModules',
     {
       description: 'Retrieves a list of available Patternfly react-core modules in the current environment.',
-      inputSchema: {}
+      inputSchema: {
+        packageName: z.enum(['@patternfly/react-core', '@patternfly/react-icons', '@patternfly/react-table', '@patternfly/react-data-view', '@patternfly/react-component-groups']).describe('Name of the patternfly package to get modules for').default('@patternfly/react-core')
+      }
     },
     callback
   ];

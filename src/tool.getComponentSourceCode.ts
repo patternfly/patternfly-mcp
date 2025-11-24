@@ -14,8 +14,9 @@ export const getComponentSourceCode = (): McpTool => {
   );
 
   const callback = async (args: any = {}) => {
-    const { componentName } = args;
+    const { componentName, packageName: packageNameArg } = args;
     let fileContent: string;
+    const packageName = packageNameArg || '@patternfly/react-core';
 
     if (typeof componentName !== 'string') {
       throw new McpError(
@@ -25,15 +26,15 @@ export const getComponentSourceCode = (): McpTool => {
     }
 
     // should be extended for other packages in the future
-    const status = await verifyLocalPackage('@patternfly/react-core');
+    const status = await verifyLocalPackage(packageName);
 
     if (!status.exists) {
       throw new McpError(
         ErrorCode.InvalidParams,
-        `Package "@patternfly/react-core" not found locally. ${status.error ? status.error.message : ''}`
+        `Package "${packageName}" not found locally. ${status.error ? status.error.message : ''}`
       );
     }
-    const modulesMap = await memoGetModulesMap('@patternfly/react-core');
+    const modulesMap = await memoGetModulesMap(packageName);
     const componentPath = modulesMap[componentName]?.replace(/^dist\/dynamic/, 'src');
 
     if (!componentPath) {
@@ -44,6 +45,7 @@ export const getComponentSourceCode = (): McpTool => {
     }
 
     const componentDir = `${status.packageRoot}/${componentPath}`;
+    // TODO: We can also try to get directly to the component file first before checking re-exports
     const indexFile = path.join(componentDir, 'index.ts');
 
     const indexSource = await readFileAsync(`${componentDir}/index.ts`, 'utf-8');
@@ -57,8 +59,8 @@ export const getComponentSourceCode = (): McpTool => {
 
     const lines = indexSource.split('\n');
     // TODO: the modules map does not provide paths for everything, need to improve that
-    const searchPattern = `'./${componentName}';`;
-    const importPartial = lines.find(line => line.includes(searchPattern));
+    const searchPattern = new RegExp(`'\\./${componentName}';?$`);
+    const importPartial = lines.find(line => searchPattern.test(line));
 
     if (typeof importPartial === 'undefined' || !importPartial) {
       throw new McpError(
@@ -108,7 +110,8 @@ export const getComponentSourceCode = (): McpTool => {
     {
       description: 'Retrieve a source code of a specified Patternfly react-core module in the current environment.',
       inputSchema: {
-        componentName: z.string().describe('Name of the PatternFly component (e.g., "Button", "Table")')
+        componentName: z.string().describe('Name of the PatternFly component (e.g., "Button", "Table")'),
+        packageName: z.enum(['@patternfly/react-core', '@patternfly/react-table', '@patternfly/react-data-view', '@patternfly/react-component-groups']).optional().describe('Name of the patternfly package to get component from').default('@patternfly/react-core')
       }
     },
     callback
