@@ -115,7 +115,6 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
         clearTimeout(timeout);
 
         timeout = setTimeout(() => {
-          // Call onCacheExpire
           if (isOnCacheExpire) {
             const allCacheEntries: Array<TReturn> = [];
 
@@ -183,7 +182,7 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
           try {
             cache.unshift(key, func.call(null, ...args));
           } catch (error) {
-            // Wrap a sync error in a function and cache it
+            // Wrap a sync error in a function then cache it
             const errorFunc = () => {
               throw error;
             };
@@ -193,7 +192,7 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
           }
         }
 
-        // Run after cache update to run callback and trim
+        // Run callback and cache trim after cache update.
         if (isMemo) {
           if (isOnCacheRollout && cache.length > cacheLimit * 2) {
             const allCacheEntries: Array<TReturn> = [];
