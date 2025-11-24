@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`PatternFly MCP, HTTP Transport should expose expected tools and stable shape 1`] = `
+[
+  "componentSchemas",
+  "fetchDocs",
+  "usePatternFlyDocs",
+]
+`;

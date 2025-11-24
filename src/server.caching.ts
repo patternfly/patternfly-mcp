@@ -68,6 +68,14 @@ interface MemoOptions<TReturn = unknown> {
 }
 
 /**
+ * A memoized function.
+ *
+ * @template TArgs Arguments passed to the memoized function represented as an array.
+ * @template TReturn Return type of the memoized function.
+ */
+type Memo<TArgs extends unknown[] = unknown[], TReturn = unknown> = (...args: TArgs) => TReturn;
+
+/**
  * Simple argument-based memoize with adjustable cache limit, and extendable cache expire.
  * apidoc-mock: https://github.com/cdcabrera/apidoc-mock.git
  *
@@ -256,4 +264,4 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
   return ized();
 };
 
-export { memo, type MemoCacheHandlerResponse, type MemoDebugHandler, type MemoCache, type OnMemoCacheHandler, type MemoOptions };
+export { memo, type Memo, type MemoCacheHandlerResponse, type MemoDebugHandler, type MemoCache, type OnMemoCacheHandler, type MemoOptions };

@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`formatPortConflictError should return a formatted message, with process info 1`] = `"Port 3000 is already in use by PID 123456789. Please use a different port or stop the process using this port."`;
+
+exports[`formatPortConflictError should return a formatted message, without process info 1`] = `"Port 3000 is already in use. Please use a different port or stop the process using this port."`;
+
+exports[`getProcessOnPort should attempt to find a process listening on a port: ps fallback 1`] = `
+{
+  "command": "<execSync>["ps -p 123456789 -o command=",{"encoding":"utf8","stdio":["ignore","pipe","pipe"]}]</execSync>",
+  "pid": 123456789,
+}
+`;
+
+exports[`startHttpTransport should start HTTP server, with port and host: server setup 1`] = `
+{
+  "serverClose": [
+    [
+      [Function],
+    ],
+  ],
+  "setupHandlers": [
+    [
+      "error",
+      [Function],
+    ],
+  ],
+  "setupServer": [
+    [
+      {
+        "handleRequest": [MockFunction],
+        "sessionId": "test-session-123",
+      },
+    ],
+    [
+      3000,
+      "localhost",
+      [Function],
+    ],
+  ],
+  "setupTransport": [
+    [
+      {
+        "enableDnsRebindingProtection": true,
+        "enableJsonResponse": false,
+        "onsessionclosed": [Function],
+        "onsessioninitialized": [Function],
+        "sessionIdGenerator": [Function],
+      },
+    ],
+  ],
+}
+`;

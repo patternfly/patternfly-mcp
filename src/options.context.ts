@@ -1,6 +1,7 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { type GlobalOptions } from './options';
 import { DEFAULT_OPTIONS } from './options.defaults';
+import { memo, type Memo, type MemoOptions } from './server.caching';
 
 /**
  * AsyncLocalStorage instance for per-instance options
@@ -61,5 +62,32 @@ const runWithOptions = async <T>(
   return optionsContext.run(frozen, callback);
 };
 
-export { getOptions, optionsContext, runWithOptions, setOptions };
+/**
+ * Run memo with specific options context.
+ *
+ * Context values always override provided options. If consumers aren't allowed to
+ * modify memo options consider using `memo()` directly.
+ *
+ * @template TArgs Arguments passed to the provided function represented as an array.
+ * @template TReturn Return type of the provided/memoized function.
+ *
+ * @param func - The function to memoize
+ * @param {MemoOptions<TReturn>} options - Memo options
+ * @returns Memoized function that reads contextual options
+ */
+const memoWithOptions = <TArgs extends unknown[], TReturn = unknown>(
+  func: (...args: TArgs) => TReturn,
+  options: MemoOptions<TReturn>
+): Memo<TArgs, TReturn> => {
+  const cacheLimit = getOptions().cacheLimit;
+  const updatedOptions = { ...options };
+
+  if (cacheLimit !== undefined) {
+    updatedOptions.cacheLimit = cacheLimit;
+  }
+
+  return memo(func, updatedOptions);
+};
+
+export { getOptions, memoWithOptions, optionsContext, runWithOptions, setOptions };
 

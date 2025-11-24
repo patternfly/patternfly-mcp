@@ -39,14 +39,19 @@ describe('main', () => {
 
       return Object.freeze({ ...DEFAULT_OPTIONS, ...options }) as unknown as GlobalOptions;
     });
+    const mockServerInstance = {
+      stop: jest.fn().mockResolvedValue(undefined),
+      isRunning: jest.fn().mockReturnValue(true)
+    };
+
     mockRunServer.mockImplementation(async () => {
       callOrder.push('run');
 
-      return {
-        stop: jest.fn().mockResolvedValue(undefined),
-        isRunning: jest.fn().mockReturnValue(true)
-      };
+      return mockServerInstance;
     });
+
+    // Also mock runServer.memo since index.ts uses runServer.memo
+    (mockRunServer as any).memo = mockRunServer;
   });
 
   afterEach(() => {

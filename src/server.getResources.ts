@@ -26,6 +26,9 @@ const fetchUrlFunction = async (url: string) => {
   const timeoutMs = Number(process.env.DOC_MCP_FETCH_TIMEOUT_MS || 15_000);
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
+  // Allow the process to exit
+  timeout.unref();
+
   try {
     const response = await fetch(url, {
       signal: controller.signal,

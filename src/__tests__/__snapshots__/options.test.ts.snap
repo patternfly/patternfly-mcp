@@ -1,19 +1,131 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
+exports[`parseCliOptions should attempt to parse args with --allowed-hosts 1`] = `
+{
+  "allowedHosts": [
+    "localhost",
+    "127.0.0.1",
+  ],
+  "allowedOrigins": undefined,
+  "cacheLimit": 3,
+  "docsHost": false,
+  "host": "127.0.0.1",
+  "http": true,
+  "port": 3000,
+}
+`;
+
+exports[`parseCliOptions should attempt to parse args with --allowed-origins 1`] = `
+{
+  "allowedHosts": undefined,
+  "allowedOrigins": [
+    "https://app.com",
+    "https://admin.app.com",
+  ],
+  "cacheLimit": 3,
+  "docsHost": false,
+  "host": "127.0.0.1",
+  "http": true,
+  "port": 3000,
+}
+`;
+
+exports[`parseCliOptions should attempt to parse args with --cache-limit 1`] = `
+{
+  "allowedHosts": undefined,
+  "allowedOrigins": undefined,
+  "cacheLimit": 5,
+  "docsHost": false,
+  "host": "127.0.0.1",
+  "http": true,
+  "port": 3000,
+}
+`;
+
+exports[`parseCliOptions should attempt to parse args with --cache-limit 1 1`] = `
+{
+  "allowedHosts": undefined,
+  "allowedOrigins": undefined,
+  "cacheLimit": 1,
+  "docsHost": false,
+  "host": "127.0.0.1",
+  "http": true,
+  "port": 3000,
+}
+`;
+
 exports[`parseCliOptions should attempt to parse args with --docs-host flag 1`] = `
 {
+  "allowedHosts": undefined,
+  "allowedOrigins": undefined,
+  "cacheLimit": 3,
   "docsHost": true,
+  "host": "127.0.0.1",
+  "http": false,
+  "port": 3000,
+}
+`;
+
+exports[`parseCliOptions should attempt to parse args with --http and --host 1`] = `
+{
+  "allowedHosts": undefined,
+  "allowedOrigins": undefined,
+  "cacheLimit": 3,
+  "docsHost": false,
+  "host": "0.0.0.0",
+  "http": true,
+  "port": 3000,
+}
+`;
+
+exports[`parseCliOptions should attempt to parse args with --http and --port 1`] = `
+{
+  "allowedHosts": undefined,
+  "allowedOrigins": undefined,
+  "cacheLimit": 3,
+  "docsHost": false,
+  "host": "127.0.0.1",
+  "http": true,
+  "port": 8080,
+}
+`;
+
+exports[`parseCliOptions should attempt to parse args with --http flag 1`] = `
+{
+  "allowedHosts": undefined,
+  "allowedOrigins": undefined,
+  "cacheLimit": 3,
+  "docsHost": false,
+  "host": "127.0.0.1",
+  "http": true,
+  "port": 3000,
 }
 `;
 
 exports[`parseCliOptions should attempt to parse args with other arguments 1`] = `
 {
+  "allowedHosts": undefined,
+  "allowedOrigins": undefined,
+  "cacheLimit": 3,
   "docsHost": false,
+  "host": "127.0.0.1",
+  "http": false,
+  "port": 3000,
 }
 `;
 
 exports[`parseCliOptions should attempt to parse args without --docs-host flag 1`] = `
 {
+  "allowedHosts": undefined,
+  "allowedOrigins": undefined,
+  "cacheLimit": 3,
   "docsHost": false,
+  "host": "127.0.0.1",
+  "http": false,
+  "port": 3000,
 }
 `;
+
+exports[`parseCliOptions should throw port errors, invalid 1`] = `"Invalid port: 99999. Must be between 1 and 65535."`;
+
+exports[`parseCliOptions should throw port errors, negative number 1`] = `"Invalid port: -1. Must be between 1 and 65535."`;
