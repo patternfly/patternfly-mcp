@@ -111,7 +111,7 @@ export const getComponentSourceCode = (): McpTool => {
       description: 'Retrieve a source code of a specified Patternfly react-core module in the current environment.',
       inputSchema: {
         componentName: z.string().describe('Name of the PatternFly component (e.g., "Button", "Table")'),
-        packageName: z.enum(['@patternfly/react-core', '@patternfly/react-table', '@patternfly/react-data-view', '@patternfly/react-component-groups']).optional().describe('Name of the patternfly package to get component from').default('@patternfly/react-core')
+        packageName: z.enum(['@patternfly/react-core', '@patternfly/react-table', '@patternfly/react-data-view', '@patternfly/react-component-groups']).optional().describe('Name of the patternfly package to get component from. For tables its always better to use the @patternfly/react-data-view package.').default('@patternfly/react-core')
       }
     },
     callback

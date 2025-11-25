@@ -236,6 +236,9 @@ exports[`runServer should attempt to run server, use default tools: console 1`] 
     [
       "Registered tool: getComponentSourceCode",
     ],
+    [
+      "Registered tool: getReactUtilityClasses",
+    ],
   ],
   "log": [
     [
@@ -692,11 +695,11 @@ exports[`runServer should attempt to run server, use default tools: console 1`] 
           "packageName": ZodDefault {
             "_def": {
               "defaultValue": [Function],
-              "description": "Name of the patternfly package to get modules for",
+              "description": "Name of the patternfly package to get modules for. For tables its always better to use the @patternfly/react-data-view package.",
               "errorMap": [Function],
               "innerType": ZodEnum {
                 "_def": {
-                  "description": "Name of the patternfly package to get modules for",
+                  "description": "Name of the patternfly package to get modules for. For tables its always better to use the @patternfly/react-data-view package.",
                   "typeName": "ZodEnum",
                   "values": [
                     "@patternfly/react-core",
@@ -817,11 +820,11 @@ exports[`runServer should attempt to run server, use default tools: console 1`] 
           "packageName": ZodDefault {
             "_def": {
               "defaultValue": [Function],
-              "description": "Name of the patternfly package to get component from",
+              "description": "Name of the patternfly package to get component from. For tables its always better to use the @patternfly/react-data-view package.",
               "errorMap": [Function],
               "innerType": ZodOptional {
                 "_def": {
-                  "description": "Name of the patternfly package to get component from",
+                  "description": "Name of the patternfly package to get component from. For tables its always better to use the @patternfly/react-data-view package.",
                   "errorMap": [Function],
                   "innerType": ZodEnum {
                     "_def": {
@@ -896,6 +899,62 @@ exports[`runServer should attempt to run server, use default tools: console 1`] 
                 },
               },
               "typeName": "ZodDefault",
+            },
+            "and": [Function],
+            "array": [Function],
+            "brand": [Function],
+            "catch": [Function],
+            "default": [Function],
+            "describe": [Function],
+            "isNullable": [Function],
+            "isOptional": [Function],
+            "nullable": [Function],
+            "nullish": [Function],
+            "optional": [Function],
+            "or": [Function],
+            "parse": [Function],
+            "parseAsync": [Function],
+            "pipe": [Function],
+            "promise": [Function],
+            "readonly": [Function],
+            "refine": [Function],
+            "refinement": [Function],
+            "safeParse": [Function],
+            "safeParseAsync": [Function],
+            "spa": [Function],
+            "superRefine": [Function],
+            "transform": [Function],
+            "~standard": {
+              "validate": [Function],
+              "vendor": "zod",
+              "version": 1,
+            },
+          },
+        },
+      },
+      [Function],
+    ],
+    [
+      "getReactUtilityClasses",
+      {
+        "description": "Retrieves a list of available Patternfly react-styles utility classes in the current environment.",
+        "inputSchema": {
+          "utilityName": ZodEnum {
+            "_def": {
+              "description": "Name of a set of utility classes to retrieve from @patternfly/react-styles.",
+              "typeName": "ZodEnum",
+              "values": [
+                "Accessibility",
+                "Alignment",
+                "BackgroundColor",
+                "BoxShadow",
+                "Display",
+                "Flex",
+                "Float",
+                "Sizing",
+                "Spacing",
+                "Text",
+              ],
             },
             "and": [Function],
             "array": [Function],

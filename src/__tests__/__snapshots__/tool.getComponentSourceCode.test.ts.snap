@@ -46,11 +46,11 @@ exports[`getComponentSourceCode should have a consistent return structure: struc
       "packageName": ZodDefault {
         "_def": {
           "defaultValue": [Function],
-          "description": "Name of the patternfly package to get component from",
+          "description": "Name of the patternfly package to get component from. For tables its always better to use the @patternfly/react-data-view package.",
           "errorMap": [Function],
           "innerType": ZodOptional {
             "_def": {
-              "description": "Name of the patternfly package to get component from",
+              "description": "Name of the patternfly package to get component from. For tables its always better to use the @patternfly/react-data-view package.",
               "errorMap": [Function],
               "innerType": ZodEnum {
                 "_def": {

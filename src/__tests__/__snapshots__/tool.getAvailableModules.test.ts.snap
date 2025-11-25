@@ -9,11 +9,11 @@ exports[`getAvailableModulesTool should have a consistent return structure: stru
       "packageName": ZodDefault {
         "_def": {
           "defaultValue": [Function],
-          "description": "Name of the patternfly package to get modules for",
+          "description": "Name of the patternfly package to get modules for. For tables its always better to use the @patternfly/react-data-view package.",
           "errorMap": [Function],
           "innerType": ZodEnum {
             "_def": {
-              "description": "Name of the patternfly package to get modules for",
+              "description": "Name of the patternfly package to get modules for. For tables its always better to use the @patternfly/react-data-view package.",
               "typeName": "ZodEnum",
               "values": [
                 "@patternfly/react-core",

@@ -50,7 +50,7 @@ export const getAvailableModulesTool = (): McpTool => {
     {
       description: 'Retrieves a list of available Patternfly react-core modules in the current environment.',
       inputSchema: {
-        packageName: z.enum(['@patternfly/react-core', '@patternfly/react-icons', '@patternfly/react-table', '@patternfly/react-data-view', '@patternfly/react-component-groups']).describe('Name of the patternfly package to get modules for').default('@patternfly/react-core')
+        packageName: z.enum(['@patternfly/react-core', '@patternfly/react-icons', '@patternfly/react-table', '@patternfly/react-data-view', '@patternfly/react-component-groups']).describe('Name of the patternfly package to get modules for. For tables its always better to use the @patternfly/react-data-view package.').default('@patternfly/react-core')
       }
     },
     callback

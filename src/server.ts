@@ -7,6 +7,7 @@ import { getOptions, runWithOptions } from './options.context';
 import { type GlobalOptions } from './options';
 import { getAvailableModulesTool } from './tool.getAvailableModules';
 import { getComponentSourceCode } from './tool.getComponentSourceCode';
+import { getReactUtilityClasses } from './tool.getReactUtilityClasses';
 
 type McpTool = [string, { description: string; inputSchema: any }, (args: any) => Promise<any>];
 
@@ -42,7 +43,8 @@ const runServer = async (options = getOptions(), {
     fetchDocsTool,
     componentSchemasTool,
     getAvailableModulesTool,
-    getComponentSourceCode
+    getComponentSourceCode,
+    getReactUtilityClasses
   ],
   enableSigint = true
 }: { tools?: McpToolCreator[]; enableSigint?: boolean } = {}): Promise<ServerInstance> => {
