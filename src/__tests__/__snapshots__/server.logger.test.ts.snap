@@ -1,0 +1,92 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`createServerLogger should attempt to subscribe and unsubscribe from a channel, with no logging options: subscribe 1`] = `
+{
+  "subscribe": [],
+  "unsubscribe": [],
+}
+`;
+
+exports[`createServerLogger should attempt to subscribe and unsubscribe from a channel, with stderr, and emulated channel to pass checks: subscribe 1`] = `
+{
+  "subscribe": [
+    [
+      "@patternfly/patternfly-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+      [Function],
+    ],
+  ],
+  "unsubscribe": [
+    [
+      "@patternfly/patternfly-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+      [Function],
+    ],
+  ],
+}
+`;
+
+exports[`createServerLogger should attempt to subscribe and unsubscribe from a channel, with stderr, protocol, and emulated channel to pass checks: subscribe 1`] = `
+{
+  "subscribe": [
+    [
+      "@patternfly/patternfly-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+      [Function],
+    ],
+    [
+      "@patternfly/patternfly-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+      [Function],
+    ],
+  ],
+  "unsubscribe": [
+    [
+      "@patternfly/patternfly-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+      [Function],
+    ],
+    [
+      "@patternfly/patternfly-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+      [Function],
+    ],
+  ],
+}
+`;
+
+exports[`createServerLogger should return a memoized server logger that avoids duplicate sinks; teardown stops emissions: stderr 1`] = `
+[
+  [
+    "[INFO]:	lorem ipsum, dolor sit info
+",
+  ],
+  [
+    "[INFO]:	dolor sit amet
+",
+  ],
+]
+`;
+
+exports[`registerMcpSubscriber should attempt to subscribe and unsubscribe from a channel: subscribe 1`] = `
+{
+  "subscribe": [
+    [
+      "@patternfly/patternfly-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+      [Function],
+    ],
+  ],
+  "unsubscribe": [
+    [
+      "@patternfly/patternfly-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+      [Function],
+    ],
+  ],
+}
+`;
+
+exports[`toMcpLevel should return log severity, anything 1`] = `"error"`;
+
+exports[`toMcpLevel should return log severity, debug 1`] = `"debug"`;
+
+exports[`toMcpLevel should return log severity, default 1`] = `"error"`;
+
+exports[`toMcpLevel should return log severity, error 1`] = `"error"`;
+
+exports[`toMcpLevel should return log severity, info 1`] = `"info"`;
+
+exports[`toMcpLevel should return log severity, warn 1`] = `"warning"`;

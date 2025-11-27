@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { parseCliOptions, type CliOptions } from './options';
+import { parseCliOptions, type CliOptions, type DefaultOptions } from './options';
 import { setOptions } from './options.context';
 import { runServer, type ServerInstance } from './server';
 
@@ -10,16 +10,17 @@ import { runServer, type ServerInstance } from './server';
  * @param programmaticOptions - Optional programmatic options that override CLI options
  * @returns {Promise<ServerInstance>} Server-instance with shutdown capability
  */
-const main = async (programmaticOptions?: Partial<CliOptions>): Promise<ServerInstance> => {
+const main = async (programmaticOptions?: Partial<DefaultOptions>): Promise<ServerInstance> => {
   try {
     // Parse CLI options
     const cliOptions = parseCliOptions();
 
-    // Apply options to context. setOptions merges with DEFAULT_OPTIONS internally
+    // Apply options to context. setOptions merges with session and DEFAULT_OPTIONS internally
     setOptions({ ...cliOptions, ...programmaticOptions });
 
     return await runServer();
   } catch (error) {
+    // Use console.error, log.error requires initialization
     console.error('Failed to start server:', error);
     process.exit(1);
   }
@@ -28,6 +29,7 @@ const main = async (programmaticOptions?: Partial<CliOptions>): Promise<ServerIn
 // Start the server
 if (process.env.NODE_ENV !== 'local') {
   main().catch(error => {
+    // Use console.error, log.error requires initialization
     console.error('Failed to start server:', error);
     process.exit(1);
   });

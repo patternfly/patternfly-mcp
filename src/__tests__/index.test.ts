@@ -17,6 +17,7 @@ describe('main', () => {
   let consoleErrorSpy: jest.SpyInstance;
   let processExitSpy: jest.SpyInstance;
   let callOrder: string[] = [];
+  const defaultLogging = { level: 'info' as const, stderr: false, protocol: false };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -32,7 +33,7 @@ describe('main', () => {
     mockParseCliOptions.mockImplementation(() => {
       callOrder.push('parse');
 
-      return { docsHost: false };
+      return { docsHost: false, logging: defaultLogging } as unknown as CliOptions;
     });
     mockSetOptions.mockImplementation(options => {
       callOrder.push('set');
@@ -130,10 +131,10 @@ describe('main', () => {
     mockParseCliOptions.mockImplementation(() => {
       callOrder.push('parse');
 
-      return cliOptions;
+      return { ...(cliOptions as any), logging: defaultLogging } as unknown as CliOptions;
     });
 
-    await method(programmaticOptions);
+    await method(programmaticOptions as any);
 
     expect({
       methodRegistersAs: method.name,

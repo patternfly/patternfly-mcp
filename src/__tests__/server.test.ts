@@ -2,20 +2,25 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { runServer } from '../server';
 import { type GlobalOptions } from '../options';
+import { log } from '../logger';
 
 // Mock dependencies
 jest.mock('@modelcontextprotocol/sdk/server/mcp.js');
 jest.mock('@modelcontextprotocol/sdk/server/stdio.js');
+jest.mock('../logger');
+jest.mock('../server.logger', () => ({
+  createServerLogger: {
+    memo: jest.fn().mockImplementation(() => {})
+  }
+}));
 
 const MockMcpServer = McpServer as jest.MockedClass<typeof McpServer>;
 const MockStdioServerTransport = StdioServerTransport as jest.MockedClass<typeof StdioServerTransport>;
+const MockLog = log as jest.MockedObject<typeof log>;
 
 describe('runServer', () => {
   let mockServer: any;
   let mockTransport: any;
-  let consoleInfoSpy: jest.SpyInstance;
-  let consoleLogSpy: jest.SpyInstance;
-  let consoleErrorSpy: jest.SpyInstance;
   let processOnSpy: jest.SpyInstance;
 
   beforeEach(() => {
@@ -34,19 +39,11 @@ describe('runServer', () => {
     MockMcpServer.mockImplementation(() => mockServer);
     MockStdioServerTransport.mockImplementation(() => mockTransport);
 
-    // Spy on console methods
-    consoleInfoSpy = jest.spyOn(console, 'info').mockImplementation();
-    consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
-    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-
     // Spy on process.on method
     processOnSpy = jest.spyOn(process, 'on').mockImplementation();
   });
 
   afterEach(() => {
-    consoleInfoSpy.mockRestore();
-    consoleLogSpy.mockRestore();
-    consoleErrorSpy.mockRestore();
     processOnSpy.mockRestore();
   });
 
@@ -61,6 +58,7 @@ describe('runServer', () => {
       options: {
         name: 'test-server',
         version: '1.0.0'
+        // logging: { protocol: false }
       },
       tools: []
     },
@@ -117,13 +115,13 @@ describe('runServer', () => {
     await runServer(options as GlobalOptions, Object.keys(settings).length > 0 ? settings : undefined);
 
     expect(MockStdioServerTransport).toHaveBeenCalled();
+
     expect({
-      info: consoleInfoSpy.mock.calls,
+      events: MockLog.info.mock.calls,
       registerTool: mockServer.registerTool.mock.calls,
       mcpServer: MockMcpServer.mock.calls,
-      log: consoleLogSpy.mock.calls,
       process: processOnSpy.mock.calls
-    }).toMatchSnapshot('console');
+    }).toMatchSnapshot('diagnostics');
   });
 
   it('should handle errors during server creation', async () => {
@@ -133,8 +131,7 @@ describe('runServer', () => {
       throw error;
     });
 
-    await expect(runServer(undefined, { tools: [] })).rejects.toThrow('Server creation failed');
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Error creating MCP server:', error);
+    await expect(runServer(undefined, { tools: [] })).rejects.toThrowErrorMatchingSnapshot('Server creation failed');
   });
 
   it('should handle errors during connection', async () => {
@@ -142,7 +139,6 @@ describe('runServer', () => {
 
     mockServer.connect.mockRejectedValue(error);
 
-    await expect(runServer(undefined, { tools: [] })).rejects.toThrow('Connection failed');
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Error creating MCP server:', error);
+    await expect(runServer(undefined, { tools: [] })).rejects.toThrowErrorMatchingSnapshot('Connection failed');
   });
 });

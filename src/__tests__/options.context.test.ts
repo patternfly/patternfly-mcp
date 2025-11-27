@@ -46,6 +46,7 @@ describe('tool creator options context', () => {
   let mockTransport: any;
 
   beforeEach(() => {
+    setOptions({});
     jest.clearAllMocks();
 
     // Mock server instance

@@ -71,6 +71,38 @@ describe('Hosted mode, --docs-host', () => {
   });
 });
 
+describe('Logging', () => {
+  it.each([
+    {
+      description: 'default',
+      args: []
+    },
+    {
+      description: 'stderr',
+      args: ['--log-stderr']
+    },
+    {
+      description: 'verbose',
+      args: ['--log-stderr', '--verbose']
+    },
+    {
+      description: 'with log level filtering',
+      args: ['--log-level', 'warn']
+    },
+    {
+      description: 'with mcp protocol',
+      args: ['--verbose', '--log-protocol']
+    }
+  ])('should allow setting logging options, $description', async ({ args }) => {
+    const serverArgs = [...args];
+    const client = await startServer({ args: serverArgs });
+
+    expect(client.logs()).toMatchSnapshot();
+
+    await client.stop();
+  });
+});
+
 describe('External URLs', () => {
   let fetchMock: Awaited<ReturnType<typeof setupFetchMock>> | undefined;
   let url: string;

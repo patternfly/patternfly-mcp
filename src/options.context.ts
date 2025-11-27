@@ -1,6 +1,7 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
+import { randomUUID } from 'node:crypto';
 import { type GlobalOptions } from './options';
-import { DEFAULT_OPTIONS } from './options.defaults';
+import { DEFAULT_OPTIONS, type LoggingSession, type DefaultOptions } from './options.defaults';
 
 /**
  * AsyncLocalStorage instance for per-instance options
@@ -13,11 +14,17 @@ const optionsContext = new AsyncLocalStorage<GlobalOptions>();
 /**
  * Set and freeze cloned options in the current async context.
  *
- * @param {Partial<GlobalOptions>} options - Options to set in context (merged with DEFAULT_OPTIONS)
- * @returns {GlobalOptions} Cloned frozen options object
+ * - Applies a unique session ID and logging channel name
+ *
+ * @param {Partial<DefaultOptions>} [options] - Optional options to set in context. Merged with DEFAULT_OPTIONS.
+ * @returns {GlobalOptions} Cloned frozen default options object with session.
  */
-const setOptions = (options: Partial<GlobalOptions>): GlobalOptions => {
-  const merged = { ...DEFAULT_OPTIONS, ...options } as GlobalOptions;
+const setOptions = (options?: Partial<DefaultOptions>): GlobalOptions => {
+  const base = { ...DEFAULT_OPTIONS, ...options } as DefaultOptions;
+  const sessionId = (process.env.NODE_ENV === 'local' && '1234d567-1ce9-123d-1413-a1234e56c789') || randomUUID();
+  const channelName = `${base.logging.baseName}:${sessionId}`;
+  const loggingSession: LoggingSession = { ...base.logging, channelName };
+  const merged = { ...base, sessionId, logging: loggingSession } as unknown as GlobalOptions;
   const frozen = Object.freeze(structuredClone(merged));
 
   optionsContext.enterWith(frozen);
@@ -46,20 +53,27 @@ const getOptions = (): GlobalOptions => {
 };
 
 /**
+ * Get logging options from the current context.
+ *
+ * @returns {LoggingSession} Logging options from context.
+ */
+const getLoggerOptions = (): LoggingSession => getOptions().logging;
+
+/**
  * Run a function with specific options context. Useful for testing or programmatic usage.
  *
  * @param options - Options to use in context
  * @param callback - Function to apply options context against
- * @returns {Promise<T>} Result of function
+ * @returns Result of function
  */
-const runWithOptions = async <T>(
+const runWithOptions = async <TReturn=unknown>(
   options: GlobalOptions,
-  callback: () => Promise<T>
-): Promise<T> => {
+  callback: () => TReturn | Promise<TReturn>
+) => {
   const frozen = Object.freeze(structuredClone(options));
 
   return optionsContext.run(frozen, callback);
 };
 
-export { getOptions, optionsContext, runWithOptions, setOptions };
+export { getOptions, getLoggerOptions, optionsContext, runWithOptions, setOptions };
 

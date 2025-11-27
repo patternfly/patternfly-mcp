@@ -6,6 +6,11 @@ exports[`main should merge default, cli and programmatic options, merge programm
     [
       {
         "docsHost": true,
+        "logging": {
+          "level": "info",
+          "protocol": false,
+          "stderr": false,
+        },
       },
     ],
   ],
@@ -24,6 +29,11 @@ exports[`main should merge default, cli and programmatic options, merge programm
     [
       {
         "docsHost": true,
+        "logging": {
+          "level": "info",
+          "protocol": false,
+          "stderr": false,
+        },
       },
     ],
   ],
@@ -42,6 +52,11 @@ exports[`main should merge default, cli and programmatic options, with empty pro
     [
       {
         "docsHost": true,
+        "logging": {
+          "level": "info",
+          "protocol": false,
+          "stderr": false,
+        },
       },
     ],
   ],
@@ -60,6 +75,11 @@ exports[`main should merge default, cli and programmatic options, with undefined
     [
       {
         "docsHost": false,
+        "logging": {
+          "level": "info",
+          "protocol": false,
+          "stderr": false,
+        },
       },
     ],
   ],

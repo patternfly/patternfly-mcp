@@ -4,7 +4,8 @@
  */
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
-import { ResultSchema } from '@modelcontextprotocol/sdk/types.js';
+import { ResultSchema, LoggingMessageNotificationSchema, type LoggingLevel } from '@modelcontextprotocol/sdk/types.js';
+import { parseCliOptions } from '../../src/options';
 
 export interface StartOptions {
   command?: string;
@@ -28,6 +29,9 @@ export interface StdioTransportClient {
   send: (request: { method: string; params?: any }, opts?: { timeoutMs?: number }) => Promise<RpcResponse>;
   stop: (signal?: NodeJS.Signals) => Promise<void>;
   close: () => Promise<void>; // Alias for stop()
+  logs: () => string[];
+  stderrLogs: () => string[];
+  protocolLogs: () => string[];
 }
 
 /**
@@ -38,7 +42,7 @@ export interface StdioTransportClient {
  * @param options - Server configuration options
  * @param options.command - Node command to run (default: 'node')
  * @param options.serverPath - Path to built server (default: process.env.SERVER_PATH || 'dist/index.js')
- * @param options.args - Additional args to pass to server (e.g., ['--docs-host'])
+ * @param options.args - Additional args to pass to server, see app `CliOptions` for the full list (e.g., ['--docs-host'])
  * @param options.env - Environment variables for the child process
  */
 export const startServer = async ({
@@ -67,6 +71,9 @@ export const startServer = async ({
     }
   );
 
+  const parsedArgs = parseCliOptions(args);
+  const loggingArgs = parsedArgs?.logging || {};
+
   // Track whether we're intentionally closing the client
   // This allows us to suppress expected errors during cleanup
   let isClosing = false;
@@ -88,15 +95,35 @@ export const startServer = async ({
     }
   };
 
-  // Connect client to transport (this automatically starts transport and initializes the session)
+  // Collect protocol logs (MCP notifications/message) when enabled via CLI arg
+  const protocolLogs: any[] = [];
+
+  // Register the handler BEFORE connect so we don't miss early server messages
+  if (loggingArgs.protocol) {
+    try {
+      mcpClient.setNotificationHandler(LoggingMessageNotificationSchema, (params: any) => {
+        protocolLogs.push(params);
+      });
+    } catch {}
+  }
+
+  // Connect client to transport. This automatically starts transport and initializes the session
   await mcpClient.connect(transport);
 
-  // Access stderr stream if available to handle server logs
-  // This prevents server logs from interfering with JSON-RPC parsing
+  // Negotiate protocol logging level if the server advertises it
+  if (loggingArgs.protocol) {
+    try {
+      await mcpClient.setLoggingLevel(loggingArgs.level as LoggingLevel);
+    } catch {}
+  }
+
+  // Access stderr stream if available. stderr is used to prevent logs from interfering with JSON-RPC parsing
+  // Collect server stderr logs
+  const stderrLogs: string[] = [];
+
   if (transport.stderr) {
-    transport.stderr.on('data', (_data: Buffer) => {
-      // Server logs go to stderr, we can optionally log them for debugging,
-      // but we don't need to do anything with them for the tests to work
+    transport.stderr.on('data', (data: Buffer) => {
+      stderrLogs.push(data.toString());
     });
   }
 
@@ -183,6 +210,12 @@ export const startServer = async ({
       }
     },
 
+    logs: () => [
+      ...stderrLogs,
+      ...protocolLogs
+    ],
+    stderrLogs: () => stderrLogs.slice(),
+    protocolLogs: () => protocolLogs.slice(),
     stop,
     close: stop
   };
