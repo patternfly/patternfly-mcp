@@ -8,11 +8,12 @@ interface DefaultOptions {
   resourceMemoOptions: Partial<typeof RESOURCE_MEMO_OPTIONS>;
   toolMemoOptions: Partial<typeof TOOL_MEMO_OPTIONS>;
   pfExternal: string;
-  pfExternalCharts: string;
-  pfExternalChartsComponents: string;
-  pfExternalChartsDesign: string;
-  pfExternalDesign: string;
   pfExternalDesignComponents: string;
+  pfExternalExamplesComponents: string;
+  pfExternalExamplesLayouts: string;
+  pfExternalExamplesCharts: string;
+  pfExternalExamplesTable: string;
+  pfExternalChartsDesign: string;
   pfExternalDesignLayouts: string;
   pfExternalAccessibility: string;
   separator: string;
@@ -67,59 +68,82 @@ const TOOL_MEMO_OPTIONS = {
  */
 const URL_REGEX = /^(https?:)\/\//i;
 
-/**
- * PatternFly docs root URL
- */
-const PF_EXTERNAL = 'https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content';
+const PF_EXTERNAL_EXAMPLES_VERSION = 'v6.4.0';
 
 /**
- * PatternFly design guidelines URL
+ * PatternFly examples URL
  */
-const PF_EXTERNAL_DESIGN = `${PF_EXTERNAL}/design-guidelines`;
+const PF_EXTERNAL_EXAMPLES = `https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/${PF_EXTERNAL_EXAMPLES_VERSION}/packages`;
 
 /**
- * PatternFly design guidelines' components' URL
+ * PatternFly examples' core components' URL.
  */
-const PF_EXTERNAL_DESIGN_COMPONENTS = `${PF_EXTERNAL_DESIGN}/components`;
+const PF_EXTERNAL_EXAMPLES_REACT_CORE = `${PF_EXTERNAL_EXAMPLES}/react-core/src/components`;
 
 /**
- * PatternFly design guidelines' layouts' URL
+ * PatternFly examples' core layouts' URL.
  */
-const PF_EXTERNAL_DESIGN_LAYOUTS = `${PF_EXTERNAL_DESIGN}/layouts`;
+const PF_EXTERNAL_EXAMPLES_LAYOUTS = `${PF_EXTERNAL_EXAMPLES}/react-core/src/layouts`;
 
 /**
- * PatternFly accessibility URL
+ * PatternFly examples' table components' URL.
  */
-const PF_EXTERNAL_ACCESSIBILITY = `${PF_EXTERNAL}/accessibility`;
-
-/**
- * PatternFly charts root URL
- */
-const PF_EXTERNAL_CHARTS = 'https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/packages/react-charts/src';
+const PF_EXTERNAL_EXAMPLES_TABLE = `${PF_EXTERNAL_EXAMPLES}/react-table/src/components`;
 
 /**
  * PatternFly charts' components' URL
  */
-const PF_EXTERNAL_CHARTS_COMPONENTS = `${PF_EXTERNAL_CHARTS}/victory/components`;
+const PF_EXTERNAL_EXAMPLES_CHARTS = `${PF_EXTERNAL_EXAMPLES}/react-charts/src/victory/components`;
+
+/**
+ * PatternFly docs version to use, commit hash. Tags don't exist, but branches for older versions do.
+ *
+ * @see @patternfly/documentation-framework@6.30.0
+ */
+const PF_EXTERNAL_VERSION = 'fb05713aba75998b5ecf5299ee3c1a259119bd74';
+
+/**
+ * PatternFly docs root URL
+ */
+const PF_EXTERNAL = `https://raw.githubusercontent.com/patternfly/patternfly-org/${PF_EXTERNAL_VERSION}/packages/documentation-site/patternfly-docs/content`;
+
+/**
+ * PatternFly design guidelines' components' URL
+ * Updated 2025-11-24: Moved from design-guidelines/components to components
+ */
+const PF_EXTERNAL_DESIGN_COMPONENTS = `${PF_EXTERNAL}/design-guidelines/components`;
+
+/**
+ * PatternFly design guidelines' layouts' URL
+ * Updated 2025-11-24: Moved from design-guidelines/layouts to foundations-and-styles/layouts
+ */
+const PF_EXTERNAL_DESIGN_LAYOUTS = `${PF_EXTERNAL}/design-guidelines/layouts`;
+
+/**
+ * PatternFly accessibility URL
+ * Updated 2025-11-24: Moved from accessibility to components/accessibility
+ */
+const PF_EXTERNAL_ACCESSIBILITY = `${PF_EXTERNAL}/accessibility`;
 
 /**
  * PatternFly charts' design guidelines URL
  */
-const PF_EXTERNAL_CHARTS_DESIGN = `${PF_EXTERNAL_CHARTS}/charts`;
+const PF_EXTERNAL_CHARTS_DESIGN = `${PF_EXTERNAL}/design-guidelines/charts`;
 
 /**
  * Global default options. Base defaults before CLI/programmatic overrides.
  *
  * @type {GlobalOptions} Default options object.
  * @property {CliOptions.docsHost} [docsHost] - Flag indicating whether to use the docs-host.
- * @property {string} pfExternal - PatternFly external docs URL.
- * @property {string} pfExternalCharts - PatternFly external charts URL.
- * @property {string} pfExternalChartsComponents - PatternFly external charts components URL.
- * @property {string} pfExternalChartsDesign - PatternFly external charts design guidelines URL.
- * @property {string} pfExternalDesign - PatternFly external design guidelines URL.
- * @property {string} pfExternalDesignComponents - PatternFly external design guidelines components URL.
- * @property {string} pfExternalDesignLayouts - PatternFly external design guidelines layouts URL.
- * @property {string} pfExternalAccessibility - PatternFly external accessibility URL.
+ * @property {string} pfExternal - PatternFly external URL.
+ * @property {string} pfExternalDesignComponents - PatternFly design guidelines' components' URL.
+ * @property {string} pfExternalExamplesComponents - PatternFly examples' core components' URL.
+ * @property {string} pfExternalExamplesLayouts - PatternFly examples' core layouts' URL.
+ * @property {string} pfExternalExamplesCharts - PatternFly examples' charts' components' URL.'
+ * @property {string} pfExternalExamplesTable - PatternFly examples' table components' URL.
+ * @property {string} pfExternalChartsDesign - PatternFly charts' design guidelines URL.
+ * @property {string} pfExternalDesignLayouts - PatternFly design guidelines' layouts' URL.
+ * @property {string} pfExternalAccessibility - PatternFly accessibility URL.
  * @property {typeof RESOURCE_MEMO_OPTIONS} resourceMemoOptions - Resource-level memoization options.
  * @property {typeof TOOL_MEMO_OPTIONS} toolMemoOptions - Tool-specific memoization options.
  * @property {string} separator - Default string delimiter.
@@ -133,11 +157,12 @@ const PF_EXTERNAL_CHARTS_DESIGN = `${PF_EXTERNAL_CHARTS}/charts`;
  */
 const DEFAULT_OPTIONS: DefaultOptions = {
   pfExternal: PF_EXTERNAL,
-  pfExternalCharts: PF_EXTERNAL_CHARTS,
-  pfExternalChartsComponents: PF_EXTERNAL_CHARTS_COMPONENTS,
-  pfExternalChartsDesign: PF_EXTERNAL_CHARTS_DESIGN,
-  pfExternalDesign: PF_EXTERNAL_DESIGN,
   pfExternalDesignComponents: PF_EXTERNAL_DESIGN_COMPONENTS,
+  pfExternalExamplesComponents: PF_EXTERNAL_EXAMPLES_REACT_CORE,
+  pfExternalExamplesLayouts: PF_EXTERNAL_EXAMPLES_LAYOUTS,
+  pfExternalExamplesCharts: PF_EXTERNAL_EXAMPLES_CHARTS,
+  pfExternalExamplesTable: PF_EXTERNAL_EXAMPLES_TABLE,
+  pfExternalChartsDesign: PF_EXTERNAL_CHARTS_DESIGN,
   pfExternalDesignLayouts: PF_EXTERNAL_DESIGN_LAYOUTS,
   pfExternalAccessibility: PF_EXTERNAL_ACCESSIBILITY,
   resourceMemoOptions: RESOURCE_MEMO_OPTIONS,
@@ -154,10 +179,14 @@ const DEFAULT_OPTIONS: DefaultOptions = {
 
 const DEFAULTS = {
   PF_EXTERNAL,
-  PF_EXTERNAL_CHARTS,
-  PF_EXTERNAL_CHARTS_COMPONENTS,
+  PF_EXTERNAL_VERSION,
+  PF_EXTERNAL_EXAMPLES,
+  PF_EXTERNAL_EXAMPLES_CHARTS,
+  PF_EXTERNAL_EXAMPLES_REACT_CORE,
+  PF_EXTERNAL_EXAMPLES_LAYOUTS,
+  PF_EXTERNAL_EXAMPLES_TABLE,
+  PF_EXTERNAL_EXAMPLES_VERSION,
   PF_EXTERNAL_CHARTS_DESIGN,
-  PF_EXTERNAL_DESIGN,
   PF_EXTERNAL_DESIGN_COMPONENTS,
   PF_EXTERNAL_DESIGN_LAYOUTS,
   PF_EXTERNAL_ACCESSIBILITY,
@@ -171,10 +200,14 @@ const DEFAULTS = {
 export {
   DEFAULTS,
   PF_EXTERNAL,
-  PF_EXTERNAL_CHARTS,
-  PF_EXTERNAL_CHARTS_COMPONENTS,
+  PF_EXTERNAL_VERSION,
+  PF_EXTERNAL_EXAMPLES,
+  PF_EXTERNAL_EXAMPLES_CHARTS,
+  PF_EXTERNAL_EXAMPLES_REACT_CORE,
+  PF_EXTERNAL_EXAMPLES_LAYOUTS,
+  PF_EXTERNAL_EXAMPLES_TABLE,
+  PF_EXTERNAL_EXAMPLES_VERSION,
   PF_EXTERNAL_CHARTS_DESIGN,
-  PF_EXTERNAL_DESIGN,
   PF_EXTERNAL_DESIGN_COMPONENTS,
   PF_EXTERNAL_DESIGN_LAYOUTS,
   PF_EXTERNAL_ACCESSIBILITY,

@@ -3,13 +3,20 @@
 exports[`docsLayout should return specific properties 1`] = `
 {
   "LAYOUT_DOCS": [
-    "[@patternfly/Bullseye - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/bullseye.md)",
-    "[@patternfly/Flex - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/flex.md)",
-    "[@patternfly/Gallery - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/gallery.md)",
-    "[@patternfly/Grid - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/grid.md)",
-    "[@patternfly/Level - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/level.md)",
-    "[@patternfly/Split - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/split.md)",
-    "[@patternfly/Stack - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/refs/heads/main/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/stack.md)",
+    "[@patternfly/Bullseye - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/bullseye.md)",
+    "[@patternfly/Bullseye - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-core/src/layouts/Bullseye/examples/Bullseye.md)",
+    "[@patternfly/Flex - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/flex.md)",
+    "[@patternfly/Flex - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-core/src/layouts/Flex/examples/Flex.md)",
+    "[@patternfly/Gallery - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/gallery.md)",
+    "[@patternfly/Gallery - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-core/src/layouts/Gallery/examples/Gallery.md)",
+    "[@patternfly/Grid - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/grid.md)",
+    "[@patternfly/Grid - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-core/src/layouts/Grid/examples/Grid.md)",
+    "[@patternfly/Level - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/level.md)",
+    "[@patternfly/Level - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-core/src/layouts/Level/examples/Level.md)",
+    "[@patternfly/Split - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/split.md)",
+    "[@patternfly/Split - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-core/src/layouts/Split/examples/Split.md)",
+    "[@patternfly/Stack - Design Guidelines](https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/stack.md)",
+    "[@patternfly/Stack - Examples](https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-core/src/layouts/Stack/examples/Stack.md)",
   ],
 }
 `;
