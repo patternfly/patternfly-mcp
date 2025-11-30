@@ -6,6 +6,7 @@ import { getOptions, setOptions } from '../options.context';
 // Mock dependencies
 jest.mock('@modelcontextprotocol/sdk/server/mcp.js');
 jest.mock('@modelcontextprotocol/sdk/server/stdio.js');
+jest.mock('../utils.moduleResolver'); // Mock the module resolver to avoid import.meta issues
 
 const MockMcpServer = McpServer as jest.MockedClass<typeof McpServer>;
 const MockStdioServerTransport = StdioServerTransport as jest.MockedClass<typeof StdioServerTransport>;
