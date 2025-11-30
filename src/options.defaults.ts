@@ -1,4 +1,4 @@
-import { join } from 'node:path';
+import { basename, join } from 'node:path';
 import packageJson from '../package.json';
 
 /**
@@ -171,7 +171,7 @@ const DEFAULT_OPTIONS: DefaultOptions = {
   urlRegex: URL_REGEX,
   name: packageJson.name,
   version: (process.env.NODE_ENV === 'local' && '0.0.0') || packageJson.version,
-  repoName: process.cwd()?.split?.('/')?.pop?.()?.trim?.(),
+  repoName: basename(process.cwd() || '').trim(),
   contextPath: (process.env.NODE_ENV === 'local' && '/') || process.cwd(),
   docsPath: (process.env.NODE_ENV === 'local' && '/documentation') || join(process.cwd(), 'documentation'),
   llmsFilesPath: (process.env.NODE_ENV === 'local' && '/llms-files') || join(process.cwd(), 'llms-files')
