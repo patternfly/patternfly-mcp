@@ -8,7 +8,6 @@ exports[`options defaults should return specific properties 1`] = `
     "docsPath": "/documentation",
     "llmsFilesPath": "/llms-files",
     "logging": {
-      "baseName": "@patternfly/patternfly-mcp:log",
       "level": "info",
       "protocol": false,
       "stderr": false,
@@ -62,6 +61,7 @@ exports[`options defaults should return specific properties 1`] = `
 ---
 
 ",
+  "LOG_BASENAME": "pf-mcp:log",
   "PF_EXTERNAL": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content",
   "PF_EXTERNAL_ACCESSIBILITY": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility",
   "PF_EXTERNAL_CHARTS_DESIGN": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts",

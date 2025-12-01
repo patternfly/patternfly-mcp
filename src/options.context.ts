@@ -1,7 +1,8 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { randomUUID } from 'node:crypto';
 import { type GlobalOptions } from './options';
-import { DEFAULT_OPTIONS, type LoggingSession, type DefaultOptions } from './options.defaults';
+import { DEFAULT_OPTIONS, LOG_BASENAME, type LoggingSession, type DefaultOptions } from './options.defaults';
+import { mergeObjects, freezeObject, isPlainObject } from './server.helpers';
 
 /**
  * AsyncLocalStorage instance for per-instance options
@@ -15,17 +16,36 @@ const optionsContext = new AsyncLocalStorage<GlobalOptions>();
  * Set and freeze cloned options in the current async context.
  *
  * - Applies a unique session ID and logging channel name
+ * - Certain settings are not allowed to be overridden by the caller to ensure consistency across instances
  *
  * @param {Partial<DefaultOptions>} [options] - Optional options to set in context. Merged with DEFAULT_OPTIONS.
  * @returns {GlobalOptions} Cloned frozen default options object with session.
  */
 const setOptions = (options?: Partial<DefaultOptions>): GlobalOptions => {
-  const base = { ...DEFAULT_OPTIONS, ...options } as DefaultOptions;
+  const base = mergeObjects(DEFAULT_OPTIONS, options, { allowNullValues: false, allowUndefinedValues: false });
   const sessionId = (process.env.NODE_ENV === 'local' && '1234d567-1ce9-123d-1413-a1234e56c789') || randomUUID();
-  const channelName = `${base.logging.baseName}:${sessionId}`;
-  const loggingSession: LoggingSession = { ...base.logging, channelName };
-  const merged = { ...base, sessionId, logging: loggingSession } as unknown as GlobalOptions;
-  const frozen = Object.freeze(structuredClone(merged));
+
+  const baseLogging = isPlainObject(base.logging) ? base.logging : DEFAULT_OPTIONS.logging;
+  const baseName = LOG_BASENAME;
+  const channelName = `${baseName}:${sessionId}`;
+  const loggingSession: LoggingSession = {
+    level: baseLogging.level,
+    stderr: baseLogging.stderr,
+    protocol: baseLogging.protocol,
+    transport: baseLogging.transport,
+    baseName,
+    channelName
+  };
+
+  const merged = {
+    ...base,
+    sessionId,
+    logging: loggingSession,
+    resourceMemoOptions: DEFAULT_OPTIONS.resourceMemoOptions,
+    toolMemoOptions: DEFAULT_OPTIONS.toolMemoOptions
+  } as unknown as GlobalOptions;
+
+  const frozen = freezeObject(structuredClone(merged));
 
   optionsContext.enterWith(frozen);
 
@@ -70,7 +90,7 @@ const runWithOptions = async <TReturn=unknown>(
   options: GlobalOptions,
   callback: () => TReturn | Promise<TReturn>
 ) => {
-  const frozen = Object.freeze(structuredClone(options));
+  const frozen = freezeObject(structuredClone(options));
 
   return optionsContext.run(frozen, callback);
 };

@@ -4,7 +4,6 @@ exports[`parseCliOptions should attempt to parse args with --docs-host flag 1`] 
 {
   "docsHost": true,
   "logging": {
-    "baseName": "@patternfly/patternfly-mcp:log",
     "level": "info",
     "protocol": false,
     "stderr": false,
@@ -17,7 +16,6 @@ exports[`parseCliOptions should attempt to parse args with --log-level flag 1`] 
 {
   "docsHost": false,
   "logging": {
-    "baseName": "@patternfly/patternfly-mcp:log",
     "level": "warn",
     "protocol": false,
     "stderr": false,
@@ -30,7 +28,6 @@ exports[`parseCliOptions should attempt to parse args with --log-stderr flag and
 {
   "docsHost": false,
   "logging": {
-    "baseName": "@patternfly/patternfly-mcp:log",
     "level": "info",
     "protocol": true,
     "stderr": true,
@@ -43,7 +40,6 @@ exports[`parseCliOptions should attempt to parse args with --verbose flag 1`] = 
 {
   "docsHost": false,
   "logging": {
-    "baseName": "@patternfly/patternfly-mcp:log",
     "level": "debug",
     "protocol": false,
     "stderr": false,
@@ -56,7 +52,6 @@ exports[`parseCliOptions should attempt to parse args with --verbose flag and --
 {
   "docsHost": false,
   "logging": {
-    "baseName": "@patternfly/patternfly-mcp:log",
     "level": "debug",
     "protocol": false,
     "stderr": false,
@@ -69,7 +64,6 @@ exports[`parseCliOptions should attempt to parse args with other arguments 1`] =
 {
   "docsHost": false,
   "logging": {
-    "baseName": "@patternfly/patternfly-mcp:log",
     "level": "info",
     "protocol": false,
     "stderr": false,
@@ -82,7 +76,6 @@ exports[`parseCliOptions should attempt to parse args without --docs-host flag 1
 {
   "docsHost": false,
   "logging": {
-    "baseName": "@patternfly/patternfly-mcp:log",
     "level": "info",
     "protocol": false,
     "stderr": false,

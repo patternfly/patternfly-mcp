@@ -6,7 +6,7 @@ import { createHash, type BinaryToTextEncoding } from 'node:crypto';
  * @param obj - Object, or otherwise, to check
  * @returns `true` if an object is an object
  */
-const isObject = (obj: unknown) =>
+const isObject = (obj: unknown): obj is Record<string, unknown> =>
   Object.prototype.toString.call(obj) === '[object Object]';
 
 /**
@@ -15,7 +15,7 @@ const isObject = (obj: unknown) =>
  * @param obj - Object, or otherwise, to check
  * @returns `true` if an object is a "plain object"
  */
-const isPlainObject = (obj: unknown) => {
+const isPlainObject = (obj: unknown): obj is Record<string, unknown> => {
   if (!isObject(obj)) {
     return false;
   }
@@ -23,6 +23,115 @@ const isPlainObject = (obj: unknown) => {
   const proto = Object.getPrototypeOf(obj);
 
   return proto === null || proto === Object.prototype;
+};
+
+/**
+ * Merge two objects recursively, then return a new object, deep merge.
+ *
+ * - Only recurses into plain objects.
+ * - Arrays and non-plain objects are replaced, not merged.
+ * - Prototype-pollution keys are ignored
+ *
+ * @param baseObj Base object to merge into.
+ * @param sourceObj Source object to merge from.
+ * @param [options]
+ * @param options.allowNullValues If `true`, `null` values in `sourceObj` will overwrite `baseObj` values. Default: `true`
+ * @param options.allowUndefinedValues If `true`, all undefined values in `sourceObj` will be merged on top of `baseObj`. Default: `false`
+ */
+const mergeObjects = <TBase extends object>(
+  baseObj: TBase,
+  sourceObj?: Partial<TBase> | null,
+  {
+    allowNullValues = true,
+    allowUndefinedValues = false
+  }: { allowNullValues?: boolean; allowUndefinedValues?: boolean } = {}
+): TBase => {
+  if (!isPlainObject(baseObj) || !isPlainObject(sourceObj)) {
+    return structuredClone(baseObj);
+  }
+  const pollutionKeys = ['__proto__', 'prototype', 'constructor'];
+  const result = { ...baseObj } as Record<string, unknown>;
+  const src = sourceObj as Record<string, unknown>;
+
+  for (const key in src) {
+    if (!pollutionKeys.includes(key) && Object.hasOwn(src, key)) {
+      const baseVal = result[key];
+      const srcVal = src[key];
+
+      if (!allowNullValues && srcVal === null) {
+        continue;
+      }
+
+      if (!allowUndefinedValues && typeof srcVal === 'undefined') {
+        continue;
+      }
+
+      if (isPlainObject(baseVal) && isPlainObject(srcVal)) {
+        result[key] = mergeObjects(
+          baseVal as object,
+          srcVal as object,
+          { allowNullValues, allowUndefinedValues }
+        );
+      } else {
+        result[key] = srcVal;
+      }
+    }
+  }
+
+  return result as TBase;
+};
+
+/**
+ * Freeze an object recursively, deep freeze.
+ *
+ * @param obj Object to freeze.
+ * @param [_seen] WeakSet of already-seen objects. Default: `new WeakSet<object>()`.
+ */
+const freezeObject = <TBase>(obj: TBase, _seen?: WeakSet<object>): TBase => {
+  const seen = _seen || new WeakSet<object>();
+
+  const queue: unknown[] = [];
+  const setQueue = (val: unknown) => {
+    if (val && (typeof val === 'object' || typeof val === 'function')) {
+      if (!seen.has(val)) {
+        seen.add(val);
+        queue.push(val);
+      }
+    }
+  };
+
+  setQueue(obj);
+
+  while (queue.length) {
+    const current = queue.pop();
+
+    if (Object.isFrozen(current)) {
+      continue;
+    }
+
+    if (Array.isArray(current)) {
+      for (const item of current) {
+        setQueue(item);
+      }
+      Object.freeze(current);
+      continue;
+    }
+
+    if (isPlainObject(current)) {
+      for (const key of Object.keys(current)) {
+        setQueue(current[key]);
+      }
+      Object.freeze(current);
+      continue;
+    }
+
+    // For non-plain objects (Map, Set, Date, RegExp, Function, etc.),
+    try {
+      Object.freeze(current);
+    } catch {}
+  }
+
+  return obj;
 };
 
 /**
@@ -156,10 +265,12 @@ const generateHash = (anyValue: unknown): string => {
 };
 
 export {
+  freezeObject,
   generateHash,
   hashCode,
   hashNormalizeValue,
   isObject,
   isPlainObject,
-  isPromise
+  isPromise,
+  mergeObjects
 };

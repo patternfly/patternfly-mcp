@@ -11,13 +11,13 @@ exports[`createServerLogger should attempt to subscribe and unsubscribe from a c
 {
   "subscribe": [
     [
-      "@patternfly/patternfly-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+      "pf-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
       [Function],
     ],
   ],
   "unsubscribe": [
     [
-      "@patternfly/patternfly-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+      "pf-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
       [Function],
     ],
   ],
@@ -28,21 +28,21 @@ exports[`createServerLogger should attempt to subscribe and unsubscribe from a c
 {
   "subscribe": [
     [
-      "@patternfly/patternfly-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+      "pf-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
       [Function],
     ],
     [
-      "@patternfly/patternfly-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+      "pf-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
       [Function],
     ],
   ],
   "unsubscribe": [
     [
-      "@patternfly/patternfly-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+      "pf-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
       [Function],
     ],
     [
-      "@patternfly/patternfly-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+      "pf-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
       [Function],
     ],
   ],
@@ -66,13 +66,13 @@ exports[`registerMcpSubscriber should attempt to subscribe and unsubscribe from 
 {
   "subscribe": [
     [
-      "@patternfly/patternfly-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+      "pf-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
       [Function],
     ],
   ],
   "unsubscribe": [
     [
-      "@patternfly/patternfly-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+      "pf-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
       [Function],
     ],
   ],

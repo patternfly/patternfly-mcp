@@ -106,7 +106,7 @@ patternfly-mcp --log-protocol --log-level info  # forward logs to MCP clients
 Programmatic:
 
 ```ts
-await start({ logging: { level: 'info', stderr: false, protocol: false, channelName: 'patternfly-mcp:log' } });
+await start({ logging: { level: 'info', stderr: false, protocol: false } });
 ```
 
 ### Tool: usePatternFlyDocs

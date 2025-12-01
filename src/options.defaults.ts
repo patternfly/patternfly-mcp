@@ -73,17 +73,15 @@ interface DefaultSession extends DefaultOptions<LoggingSession> {
  * @interface LoggingOptions
  * @default { level: 'info', stderr: false, protocol: false, baseName: `${packageJson.name}:log`, transport: 'stdio' }
  *
- * @property level - Logging level.
- * @property stderr - Flag indicating whether to log to stderr.
- * @property protocol - Flag indicating whether to log protocol details.
- * @property baseName - Name of the logging channel.
- * @property transport - Transport mechanism for logging.
+ * @property level Logging level.
+ * @property stderr Flag indicating whether to log to stderr.
+ * @property protocol Flag indicating whether to log protocol details.
+ * @property transport Transport mechanism for logging.
  */
 interface LoggingOptions {
   level: 'debug' | 'info' | 'warn' | 'error';
   stderr: boolean;
   protocol: boolean;
-  baseName: string;
   transport: 'stdio' | 'mcp';
 }
 
@@ -92,9 +90,11 @@ interface LoggingOptions {
  *
  * @interface LoggingSession
  * @extends LoggingOptions
- * @property channelName - Unique identifier for the logging channel.
+ * @property baseName Name of the logging channel.
+ * @property channelName Unique identifier for the logging channel.
  */
 interface LoggingSession extends LoggingOptions {
+  readonly baseName: string;
   readonly channelName: string;
 }
 
@@ -105,7 +105,6 @@ const LOGGING_OPTIONS: LoggingOptions = {
   level: 'info',
   stderr: false,
   protocol: false,
-  baseName: `${packageJson.name}:log`,
   transport: 'stdio'
 };
 
@@ -145,6 +144,11 @@ const TOOL_MEMO_OPTIONS = {
     cacheErrors: false
   }
 };
+
+/**
+ * Base logging channel name. Fixed to avoid user override.
+ */
+const LOG_BASENAME = 'pf-mcp:log';
 
 /**
  * URL regex pattern for detecting external URLs
@@ -255,10 +259,11 @@ export {
   PF_EXTERNAL_DESIGN_COMPONENTS,
   PF_EXTERNAL_DESIGN_LAYOUTS,
   PF_EXTERNAL_ACCESSIBILITY,
-  RESOURCE_MEMO_OPTIONS,
-  TOOL_MEMO_OPTIONS,
+  LOG_BASENAME,
   DEFAULT_OPTIONS,
   DEFAULT_SEPARATOR,
+  RESOURCE_MEMO_OPTIONS,
+  TOOL_MEMO_OPTIONS,
   URL_REGEX,
   type DefaultOptions,
   type DefaultSession,
