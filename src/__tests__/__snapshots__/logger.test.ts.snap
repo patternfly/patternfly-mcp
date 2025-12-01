@@ -1,0 +1,197 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`createLogger should activate stderr subscriber writes only at or above level: stderr 1`] = `
+[
+  [
+    "[INFO]:	lorem ipsum	:123 {"a":1}
+",
+  ],
+]
+`;
+
+exports[`createLogger should attempt to subscribe and unsubscribe from a channel, with no logging options: subscribe 1`] = `
+{
+  "subscribe": [],
+  "unsubscribe": [],
+}
+`;
+
+exports[`createLogger should attempt to subscribe and unsubscribe from a channel, with stderr, and emulated channel to pass checks: subscribe 1`] = `
+{
+  "subscribe": [
+    [
+      "pf-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+      [Function],
+    ],
+  ],
+  "unsubscribe": [
+    [
+      "pf-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+      [Function],
+    ],
+  ],
+}
+`;
+
+exports[`logSeverity should return log severity, debug 1`] = `0`;
+
+exports[`logSeverity should return log severity, default 1`] = `-1`;
+
+exports[`logSeverity should return log severity, error 1`] = `3`;
+
+exports[`logSeverity should return log severity, info 1`] = `1`;
+
+exports[`logSeverity should return log severity, warn 1`] = `2`;
+
+exports[`publish should attempt to create a log entry, args 1`] = `
+{
+  "channel": [
+    [
+      "pf-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+    ],
+  ],
+  "publish": [
+    [
+      {
+        "args": [
+          "dolor",
+          "sit",
+          "amet",
+        ],
+        "level": "info",
+        "msg": "lorem ipsum, info",
+        "time": 1761955200000,
+        "transport": "stdio",
+      },
+    ],
+  ],
+}
+`;
+
+exports[`publish should attempt to create a log entry, channel name 1`] = `
+{
+  "channel": [
+    [
+      "custom-channel",
+    ],
+  ],
+  "publish": [
+    [
+      {
+        "args": [
+          "dolor",
+          "sit",
+          "amet",
+        ],
+        "level": "info",
+        "msg": "lorem ipsum, info",
+        "time": 1761955200000,
+        "transport": undefined,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`publish should attempt to create a log entry, default 1`] = `
+{
+  "channel": [
+    [
+      "pf-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+    ],
+  ],
+  "publish": [
+    [
+      {
+        "level": undefined,
+        "time": 1761955200000,
+        "transport": "stdio",
+      },
+    ],
+  ],
+}
+`;
+
+exports[`publish should attempt to create a log entry, level 1`] = `
+{
+  "channel": [
+    [
+      "pf-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+    ],
+  ],
+  "publish": [
+    [
+      {
+        "level": "info",
+        "time": 1761955200000,
+        "transport": "stdio",
+      },
+    ],
+  ],
+}
+`;
+
+exports[`publish should attempt to create a log entry, msg 1`] = `
+{
+  "channel": [
+    [
+      "pf-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+    ],
+  ],
+  "publish": [
+    [
+      {
+        "level": "info",
+        "msg": "lorem ipsum, info",
+        "time": 1761955200000,
+        "transport": "stdio",
+      },
+    ],
+  ],
+}
+`;
+
+exports[`registerStderrSubscriber should activate stderr subscriber writes only at or above level: stderr 1`] = `
+[
+  [
+    "[INFO]:	lorem ipsum	:123 {"a":1}
+",
+  ],
+]
+`;
+
+exports[`registerStderrSubscriber should attempt to subscribe and unsubscribe from a channel: subscribe 1`] = `
+{
+  "subscribe": [
+    [
+      "pf-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+      [Function],
+    ],
+  ],
+  "unsubscribe": [
+    [
+      "pf-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+      [Function],
+    ],
+  ],
+}
+`;
+
+exports[`subscribeToChannel should attempt to subscribe and unsubscribe from a channel: subscribe 1`] = `
+{
+  "subscribe": [
+    [
+      "pf-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+      [Function],
+    ],
+  ],
+  "unsubscribe": [
+    [
+      "pf-mcp:log:1234d567-1ce9-123d-1413-a1234e56c789",
+      [Function],
+    ],
+  ],
+}
+`;
+
+exports[`subscribeToChannel should throw an error attempting to subscribe and unsubscribe from a channel: missing channel name 1`] = `"subscribeToChannel called without a configured logging channelName"`;

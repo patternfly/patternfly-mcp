@@ -1,4 +1,5 @@
 import { generateHash, isPromise } from './server.helpers';
+import { log } from './logger';
 
 /**
  * Memo cache store.
@@ -127,12 +128,12 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
             const cacheEntries = { remaining: [], removed: allCacheEntries, all: allCacheEntries };
 
             if (isOnCacheExpirePromise) {
-              Promise.resolve(onCacheExpire?.(cacheEntries)).catch(console.error);
+              Promise.resolve(onCacheExpire?.(cacheEntries)).catch(error => log.error('onCacheExpire handler error', error));
             } else {
               try {
                 onCacheExpire?.(cacheEntries);
               } catch (error) {
-                console.error(error);
+                log.error('Memoized function error (uncached)', error);
               }
             }
           }
@@ -210,12 +211,12 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
               const cacheEntries = { remaining: remainingCacheEntries, removed: removedCacheEntries, all: allCacheEntries };
 
               if (isOnCacheRolloutPromise) {
-                Promise.resolve(onCacheRollout?.(cacheEntries)).catch(console.error);
+                Promise.resolve(onCacheRollout?.(cacheEntries)).catch(error => log.error('onCacheRollout handler error', error));
               } else {
                 try {
                   onCacheRollout?.(cacheEntries);
                 } catch (error) {
-                  console.error(error);
+                  log.error('Memoized function error (rolled out)', error);
                 }
               }
             }

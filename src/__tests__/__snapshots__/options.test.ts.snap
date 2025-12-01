@@ -3,17 +3,83 @@
 exports[`parseCliOptions should attempt to parse args with --docs-host flag 1`] = `
 {
   "docsHost": true,
+  "logging": {
+    "level": "info",
+    "protocol": false,
+    "stderr": false,
+    "transport": "stdio",
+  },
+}
+`;
+
+exports[`parseCliOptions should attempt to parse args with --log-level flag 1`] = `
+{
+  "docsHost": false,
+  "logging": {
+    "level": "warn",
+    "protocol": false,
+    "stderr": false,
+    "transport": "stdio",
+  },
+}
+`;
+
+exports[`parseCliOptions should attempt to parse args with --log-stderr flag and --log-protocol flag 1`] = `
+{
+  "docsHost": false,
+  "logging": {
+    "level": "info",
+    "protocol": true,
+    "stderr": true,
+    "transport": "stdio",
+  },
+}
+`;
+
+exports[`parseCliOptions should attempt to parse args with --verbose flag 1`] = `
+{
+  "docsHost": false,
+  "logging": {
+    "level": "debug",
+    "protocol": false,
+    "stderr": false,
+    "transport": "stdio",
+  },
+}
+`;
+
+exports[`parseCliOptions should attempt to parse args with --verbose flag and --log-level flag 1`] = `
+{
+  "docsHost": false,
+  "logging": {
+    "level": "debug",
+    "protocol": false,
+    "stderr": false,
+    "transport": "stdio",
+  },
 }
 `;
 
 exports[`parseCliOptions should attempt to parse args with other arguments 1`] = `
 {
   "docsHost": false,
+  "logging": {
+    "level": "info",
+    "protocol": false,
+    "stderr": false,
+    "transport": "stdio",
+  },
 }
 `;
 
 exports[`parseCliOptions should attempt to parse args without --docs-host flag 1`] = `
 {
   "docsHost": false,
+  "logging": {
+    "level": "info",
+    "protocol": false,
+    "stderr": false,
+    "transport": "stdio",
+  },
 }
 `;

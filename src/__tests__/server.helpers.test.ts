@@ -1,4 +1,67 @@
-import { generateHash, hashCode, isPlainObject, isPromise } from '../server.helpers';
+import { freezeObject, generateHash, hashCode, isPlainObject, isPromise, mergeObjects } from '../server.helpers';
+
+describe('freezeObject', () => {
+  it.each([
+    {
+      description: 'null',
+      obj: null
+    },
+    {
+      description: 'undefined',
+      obj: undefined
+    },
+    {
+      description: 'plain object',
+      obj: { lorem: 'ipsum' }
+    },
+    {
+      description: 'array',
+      obj: [1, 2, 3]
+    },
+    {
+      description: 'number',
+      obj: 1
+    },
+    {
+      description: 'string',
+      obj: 'lorem ipsum'
+    },
+    {
+      description: 'boolean',
+      obj: true
+    },
+    {
+      description: 'function',
+      obj: () => 'lorem ipsum'
+    },
+    {
+      description: 'symbol',
+      obj: Symbol('lorem ipsum')
+    },
+    {
+      description: 'error',
+      obj: new Error('lorem ipsum')
+    },
+    {
+      description: 'date',
+      obj: new Date('2023-01-01')
+    },
+    {
+      description: 'regex',
+      obj: /lorem/g
+    },
+    {
+      description: 'map',
+      obj: new Map([['lorem', 1], ['ipsum', 2]])
+    },
+    {
+      description: 'set',
+      obj: new Set([1, 2, 3])
+    }
+  ])('should freeze an object, $description', ({ obj, outcome = true }: any = {}) => {
+    expect(Object.isFrozen(freezeObject(obj))).toBe(outcome);
+  });
+});
 
 describe('generateHash', () => {
   it.each([
@@ -364,5 +427,87 @@ describe('isPlainObject', () => {
     }
   ])('should determine a plain object for $description', ({ param, value }) => {
     expect(isPlainObject(param)).toBe(value);
+  });
+});
+
+describe('mergeObjects', () => {
+  it.each([
+    {
+      description: 'non-objects',
+      obj1: 'lorem',
+      obj2: 'ipsum'
+    },
+    {
+      description: 'plain object against plain object',
+      obj1: {},
+      obj2: {}
+    },
+    {
+      description: 'plain object against undefined',
+      obj1: {},
+      obj2: undefined
+    },
+    {
+      description: 'plain object against null',
+      obj1: {},
+      obj2: null
+    },
+    {
+      description: 'plain object against array',
+      obj1: {},
+      obj2: []
+    },
+    {
+      description: 'recursive plain object against recursive plain object',
+      obj1: {
+        lorem: {
+          ipsum: 'lorem',
+          sit: ['ipsum'],
+          dolor: [
+            {
+              amet: 'consectetur'
+            }
+          ],
+          amet: {
+            consectetur: 'adipiscing',
+            elit: {
+              sed: 'do'
+            }
+          },
+          adipiscing: {
+            consectetur: 'elit'
+          },
+          elit: {
+            sed: 'do'
+          }
+        }
+      },
+      obj2: {
+        lorem: {
+          ipsum: 'dolor',
+          sit: ['amet'],
+          dolor: ['sit', 'amet'],
+          consectetur: () => 'adipiscing',
+          amet: {
+            elit: {
+              dolor: 'magna'
+            }
+          },
+          adipiscing: null,
+          elit: {
+            sed: undefined
+          }
+        }
+      }
+    }
+  ])('should merge two objects, $description', ({ obj1, obj2 }) => {
+    expect(mergeObjects(obj1 as any, obj2 as any)).toMatchSnapshot();
+  });
+
+  it('mergeObjects should ignore prototype pollution keys', () => {
+    const merged = mergeObjects({}, { __proto__: { polluted: true } });
+
+    expect((merged as any).polluted).toBeUndefined();
+    expect((Object.prototype as any).polluted).toBeUndefined();
   });
 });

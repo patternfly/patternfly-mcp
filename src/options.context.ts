@@ -1,6 +1,8 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
+import { randomUUID } from 'node:crypto';
 import { type GlobalOptions } from './options';
-import { DEFAULT_OPTIONS } from './options.defaults';
+import { DEFAULT_OPTIONS, LOG_BASENAME, type LoggingSession, type DefaultOptions } from './options.defaults';
+import { mergeObjects, freezeObject, isPlainObject } from './server.helpers';
 
 /**
  * AsyncLocalStorage instance for per-instance options
@@ -13,12 +15,35 @@ const optionsContext = new AsyncLocalStorage<GlobalOptions>();
 /**
  * Set and freeze cloned options in the current async context.
  *
- * @param {Partial<GlobalOptions>} options - Options to set in context (merged with DEFAULT_OPTIONS)
- * @returns {GlobalOptions} Cloned frozen options object
+ * - Applies a unique session ID and logging channel name
+ * - Certain settings are not allowed to be overridden by the caller to ensure consistency across instances
+ *
+ * @param {Partial<DefaultOptions>} [options] - Optional options to set in context. Merged with DEFAULT_OPTIONS.
+ * @returns {GlobalOptions} Cloned frozen default options object with session.
  */
-const setOptions = (options: Partial<GlobalOptions>): GlobalOptions => {
-  const merged = { ...DEFAULT_OPTIONS, ...options } as GlobalOptions;
-  const frozen = Object.freeze(structuredClone(merged));
+const setOptions = (options?: Partial<DefaultOptions>): GlobalOptions => {
+  const base = mergeObjects(DEFAULT_OPTIONS, options, { allowNullValues: false, allowUndefinedValues: false });
+  const sessionId = (process.env.NODE_ENV === 'local' && '1234d567-1ce9-123d-1413-a1234e56c789') || randomUUID();
+
+  const baseLogging = isPlainObject(base.logging) ? base.logging : DEFAULT_OPTIONS.logging;
+  const baseName = LOG_BASENAME;
+  const channelName = `${baseName}:${sessionId}`;
+  const merged: GlobalOptions = {
+    ...base,
+    sessionId,
+    logging: {
+      level: baseLogging.level,
+      stderr: baseLogging.stderr,
+      protocol: baseLogging.protocol,
+      transport: baseLogging.transport,
+      baseName,
+      channelName
+    },
+    resourceMemoOptions: DEFAULT_OPTIONS.resourceMemoOptions,
+    toolMemoOptions: DEFAULT_OPTIONS.toolMemoOptions
+  };
+
+  const frozen = freezeObject(structuredClone(merged));
 
   optionsContext.enterWith(frozen);
 
@@ -46,20 +71,27 @@ const getOptions = (): GlobalOptions => {
 };
 
 /**
+ * Get logging options from the current context.
+ *
+ * @returns {LoggingSession} Logging options from context.
+ */
+const getLoggerOptions = (): LoggingSession => getOptions().logging;
+
+/**
  * Run a function with specific options context. Useful for testing or programmatic usage.
  *
  * @param options - Options to use in context
  * @param callback - Function to apply options context against
- * @returns {Promise<T>} Result of function
+ * @returns Result of function
  */
-const runWithOptions = async <T>(
+const runWithOptions = async <TReturn=unknown>(
   options: GlobalOptions,
-  callback: () => Promise<T>
-): Promise<T> => {
-  const frozen = Object.freeze(structuredClone(options));
+  callback: () => TReturn | Promise<TReturn>
+) => {
+  const frozen = freezeObject(structuredClone(options));
 
   return optionsContext.run(frozen, callback);
 };
 
-export { getOptions, optionsContext, runWithOptions, setOptions };
+export { getOptions, getLoggerOptions, optionsContext, runWithOptions, setOptions };
 

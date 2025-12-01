@@ -1,6 +1,11 @@
 // Shared helpers for Jest unit tests
 
 /**
+ * Set NODE_ENV to 'local' for local testing.
+ */
+process.env.NODE_ENV = 'local';
+
+/**
  * Note: Mock @patternfly/patternfly-component-schemas/json to avoid top-level await issues in Jest
  * - Individual tests can override mock
  */

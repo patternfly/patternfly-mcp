@@ -83,6 +83,32 @@ Returned content format:
 - For each entry in urlList, the server loads its content, prefixes it with a header like: `# Documentation from <resolved-path-or-url>` and joins multiple entries using a separator: `\n\n---\n\n`.
 - If an entry fails to load, an inline error message is included for that entry.
 
+## Logging
+
+The server uses a `diagnostics_channel`–based logger that keeps STDIO stdout pure by default. No terminal output occurs unless you enable a sink.
+
+- Defaults: `level='info'`, `stderr=false`, `protocol=false`
+- Sinks (opt‑in): `--log-stderr`, `--log-protocol` (forwards to MCP clients; requires advertising `capabilities.logging`)
+- Transport tag: `transport: 'stdio' | 'http'` (no I/O side effects)
+- Environment variables: not used for logging in this version
+- Process scope: logger is process‑global; recommend one server per process
+
+CLI examples:
+
+```bash
+patternfly-mcp                   # default (no terminal output)
+patternfly-mcp --verbose         # level=debug (still no stderr)
+patternfly-mcp --log-stderr      # enable stderr sink
+patternfly-mcp --log-level warn --log-stderr
+patternfly-mcp --log-protocol --log-level info  # forward logs to MCP clients
+```
+
+Programmatic:
+
+```ts
+await start({ logging: { level: 'info', stderr: false, protocol: false } });
+```
+
 ### Tool: usePatternFlyDocs
 
 Use this to fetch high-level index content (for example, a local README.md that contains relevant links, or llms.txt files in docs-host mode). From that content, you can select specific URLs to pass to fetchDocs.

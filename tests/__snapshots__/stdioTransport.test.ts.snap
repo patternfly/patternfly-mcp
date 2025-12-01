@@ -274,6 +274,49 @@ exports[`Hosted mode, --docs-host should read llms-files and includes expected t
 ]
 `;
 
+exports[`Logging should allow setting logging options, default 1`] = `[]`;
+
+exports[`Logging should allow setting logging options, stderr 1`] = `
+[
+  "[INFO]:	Registered tool: usePatternFlyDocs
+",
+  "[INFO]:	Registered tool: fetchDocs
+",
+  "[INFO]:	Registered tool: componentSchemas
+",
+  "[INFO]:	PatternFly MCP server running on stdio
+",
+]
+`;
+
+exports[`Logging should allow setting logging options, verbose 1`] = `
+[
+  "[INFO]:	Registered tool: usePatternFlyDocs
+",
+  "[INFO]:	Registered tool: fetchDocs
+",
+  "[INFO]:	Registered tool: componentSchemas
+",
+  "[INFO]:	PatternFly MCP server running on stdio
+",
+]
+`;
+
+exports[`Logging should allow setting logging options, with log level filtering 1`] = `[]`;
+
+exports[`Logging should allow setting logging options, with mcp protocol 1`] = `
+[
+  {
+    "method": "notifications/message",
+    "params": {
+      "data": "PatternFly MCP server running on stdio",
+      "level": "info",
+      "logger": "@patternfly/patternfly-mcp",
+    },
+  },
+]
+`;
+
 exports[`PatternFly MCP, STDIO should concatenate headers and separator with two local files 1`] = `
 "# Documentation from documentation/guidelines/README.md
 

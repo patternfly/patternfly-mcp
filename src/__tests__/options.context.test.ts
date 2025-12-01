@@ -2,6 +2,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { runServer, type McpTool } from '../server';
 import { getOptions, setOptions } from '../options.context';
+import { DEFAULT_OPTIONS } from '../options.defaults';
 
 // Mock dependencies
 jest.mock('@modelcontextprotocol/sdk/server/mcp.js');
@@ -9,6 +10,29 @@ jest.mock('@modelcontextprotocol/sdk/server/stdio.js');
 
 const MockMcpServer = McpServer as jest.MockedClass<typeof McpServer>;
 const MockStdioServerTransport = StdioServerTransport as jest.MockedClass<typeof StdioServerTransport>;
+
+describe('setOptions', () => {
+  it('should ignore valid but incorrect options for merged options', () => {
+    const updatedOptions = setOptions({ logging: 'oops' as any, resourceMemoOptions: 'gotcha' as any, toolMemoOptions: 'really?' as any });
+
+    expect(updatedOptions.logging.protocol).toBe(DEFAULT_OPTIONS.logging.protocol);
+    expect(updatedOptions.resourceMemoOptions?.readFile?.expire).toBe(DEFAULT_OPTIONS.resourceMemoOptions?.readFile?.expire);
+    expect(updatedOptions.toolMemoOptions?.fetchDocs?.expire).toBe(DEFAULT_OPTIONS.toolMemoOptions?.fetchDocs?.expire);
+  });
+
+  it('should ignore null/invalid nested overrides safely', () => {
+    const updatedOptions = setOptions({ logging: null as any, resourceMemoOptions: null as any });
+
+    expect(typeof updatedOptions.logging.protocol === 'boolean').toBe(true);
+    expect(updatedOptions.logging.protocol).toBe(DEFAULT_OPTIONS.logging.protocol);
+
+    expect(typeof updatedOptions.resourceMemoOptions?.readFile?.expire === 'number').toBe(true);
+    expect(updatedOptions.resourceMemoOptions?.readFile?.expire).toBe(DEFAULT_OPTIONS.resourceMemoOptions?.readFile?.expire);
+
+    expect(typeof updatedOptions.toolMemoOptions?.fetchDocs?.expire === 'number').toBe(true);
+    expect(updatedOptions.toolMemoOptions?.fetchDocs?.expire).toBe(DEFAULT_OPTIONS.toolMemoOptions?.fetchDocs?.expire);
+  });
+});
 
 describe('apply context options', () => {
   it.each([
@@ -46,6 +70,7 @@ describe('tool creator options context', () => {
   let mockTransport: any;
 
   beforeEach(() => {
+    setOptions({});
     jest.clearAllMocks();
 
     // Mock server instance

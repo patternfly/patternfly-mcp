@@ -1,9 +1,8 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`runServer should attempt to run server, create transport, connect, and log success message: console 1`] = `
+exports[`runServer should attempt to run server, create transport, connect, and log success message: diagnostics 1`] = `
 {
-  "info": [],
-  "log": [
+  "events": [
     [
       "PatternFly MCP server running on stdio",
     ],
@@ -31,10 +30,9 @@ exports[`runServer should attempt to run server, create transport, connect, and 
 }
 `;
 
-exports[`runServer should attempt to run server, disable SIGINT handler: console 1`] = `
+exports[`runServer should attempt to run server, disable SIGINT handler: diagnostics 1`] = `
 {
-  "info": [],
-  "log": [
+  "events": [
     [
       "PatternFly MCP server running on stdio",
     ],
@@ -57,10 +55,9 @@ exports[`runServer should attempt to run server, disable SIGINT handler: console
 }
 `;
 
-exports[`runServer should attempt to run server, enable SIGINT handler explicitly: console 1`] = `
+exports[`runServer should attempt to run server, enable SIGINT handler explicitly: diagnostics 1`] = `
 {
-  "info": [],
-  "log": [
+  "events": [
     [
       "PatternFly MCP server running on stdio",
     ],
@@ -88,14 +85,12 @@ exports[`runServer should attempt to run server, enable SIGINT handler explicitl
 }
 `;
 
-exports[`runServer should attempt to run server, register a tool: console 1`] = `
+exports[`runServer should attempt to run server, register a tool: diagnostics 1`] = `
 {
-  "info": [
+  "events": [
     [
       "Registered tool: loremIpsum",
     ],
-  ],
-  "log": [
     [
       "PatternFly MCP server running on stdio",
     ],
@@ -132,17 +127,15 @@ exports[`runServer should attempt to run server, register a tool: console 1`] = 
 }
 `;
 
-exports[`runServer should attempt to run server, register multiple tools: console 1`] = `
+exports[`runServer should attempt to run server, register multiple tools: diagnostics 1`] = `
 {
-  "info": [
+  "events": [
     [
       "Registered tool: loremIpsum",
     ],
     [
       "Registered tool: dolorSit",
     ],
-  ],
-  "log": [
     [
       "PatternFly MCP server running on stdio",
     ],
@@ -187,10 +180,9 @@ exports[`runServer should attempt to run server, register multiple tools: consol
 }
 `;
 
-exports[`runServer should attempt to run server, use custom options: console 1`] = `
+exports[`runServer should attempt to run server, use custom options: diagnostics 1`] = `
 {
-  "info": [],
-  "log": [
+  "events": [
     [
       "PatternFly MCP server running on stdio",
     ],
@@ -218,9 +210,9 @@ exports[`runServer should attempt to run server, use custom options: console 1`]
 }
 `;
 
-exports[`runServer should attempt to run server, use default tools: console 1`] = `
+exports[`runServer should attempt to run server, use default tools: diagnostics 1`] = `
 {
-  "info": [
+  "events": [
     [
       "Registered tool: usePatternFlyDocs",
     ],
@@ -230,8 +222,6 @@ exports[`runServer should attempt to run server, use default tools: console 1`] 
     [
       "Registered tool: componentSchemas",
     ],
-  ],
-  "log": [
     [
       "PatternFly MCP server running on stdio",
     ],
@@ -730,3 +720,7 @@ exports[`runServer should attempt to run server, use default tools: console 1`] 
   ],
 }
 `;
+
+exports[`runServer should handle errors during connection: Connection failed 1`] = `"Connection failed"`;
+
+exports[`runServer should handle errors during server creation: Server creation failed 1`] = `"Server creation failed"`;

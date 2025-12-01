@@ -69,3 +69,40 @@ exports[`generateHash should generate a consistent hash, symbols, different inst
 exports[`generateHash should generate a consistent hash, symbols, different instances BUT with same string will return the same 1`] = `"b3f594684e6b3954940c8f206a54a79f153a2424"`;
 
 exports[`generateHash should generate a consistent hash, undefined 1`] = `"19dafbceef2fcb380547ee9dc4c690a2f9e08d07"`;
+
+exports[`mergeObjects should merge two objects, non-objects 1`] = `"lorem"`;
+
+exports[`mergeObjects should merge two objects, plain object against array 1`] = `{}`;
+
+exports[`mergeObjects should merge two objects, plain object against null 1`] = `{}`;
+
+exports[`mergeObjects should merge two objects, plain object against plain object 1`] = `{}`;
+
+exports[`mergeObjects should merge two objects, plain object against undefined 1`] = `{}`;
+
+exports[`mergeObjects should merge two objects, recursive plain object against recursive plain object 1`] = `
+{
+  "lorem": {
+    "adipiscing": null,
+    "amet": {
+      "consectetur": "adipiscing",
+      "elit": {
+        "dolor": "magna",
+        "sed": "do",
+      },
+    },
+    "consectetur": [Function],
+    "dolor": [
+      "sit",
+      "amet",
+    ],
+    "elit": {
+      "sed": "do",
+    },
+    "ipsum": "dolor",
+    "sit": [
+      "amet",
+    ],
+  },
+}
+`;
