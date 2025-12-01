@@ -10,7 +10,8 @@ type McpLoggingLevel = LoggingLevel;
 /**
  * Convert a log level to an MCP-compatible level.
  *
- * @param {LogLevel} level
+ * @param {LogLevel} level - Log level to convert
+ * @returns MCP-compatible logging level
  */
 const toMcpLevel = (level: LogLevel): McpLoggingLevel => {
   switch (level) {
@@ -57,6 +58,7 @@ const registerMcpSubscriber = (server: McpServer, { logging, name }: GlobalOptio
  *
  * @param {McpServer} server
  * @param {GlobalOptions} options
+ * @returns Unsubscribe function to remove all registered subscribers
  */
 const createServerLogger = (server: McpServer, options: GlobalOptions = getOptions()) => {
   const unsubscribeLoggerFuncs: (() => boolean | void)[] = [];

@@ -28,22 +28,20 @@ const setOptions = (options?: Partial<DefaultOptions>): GlobalOptions => {
   const baseLogging = isPlainObject(base.logging) ? base.logging : DEFAULT_OPTIONS.logging;
   const baseName = LOG_BASENAME;
   const channelName = `${baseName}:${sessionId}`;
-  const loggingSession: LoggingSession = {
-    level: baseLogging.level,
-    stderr: baseLogging.stderr,
-    protocol: baseLogging.protocol,
-    transport: baseLogging.transport,
-    baseName,
-    channelName
-  };
-
-  const merged = {
+  const merged: GlobalOptions = {
     ...base,
     sessionId,
-    logging: loggingSession,
+    logging: {
+      level: baseLogging.level,
+      stderr: baseLogging.stderr,
+      protocol: baseLogging.protocol,
+      transport: baseLogging.transport,
+      baseName,
+      channelName
+    },
     resourceMemoOptions: DEFAULT_OPTIONS.resourceMemoOptions,
     toolMemoOptions: DEFAULT_OPTIONS.toolMemoOptions
-  } as unknown as GlobalOptions;
+  };
 
   const frozen = freezeObject(structuredClone(merged));
 

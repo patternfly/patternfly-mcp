@@ -28,15 +28,15 @@ const isPlainObject = (obj: unknown): obj is Record<string, unknown> => {
 /**
  * Merge two objects recursively, then return a new object, deep merge.
  *
- * - Only recurses into plain objects.
- * - Arrays and non-plain objects are replaced, not merged.
- * - Prototype-pollution keys are ignored
+ * Only recurses into plain objects. Arrays and non-plain objects are replaced, not merged.
+ * Prototype-pollution keys are ignored.
  *
- * @param baseObj Base object to merge into.
- * @param sourceObj Source object to merge from.
- * @param [options]
- * @param options.allowNullValues If `true`, `null` values in `sourceObj` will overwrite `baseObj` values. Default: `true`
- * @param options.allowUndefinedValues If `true`, all undefined values in `sourceObj` will be merged on top of `baseObj`. Default: `false`
+ * @param baseObj - Base object to merge into
+ * @param sourceObj - Source object to merge from
+ * @param [options] - Merge options
+ * @param [options.allowNullValues] - If `true`, `null` values in `sourceObj` will overwrite `baseObj` values. Default: `true`
+ * @param [options.allowUndefinedValues] - If `true`, all undefined values in `sourceObj` will be merged on top of `baseObj`. Default: `false`
+ * @returns Deeply merged object of type TBase
  */
 const mergeObjects = <TBase extends object>(
   baseObj: TBase,
@@ -84,8 +84,9 @@ const mergeObjects = <TBase extends object>(
 /**
  * Freeze an object recursively, deep freeze.
  *
- * @param obj Object to freeze.
- * @param [_seen] WeakSet of already-seen objects. Default: `new WeakSet<object>()`.
+ * @param obj - Object to freeze
+ * @param [_seen] - WeakSet of already-seen objects. Default: `new WeakSet<object>()`.
+ * @returns Frozen object of type TBase
  */
 const freezeObject = <TBase>(obj: TBase, _seen?: WeakSet<object>): TBase => {
   const seen = _seen || new WeakSet<object>();
@@ -160,6 +161,7 @@ const hashCode = (str: unknown, { algorithm = 'sha1', encoding = 'hex' }: { algo
  * Normalize a value for hashing with JSON.stringify
  *
  * @param value - Value to normalize for hashing, typically for JSON.stringify
+ * @returns Normalized value suitable for JSON serialization
  */
 const hashNormalizeValue = (value: unknown): unknown => {
   const normalizeSort = (a: any, b: any) => (a < b ? -1 : a > b ? 1 : 0);

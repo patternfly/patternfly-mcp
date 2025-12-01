@@ -42,12 +42,12 @@ const logSeverity = (level: unknown): number =>
   LOG_LEVELS.indexOf(level as LogLevel);
 
 /**
- * Publish a structured log event to the diagnostics channel
+ * Publish a structured log event to the diagnostics channel.
  *
- * @param level - Log level and options
- * @param {LoggingSession} [options] - Logger options
- * @param [msg] - Log message
- * @param [args] - Log message arguments
+ * @param level - Log level for the event
+ * @param {LoggingSession} [options]
+ * @param [msg] - Optional log message (string) or first argument
+ * @param [args] - Optional additional arguments for the log event
  */
 const publish = (level: LogLevel, options: LoggingSession = getLoggerOptions(), msg?: unknown, ...args: unknown[]) => {
   const channelName = options?.channelName;
@@ -81,9 +81,9 @@ const publish = (level: LogLevel, options: LoggingSession = getLoggerOptions(), 
  *
  * If the event doesn't contain a valid `level` property, the handler is not invoked.
  *
- * @param handler Callback function to handle log events.
- * @param {LoggingSession} [options] Logger options
- * @returns A function to unsubscribe from the log channel.
+ * @param handler - Callback function to handle log events
+ * @param {LoggingSession} [options]
+ * @returns Function to unsubscribe from the log channel
  */
 const subscribeToChannel = (handler: (message: LogEvent) => void, options: LoggingSession = getLoggerOptions()) => {
   const channelName = options?.channelName;
@@ -139,11 +139,11 @@ const log = {
 /**
  * Register a handler that writes formatted log lines to `process.stderr`.
  *
- * - Writes strictly to stderr to avoid corrupting STDIO with stdout.
+ * Writes strictly to stderr to avoid corrupting STDIO with stdout.
  *
  * @param {LoggingSession} options
- * @param [formatter] - Custom formatter for a log event. Default prints: `[LEVEL] msg ...args`
- * @returns Unsubscribe function to remove the subscriber.
+ * @param [formatter] - Optional custom formatter for log events. Default prints: `[LEVEL] msg ...args`
+ * @returns Unsubscribe function to remove the subscriber
  */
 const registerStderrSubscriber = (options: LoggingSession, formatter?: (e: LogEvent) => string) => {
   const format = formatter || ((event: LogEvent) => {
@@ -171,11 +171,11 @@ const registerStderrSubscriber = (options: LoggingSession, formatter?: (e: LogEv
 /**
  * Creates a logger initialization function and supports registering logging subscribers.
  *
- * @param {LoggingSession} [options] Configuration options for the logger.
- * @returns Unsubscribe function to remove the subscriber.
+ * @param {LoggingSession} [options]
+ * @returns Unsubscribe function to remove all registered subscribers
  */
 const createLogger = (options: LoggingSession = getLoggerOptions()) => {
-  const unsubscribeLoggerFuncs: (() => boolean)[] = [];
+  const unsubscribeLoggerFuncs: (() => void | boolean)[] = [];
 
   if (options?.channelName && options?.stderr) {
     unsubscribeLoggerFuncs.push(registerStderrSubscriber(options));
