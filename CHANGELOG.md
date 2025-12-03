@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.3.0](https://github.com/patternfly/patternfly-mcp/compare/e31c15bab47c4949d2e233e400fe81c27ab33144...53d69b5b2f5c14b4cef4e6fa2c9b7ed2ec857c5c) (2025-12-03)
+
+
+### Features
+*  log channels, avoid polluting stdout ([#25](https://github.com/patternfly/patternfly-mcp/pull/25)) ([cc82731](https://github.com/patternfly/patternfly-mcp/commit/cc82731ceb5d97caba84c93e1530c6c87f763799))
+
+### Bug Fixes
+*  markdown format for links ([#28](https://github.com/patternfly/patternfly-mcp/pull/28)) ([53d69b5](https://github.com/patternfly/patternfly-mcp/commit/53d69b5b2f5c14b4cef4e6fa2c9b7ed2ec857c5c))
+
 ## [0.2.0](https://github.com/patternfly/patternfly-mcp/compare/1913d18b82ca50b57999cf1c6cf7c1100eff3e94...bb8f4be6da8629bef34beb2d82dc8ce826f68c44) (2025-11-30)
 
 
