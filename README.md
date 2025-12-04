@@ -19,7 +19,7 @@ The Model Context Protocol (MCP) is an open standard that enables AI assistants 
 ## Prerequisites
 
 - Node.js 20.0.0 or higher
-- npm (or another Node package manager)
+- NPM (or another Node package manager)
 
 ## Installation
 
@@ -63,7 +63,7 @@ These are the most relevant NPM scripts from package.json:
 - `build`: Build the TypeScript project (cleans dist, type-checks, bundles)
 - `build:clean`: Remove dist
 - `build:watch`: Build in watch mode
-- `start`: Run the built server (node dist/index.js)
+- `start`: Run the built server, CLI (node dist/cli.js)
 - `start:dev`: Run with tsx in watch mode (development)
 - `test`: Run linting, type-check, and unit tests in src/
 - `test:dev`: Jest watch mode for unit tests
@@ -182,7 +182,7 @@ Most MCP clients use a JSON configuration to specify how to start this server. T
   "mcpServers": {
     "patternfly-docs": {
       "command": "node",
-      "args": ["dist/index.js"],
+      "args": ["dist/cli.js"],
       "cwd": "/path/to/patternfly-mcp",
       "description": "PatternFly docs (local build)"
     }

@@ -41,13 +41,13 @@ export interface StdioTransportClient {
  *
  * @param options - Server configuration options
  * @param options.command - Node command to run (default: 'node')
- * @param options.serverPath - Path to built server (default: process.env.SERVER_PATH || 'dist/index.js')
+ * @param options.serverPath - Path to built server (default: process.env.SERVER_PATH || 'dist/cli.js')
  * @param options.args - Additional args to pass to server, see app `CliOptions` for the full list (e.g., ['--docs-host'])
  * @param options.env - Environment variables for the child process
  */
 export const startServer = async ({
   command = 'node',
-  serverPath = process.env.SERVER_PATH || 'dist/index.js',
+  serverPath = 'dist/cli.js',
   args = [],
   env = {}
 }: StartOptions = {}): Promise<StdioTransportClient> => {

@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import { parseCliOptions, type CliOptions, type DefaultOptions } from './options';
 import { setOptions } from './options.context';
 import { runServer, type ServerInstance } from './server';
@@ -25,14 +23,5 @@ const main = async (programmaticOptions?: Partial<DefaultOptions>): Promise<Serv
     process.exit(1);
   }
 };
-
-// Start the server
-if (process.env.NODE_ENV !== 'local') {
-  main().catch(error => {
-    // Use console.error, log.error requires initialization
-    console.error('Failed to start server:', error);
-    process.exit(1);
-  });
-}
 
 export { main, main as start, type CliOptions, type ServerInstance };
