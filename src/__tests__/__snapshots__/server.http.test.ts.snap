@@ -1,0 +1,336 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`getProcessOnPort should attempt to find a process listening on a port: ps fallback 1`] = `
+{
+  "command": "<execSync>["ps -p 123456789 -o command=",{"encoding":"utf8","stdio":["ignore","pipe","pipe"]}]</execSync>",
+  "pid": 123456789,
+}
+`;
+
+exports[`startHttpTransport accept and reject paths, accept a basic path 1`] = `
+{
+  "isRequestCalled": true,
+  "requestCalls": [
+    [
+      {
+        "method": "GET",
+        "socket": {
+          "remoteAddress": "127.0.0.1",
+        },
+        "url": "/mcp",
+      },
+      {
+        "end": [MockFunction],
+        "setHeader": [MockFunction],
+        "shouldKeepAlive": undefined,
+        "statusCode": undefined,
+      },
+    ],
+  ],
+  "response": {
+    "shouldKeepAlive": undefined,
+    "statusCode": undefined,
+  },
+  "responseCalls": [],
+}
+`;
+
+exports[`startHttpTransport accept and reject paths, accept a casing insensitive path 1`] = `
+{
+  "isRequestCalled": true,
+  "requestCalls": [
+    [
+      {
+        "method": "GET",
+        "socket": {
+          "remoteAddress": "127.0.0.1",
+        },
+        "url": "/MCP",
+      },
+      {
+        "end": [MockFunction],
+        "setHeader": [MockFunction],
+        "shouldKeepAlive": undefined,
+        "statusCode": undefined,
+      },
+    ],
+  ],
+  "response": {
+    "shouldKeepAlive": undefined,
+    "statusCode": undefined,
+  },
+  "responseCalls": [],
+}
+`;
+
+exports[`startHttpTransport accept and reject paths, accept a path with query params 1`] = `
+{
+  "isRequestCalled": true,
+  "requestCalls": [
+    [
+      {
+        "method": "GET",
+        "socket": {
+          "remoteAddress": "127.0.0.1",
+        },
+        "url": "/MCP/SSE?x=1",
+      },
+      {
+        "end": [MockFunction],
+        "setHeader": [MockFunction],
+        "shouldKeepAlive": undefined,
+        "statusCode": undefined,
+      },
+    ],
+  ],
+  "response": {
+    "shouldKeepAlive": undefined,
+    "statusCode": undefined,
+  },
+  "responseCalls": [],
+}
+`;
+
+exports[`startHttpTransport accept and reject paths, accept a trailing slash 1`] = `
+{
+  "isRequestCalled": true,
+  "requestCalls": [
+    [
+      {
+        "method": "GET",
+        "socket": {
+          "remoteAddress": "127.0.0.1",
+        },
+        "url": "/mcp/",
+      },
+      {
+        "end": [MockFunction],
+        "setHeader": [MockFunction],
+        "shouldKeepAlive": undefined,
+        "statusCode": undefined,
+      },
+    ],
+  ],
+  "response": {
+    "shouldKeepAlive": undefined,
+    "statusCode": undefined,
+  },
+  "responseCalls": [],
+}
+`;
+
+exports[`startHttpTransport accept and reject paths, accept a trailing slash with path 1`] = `
+{
+  "isRequestCalled": true,
+  "requestCalls": [
+    [
+      {
+        "method": "GET",
+        "socket": {
+          "remoteAddress": "127.0.0.1",
+        },
+        "url": "/mcp/sse",
+      },
+      {
+        "end": [MockFunction],
+        "setHeader": [MockFunction],
+        "shouldKeepAlive": undefined,
+        "statusCode": undefined,
+      },
+    ],
+  ],
+  "response": {
+    "shouldKeepAlive": undefined,
+    "statusCode": undefined,
+  },
+  "responseCalls": [],
+}
+`;
+
+exports[`startHttpTransport accept and reject paths, reject a malformed path 1`] = `
+{
+  "isRequestCalled": false,
+  "requestCalls": [],
+  "response": {
+    "shouldKeepAlive": false,
+    "statusCode": 404,
+  },
+  "responseCalls": [
+    [
+      "Content-Type",
+      "text/plain",
+    ],
+    [
+      "X-Content-Type-Options",
+      "nosniff",
+    ],
+    [
+      "Not Found",
+    ],
+  ],
+}
+`;
+
+exports[`startHttpTransport accept and reject paths, reject a malformed url 1`] = `
+{
+  "isRequestCalled": false,
+  "requestCalls": [],
+  "response": {
+    "shouldKeepAlive": false,
+    "statusCode": 400,
+  },
+  "responseCalls": [
+    [
+      "Content-Type",
+      "text/plain",
+    ],
+    [
+      "X-Content-Type-Options",
+      "nosniff",
+    ],
+    [
+      "Bad Request",
+    ],
+  ],
+}
+`;
+
+exports[`startHttpTransport accept and reject paths, reject a partial path 1`] = `
+{
+  "isRequestCalled": false,
+  "requestCalls": [],
+  "response": {
+    "shouldKeepAlive": false,
+    "statusCode": 404,
+  },
+  "responseCalls": [
+    [
+      "Content-Type",
+      "text/plain",
+    ],
+    [
+      "X-Content-Type-Options",
+      "nosniff",
+    ],
+    [
+      "Not Found",
+    ],
+  ],
+}
+`;
+
+exports[`startHttpTransport accept and reject paths, reject a root path 1`] = `
+{
+  "isRequestCalled": false,
+  "requestCalls": [],
+  "response": {
+    "shouldKeepAlive": false,
+    "statusCode": 404,
+  },
+  "responseCalls": [
+    [
+      "Content-Type",
+      "text/plain",
+    ],
+    [
+      "X-Content-Type-Options",
+      "nosniff",
+    ],
+    [
+      "Not Found",
+    ],
+  ],
+}
+`;
+
+exports[`startHttpTransport accept and reject paths, reject an incorrect path 1`] = `
+{
+  "isRequestCalled": false,
+  "requestCalls": [],
+  "response": {
+    "shouldKeepAlive": false,
+    "statusCode": 404,
+  },
+  "responseCalls": [
+    [
+      "Content-Type",
+      "text/plain",
+    ],
+    [
+      "X-Content-Type-Options",
+      "nosniff",
+    ],
+    [
+      "Not Found",
+    ],
+  ],
+}
+`;
+
+exports[`startHttpTransport accept and reject paths, reject an malformed path 1`] = `
+{
+  "isRequestCalled": false,
+  "requestCalls": [],
+  "response": {
+    "shouldKeepAlive": false,
+    "statusCode": 404,
+  },
+  "responseCalls": [
+    [
+      "Content-Type",
+      "text/plain",
+    ],
+    [
+      "X-Content-Type-Options",
+      "nosniff",
+    ],
+    [
+      "Not Found",
+    ],
+  ],
+}
+`;
+
+exports[`startHttpTransport should start HTTP server, with port and host: server setup 1`] = `
+{
+  "serverClose": [
+    [
+      [Function],
+    ],
+  ],
+  "setupHandlers": [
+    [
+      "connection",
+      [Function],
+    ],
+    [
+      "error",
+      [Function],
+    ],
+  ],
+  "setupServer": [
+    [
+      {
+        "handleRequest": [MockFunction],
+        "sessionId": "test-session-123",
+      },
+    ],
+    [
+      3000,
+      "localhost",
+      [Function],
+    ],
+  ],
+  "setupTransport": [
+    [
+      {
+        "enableDnsRebindingProtection": true,
+        "enableJsonResponse": false,
+        "onsessionclosed": [Function],
+        "onsessioninitialized": [Function],
+        "sessionIdGenerator": [Function],
+      },
+    ],
+  ],
+}
+`;

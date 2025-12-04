@@ -35,6 +35,26 @@ describe('parseCliOptions', () => {
     {
       description: 'with other arguments',
       args: ['node', 'script.js', 'other', 'args']
+    },
+    {
+      description: 'with --http flag',
+      args: ['node', 'script.js', '--http']
+    },
+    {
+      description: 'with --http and --port',
+      args: ['node', 'script.js', '--http', '--port', '8080']
+    },
+    {
+      description: 'with --http and --host',
+      args: ['node', 'script.js', '--http', '--host', '0.0.0.0']
+    },
+    {
+      description: 'with --allowed-origins',
+      args: ['node', 'script.js', '--http', '--allowed-origins', 'https://app.com,https://admin.app.com']
+    },
+    {
+      description: 'with --allowed-hosts',
+      args: ['node', 'script.js', '--http', '--allowed-hosts', 'localhost,127.0.0.1']
     }
   ])('should attempt to parse args $description', ({ args = [] }) => {
     process.argv = args;

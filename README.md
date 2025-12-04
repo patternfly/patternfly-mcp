@@ -75,7 +75,7 @@ These are the most relevant NPM scripts from package.json:
 
 ## Usage
 
-The MCP server communicates over stdio and provides access to PatternFly documentation through the following tools. Both tools accept an argument named `urlList` which must be an array of strings. Each string is either:
+The MCP server can communicate over **stdio** (default) or **HTTP** transport. It provides access to PatternFly documentation through the following tools. Both tools accept an argument named `urlList` which must be an array of strings. Each string is either:
 - An external URL (e.g., a raw GitHub URL to a .md file), or
 - A local file path (e.g., documentation/.../README.md). When running with the --docs-host flag, these paths are resolved under the llms-files directory instead.
 
@@ -143,6 +143,68 @@ npx @patternfly/patternfly-mcp --docs-host
 
 Then, passing a local path such as react-core/6.0.0/llms.txt in urlList will load from llms-files/react-core/6.0.0/llms.txt.
 
+## HTTP transport mode
+
+By default, the server communicates over stdio. To run the server over HTTP instead, use the `--http` flag. This enables the server to accept HTTP requests on a specified port and host.
+
+### Basic HTTP usage
+
+```bash
+npx @patternfly/patternfly-mcp --http
+```
+
+This starts the server on `http://127.0.0.1:8080` (default port and host).
+
+### HTTP options
+
+- `--http`: Enable HTTP transport mode (default: stdio)
+- `--port <number>`: Port number to listen on (default: 8080)
+- `--host <string>`: Host address to bind to (default: 127.0.0.1)
+- `--allowed-origins <origins>`: Comma-separated list of allowed CORS origins
+- `--allowed-hosts <hosts>`: Comma-separated list of allowed host headers
+
+#### Security note: DNS rebinding protection (default)
+
+This server enables DNS rebinding protection by default when running in HTTP mode. If you're behind a proxy or load balancer, ensure the client sends a correct `Host` header and configure `--allowed-hosts` accordingly. Otherwise, requests may be rejected by design. For example:
+
+```bash
+npx @patternfly/patternfly-mcp --http \
+  --host 0.0.0.0 --port 8080 \
+  --allowed-hosts "localhost,127.0.0.1,example.com"
+```
+
+If your client runs on a different origin, also set `--allowed-origins` to allow CORS. Example:
+
+```bash
+npx @patternfly/patternfly-mcp --http \
+  --allowed-origins "http://localhost:5173,https://app.example.com"
+```
+
+### Examples
+
+Start on a custom port:
+```bash
+npx @patternfly/patternfly-mcp --http --port 8080
+```
+
+Start on a specific host:
+```bash
+npx @patternfly/patternfly-mcp --http --host 0.0.0.0 --port 8080
+```
+
+Start with CORS allowed origins:
+```bash
+npx @patternfly/patternfly-mcp --http --allowed-origins "http://localhost:3001,https://example.com"
+```
+
+### Port conflict handling
+
+If the specified port is already in use, the server will:
+- Display a helpful error message with the process ID (if available)
+- Suggest using a different port with `--port` or stopping the process using the port
+
+**Note**: The server uses memoization to prevent duplicate server instances within the same process. If you need to restart the server, simply stop the existing instance and start a new one.
+
 ## MCP client configuration examples
 
 Most MCP clients use a JSON configuration to specify how to start this server. The server itself only reads CLI flags and environment variables, not the JSON configuration. Below are examples you can adapt to your MCP client.
@@ -185,6 +247,41 @@ Most MCP clients use a JSON configuration to specify how to start this server. T
       "args": ["dist/cli.js"],
       "cwd": "/path/to/patternfly-mcp",
       "description": "PatternFly docs (local build)"
+    }
+  }
+}
+```
+
+### HTTP transport mode
+
+```json
+{
+  "mcpServers": {
+    "patternfly-docs": {
+      "command": "npx",
+      "args": ["-y", "@patternfly/patternfly-mcp@latest", "--http", "--port", "8080"],
+      "description": "PatternFly docs (HTTP transport)"
+    }
+  }
+}
+```
+
+### HTTP transport with custom options
+
+```json
+{
+  "mcpServers": {
+    "patternfly-docs": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@patternfly/patternfly-mcp@latest",
+        "--http",
+        "--port", "8080",
+        "--host", "0.0.0.0",
+        "--allowed-origins", "http://localhost:3001,https://example.com"
+      ],
+      "description": "PatternFly docs (HTTP transport, custom port/host/CORS)"
     }
   }
 }
@@ -254,7 +351,9 @@ const serverWithOptions = await start({ docsHost: true });
 // Multiple options can be overridden
 const customServer = await start({ 
   docsHost: true,
-  // Future CLI options can be added here
+  http: true,
+  port: 8080,
+  host: '0.0.0.0'
 });
 
 // TypeScript users can use the CliOptions type for type safety

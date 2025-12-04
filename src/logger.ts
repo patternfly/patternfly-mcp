@@ -5,6 +5,15 @@ import { getLoggerOptions } from './options.context';
 type LogLevel = LoggingSession['level'];
 
 /**
+ * Unsubscribe function returned by `subscribeToChannel`.
+ *
+ * @note We purposefully don't handle the return `boolean` given by `diagnostics_channel.unsubscribe`. The `unsubscribe`
+ * returns a function that returns a boolean indicating whether the subscription was successfully removed.
+ * https://nodejs.org/api/diagnostics_channel.html#diagnostics_channel_channel_unsubscribe_listener
+ */
+type Unsubscribe = () => void;
+
+/**
  * Log an event with detailed information about a specific action.
  *
  * @interface LogEvent
@@ -77,35 +86,6 @@ const publish = (level: LogLevel, options: LoggingSession = getLoggerOptions(), 
 };
 
 /**
- * Subscribe to the diagnostics channel and invoke a handler for each event.
- *
- * If the event doesn't contain a valid `level` property, the handler is not invoked.
- *
- * @param handler - Callback function to handle log events
- * @param {LoggingSession} [options]
- * @returns Function to unsubscribe from the log channel
- */
-const subscribeToChannel = (handler: (message: LogEvent) => void, options: LoggingSession = getLoggerOptions()) => {
-  const channelName = options?.channelName;
-
-  if (!channelName) {
-    throw new Error('subscribeToChannel called without a configured logging channelName');
-  }
-
-  const updatedHandler = (event: LogEvent) => {
-    if (!event?.level) {
-      return;
-    }
-
-    handler.call(null, event);
-  };
-
-  subscribe(channelName, updatedHandler as (message: unknown) => void);
-
-  return () => unsubscribe(channelName, updatedHandler as (message: unknown) => void);
-};
-
-/**
  * Console-like API for publishing structured log events to the diagnostics channel.
  *
  * @property debug Logs messages with 'debug' level.
@@ -137,6 +117,44 @@ const log = {
 };
 
 /**
+ * Subscribe to the diagnostics channel and invoke a handler for each event.
+ *
+ * If the event doesn't contain a valid `level` property, the handler is not invoked.
+ *
+ * @param handler - Callback function to handle log events
+ * @param {LoggingSession} [options]
+ * @returns Function to unsubscribe from the log channel
+ */
+const subscribeToChannel = (
+  handler: (message: LogEvent) => void,
+  options: LoggingSession = getLoggerOptions()
+): Unsubscribe => {
+  const channelName = options?.channelName;
+
+  if (!channelName) {
+    throw new Error('subscribeToChannel called without a configured logging channelName');
+  }
+
+  const updatedHandler = (event: LogEvent) => {
+    if (!event?.level) {
+      return;
+    }
+
+    try {
+      handler.call(null, event);
+    } catch (error) {
+      log.debug('Error invoking logging subscriber', event, error);
+    }
+  };
+
+  subscribe(channelName, updatedHandler as (message: unknown) => void);
+
+  return () => {
+    unsubscribe(channelName, updatedHandler as (message: unknown) => void);
+  };
+};
+
+/**
  * Register a handler that writes formatted log lines to `process.stderr`.
  *
  * Writes strictly to stderr to avoid corrupting STDIO with stdout.
@@ -145,7 +163,7 @@ const log = {
  * @param [formatter] - Optional custom formatter for log events. Default prints: `[LEVEL] msg ...args`
  * @returns Unsubscribe function to remove the subscriber
  */
-const registerStderrSubscriber = (options: LoggingSession, formatter?: (e: LogEvent) => string) => {
+const registerStderrSubscriber = (options: LoggingSession, formatter?: (e: LogEvent) => string): Unsubscribe => {
   const format = formatter || ((event: LogEvent) => {
     const eventLevel = `[${event.level.toUpperCase()}]`;
     const message = event.msg || '';
@@ -158,7 +176,7 @@ const registerStderrSubscriber = (options: LoggingSession, formatter?: (e: LogEv
     }).join(' ') || '';
     const separator = rest ? '\t:' : '';
 
-    return `${eventLevel}:\t${message}${separator}${rest}`.trim();
+    return `${eventLevel}: ${message}${separator}${rest}`.trim();
   });
 
   return subscribeToChannel((event: LogEvent) => {
@@ -174,14 +192,24 @@ const registerStderrSubscriber = (options: LoggingSession, formatter?: (e: LogEv
  * @param {LoggingSession} [options]
  * @returns Unsubscribe function to remove all registered subscribers
  */
-const createLogger = (options: LoggingSession = getLoggerOptions()) => {
-  const unsubscribeLoggerFuncs: (() => void | boolean)[] = [];
+const createLogger = (options: LoggingSession = getLoggerOptions()): Unsubscribe => {
+  const unsubscribeLoggerFuncs: Unsubscribe[] = [];
 
   if (options?.channelName && options?.stderr) {
     unsubscribeLoggerFuncs.push(registerStderrSubscriber(options));
   }
 
-  return () => unsubscribeLoggerFuncs.forEach(unsubscribe => unsubscribe());
+  return () => {
+    unsubscribeLoggerFuncs.forEach(unsubscribe => {
+      try {
+        unsubscribe();
+      } catch (error) {
+        log.debug('Error unsubscribing from diagnostics channel', error);
+      }
+    });
+
+    unsubscribeLoggerFuncs.length = 0;
+  };
 };
 
 export {
@@ -193,5 +221,6 @@ export {
   registerStderrSubscriber,
   subscribeToChannel,
   type LogEvent,
-  type LogLevel
+  type LogLevel,
+  type Unsubscribe
 };

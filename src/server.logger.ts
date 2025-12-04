@@ -1,8 +1,8 @@
 import { type McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { type LoggingLevel } from '@modelcontextprotocol/sdk/types.js';
-import { getOptions } from './options.context';
-import { type GlobalOptions } from './options';
-import { createLogger, logSeverity, subscribeToChannel, type LogEvent, type LogLevel } from './logger';
+import { getLoggerOptions } from './options.context';
+import { DEFAULT_OPTIONS, type LoggingSession } from './options.defaults';
+import { createLogger, log, logSeverity, subscribeToChannel, type LogEvent, type LogLevel, type Unsubscribe } from './logger';
 import { memo } from './server.caching';
 
 type McpLoggingLevel = LoggingLevel;
@@ -34,12 +34,12 @@ const toMcpLevel = (level: LogLevel): McpLoggingLevel => {
  * - Event is fire-and-forget, swallow errors to avoid affecting app flow
  *
  * @param {McpServer} server - MCP server instance
- * @param {GlobalOptions} options
+ * @param {LoggingSession} loggingSession
  * @returns Unsubscribe function to remove the subscriber.
  */
-const registerMcpSubscriber = (server: McpServer, { logging, name }: GlobalOptions) =>
+const registerMcpSubscriber = (server: McpServer, loggingSession: LoggingSession) =>
   subscribeToChannel((event: LogEvent) => {
-    if (logSeverity(event.level) < logSeverity(logging?.level)) {
+    if (logSeverity(event.level) < logSeverity(loggingSession.level)) {
       return;
     }
 
@@ -48,7 +48,7 @@ const registerMcpSubscriber = (server: McpServer, { logging, name }: GlobalOptio
 
     try {
       void server
-        .sendLoggingMessage({ level: toMcpLevel(event.level), logger: name, data })
+        .sendLoggingMessage({ level: toMcpLevel(event.level), logger: loggingSession.logger, data })
         .catch(() => {});
     } catch {}
   });
@@ -57,27 +57,74 @@ const registerMcpSubscriber = (server: McpServer, { logging, name }: GlobalOptio
  * Create a logger for the server instance.
  *
  * @param {McpServer} server
- * @param {GlobalOptions} options
- * @returns Unsubscribe function to remove all registered subscribers
+ * @param {LoggingSession} [loggingSession]
+ * @returns An object with methods to manage logging subscriptions:
+ *   - `subscribe`: Registers a new log event handler if a valid handler function is provided.
+ *   - `unsubscribe`: Unsubscribes and cleans up all available registered loggers and handlers.
  */
-const createServerLogger = (server: McpServer, options: GlobalOptions = getOptions()) => {
-  const unsubscribeLoggerFuncs: (() => boolean | void)[] = [];
+const createServerLogger = (server: McpServer, loggingSession: LoggingSession = getLoggerOptions()) => {
+  // Track active subscribers to unsubscribe on server shutdown
+  const unsubscribeLoggerFuncs: Unsubscribe[] = [];
 
-  if (options?.logging?.channelName) {
-    // Register the diagnostics channel returns a function to unsubscribe
-    unsubscribeLoggerFuncs.push(createLogger(options.logging));
+  if (loggingSession?.channelName) {
+    // Register the diagnostics channel
+    unsubscribeLoggerFuncs.push(createLogger(loggingSession));
 
-    if (options.logging.protocol) {
-      unsubscribeLoggerFuncs.push(registerMcpSubscriber(server, options));
+    if (loggingSession.protocol) {
+      // Register the MCP subscriber
+      unsubscribeLoggerFuncs.push(registerMcpSubscriber(server, loggingSession));
     }
   }
 
-  return () => unsubscribeLoggerFuncs.forEach(unsubscribe => unsubscribe());
+  return {
+    subscribe: (handler?: (event: LogEvent) => void) => {
+      if (typeof handler !== 'function') {
+        return () => {};
+      }
+
+      const unsubscribe = subscribeToChannel(handler);
+      let activeSubscribe = true;
+
+      // Wrap the unsubscribe function so it removes itself from the list of active subscribers
+      const wrappedUnsubscribe = () => {
+        if (!activeSubscribe) {
+          return;
+        }
+        activeSubscribe = false;
+
+        try {
+          unsubscribe();
+        } finally {
+          const index = unsubscribeLoggerFuncs.indexOf(wrappedUnsubscribe);
+
+          if (index > -1) {
+            unsubscribeLoggerFuncs.splice(index, 1);
+          }
+        }
+      };
+
+      // Track for server-wide cleanup
+      unsubscribeLoggerFuncs.push(wrappedUnsubscribe);
+
+      return wrappedUnsubscribe;
+    },
+    unsubscribe: () => {
+      unsubscribeLoggerFuncs.forEach(unsubscribe => {
+        try {
+          unsubscribe();
+        } catch (error) {
+          log.debug('Error unsubscribing from MCP server diagnostics channel', error);
+        }
+      });
+
+      unsubscribeLoggerFuncs.length = 0;
+    }
+  };
 };
 
 /**
  * Memoize the server logger.
  */
-createServerLogger.memo = memo(createServerLogger, { cacheLimit: 10 });
+createServerLogger.memo = memo(createServerLogger, DEFAULT_OPTIONS.resourceMemoOptions.default);
 
 export { createServerLogger, registerMcpSubscriber, toMcpLevel, type McpLoggingLevel };

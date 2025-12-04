@@ -1,8 +1,8 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { runServer } from '../server';
-import { type GlobalOptions } from '../options';
 import { log } from '../logger';
+import { startHttpTransport, type HttpServerHandle } from '../server.http';
 
 // Mock dependencies
 jest.mock('@modelcontextprotocol/sdk/server/mcp.js');
@@ -13,14 +13,18 @@ jest.mock('../server.logger', () => ({
     memo: jest.fn().mockImplementation(() => {})
   }
 }));
+jest.mock('../server.http');
 
 const MockMcpServer = McpServer as jest.MockedClass<typeof McpServer>;
 const MockStdioServerTransport = StdioServerTransport as jest.MockedClass<typeof StdioServerTransport>;
+const MockStartHttpTransport = startHttpTransport as jest.MockedFunction<typeof startHttpTransport>;
 const MockLog = log as jest.MockedObject<typeof log>;
 
 describe('runServer', () => {
   let mockServer: any;
   let mockTransport: any;
+  let mockHttpHandle: HttpServerHandle;
+  let mockClose: jest.Mock;
   let processOnSpy: jest.SpyInstance;
 
   beforeEach(() => {
@@ -39,48 +43,71 @@ describe('runServer', () => {
     MockMcpServer.mockImplementation(() => mockServer);
     MockStdioServerTransport.mockImplementation(() => mockTransport);
 
+    // Mock HTTP transport
+    mockClose = jest.fn().mockResolvedValue(undefined);
+    mockHttpHandle = {
+      close: mockClose
+    };
+
+    MockStartHttpTransport.mockResolvedValue(mockHttpHandle);
+
     // Spy on process.on method
     processOnSpy = jest.spyOn(process, 'on').mockImplementation();
+
+    // Mock process.exit to prevent Jest from exiting
+    jest.spyOn(process, 'exit').mockImplementation((() => {}) as never);
   });
 
   afterEach(() => {
     processOnSpy.mockRestore();
+    // Note: We don't call jest.restoreAllMocks() here as it would clear module mocks
+    // The memoization cache persists across tests, which is expected behavior
   });
 
   it.each([
     {
-      description: 'use default tools',
-      options: undefined,
-      tools: undefined
+      description: 'use default tools, stdio',
+      options: { name: 'test-server-1', version: '1.0.0' },
+      tools: undefined,
+      transportMethod: MockStdioServerTransport
+    },
+    {
+      description: 'use default tools, http',
+      options: { name: 'test-server-2', version: '1.0.0', isHttp: true },
+      tools: undefined,
+      transportMethod: MockStartHttpTransport
     },
     {
       description: 'use custom options',
       options: {
-        name: 'test-server',
+        name: 'test-server-3',
         version: '1.0.0'
         // logging: { protocol: false }
       },
-      tools: []
+      tools: [],
+      transportMethod: MockStdioServerTransport
     },
     {
       description: 'create transport, connect, and log success message',
-      options: undefined,
-      tools: []
+      options: { name: 'test-server-4', version: '1.0.0' },
+      tools: [],
+      transportMethod: MockStdioServerTransport
     },
     {
       description: 'register a tool',
-      options: undefined,
+      options: { name: 'test-server-5', version: '1.0.0' },
       tools: [
         jest.fn().mockReturnValue([
           'loremIpsum',
           { description: 'Lorem Ipsum', inputSchema: {} },
           jest.fn()
         ])
-      ]
+      ],
+      transportMethod: MockStdioServerTransport
     },
     {
       description: 'register multiple tools',
-      options: undefined,
+      options: { name: 'test-server-6', version: '1.0.0' },
       tools: [
         jest.fn().mockReturnValue([
           'loremIpsum',
@@ -92,35 +119,64 @@ describe('runServer', () => {
           { description: 'Dolor Sit', inputSchema: {} },
           jest.fn()
         ])
-      ]
+      ],
+      transportMethod: MockStdioServerTransport
     },
     {
       description: 'disable SIGINT handler',
-      options: undefined,
+      options: { name: 'test-server-7', version: '1.0.0' },
       tools: [],
-      enableSigint: false
+      enableSigint: false,
+      transportMethod: MockStdioServerTransport
     },
     {
       description: 'enable SIGINT handler explicitly',
-      options: undefined,
+      options: { name: 'test-server-8', version: '1.0.0' },
       tools: [],
-      enableSigint: true
+      enableSigint: true,
+      transportMethod: MockStdioServerTransport
     }
-  ])('should attempt to run server, $description', async ({ options, tools, enableSigint }) => {
+  ])('should attempt to run server, $description', async ({ options, tools, enableSigint, transportMethod }) => {
     const settings = {
       ...(tools && { tools }),
-      ...(enableSigint !== undefined && { enableSigint })
+      ...(enableSigint !== undefined && { enableSigint }),
+      allowProcessExit: false // Prevent process.exit in tests
     };
 
-    await runServer(options as GlobalOptions, Object.keys(settings).length > 0 ? settings : undefined);
+    const serverInstance = await runServer(options as any, Object.keys(settings).length > 0 ? settings : { allowProcessExit: false });
 
-    expect(MockStdioServerTransport).toHaveBeenCalled();
-
+    expect(transportMethod).toHaveBeenCalled();
+    expect(serverInstance.isRunning()).toBe(true);
     expect({
       events: MockLog.info.mock.calls,
       registerTool: mockServer.registerTool.mock.calls,
       mcpServer: MockMcpServer.mock.calls,
       process: processOnSpy.mock.calls
+    }).toMatchSnapshot('diagnostics');
+
+    // Clean up: stop the server to prevent cache pollution
+    await serverInstance.stop();
+  });
+
+  it.each([
+    {
+      description: 'stdio stop server',
+      options: undefined
+    },
+    {
+      description: 'http stop server',
+      options: { isHttp: true }
+    }
+  ])('should allow server to be stopped, $description', async ({ options }) => {
+    const serverInstance = await runServer({ ...options, name: 'test-server' } as any, { allowProcessExit: false });
+
+    expect(serverInstance.isRunning()).toBe(true);
+
+    await serverInstance.stop();
+
+    expect(serverInstance.isRunning()).toBe(false);
+    expect({
+      events: MockLog.info.mock.calls
     }).toMatchSnapshot('diagnostics');
   });
 

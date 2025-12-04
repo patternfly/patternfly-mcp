@@ -2,7 +2,7 @@
 
 import { main } from './index';
 
-main().catch(error => {
+main({ mode: 'cli' }).catch(error => {
   // Use console.error, log.error requires initialization
   console.error('Failed to start server:', error);
   process.exit(1);
