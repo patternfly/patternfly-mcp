@@ -7,6 +7,8 @@ import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 import { ResultSchema, LoggingMessageNotificationSchema, type LoggingLevel } from '@modelcontextprotocol/sdk/types.js';
 import { parseCliOptions } from '../../src/options';
 
+export type { Request as RpcRequest } from '@modelcontextprotocol/sdk/types.js';
+
 export interface StartOptions {
   command?: string;
   serverPath?: string;
@@ -41,7 +43,7 @@ export interface StdioTransportClient {
  *
  * @param options - Server configuration options
  * @param options.command - Node command to run (default: 'node')
- * @param options.serverPath - Path to built server (default: process.env.SERVER_PATH || 'dist/cli.js')
+ * @param options.serverPath - Path to built server (default: 'dist/cli.js')
  * @param options.args - Additional args to pass to server, see app `CliOptions` for the full list (e.g., ['--docs-host'])
  * @param options.env - Environment variables for the child process
  */
@@ -168,7 +170,7 @@ export const startServer = async ({
           return {
             jsonrpc: '2.0',
             id: null,
-            result: result as any
+            result
           };
         }
 
@@ -181,12 +183,12 @@ export const startServer = async ({
           return {
             jsonrpc: '2.0',
             id: null,
-            result: result as any
+            result
           };
         }
 
-        // For other requests, use the client's request method
-        // Note: The SDK's request method expects a properly formatted request
+        // Note: The SDK's request method expects a properly formatted request.
+        // For other requests, use the client's request method with generic ResultSchema
         const result = await mcpClient.request({
           method: request.method,
           params: request.params
@@ -195,7 +197,7 @@ export const startServer = async ({
         return {
           jsonrpc: '2.0',
           id: null,
-          result: result as any
+          result
         };
       } catch (error) {
         // If request fails, return error response
