@@ -8,9 +8,9 @@
     ".": "./dist/index.js"
   },
   "bin": {
-    "patternfly-mcp": "dist/index.js",
-    "pf-mcp": "dist/index.js",
-    "pfmcp": "dist/index.js"
+    "patternfly-mcp": "dist/cli.js",
+    "pf-mcp": "dist/cli.js",
+    "pfmcp": "dist/cli.js"
   },
   "files": [
     "dist/**/*",
@@ -23,8 +23,8 @@
     "build:clean": "rm -rf dist",
     "build:watch": "npm run build -- --watch",
     "release": "changelog --non-cc --link-url https://github.com/patternfly/patternfly-mcp.git",
-    "start": "node dist/index.js --verbose --log-stderr",
-    "start:dev": "tsx watch src/index.ts",
+    "start": "node dist/cli.js --log-stderr",
+    "start:dev": "tsx watch src/cli.ts --verbose --log-stderr",
     "test": "npm run test:lint && npm run test:types && jest --roots=src/",
     "test:dev": "npm test -- --watchAll",
     "test:integration": "npm run build && jest --roots=tests/",
