@@ -35,7 +35,7 @@ interface DefaultOptions<TLogOptions = LoggingOptions> {
   contextPath: string;
   docsHost: boolean;
   docsPath: string;
-  http: HttpOptions | undefined;
+  http: HttpOptions;
   isHttp: boolean;
   llmsFilesPath: string;
   logging: TLogOptions;
@@ -58,10 +58,21 @@ interface DefaultOptions<TLogOptions = LoggingOptions> {
 }
 
 /**
+ * Overrides for default options.
+ */
+type DefaultOptionsOverrides = Partial<
+  Omit<DefaultOptions, 'http' | 'logging'>
+> & {
+  http?: Partial<HttpOptions>;
+  logging?: Partial<LoggingOptions>;
+};
+
+/**
  * Logging options.
  *
+ * See `LOGGING_OPTIONS` for defaults.
+ *
  * @interface LoggingOptions
- * @default { level: 'debug', logger: packageJson.name, stderr: false, protocol: false, transport: 'stdio' }
  *
  * @property level Logging level.
  * @property logger Logger name. Human-readable/configurable logger name used in MCP protocol messages. Isolated
@@ -82,8 +93,9 @@ interface LoggingOptions {
 /**
  * HTTP server options.
  *
+ * See `HTTP_OPTIONS` for defaults.
+ *
  * @interface HttpOptions
- * @default { port: 8080, host: '127.0.0.1', allowedOrigins: [], allowedHosts: [] }
  *
  * @property port Port number.
  * @property host Host name.
@@ -288,6 +300,7 @@ export {
   LOG_BASENAME,
   DEFAULT_OPTIONS,
   type DefaultOptions,
+  type DefaultOptionsOverrides,
   type HttpOptions,
   type LoggingOptions,
   type LoggingSession

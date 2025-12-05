@@ -35,13 +35,13 @@ describe('main', () => {
     mockParseCliOptions.mockImplementation(() => {
       callOrder.push('parse');
 
-      return { docsHost: false, logging: defaultLogging } as unknown as CliOptions;
+      return { docsHost: false, logging: defaultLogging } as CliOptions;
     });
 
     mockSetOptions.mockImplementation(options => {
       callOrder.push('set');
 
-      return Object.freeze({ ...DEFAULT_OPTIONS, ...options }) as unknown as GlobalOptions;
+      return Object.freeze({ ...DEFAULT_OPTIONS, ...options }) as GlobalOptions;
     });
 
     mockGetSessionOptions.mockReturnValue({

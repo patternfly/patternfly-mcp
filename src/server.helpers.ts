@@ -32,7 +32,8 @@ const isPlainObject = (obj: unknown): obj is Record<string, unknown> => {
  * Prototype-pollution keys are ignored.
  *
  * @param baseObj - Base object to merge into
- * @param sourceObj - Source object to merge from
+ * @param sourceObj - Source object to merge from. Source may be `undefined` or `any` value; `non‑plain objects` are ignored, and the
+ *     base is returned cloned.
  * @param [options] - Merge options
  * @param [options.allowNullValues] - If `true`, `null` values in `sourceObj` will overwrite `baseObj` values. Default: `true`
  * @param [options.allowUndefinedValues] - If `true`, all undefined values in `sourceObj` will be merged on top of `baseObj`. Default: `false`
@@ -40,7 +41,7 @@ const isPlainObject = (obj: unknown): obj is Record<string, unknown> => {
  */
 const mergeObjects = <TBase extends object>(
   baseObj: TBase,
-  sourceObj?: Partial<TBase> | null,
+  sourceObj?: unknown,
   {
     allowNullValues = true,
     allowUndefinedValues = false
