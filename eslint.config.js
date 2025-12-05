@@ -52,6 +52,20 @@ export default [
       '@typescript-eslint': tseslint.plugin
     },
     rules: {
+      '@typescript-eslint/consistent-type-imports': [
+        2,
+        {
+          prefer: 'type-imports',
+          fixStyle: 'inline-type-imports',
+          disallowTypeAnnotations: false
+        }
+      ],
+      '@typescript-eslint/consistent-type-exports': [
+        2,
+        {
+          fixMixedExportsWithInlineTypeSpecifier: true
+        }
+      ],
       '@typescript-eslint/no-explicit-any': 1,
       '@typescript-eslint/explicit-function-return-type': 0,
       '@typescript-eslint/no-unused-vars': ['error', {

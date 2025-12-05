@@ -42,7 +42,11 @@ describe('parseCliOptions', () => {
     },
     {
       description: 'with --http and --port',
-      args: ['node', 'script.js', '--http', '--port', '8080']
+      args: ['node', 'script.js', '--http', '--port', '6000']
+    },
+    {
+      description: 'with --http and invalid --port',
+      args: ['node', 'script.js', '--http', '--port', '0']
     },
     {
       description: 'with --http and --host',
@@ -62,5 +66,17 @@ describe('parseCliOptions', () => {
     const result = parseCliOptions();
 
     expect(result).toMatchSnapshot();
+  });
+
+  it('parses from a provided argv independent of process.argv', () => {
+    const customArgv = ['node', 'cli', '--http', '--port', '3101'];
+    const result = parseCliOptions(customArgv);
+    expect(result.http?.port).toBe(3101);
+  });
+
+  it('trims spaces in list flags', () => {
+    const argv = ['node', 'cli', '--http', '--allowed-hosts', ' localhost , 127.0.0.1  '];
+    const result = parseCliOptions(argv);
+    expect(result.http?.allowedHosts).toEqual(['localhost', '127.0.0.1']);
   });
 });

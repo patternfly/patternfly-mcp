@@ -1,10 +1,10 @@
-import { DEFAULT_OPTIONS, type DefaultOptions, type LoggingOptions, type HttpOptions } from './options.defaults';
+import { DEFAULT_OPTIONS, type DefaultOptions, type DefaultOptionsOverrides, type LoggingOptions, type HttpOptions } from './options.defaults';
 import { type LogLevel, logSeverity } from './logger';
 
 /**
  * Session defaults, not user-configurable
  */
-type Session = {
+type AppSession = {
   readonly sessionId: string;
   readonly channelName: string
 };
@@ -19,25 +19,27 @@ type GlobalOptions = DefaultOptions;
  */
 type CliOptions = {
   docsHost: boolean;
-  http: HttpOptions | undefined;
+  http?: Partial<HttpOptions>;
   isHttp: boolean;
-  logging: LoggingOptions;
+  logging: Partial<LoggingOptions>;
 };
 
 /**
- * Get argument value from process.argv
+ * Get argument value from argv (defaults to `process.argv`).
  *
  * @param flag - CLI flag to search for
- * @param defaultValue - Default arg value
+ * @param [options] - Options
+ * @param [options.defaultValue] - Default arg value
+ * @param [options.argv] - Command-line arguments to parse. Defaults to `process.argv`.
  */
-const getArgValue = (flag: string, defaultValue?: unknown) => {
-  const index = process.argv.indexOf(flag);
+const getArgValue = (flag: string, { defaultValue, argv = process.argv }: { defaultValue?: unknown, argv?: string[] } = {}) => {
+  const index = argv.indexOf(flag);
 
   if (index === -1) {
     return defaultValue;
   }
 
-  const value = process.argv[index + 1];
+  const value = argv[index + 1];
 
   if (!value || value.startsWith('-')) {
     return defaultValue;
@@ -61,17 +63,17 @@ const getArgValue = (flag: string, defaultValue?: unknown) => {
  *
  * Available options:
  * - `--docs-host`: A flag indicating whether the documentation host should be enabled.
- * - `--log-level <level>`: Specifies the logging level. Valid values are `debug`, `info`, `warn`, and `error`. Defaults to `info`.
+ * - `--log-level <level>`: Specifies the logging level. Valid values are `debug`, `info`, `warn`, and `error`.
  * - `--verbose`: Log all severity levels. Shortcut to set the logging level to `debug`.
  * - `--log-stderr`: Enables terminal logging of channel events
  * - `--log-protocol`: Enables MCP protocol logging. Forward server logs to MCP clients (requires advertising `capabilities.logging`).
  * - `--http`: Indicates if the `--http` option is enabled.
- * - `--port`: The port number specified via `--port`, or defaults to `3000` if not provided.
- * - `--host`: The host name specified via `--host`, or defaults to `'127.0.0.1'` if not provided.
+ * - `--port`: The port number specified via `--port`
+ * - `--host`: The host name specified via `--host`
  * - `--allowed-origins`: List of allowed origins derived from the `--allowed-origins` parameter, split by commas, or undefined if not provided.
  * - `--allowed-hosts`: List of allowed hosts derived from the `--allowed-hosts` parameter, split by commas, or undefined if not provided.
  *
- * @param argv - Command-line arguments to parse. Defaults to `process.argv`.
+ * @param [argv] - Command-line arguments to parse. Defaults to `process.argv`.
  * @returns Parsed command-line options.
  */
 const parseCliOptions = (argv: string[] = process.argv): CliOptions => {
@@ -94,24 +96,41 @@ const parseCliOptions = (argv: string[] = process.argv): CliOptions => {
   }
 
   const isHttp = argv.includes('--http');
-  let http: HttpOptions | undefined;
+  const http: Partial<HttpOptions> = {};
 
   if (isHttp) {
-    let port = getArgValue('--port');
-    const host = getArgValue('--host');
-    const allowedOrigins = (getArgValue('--allowed-origins') as string)?.split(',')?.filter((origin: string) => origin.trim());
-    const allowedHosts = (getArgValue('--allowed-hosts') as string)?.split(',')?.filter((host: string) => host.trim());
+    const rawPort = getArgValue('--port', { argv });
+    const parsedPort = Number.parseInt(String(rawPort || ''), 10);
+    const host = getArgValue('--host', { argv });
 
-    const isPortValid = (typeof port === 'number') && (port > 0 && port < 65536);
+    const allowedOrigins = (getArgValue('--allowed-origins', { argv }) as string)
+      ?.split(',')
+      ?.map((origin: string) => origin.trim())
+      ?.filter(Boolean);
 
-    port = isPortValid ? port : undefined;
+    const allowedHosts = (getArgValue('--allowed-hosts', { argv }) as string)
+      ?.split(',')
+      ?.map((host: string) => host.trim())
+      ?.filter(Boolean);
 
-    http = {
-      port,
-      host,
-      allowedHosts,
-      allowedOrigins
-    } as HttpOptions;
+    const isPortValid = Number.isInteger(parsedPort) && parsedPort > 0 && parsedPort < 65536;
+    const port = isPortValid ? parsedPort : undefined;
+
+    if (port !== undefined) {
+      http.port = port;
+    }
+
+    if (typeof host === 'string') {
+      http.host = host;
+    }
+
+    if (Array.isArray(allowedHosts) && allowedHosts.length) {
+      http.allowedHosts = allowedHosts;
+    }
+
+    if (Array.isArray(allowedOrigins) && allowedOrigins.length) {
+      http.allowedOrigins = allowedOrigins;
+    }
   }
 
   return { docsHost, logging, isHttp, http };
@@ -120,10 +139,11 @@ const parseCliOptions = (argv: string[] = process.argv): CliOptions => {
 export {
   parseCliOptions,
   getArgValue,
+  type AppSession,
   type CliOptions,
   type DefaultOptions,
+  type DefaultOptionsOverrides,
   type GlobalOptions,
   type HttpOptions,
-  type LoggingOptions,
-  type Session
+  type LoggingOptions
 };

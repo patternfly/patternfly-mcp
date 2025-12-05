@@ -1,10 +1,10 @@
-import { createServer, IncomingMessage, ServerResponse } from 'node:http';
-import { Socket } from 'node:net';
+import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
+import { type Socket } from 'node:net';
 import { execSync } from 'node:child_process';
 import { platform } from 'node:os';
 import { randomUUID } from 'node:crypto';
 import { StreamableHTTPServerTransport, type StreamableHTTPServerTransportOptions } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { type McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { portToPid } from 'pid-port';
 import { getOptions } from './options.context';
 import { log } from './logger';
@@ -95,7 +95,7 @@ const getProcessOnPort = async (port: number) => {
 /**
  * Create Streamable HTTP transport
  *
- * @param {DefaultSession} [options]
+ * @param {GlobalOptions} [options]
  */
 const createStreamableHttpTransport = (options = getOptions()) => {
   const { http } = options;
@@ -149,7 +149,7 @@ type HttpServerHandle = {
  * Start the HTTP transport server
  *
  * @param {McpServer} mcpServer
- * @param {DefaultSession} [options]
+ * @param {GlobalOptions} [options]
  * @returns Handle with close method for server lifecycle management
  */
 const startHttpTransport = async (mcpServer: McpServer, options = getOptions()): Promise<HttpServerHandle> => {
