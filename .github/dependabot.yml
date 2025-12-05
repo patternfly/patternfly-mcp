@@ -1,0 +1,44 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: wednesday
+    cooldown:
+      default-days: 14
+    open-pull-requests-limit: 3
+    target-branch: "main"
+    versioning-strategy: increase
+    allow:
+      - dependency-type: direct
+    labels:
+      - "build"
+    commit-message:
+      prefix: "build"
+      include: "scope"
+    groups:
+      dev:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+      prod:
+        dependency-type: "production"
+        update-types:
+          - "patch"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+      day: wednesday
+    cooldown:
+      default-days: 14
+    open-pull-requests-limit: 2
+    target-branch: "main"
+    labels:
+      - "build"
+    commit-message:
+      prefix: "build"
+      include: "scope
