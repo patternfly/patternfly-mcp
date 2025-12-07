@@ -1,6 +1,27 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.4.0](https://github.com/patternfly/patternfly-mcp/compare/088d56496e9e3534b15c6975daece01ecd607c42...727fc0a8ee45ffb54c8bc47b6324cc01904611d8) (2025-12-07)
+
+
+### Tests
+*  update fetchMock routing ([#31](https://github.com/patternfly/patternfly-mcp/pull/31)) ([51bbc31](https://github.com/patternfly/patternfly-mcp/commit/51bbc311ce9d046257341d637ee32f8399d36a3e))
+
+### Features
+*  support http transport ([#1](https://github.com/patternfly/patternfly-mcp/pull/1)) ([12e8734](https://github.com/patternfly/patternfly-mcp/commit/12e8734ee1e8fb4e0c64eab3c10bf9fb14ed0936))
+
+### Code Refactoring
+*  cli as standalone ([#30](https://github.com/patternfly/patternfly-mcp/pull/30)) ([55e3360](https://github.com/patternfly/patternfly-mcp/commit/55e33609a0f8b003d2ba23968502830f2aa5d32e))
+
+### Builds
+* **deps-dev** bump dev group with 7 updates ([#37](https://github.com/patternfly/patternfly-mcp/pull/37)) ([6a65e19](https://github.com/patternfly/patternfly-mcp/commit/6a65e19f744f30640b99d3d68d8f4fc9bcca525a))
+* **deps** @modelcontextprotocol/sdk from 1.19.1 to 1.22.0 ([#36](https://github.com/patternfly/patternfly-mcp/pull/36)) ([8a81066](https://github.com/patternfly/patternfly-mcp/commit/8a8106690b5b3a6341a15458257c107296559c8a))
+*  activate dependabot ([#33](https://github.com/patternfly/patternfly-mcp/pull/33)) ([5b91b72](https://github.com/patternfly/patternfly-mcp/commit/5b91b7271cb591961234a18039f62882177a9692))
+
+### Bug Fixes
+*  cli http port option, typings ([#40](https://github.com/patternfly/patternfly-mcp/pull/40)) ([727fc0a](https://github.com/patternfly/patternfly-mcp/commit/727fc0a8ee45ffb54c8bc47b6324cc01904611d8))
+*  allow process to exit, consistent imports ([#32](https://github.com/patternfly/patternfly-mcp/pull/32)) ([fa5c734](https://github.com/patternfly/patternfly-mcp/commit/fa5c734f2e5db1134c6443b40c5e0e8562100732))
+
 ## [0.3.0](https://github.com/patternfly/patternfly-mcp/compare/e31c15bab47c4949d2e233e400fe81c27ab33144...53d69b5b2f5c14b4cef4e6fa2c9b7ed2ec857c5c) (2025-12-03)
 
 
