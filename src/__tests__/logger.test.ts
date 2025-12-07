@@ -156,6 +156,7 @@ describe('registerStderrSubscriber', () => {
     const stderrSpy = jest.spyOn(process.stderr, 'write').mockImplementation(() => true as any);
 
     const unsubscribe = registerStderrSubscriber(getLoggerOptions());
+
     publish('debug', getLoggerOptions(), 'debug suppressed');
     publish('info', getLoggerOptions(), 'lorem ipsum', 123, { a: 1 });
 
@@ -210,6 +211,7 @@ describe('createLogger', () => {
     const stderrSpy = jest.spyOn(process.stderr, 'write').mockImplementation(() => true as any);
 
     const unsubscribe = createLogger(getLoggerOptions());
+
     publish('debug', getLoggerOptions(), 'debug suppressed');
     publish('info', getLoggerOptions(), 'lorem ipsum', 123, { a: 1 });
 

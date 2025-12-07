@@ -61,6 +61,7 @@ describe('startHttpTransport', () => {
 
     MockCreateServer.mockImplementation((handler: any) => {
       mockRequestHandler = handler;
+
       return mockHttpServer as any;
     });
   });

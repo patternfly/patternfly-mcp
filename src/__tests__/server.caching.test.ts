@@ -49,8 +49,8 @@ describe('memo', () => {
 
         try {
           successValue = await value();
-        } catch (e) {
-          const error = e as Error;
+        } catch (err) {
+          const error = err as Error;
 
           errorValue = error.message;
         }

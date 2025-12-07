@@ -71,6 +71,7 @@ const startHttpFixture = (
             // String pattern with wildcards
             const pattern = regexRoute.url.replace(/\*/g, '.*');
             const regex = new RegExp(`^${pattern}$`);
+
             if (regex.test(pathname) || regex.test(`http://${address}${pathname}`)) {
               route = {
                 status: regexRoute.status || 200,
@@ -251,6 +252,7 @@ export const setupFetchMock = async (options: FetchMockSetup = {}): Promise<Fetc
 
   // Start fixture server with regex routes for dynamic matching
   const fixtureOptions: StartHttpFixtureOptions = { routes: fixtureRoutes, address };
+
   if (port) {
     fixtureOptions.port = port;
   }
@@ -260,12 +262,15 @@ export const setupFetchMock = async (options: FetchMockSetup = {}): Promise<Fetc
   const matchRoute = (url: string): FetchRoute | undefined => {
     // Extract pathname from URL for matching
     let pathname: string;
+
     try {
       const urlObj = new URL(url);
+
       pathname = urlObj.pathname;
     } catch {
       // If URL parsing fails, try to extract pathname manually
       const match = url.match(/^https?:\/\/[^/]+(\/.*)$/);
+
       pathname = match && match[1] ? match[1] : url;
     }
 
@@ -307,6 +312,7 @@ export const setupFetchMock = async (options: FetchMockSetup = {}): Promise<Fetc
           // For regex/pattern matches, extract the pathname from the matched URL
           try {
             const urlObj = new URL(url);
+
             fixturePath = urlObj.pathname;
           } catch {
             // If URL parsing fails, fall back to index-based path
@@ -318,6 +324,7 @@ export const setupFetchMock = async (options: FetchMockSetup = {}): Promise<Fetc
           // Note: This is important for stdio servers that run in separate processes
           // and make real HTTP requests to the fixture server
           const normalizedPath = fixturePath.startsWith('/') ? fixturePath : `/${fixturePath}`;
+
           if (fixture.addRoute) {
             // Check if route already exists to avoid overwriting
             if (!fixtureRoutes[normalizedPath]) {

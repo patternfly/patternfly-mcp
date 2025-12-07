@@ -71,7 +71,7 @@ const publish = (level: LogLevel, options: LoggingSession = getLoggerOptions(), 
       event.args = args;
     }
   } else {
-    const arr = [msg, ...args].filter(v => v !== undefined);
+    const arr = [msg, ...args].filter(value => value !== undefined);
 
     if (arr.length) {
       event.args = arr as unknown[];

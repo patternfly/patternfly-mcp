@@ -107,6 +107,7 @@ describe('createServerLogger', () => {
     setOptions({ logging: { stderr: true, level: 'debug' } as any });
 
     const stderrSpy = jest.spyOn(process.stderr, 'write').mockImplementation(() => true as any);
+
     class MockServer { sendLoggingMessage = jest.fn(async () => {}); }
     const server = new MockServer() as any;
 
