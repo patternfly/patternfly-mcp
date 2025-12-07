@@ -8,6 +8,7 @@ import { runServer } from '../server';
 jest.mock('../options');
 jest.mock('../options.context');
 jest.mock('../server');
+jest.mock('../server.tools');
 
 const mockParseCliOptions = parseCliOptions as jest.MockedFunction<typeof parseCliOptions>;
 const mockSetOptions = setOptions as jest.MockedFunction<typeof setOptions>;

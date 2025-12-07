@@ -336,7 +336,7 @@ const DEFAULT_OPTIONS: DefaultOptions = {
   logging: LOGGING_OPTIONS,
   name: packageJson.name,
   nodeVersion: (process.env.NODE_ENV === 'local' && 22) || getNodeMajorVersion(),
-  pluginIsolation: 'none',
+  pluginIsolation: 'strict',
   pluginHost: PLUGIN_HOST_OPTIONS,
   pfExternal: PF_EXTERNAL,
   pfExternalDesignComponents: PF_EXTERNAL_DESIGN_COMPONENTS,

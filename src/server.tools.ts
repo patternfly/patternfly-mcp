@@ -528,9 +528,6 @@ const sendToolsHostShutdown = async (
  *    - Node < 22, externals are skipped with a warning and only built-ins are returned.
  * - Registry is self-correcting for preload or midrun crashes without changing normal shutdown
  *
- * @note Review adding a defensive check for existing hosts before creating a new one. This is
- * to prevent an orphaned child process if `composeTools` is called multiple times.
- *
  * @param builtinCreators - Built-in tool creators
  * @param {GlobalOptions} options - Global options.
  * @param {AppSession} sessionOptions - Session options.
@@ -541,6 +538,13 @@ const composeTools = async (
   { toolModules, nodeVersion, contextUrl, contextPath }: GlobalOptions = getOptions(),
   { sessionId }: AppSession = getSessionOptions()
 ): Promise<McpToolCreator[]> => {
+  const existingSession = activeHostsBySession.get(sessionId);
+
+  if (existingSession) {
+    log.warn(`Existing Tools Host session detected ${sessionId}. Shutting down the existing host before creating a new one.`);
+    await sendToolsHostShutdown();
+  }
+
   const toolCreators: McpToolCreator[] = [...builtinCreators];
   const usedNames = getBuiltInToolNames(builtinCreators);
 

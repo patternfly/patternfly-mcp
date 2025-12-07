@@ -1,12 +1,13 @@
 /**
  * Requires: npm run build prior to running Jest.
  */
-import {
-  startServer,
-  type HttpTransportClient,
-  type RpcRequest
-} from './utils/httpTransportClient';
+// import { resolve } from 'node:path';
+// import { pathToFileURL } from 'node:url';
+// @ts-ignore - dist/index.js isn't necessarily built yet, remember to build before running tests
+import { createMcpTool } from '../dist/index.js';
+import { startServer, type HttpTransportClient, type RpcRequest } from './utils/httpTransportClient';
 import { setupFetchMock } from './utils/fetchMock';
+// Use public types from dist to avoid type identity mismatches between src and dist
 
 describe('PatternFly MCP, HTTP Transport', () => {
   let FETCH_MOCK: Awaited<ReturnType<typeof setupFetchMock>> | undefined;
@@ -41,7 +42,7 @@ describe('PatternFly MCP, HTTP Transport', () => {
       excludePorts: [5001]
     });
 
-    CLIENT = await startServer({ http: { port: 5001 } });
+    CLIENT = await startServer({ http: { port: 5001 }, logging: { level: 'debug', protocol: true } });
   });
 
   afterAll(async () => {
@@ -96,6 +97,9 @@ describe('PatternFly MCP, HTTP Transport', () => {
     const response = await CLIENT?.send(req);
     const text = response?.result?.content?.[0]?.text || '';
 
+    // expect(CLIENT?.logs()).toMatchSnapshot();
+    // expect(CLIENT?.protocolLogs()).toMatchSnapshot();
+
     expect(text.startsWith('# Documentation from')).toBe(true);
     expect(text).toMatchSnapshot();
   });
@@ -123,5 +127,103 @@ describe('PatternFly MCP, HTTP Transport', () => {
     expect(text.startsWith('# Documentation from')).toBe(true);
     expect(text).toMatchSnapshot();
     CLIENT.close();
+  });
+});
+
+describe('Inline tools over HTTP', () => {
+  let CLIENT: HttpTransportClient | undefined;
+
+  afterAll(async () => {
+    if (CLIENT) {
+      await CLIENT.close();
+    }
+  });
+
+  it.each([
+    {
+      description: 'inline tool module',
+      port: 5011,
+      toolName: 'inline_module',
+      tool: createMcpTool({
+        name: 'inline_module',
+        description: 'Create inline',
+        inputSchema: { additionalProperties: true },
+        handler: (args: any) => ({ content: [{ type: 'text', text: JSON.stringify(args) }] })
+      })
+    },
+    {
+      description: 'inline tool creator',
+      port: 5012,
+      toolName: 'inline_creator',
+      tool: (() => {
+        const inlineCreator = (_options: any) => [
+          'inline_creator',
+          {
+            description: 'Func inline',
+            inputSchema: { additionalProperties: true }
+          },
+          (args: any) => ({ content: [{ type: 'text', text: JSON.stringify(args) }] })
+        ];
+
+        inlineCreator.toolName = 'inline_creator';
+
+        return inlineCreator;
+      })()
+    },
+    {
+      description: 'inline object',
+      port: 5013,
+      toolName: 'inline_obj',
+      tool: {
+        name: 'inline_obj',
+        description: 'Obj inline',
+        inputSchema: { additionalProperties: true },
+        handler: (args: any) => ({ content: [{ type: 'text', text: JSON.stringify(args) }] })
+      }
+    },
+    {
+      description: 'inline tuple',
+      port: 5014,
+      toolName: 'inline_tuple',
+      tool: [
+        'inline_tuple',
+        {
+          description: 'Tuple inline',
+          inputSchema: { additionalProperties: true }
+        },
+        (args: any) => ({ content: [{ type: 'text', text: JSON.stringify(args) }] })
+      ]
+    }
+  ])('should register and invoke an inline tool module, $description', async ({ port, tool, toolName }) => {
+    CLIENT = await startServer(
+      {
+        http: { port },
+        isHttp: true,
+        logging: { level: 'info', protocol: true },
+        toolModules: [tool as any]
+      },
+      { allowProcessExit: false }
+    );
+
+    const list = await CLIENT.send({ method: 'tools/list', params: {} });
+    const names = (list?.result?.tools || []).map((tool: any) => tool.name);
+
+    expect(names).toEqual(expect.arrayContaining([toolName]));
+
+    const req = {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {
+        name: toolName,
+        arguments: { x: 1, y: 'z' }
+      }
+    } as RpcRequest;
+
+    const res = await CLIENT.send(req);
+
+    expect(res?.result?.content?.[0]?.text).toContain('"x":1');
+
+    await CLIENT.close();
   });
 });

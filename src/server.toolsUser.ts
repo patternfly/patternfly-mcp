@@ -10,6 +10,22 @@ import { formatUnknownError } from './logger';
 import { normalizeInputSchema } from './server.schema';
 
 /**
+ * Inline tool options.
+ *
+ * @alias GlobalOptions
+ * @note Author-facing configuration.
+ */
+type ToolInternalOptions = GlobalOptions;
+
+/**
+ * External tool options.
+ *
+ * @alias ToolOptions
+ * @note Author-facing configuration.
+ */
+type ToolExternalOptions = ToolOptions;
+
+/**
  * A normalized tool entry for normalizing values for strings and tool creators.
  *
  * @property type - Classification of the entry (file, package, creator, tuple, object, invalid)
@@ -49,14 +65,21 @@ type FileEntry = Pick<NormalizedToolEntry, 'type' | 'original' | 'value' | 'isUr
 type CreatorEntry = Pick<NormalizedToolEntry, 'type' | 'original' | 'value' | 'toolName' | 'error'>;
 
 /**
- * An MCP tool. A tool config tuple.
+ * An MCP tool. A tool config tuple. The handler may be async or sync.
  *
  * @alias McpTool
+ * @note Author-facing configuration.
+ * @example A tool config tuple. The handler may be async or sync.
+ * [
+ *   'tupleTool',
+ *   { description: 'Tool description', inputSchema: {} },
+ *   async (args) => { ... }
+ * ]
  */
 type Tool = McpTool;
 
 /**
- * Author-facing tool config. A plain object config. The handler may be async or sync.
+ * A plain object config.
  *
  * @template TArgs The type of arguments expected by the tool (optional).
  * @template TResult The type of result returned by the tool (optional).
@@ -64,8 +87,17 @@ type Tool = McpTool;
  * @property name - Name of the tool
  * @property description - Description of the tool
  * @property inputSchema - JSON Schema or Zod schema describing the arguments expected by the tool
- * @property {(args: TArgs, options?: GlobalOptions) => Promise<TResult> | TResult} handler - Tool handler
+ * @property {(args: TArgs) => Promise<TResult> | TResult} handler - Tool handler
  *     - `args` are returned by the tool's `inputSchema`'
+ *
+ * @note Author-facing configuration.
+ * @example A plain object config. The handler may be async or sync.
+ * {
+ *   name: 'objTool',
+ *   description: 'Tool description',
+ *   inputSchema: {},
+ *   handler: async (args) => { ... }
+ * }
  */
 type ToolConfig<TArgs = unknown, TResult = unknown> = {
   name: string;
@@ -75,25 +107,76 @@ type ToolConfig<TArgs = unknown, TResult = unknown> = {
 };
 
 /**
- * An MCP tool "wrapper", or "creator". A function that returns a `Tool` or `McpTool`.
+ * A function that returns a tuple `Tool` or `McpTool`. An MCP tool "wrapper", or "creator".
  *
- * - `ToolOptions` is a limited subset of `GlobalOptions` for external filePackage creators.
- * - `GlobalOptions` is available for inline and built-in tool creators.
+ * - `ToolExternalOptions` is a limited subset of `ToolInternalOptions` for external filePackage creators.
+ * - `ToolInternalOptions` is available for inline and built-in tool creators.
+ *
+ * @note Author-facing configuration.
+ * @example A creator function. The handler may be async or sync.
+ * () => [
+ *   'creatorTool',
+ *   { description: 'Tool description', inputSchema: {} },
+ *   async (args) => { ... }
+ * ]
  */
-type ToolCreator = ((options?: ToolOptions | GlobalOptions) => McpTool) & { toolName?: string };
+type ToolCreator = ((options?: ToolExternalOptions | ToolInternalOptions) => McpTool) & { toolName?: string };
 
 /**
- * Author-facing multi-tool config. An array of tool configs.
+ * An array of tool configs.
  *
- * - `string` - file path or package id (Node ≥ 22 path)
+ * - `string` - file path or package id (Node >= 22 path)
  * - `Tool` - tuple form (has a name)
  * - `ToolConfig` - object form (has a name)
  * - `ToolCreator` - function creator with static toolName
+ * - `ToolModule` - normalized tool config values returned from `createMcpTool`
+ *
+ * @note Author-facing multi-tool configuration.
+ * @example A multi-tool configuration array/list
+ * [
+ *   './a/file/path/tool.mjs',
+ *   {
+ *     name: 'objTool',
+ *     description: 'Tool description',
+ *     inputSchema: {},
+ *     handler: (args) => { ... }
+ *   },
+ *   [
+ *     'tupleTool',
+ *     { description: 'Tool description', inputSchema: {} },
+ *     (args) => { ... }
+ *   ]
+ *   () => [
+ *     'creatorTool',
+ *     { description: 'Tool description', inputSchema: {} },
+ *     (args) => { ... }
+ *   ],
+ *   createMcpTool({
+ *     name: 'aCreateMcpToolWrappedTool',
+ *     description: 'Tool description',
+ *     inputSchema: {},
+ *     handler: (args) => { ... }
+ *   });
+ * ];
  */
-type MultiToolConfig = ReadonlyArray<string | Tool | ToolConfig | ToolCreator | ToolModule>;
+type ToolMultiConfig = ReadonlyArray<string | Tool | ToolConfig | ToolCreator | ToolModule>;
 
 /**
- * Author-facing "tools as plugins" surface. An array of normalized tool config values.
+ * An array of normalized tool config values returned from `createMcpTool`.
+ *
+ * - `string` - file path or package id (Node >= 22 path)
+ * - `ToolCreator` - function creator with static toolName
+ *
+ * @note Author-facing multi-tool configuration.
+ * @example An array/list of normalized tool config values
+ * [
+ *   './a/file/path/tool.mjs',
+ *   () => [
+ *     'creatorTool',
+ *     { description: 'Tool description', inputSchema: {} },
+ *     async (args) => { ... }
+ *   ]
+ * ];
  */
 type ToolModule = ReadonlyArray<NormalizedToolEntry['value']>;
 
@@ -762,7 +845,7 @@ normalizeTools.memo = memo(normalizeTools, {
 });
 
 /**
- * Author-facing helper for creating an MCP tool configuration list for PatternFly MCP server.
+ * Author-facing config helper for creating an MCP tool configuration list for PatternFly MCP server.
  *
  * @example A single file path string
  * export default createMcpTool('./a/file/path.mjs');
@@ -771,20 +854,42 @@ normalizeTools.memo = memo(normalizeTools, {
  * export default createMcpTool('@my-org/my-tool');
  *
  * @example A single tool configuration tuple
- * export default createMcpTool(['myTool', { description: 'My tool description' }, (args) => { ... }]);
+ * export default createMcpTool([
+ *   'myTool',
+ *   { description: 'My tool description' },
+ *   (args) => { ... }
+ * ]);
  *
  * @example A single tool creator function
- * const myToolCreator = () => ['myTool', { description: 'My tool description' }, (args) => { ... }];
+ * const myToolCreator = () => [
+ *   'myTool',
+ *   { description: 'My tool description' },
+ *   (args) => { ... }
+ * ];
+ *
  * myToolCreator.toolName = 'myTool';
  * export default createMcpTool(myToolCreator);
  *
  * @example A single tool configuration object
- * export default createMcpTool({ name: 'myTool', description: 'My tool description', inputSchema: {}, handler: (args) => { ... } });
+ * export default createMcpTool({
+ *   name: 'myTool',
+ *   description: 'My tool description',
+ *   inputSchema: {},
+ *   handler: (args) => { ... }
+ * });
  *
  * @example A multi-tool configuration array/list
- * export default createMcpTool(['./a/file/path.mjs', { name: 'myTool', description: 'My tool description', inputSchema: {}, handler: (args) => { ... } }]);
+ * export default createMcpTool([
+ *   './a/file/path.mjs',
+ *   {
+ *     name: 'myTool',
+ *     description: 'My tool description',
+ *     inputSchema: {},
+ *     handler: async (args) => { ... }
+ *   }
+ * ]);
  *
- * @param config - The configuration for creating the tool(s). It can be:
+ * @param config - The configuration for creating the tool(s). Configuration can be any of the following:
  *   - A single string representing the name of a local ESM module file (`file path string` or `file URL string`). Limited to Node.js 22+
  *   - A single string representing the name of a local ESM tool package (`package string`). Limited to Node.js 22+
  *   - A single inline tool configuration tuple (`Tool`).
@@ -795,7 +900,7 @@ normalizeTools.memo = memo(normalizeTools, {
  *
  * @throws {Error} If a configuration is invalid, an error is thrown on the first invalid entry.
  */
-const createMcpTool = (config: string | Tool | ToolConfig | ToolCreator | MultiToolConfig | ToolModule): ToolModule => {
+const createMcpTool = (config: string | Tool | ToolConfig | ToolCreator | ToolMultiConfig | ToolModule): ToolModule => {
   const entries = normalizeTools.memo(config);
   const err = entries.find(entry => entry.type === 'invalid');
 
@@ -821,10 +926,12 @@ export {
   sanitizeDataProp,
   sanitizePlainObject,
   sanitizeStaticToolName,
-  type MultiToolConfig,
   type NormalizedToolEntry,
   type ToolCreator,
   type Tool,
   type ToolConfig,
-  type ToolModule
+  type ToolModule,
+  type ToolMultiConfig,
+  type ToolInternalOptions,
+  type ToolExternalOptions
 };

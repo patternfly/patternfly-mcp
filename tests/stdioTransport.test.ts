@@ -1,6 +1,8 @@
 /**
  *  Requires: npm run build prior to running Jest.
  */
+import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import {
   startServer,
   type StdioTransportClient,
@@ -87,7 +89,7 @@ describe('PatternFly MCP, STDIO', () => {
       }
     } as RpcRequest;
 
-    const response = await CLIENT?.send(req);
+    const response = await CLIENT.send(req);
     const text = response?.result?.content?.[0]?.text || '';
 
     expect(text.startsWith('# Documentation from')).toBe(true);
@@ -170,5 +172,79 @@ describe('Logging', () => {
     expect(CLIENT.logs()).toMatchSnapshot();
 
     await CLIENT.stop();
+  });
+});
+
+describe('Tools', () => {
+  let CLIENT: StdioTransportClient;
+
+  beforeEach(async () => {
+    const abs = resolve(process.cwd(), 'tests/__fixtures__/tool.echo.js');
+    const url = pathToFileURL(abs).href;
+
+    CLIENT = await startServer({ args: ['--log-stderr', '--plugin-isolation', 'strict', '--tool', url] });
+  });
+
+  afterEach(async () => CLIENT.stop());
+
+  itSkip(envNodeVersion >= 22)('should access a new tool', async () => {
+    const req = {
+      method: 'tools/list',
+      params: {}
+    };
+
+    const resp = await CLIENT.send(req);
+    const names = (resp?.result?.tools ?? []).map((tool: any) => tool.name);
+
+    expect(CLIENT.logs().join(',')).toContain('Registered tool: echo_plugin_tool');
+    expect(names).toContain('echo_plugin_tool');
+  });
+
+  itSkip(envNodeVersion <= 20)('should fail to access a new tool', async () => {
+    const req = {
+      method: 'tools/list',
+      params: {}
+    };
+
+    await CLIENT.send(req);
+
+    expect(CLIENT.logs().join(',')).toContain('External tool plugins require Node >= 22; skipping file-based tools.');
+  });
+
+  itSkip(envNodeVersion >= 22)('should interact with the new tool', async () => {
+    const req = {
+      method: 'tools/call',
+      params: {
+        name: 'echo_plugin_tool',
+        arguments: {
+          type: 'echo',
+          lorem: 'ipsum',
+          dolor: 'sit amet'
+        }
+      }
+    };
+
+    const resp: any = await CLIENT.send(req);
+
+    expect(resp.result).toMatchSnapshot();
+    expect(resp.result.isError).toBeUndefined();
+  });
+
+  itSkip(envNodeVersion <= 20)('should fail to interact with the new tool', async () => {
+    const req = {
+      method: 'tools/call',
+      params: {
+        name: 'echo_plugin_tool',
+        arguments: {
+          type: 'echo',
+          lorem: 'ipsum',
+          dolor: 'sit amet'
+        }
+      }
+    };
+
+    const resp: any = await CLIENT.send(req);
+
+    expect(resp.result.isError).toBe(true);
   });
 });

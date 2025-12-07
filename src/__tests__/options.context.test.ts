@@ -13,24 +13,33 @@ const MockStdioServerTransport = StdioServerTransport as jest.MockedClass<typeof
 
 describe('setOptions', () => {
   it('should ignore valid but incorrect options for merged options', () => {
-    const updatedOptions = setOptions({ logging: 'oops' as any, resourceMemoOptions: 'gotcha' as any, toolMemoOptions: 'really?' as any });
+    const updatedOptions = setOptions({
+      logging: 'oops' as any,
+      resourceMemoOptions: 'gotcha' as any,
+      toolMemoOptions: 'really?' as any,
+      pluginIsolation: 'fun' as any
+    });
 
     expect(updatedOptions.logging.protocol).toBe(DEFAULT_OPTIONS.logging.protocol);
     expect(updatedOptions.resourceMemoOptions?.readFile?.expire).toBe(DEFAULT_OPTIONS.resourceMemoOptions?.readFile?.expire);
     expect(updatedOptions.toolMemoOptions?.fetchDocs?.expire).toBe(DEFAULT_OPTIONS.toolMemoOptions?.fetchDocs?.expire);
+    expect(updatedOptions.pluginIsolation).toBe(DEFAULT_OPTIONS.pluginIsolation);
   });
 
   it('should ignore null/invalid nested overrides safely', () => {
-    const updatedOptions = setOptions({ logging: null as any, resourceMemoOptions: null as any });
+    const updatedOptions = setOptions({ logging: null as any, resourceMemoOptions: null as any, pluginIsolation: null as any });
 
-    expect(typeof updatedOptions.logging.protocol === 'boolean').toBe(true);
+    expect(typeof updatedOptions.logging.protocol).toBe('boolean');
     expect(updatedOptions.logging.protocol).toBe(DEFAULT_OPTIONS.logging.protocol);
 
-    expect(typeof updatedOptions.resourceMemoOptions?.readFile?.expire === 'number').toBe(true);
+    expect(typeof updatedOptions.resourceMemoOptions?.readFile?.expire).toBe('number');
     expect(updatedOptions.resourceMemoOptions?.readFile?.expire).toBe(DEFAULT_OPTIONS.resourceMemoOptions?.readFile?.expire);
 
-    expect(typeof updatedOptions.toolMemoOptions?.fetchDocs?.expire === 'number').toBe(true);
+    expect(typeof updatedOptions.toolMemoOptions?.fetchDocs?.expire).toBe('number');
     expect(updatedOptions.toolMemoOptions?.fetchDocs?.expire).toBe(DEFAULT_OPTIONS.toolMemoOptions?.fetchDocs?.expire);
+
+    expect(typeof updatedOptions.pluginIsolation).toBe('string');
+    expect(updatedOptions.pluginIsolation).toBe(DEFAULT_OPTIONS.pluginIsolation);
   });
 });
 
