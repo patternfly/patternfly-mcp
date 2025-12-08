@@ -95,6 +95,7 @@ export const startServer = async (
   try {
     // Construct base URL from options
     const baseUrl = `http://${host}:${port}/mcp`;
+
     httpClientUrl = new URL(baseUrl);
   } catch (error) {
     throw new Error(`Failed to construct base URL: ${error}, host: ${host}, port: ${port}`);

@@ -72,13 +72,24 @@ export default [
         argsIgnorePattern: '^_',
         varsIgnorePattern: '^_'
       }],
+      'import/exports-last': 2,
+      'import/group-exports': 1,
+      'id-length': ['error', {
+        min: 2,
+        properties: 'never',
+        exceptions: ['a', 'b', 'i', 'j', 'k', '_']
+      }],
       'n/no-process-exit': 0,
       // Disallow console.log/info in runtime to protect STDIO; allow warn/error
       'no-console': ['error', { allow: ['warn', 'error'] }]
     }
   },
-
-  // Test files
+  {
+    files: ['src/*.d.ts'],
+    rules: {
+      'import/group-exports': 0
+    }
+  },
   {
     files: [
       '**/*.test.ts',
@@ -87,12 +98,12 @@ export default [
     ],
     rules: {
       '@typescript-eslint/no-explicit-any': 0,
-      '@typescript-eslint/ban-ts-comment': 1,
+      '@typescript-eslint/ban-ts-comment': 0,
+      'import/exports-last': 0,
+      'import/group-exports': 0,
       'no-sparse-arrays': 0,
       // Allow console usage in tests (spies, debug)
-      'no-console': 0,
-      // Relax stylistic padding in tests to reduce churn
-      '@stylistic/padding-line-between-statements': 0
+      'no-console': 0
     }
   }
 ];
