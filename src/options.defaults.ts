@@ -260,9 +260,13 @@ const PF_EXTERNAL_CHARTS_DESIGN = `${PF_EXTERNAL}/design-guidelines/charts`;
 
 /**
  * Get the current Node.js major version.
+ *
+ * @param nodeVersion
+ * @returns Node.js major version.
  */
-const getNodeMajorVersion = () => {
-  const major = Number.parseInt(process.versions.node.split('.')[0] || '0', 10);
+const getNodeMajorVersion = (nodeVersion = process.versions.node) => {
+  const updatedNodeVersion = nodeVersion || '0.0.0';
+  const major = Number.parseInt(updatedNodeVersion.split('.')[0] || '0', 10);
 
   if (Number.isFinite(major)) {
     return major;

@@ -1,87 +1,71 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`options defaults should return specific properties 1`] = `
+exports[`options defaults should return specific properties: defaults 1`] = `
 {
-  "DEFAULT_OPTIONS": {
-    "contextPath": "/",
-    "contextUrl": "file:///",
-    "docsHost": false,
-    "docsPath": "/documentation",
-    "http": {
-      "allowedHosts": [],
-      "allowedOrigins": [],
-      "host": "127.0.0.1",
-      "port": 8080,
+  "contextPath": "/",
+  "contextUrl": "file:///",
+  "docsHost": false,
+  "docsPath": "/documentation",
+  "http": {
+    "allowedHosts": [],
+    "allowedOrigins": [],
+    "host": "127.0.0.1",
+    "port": 8080,
+  },
+  "isHttp": false,
+  "llmsFilesPath": "/llms-files",
+  "logging": {
+    "level": "info",
+    "logger": "@patternfly/patternfly-mcp",
+    "protocol": false,
+    "stderr": false,
+    "transport": "stdio",
+  },
+  "name": "@patternfly/patternfly-mcp",
+  "nodeVersion": 22,
+  "pfExternal": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content",
+  "pfExternalAccessibility": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility",
+  "pfExternalChartsDesign": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts",
+  "pfExternalDesignComponents": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components",
+  "pfExternalDesignLayouts": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts",
+  "pfExternalExamplesCharts": "https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-charts/src/victory/components",
+  "pfExternalExamplesComponents": "https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-core/src/components",
+  "pfExternalExamplesLayouts": "https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-core/src/layouts",
+  "pfExternalExamplesTable": "https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-table/src/components",
+  "repoName": "patternfly-mcp",
+  "resourceMemoOptions": {
+    "default": {
+      "cacheLimit": 3,
     },
-    "isHttp": false,
-    "llmsFilesPath": "/llms-files",
-    "logging": {
-      "level": "info",
-      "logger": "@patternfly/patternfly-mcp",
-      "protocol": false,
-      "stderr": false,
-      "transport": "stdio",
+    "fetchUrl": {
+      "cacheErrors": false,
+      "cacheLimit": 100,
+      "expire": 180000,
     },
-    "name": "@patternfly/patternfly-mcp",
-    "nodeVersion": 22,
-    "pfExternal": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content",
-    "pfExternalAccessibility": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility",
-    "pfExternalChartsDesign": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts",
-    "pfExternalDesignComponents": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components",
-    "pfExternalDesignLayouts": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts",
-    "pfExternalExamplesCharts": "https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-charts/src/victory/components",
-    "pfExternalExamplesComponents": "https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-core/src/components",
-    "pfExternalExamplesLayouts": "https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-core/src/layouts",
-    "pfExternalExamplesTable": "https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-table/src/components",
-    "repoName": "patternfly-mcp",
-    "resourceMemoOptions": {
-      "default": {
-        "cacheLimit": 3,
-      },
-      "fetchUrl": {
-        "cacheErrors": false,
-        "cacheLimit": 100,
-        "expire": 180000,
-      },
-      "readFile": {
-        "cacheErrors": false,
-        "cacheLimit": 50,
-        "expire": 120000,
-      },
+    "readFile": {
+      "cacheErrors": false,
+      "cacheLimit": 50,
+      "expire": 120000,
     },
-    "separator": "
+  },
+  "separator": "
 
 ---
 
 ",
-    "toolMemoOptions": {
-      "fetchDocs": {
-        "cacheErrors": false,
-        "cacheLimit": 15,
-        "expire": 60000,
-      },
-      "usePatternFlyDocs": {
-        "cacheErrors": false,
-        "cacheLimit": 10,
-        "expire": 60000,
-      },
+  "toolMemoOptions": {
+    "fetchDocs": {
+      "cacheErrors": false,
+      "cacheLimit": 15,
+      "expire": 60000,
     },
-    "urlRegex": /\\^\\(https\\?:\\)\\\\/\\\\//i,
-    "version": "0.0.0",
+    "usePatternFlyDocs": {
+      "cacheErrors": false,
+      "cacheLimit": 10,
+      "expire": 60000,
+    },
   },
-  "LOG_BASENAME": "pf-mcp:log",
-  "PF_EXTERNAL": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content",
-  "PF_EXTERNAL_ACCESSIBILITY": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility",
-  "PF_EXTERNAL_CHARTS_DESIGN": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts",
-  "PF_EXTERNAL_DESIGN_COMPONENTS": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components",
-  "PF_EXTERNAL_DESIGN_LAYOUTS": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts",
-  "PF_EXTERNAL_EXAMPLES": "https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages",
-  "PF_EXTERNAL_EXAMPLES_CHARTS": "https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-charts/src/victory/components",
-  "PF_EXTERNAL_EXAMPLES_LAYOUTS": "https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-core/src/layouts",
-  "PF_EXTERNAL_EXAMPLES_REACT_CORE": "https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-core/src/components",
-  "PF_EXTERNAL_EXAMPLES_TABLE": "https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-table/src/components",
-  "PF_EXTERNAL_EXAMPLES_VERSION": "v6.4.0",
-  "PF_EXTERNAL_VERSION": "fb05713aba75998b5ecf5299ee3c1a259119bd74",
-  "getNodeMajorVersion": [Function],
+  "urlRegex": /\\^\\(https\\?:\\)\\\\/\\\\//i,
+  "version": "0.0.0",
 }
 `;
