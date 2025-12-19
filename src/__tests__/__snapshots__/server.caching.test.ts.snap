@@ -720,6 +720,124 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, one entry 
 ]
 `;
 
+exports[`memo should memoize a function, allow custom key hashing: async 1`] = `
+[
+  {
+    "cacheKeys": [
+      "custom-hash-",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "[EMPTY]",
+    "type": "memo promise",
+  },
+  {
+    "cacheKeys": [
+      "custom-hash-",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "[EMPTY]",
+    "type": "memo promise",
+  },
+  {
+    "cacheKeys": [
+      "custom-hash-1",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "1",
+    "type": "memo promise",
+  },
+  {
+    "cacheKeys": [
+      "custom-hash-1",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "1",
+    "type": "memo promise",
+  },
+  {
+    "cacheKeys": [
+      "custom-hash-2,true",
+    ],
+    "cacheLength": 2,
+    "errorValue": "2",
+    "successValue": undefined,
+    "type": "memo promise",
+  },
+  {
+    "cacheKeys": [
+      "custom-hash-2,true",
+    ],
+    "cacheLength": 2,
+    "errorValue": "2",
+    "successValue": undefined,
+    "type": "memo promise",
+  },
+]
+`;
+
+exports[`memo should memoize a function, allow custom key hashing: sync 1`] = `
+[
+  {
+    "cacheKeys": [
+      "custom-hash-",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "[EMPTY]",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "custom-hash-",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "[EMPTY]",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "custom-hash-1",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "1",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "custom-hash-1",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "1",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "custom-hash-2,true",
+    ],
+    "cacheLength": 2,
+    "errorValue": "2",
+    "successValue": undefined,
+    "type": "memo error",
+  },
+  {
+    "cacheKeys": [
+      "custom-hash-2,true",
+    ],
+    "cacheLength": 2,
+    "errorValue": "2",
+    "successValue": undefined,
+    "type": "memo error",
+  },
+]
+`;
+
 exports[`memo should memoize a function, cacheLimit: async 1`] = `
 [
   {
