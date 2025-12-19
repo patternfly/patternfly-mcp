@@ -16,17 +16,7 @@ exports[`runServer should allow server to be stopped, http stop server: diagnost
       "test-server server running on HTTP transport",
     ],
     [
-      "
-test-server server shutting down... ",
-    ],
-    [
       "test-server shutting down...",
-    ],
-    [
-      "...closing HTTP transport",
-    ],
-    [
-      "...closing Server",
     ],
     [
       "test-server closed!
@@ -52,14 +42,7 @@ exports[`runServer should allow server to be stopped, stdio stop server: diagnos
       "test-server server running on stdio transport",
     ],
     [
-      "
-test-server server shutting down... ",
-    ],
-    [
       "test-server shutting down...",
-    ],
-    [
-      "...closing Server",
     ],
     [
       "test-server closed!
