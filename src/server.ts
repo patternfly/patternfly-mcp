@@ -16,7 +16,7 @@ import {
 } from './options.context';
 import { DEFAULT_OPTIONS } from './options.defaults';
 
-type McpTool = [string, { description: string; inputSchema: any }, (args: any) => Promise<any>];
+type McpTool = [string, { description: string; inputSchema: any }, (args: any) => Promise<any> | any];
 
 type McpToolCreator = (options?: GlobalOptions) => McpTool;
 
@@ -54,6 +54,9 @@ type ServerOnLogHandler = (entry: ServerLogEvent) => void;
 
 /**
  * Subscribes a handler function to server logs. Automatically unsubscribed on server shutdown.
+ *
+ * @param {ServerOnLogHandler} handler - The function responsible for handling server log events.
+ * @returns A cleanup function that unregisters the logging handler when called.
  */
 type ServerOnLog = (handler: ServerOnLogHandler) => () => void;
 
@@ -71,21 +74,31 @@ interface ServerInstance {
 }
 
 /**
- * Create and run a server with shutdown, register tool and errors.
+ * Built-in tools.
+ *
+ * Array of built-in tools
+ */
+const builtinTools: McpToolCreator[] = [
+  usePatternFlyDocsTool,
+  fetchDocsTool,
+  componentSchemasTool
+];
+
+/**
+ * Create and run the MCP server, register tools, and return a handle.
+ *
+ *  - Built-in and inline tools are realized in-process
+ *  - External plugins are realized in the Tools Host (child).
  *
  * @param [options] Server options
  * @param [settings] Server settings (tools, signal handling, etc.)
- * @param [settings.tools]
- * @param [settings.enableSigint]
- * @param [settings.allowProcessExit]
- * @returns Server instance
+ * @param [settings.tools] - Built-in tools to register.
+ * @param [settings.enableSigint] - Indicates whether SIGINT signal handling is enabled.
+ * @param [settings.allowProcessExit] - Determines if the process is allowed to exit explicitly, useful for testing.
+ * @returns Server instance with `stop()`, `isRunning()`, and `onLog()` subscription.
  */
 const runServer = async (options: ServerOptions = getOptions(), {
-  tools = [
-    usePatternFlyDocsTool,
-    fetchDocsTool,
-    componentSchemasTool
-  ],
+  tools = builtinTools,
   enableSigint = true,
   allowProcessExit = true
 }: ServerSettings = {}): Promise<ServerInstance> => {
@@ -99,18 +112,18 @@ const runServer = async (options: ServerOptions = getOptions(), {
   let onLogSetup: ServerOnLog = () => () => {};
 
   const stopServer = async () => {
-    log.info(`\n${options.name} server shutting down... `);
+    log.debug(`${options.name} attempting shutdown.`);
 
     if (server && running) {
       log.info(`${options.name} shutting down...`);
 
       if (httpHandle) {
-        log.info('...closing HTTP transport');
+        log.debug('...closing HTTP transport');
         await httpHandle.close();
         httpHandle = null;
       }
 
-      log.info('...closing Server');
+      log.debug('...closing Server');
       await server?.close();
       running = false;
 
@@ -139,7 +152,10 @@ const runServer = async (options: ServerOptions = getOptions(), {
       }
     );
 
+    // Setup server logging.
     const subUnsub = createServerLogger.memo(server);
+
+    log.debug(`Server logging enabled: isStderr = ${options?.logging?.stderr} isProtocol = ${enableProtocolLogging};`);
 
     if (subUnsub) {
       const { subscribe, unsubscribe } = subUnsub;
@@ -194,6 +210,9 @@ const runServer = async (options: ServerOptions = getOptions(), {
     },
 
     onLog(handler: ServerOnLogHandler): () => void {
+      // Simple one-off log event to notify the handler of the server startup.
+      handler({ level: 'info', msg: `${options.name} running!`, transport: options.logging?.transport } as LogEvent);
+
       return onLogSetup(handler);
     }
   };
@@ -223,10 +242,12 @@ runServer.memo = memo(
             try {
               await server.stop();
             } catch (error) {
+              // Avoid engaging the contextual log channel on rollout.
               console.error(`Error stopping server: ${error}`);
             }
           }
         } else {
+          // Avoid engaging the contextual log channel on rollout.
           console.error(`Error cleaning up server: ${result?.reason?.message || result?.reason || 'Unknown error'}`);
         }
       }
@@ -236,6 +257,7 @@ runServer.memo = memo(
 
 export {
   runServer,
+  builtinTools,
   type McpTool,
   type McpToolCreator,
   type ServerInstance,
