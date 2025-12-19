@@ -1,13 +1,15 @@
-import { basename, join } from 'node:path';
+import { basename, join, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import packageJson from '../package.json';
 
 /**
- * Application defaults, not user-configurable
+ * Application defaults, not all fields are user-configurable
  *
  * @interface DefaultOptions
  *
  * @template TLogOptions The logging options type, defaulting to LoggingOptions.
  * @property contextPath - Current working directory.
+ * @property contextUrl - Current working directory URL.
  * @property docsHost - Flag indicating whether to use the docs-host.
  * @property docsPath - Path to the documentation directory.
  * @property isHttp - Flag indicating whether the server is running in HTTP mode.
@@ -15,12 +17,13 @@ import packageJson from '../package.json';
  * @property llmsFilesPath - Path to the LLMs files directory.
  * @property {LoggingOptions} logging - Logging options.
  * @property name - Name of the package.
+ * @property nodeVersion - Node.js major version.
  * @property repoName - Name of the repository.
  * @property pfExternal - PatternFly external docs URL.
  * @property pfExternalDesignComponents - PatternFly design guidelines' components' URL.
  * @property pfExternalExamplesComponents - PatternFly examples' core components' URL.
  * @property pfExternalExamplesLayouts - PatternFly examples' core layouts' URL.
- * @property pfExternalExamplesCharts - PatternFly examples' charts' components' URL.'
+ * @property pfExternalExamplesCharts - PatternFly examples' charts' components' URL.
  * @property pfExternalExamplesTable - PatternFly examples' table components' URL.
  * @property pfExternalChartsDesign - PatternFly charts' design guidelines URL.
  * @property pfExternalDesignLayouts - PatternFly design guidelines' layouts' URL.
@@ -33,6 +36,7 @@ import packageJson from '../package.json';
  */
 interface DefaultOptions<TLogOptions = LoggingOptions> {
   contextPath: string;
+  contextUrl: string;
   docsHost: boolean;
   docsPath: string;
   http: HttpOptions;
@@ -40,6 +44,7 @@ interface DefaultOptions<TLogOptions = LoggingOptions> {
   llmsFilesPath: string;
   logging: TLogOptions;
   name: string;
+  nodeVersion: number;
   pfExternal: string;
   pfExternalDesignComponents: string;
   pfExternalExamplesComponents: string;
@@ -254,19 +259,34 @@ const PF_EXTERNAL_ACCESSIBILITY = `${PF_EXTERNAL}/accessibility`;
 const PF_EXTERNAL_CHARTS_DESIGN = `${PF_EXTERNAL}/design-guidelines/charts`;
 
 /**
+ * Get the current Node.js major version.
+ */
+const getNodeMajorVersion = () => {
+  const major = Number.parseInt(process.versions.node.split('.')[0] || '0', 10);
+
+  if (Number.isFinite(major)) {
+    return major;
+  }
+
+  return 0;
+};
+
+/**
  * Global default options. Base defaults before CLI/programmatic overrides.
  *
  * @type {DefaultOptions} Default options object.
  */
 const DEFAULT_OPTIONS: DefaultOptions = {
   docsHost: false,
-  contextPath: (process.env.NODE_ENV === 'local' && '/') || process.cwd(),
-  docsPath: (process.env.NODE_ENV === 'local' && '/documentation') || join(process.cwd(), 'documentation'),
+  contextPath: (process.env.NODE_ENV === 'local' && '/') || resolve(process.cwd()),
+  contextUrl: pathToFileURL((process.env.NODE_ENV === 'local' && '/') || resolve(process.cwd())).href,
+  docsPath: (process.env.NODE_ENV === 'local' && '/documentation') || join(resolve(process.cwd()), 'documentation'),
   isHttp: false,
   http: HTTP_OPTIONS,
-  llmsFilesPath: (process.env.NODE_ENV === 'local' && '/llms-files') || join(process.cwd(), 'llms-files'),
+  llmsFilesPath: (process.env.NODE_ENV === 'local' && '/llms-files') || join(resolve(process.cwd()), 'llms-files'),
   logging: LOGGING_OPTIONS,
   name: packageJson.name,
+  nodeVersion: (process.env.NODE_ENV === 'local' && 22) || getNodeMajorVersion(),
   pfExternal: PF_EXTERNAL,
   pfExternalDesignComponents: PF_EXTERNAL_DESIGN_COMPONENTS,
   pfExternalExamplesComponents: PF_EXTERNAL_EXAMPLES_REACT_CORE,
@@ -299,6 +319,7 @@ export {
   PF_EXTERNAL_ACCESSIBILITY,
   LOG_BASENAME,
   DEFAULT_OPTIONS,
+  getNodeMajorVersion,
   type DefaultOptions,
   type DefaultOptionsOverrides,
   type HttpOptions,
