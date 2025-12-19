@@ -1,3 +1,8 @@
+const tsConfig = {
+  useESM: true,
+  tsconfig: '<rootDir>/tsconfig.json'
+};
+
 const baseConfig = {
   extensionsToTreatAsEsm: ['.ts'],
   preset: 'ts-jest',
@@ -7,8 +12,7 @@ const baseConfig = {
     '^.+\\.(ts|tsx)$': [
       'ts-jest',
       {
-        useESM: true,
-        tsconfig: '<rootDir>/tsconfig.json'
+        ...tsConfig
       }
     ]
   }
