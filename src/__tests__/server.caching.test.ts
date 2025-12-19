@@ -34,6 +34,13 @@ describe('memo', () => {
       description: 'disable memoization when cacheLimit is zero',
       options: { cacheLimit: 0 },
       params: [[], [], [1], [1], [2, true], [2, true]]
+    },
+    {
+      description: 'allow custom key hashing',
+      options: {
+        keyHash: (value: unknown) => `custom-hash-${value}`
+      },
+      params: [[], [], [1], [1], [2, true], [2, true]]
     }
   ])('should memoize a function, $description', async ({ options, params }) => {
     const log: any[] = [];
