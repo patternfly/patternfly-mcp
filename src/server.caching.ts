@@ -56,6 +56,7 @@ type MemoDebugHandler<TReturn = unknown> = (info: { type: string; value: unknown
  * @property [cacheLimit] Number of entries to cache before overwriting previous entries (default: 1)
  * @property {MemoDebugHandler<TReturn>} [debug] Debug callback function
  * @property [expire] Expandable milliseconds until cache expires
+ * @property [keyHash] Function to generate a predictable hash key from the provided arguments. Defaults to internal `generateHash`.
  * @property {OnMemoCacheHandler<TReturn>} [onCacheExpire] Callback when cache expires. Only fires when the `expire` option is set.
  * @property {OnMemoCacheHandler<TReturn>} [onCacheRollout] Callback when cache entries are rolled off due to cache limit.
  */
@@ -64,6 +65,7 @@ interface MemoOptions<TReturn = unknown> {
   cacheLimit?: number;
   debug?: MemoDebugHandler<TReturn>;
   expire?: number;
+  keyHash?: (args: unknown[]) => unknown;
   onCacheExpire?: OnMemoCacheHandler<TReturn>;
   onCacheRollout?: OnMemoCacheHandler<TReturn>;
 }
@@ -93,6 +95,7 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
     cacheLimit = 1,
     debug = () => {},
     expire,
+    keyHash = generateHash,
     onCacheExpire,
     onCacheRollout
   }: MemoOptions<TReturn> = {}
@@ -159,7 +162,7 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
         return bypassValue;
       }
 
-      const key = generateHash(args);
+      const key = keyHash(args);
 
       // Parse, memoize and return the original value
       if (cache.indexOf(key) < 0) {
