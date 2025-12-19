@@ -10,7 +10,7 @@ process.env.NODE_ENV = 'local';
  */
 jest.mock('child_process', () => ({
   ...jest.requireActual('child_process'),
-  execSync: (...args: any) => `<execSync>${JSON.stringify(args)}</execSync>`
+  execSync: (...args: unknown[]) => `<execSync>${JSON.stringify(args)}</execSync>`
 }));
 
 /**
