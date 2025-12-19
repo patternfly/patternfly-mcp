@@ -45,6 +45,15 @@ export interface HttpTransportClient {
 /**
  * Start an HTTP server using the programmatic API and return a client for testing
  *
+ * Logging notes. Logging does work with HTTP transport, with conditions
+ *  - You need to set `logging.protocol` to true to enable protocol logging
+ *  - Stdio transport logs technically work but they will bleed through to the testing framework
+ *     console and aren't currently captured by this client.
+ *  - Captured logs are dependent on server start up and shutdown. This means you need to provide
+ *     a "pause", like placing the server startup in a "beforeAll" to reliably capture most logs.
+ *  - Currently, the SDK does not support this object format `capabilities: { logging: {} }`. Typings
+ *     should throw an error if you try to use it.
+ *
  * @param options - Server configuration options
  * @param settings - Additional settings for the server (e.g., allowProcessExit)
  */
