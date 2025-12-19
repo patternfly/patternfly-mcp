@@ -107,6 +107,9 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
   const isOnCacheRolloutPromise = isPromise(onCacheRollout);
   const isOnCacheRollout = typeof onCacheRollout === 'function' || isOnCacheRolloutPromise;
   const updatedExpire = Number.parseInt(String(expire), 10) || undefined;
+  const setKey = function (value: unknown[]): unknown {
+    return keyHash.call(null, value);
+  };
 
   const ized = function () {
     const cache: MemoCache<TReturn> = [];
@@ -162,7 +165,7 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
         return bypassValue;
       }
 
-      const key = keyHash(args);
+      const key = setKey(args);
 
       // Parse, memoize and return the original value
       if (cache.indexOf(key) < 0) {
