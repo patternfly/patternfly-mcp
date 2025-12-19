@@ -266,7 +266,7 @@ const PF_EXTERNAL_CHARTS_DESIGN = `${PF_EXTERNAL}/design-guidelines/charts`;
  */
 const getNodeMajorVersion = (nodeVersion = process.versions.node) => {
   const updatedNodeVersion = nodeVersion || '0.0.0';
-  const major = Number.parseInt(updatedNodeVersion.split('.')[0] || '0', 10);
+  const major = Number.parseInt(updatedNodeVersion?.split?.('.')?.[0] || '0', 10);
 
   if (Number.isFinite(major)) {
     return major;
