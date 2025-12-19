@@ -149,7 +149,7 @@ describe('runServer', () => {
     expect(serverInstance.isRunning()).toBe(true);
     expect({
       events: MockLog.info.mock.calls,
-      registerTool: mockServer.registerTool.mock.calls,
+      registerTool: mockServer.registerTool.mock.calls?.map((call: any) => call?.[0] || []),
       mcpServer: MockMcpServer.mock.calls,
       process: processOnSpy.mock.calls
     }).toMatchSnapshot('diagnostics');

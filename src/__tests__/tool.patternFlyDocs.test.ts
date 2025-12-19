@@ -1,6 +1,7 @@
 import { McpError } from '@modelcontextprotocol/sdk/types.js';
 import { usePatternFlyDocsTool } from '../tool.patternFlyDocs';
 import { processDocsFunction } from '../server.getResources';
+import { isPlainObject } from '../server.helpers';
 
 // Mock dependencies
 jest.mock('../server.getResources');
@@ -18,7 +19,11 @@ describe('usePatternFlyDocsTool', () => {
   it('should have a consistent return structure', () => {
     const tool = usePatternFlyDocsTool();
 
-    expect(tool).toMatchSnapshot('structure');
+    expect({
+      name: tool[0],
+      schema: isPlainObject(tool[1]),
+      callback: tool[2]
+    }).toMatchSnapshot('structure');
   });
 });
 

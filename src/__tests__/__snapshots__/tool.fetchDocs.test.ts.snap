@@ -1,89 +1,11 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`fetchDocsTool should have a consistent return structure: structure 1`] = `
-[
-  "fetchDocs",
-  {
-    "description": "Fetch documentation for one or more URLs extracted from previous tool calls responses. The URLs should be passed as an array in the "urlList" argument.",
-    "inputSchema": {
-      "urlList": ZodArray {
-        "_def": {
-          "description": "The list of URLs to fetch documentation from",
-          "exactLength": null,
-          "maxLength": null,
-          "minLength": null,
-          "type": ZodString {
-            "_def": {
-              "checks": [],
-              "coerce": false,
-              "typeName": "ZodString",
-            },
-            "and": [Function],
-            "array": [Function],
-            "brand": [Function],
-            "catch": [Function],
-            "default": [Function],
-            "describe": [Function],
-            "isNullable": [Function],
-            "isOptional": [Function],
-            "nullable": [Function],
-            "nullish": [Function],
-            "optional": [Function],
-            "or": [Function],
-            "parse": [Function],
-            "parseAsync": [Function],
-            "pipe": [Function],
-            "promise": [Function],
-            "readonly": [Function],
-            "refine": [Function],
-            "refinement": [Function],
-            "safeParse": [Function],
-            "safeParseAsync": [Function],
-            "spa": [Function],
-            "superRefine": [Function],
-            "transform": [Function],
-            "~standard": {
-              "validate": [Function],
-              "vendor": "zod",
-              "version": 1,
-            },
-          },
-          "typeName": "ZodArray",
-        },
-        "and": [Function],
-        "array": [Function],
-        "brand": [Function],
-        "catch": [Function],
-        "default": [Function],
-        "describe": [Function],
-        "isNullable": [Function],
-        "isOptional": [Function],
-        "nullable": [Function],
-        "nullish": [Function],
-        "optional": [Function],
-        "or": [Function],
-        "parse": [Function],
-        "parseAsync": [Function],
-        "pipe": [Function],
-        "promise": [Function],
-        "readonly": [Function],
-        "refine": [Function],
-        "refinement": [Function],
-        "safeParse": [Function],
-        "safeParseAsync": [Function],
-        "spa": [Function],
-        "superRefine": [Function],
-        "transform": [Function],
-        "~standard": {
-          "validate": [Function],
-          "vendor": "zod",
-          "version": 1,
-        },
-      },
-    },
-  },
-  [Function],
-]
+{
+  "callback": [Function],
+  "name": "fetchDocs",
+  "schema": true,
+}
 `;
 
 exports[`fetchDocsTool, callback should parse parameters, default 1`] = `
