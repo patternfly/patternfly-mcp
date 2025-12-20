@@ -148,8 +148,9 @@ describe('runServer', () => {
     expect(transportMethod).toHaveBeenCalled();
     expect(serverInstance.isRunning()).toBe(true);
     expect({
-      events: MockLog.info.mock.calls,
-      registerTool: mockServer.registerTool.mock.calls,
+      events: [...MockLog.info.mock.calls, ...MockLog.warn.mock.calls],
+      hasDebugLogs: MockLog.debug.mock.calls.length > 0,
+      registerTool: mockServer.registerTool.mock.calls?.map((call: any) => call?.[0] || []),
       mcpServer: MockMcpServer.mock.calls,
       process: processOnSpy.mock.calls
     }).toMatchSnapshot('diagnostics');

@@ -1,0 +1,125 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`jsonSchemaToZod should convert JSON Schema to Zod, array input, failFast false 1`] = `
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+}
+`;
+
+exports[`jsonSchemaToZod should convert JSON Schema to Zod, array input, failFast true 1`] = `undefined`;
+
+exports[`jsonSchemaToZod should convert JSON Schema to Zod, complex schema, failFast false 1`] = `
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": {},
+  "properties": {
+    "age": {
+      "type": "number",
+    },
+    "name": {
+      "type": "string",
+    },
+  },
+  "type": "object",
+}
+`;
+
+exports[`jsonSchemaToZod should convert JSON Schema to Zod, complex schema, failFast true 1`] = `
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": {},
+  "properties": {
+    "age": {
+      "type": "number",
+    },
+    "name": {
+      "type": "string",
+    },
+  },
+  "type": "object",
+}
+`;
+
+exports[`jsonSchemaToZod should convert JSON Schema to Zod, complex unsupported schema attempt, failFast false 1`] = `
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "items": {
+    "type": "string",
+  },
+  "type": "array",
+}
+`;
+
+exports[`jsonSchemaToZod should convert JSON Schema to Zod, complex unsupported schema attempt, failFast true 1`] = `
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "items": {
+    "type": "string",
+  },
+  "type": "array",
+}
+`;
+
+exports[`jsonSchemaToZod should convert JSON Schema to Zod, null input with failFast false 1`] = `
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+}
+`;
+
+exports[`jsonSchemaToZod should convert JSON Schema to Zod, null input with failFast true 1`] = `undefined`;
+
+exports[`jsonSchemaToZod should convert JSON Schema to Zod, number input, failFast false 1`] = `
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+}
+`;
+
+exports[`jsonSchemaToZod should convert JSON Schema to Zod, number input, failFast true 1`] = `undefined`;
+
+exports[`jsonSchemaToZod should convert JSON Schema to Zod, object schema with additionalProperties true, failFast false 1`] = `
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": {},
+  "properties": {},
+  "type": "object",
+}
+`;
+
+exports[`jsonSchemaToZod should convert JSON Schema to Zod, object schema with additionalProperties true, failFast true 1`] = `
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": {},
+  "properties": {},
+  "type": "object",
+}
+`;
+
+exports[`jsonSchemaToZod should convert JSON Schema to Zod, simple string schema, failFast false 1`] = `
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "string",
+}
+`;
+
+exports[`jsonSchemaToZod should convert JSON Schema to Zod, simple string schema, failFast true 1`] = `
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "string",
+}
+`;
+
+exports[`jsonSchemaToZod should convert JSON Schema to Zod, string input, failFast false 1`] = `
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+}
+`;
+
+exports[`jsonSchemaToZod should convert JSON Schema to Zod, string input, failFast true 1`] = `undefined`;
+
+exports[`jsonSchemaToZod should convert JSON Schema to Zod, undefined input with failFast false 1`] = `
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+}
+`;
+
+exports[`jsonSchemaToZod should convert JSON Schema to Zod, undefined input with failFast true 1`] = `undefined`;

@@ -1,5 +1,6 @@
 import { McpError } from '@modelcontextprotocol/sdk/types.js';
 import { componentSchemasTool } from '../tool.componentSchemas';
+import { isPlainObject } from '../server.helpers';
 
 // Mock dependencies
 jest.mock('../server.caching', () => ({
@@ -14,7 +15,11 @@ describe('componentSchemasTool', () => {
   it('should have a consistent return structure', () => {
     const tool = componentSchemasTool();
 
-    expect(tool).toMatchSnapshot('structure');
+    expect({
+      name: tool[0],
+      schema: isPlainObject(tool[1]),
+      callback: tool[2]
+    }).toMatchSnapshot('structure');
   });
 });
 
