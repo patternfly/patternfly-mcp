@@ -149,16 +149,16 @@ const normalizeInputSchema = (inputSchema: unknown): z.ZodTypeAny | unknown => {
  * Defaults target to JSON Schema 2020-12 and generates the INPUT schema (for args).
  *
  * @param schema - Zod schema
- * @param params - Optional parameters
- * @param params.target - JSON Schema version to generate. Defaults to "draft-2020-12".
- * @param params.io - Whether to generate the INPUT or OUTPUT schema. Defaults to "input".
- * @param params.unrepresentable - What to do with unrepresentable values. Defaults to "any".
- * @param params.params - Additional parameters to pass to toJSONSchema.
+ * @param options - Optional parameters for `toJSONSchema`.
+ * @param options.target - JSON Schema version to generate. Defaults to "draft-2020-12".
+ * @param options.io - Whether to generate the INPUT or OUTPUT schema. Defaults to "input".
+ * @param options.unrepresentable - What to do with unrepresentable values. Defaults to "any".
+ * @param options.remainingOptions - Additional options to pass to toJSONSchema.
  */
 const zodToJsonSchema = (
   schema: unknown,
-  { target = 'draft-2020-12', io = 'input', unrepresentable = 'any', ...params }:
-  { target?: string; io?: 'input' | 'output'; unrepresentable?: 'throw' | 'any', params?: Record<string, unknown> } = {}
+  { target = 'draft-2020-12', io = 'input', unrepresentable = 'any', ...remainingOptions }:
+  { target?: string; io?: 'input' | 'output'; unrepresentable?: 'throw' | 'any', remainingOptions?: Record<string, unknown> } = {}
 ): unknown => {
   if (!isZodSchema(schema)) {
     return undefined;
@@ -169,7 +169,7 @@ const zodToJsonSchema = (
       target,
       io,
       unrepresentable,
-      ...params
+      ...remainingOptions
     });
   } catch {}
 
