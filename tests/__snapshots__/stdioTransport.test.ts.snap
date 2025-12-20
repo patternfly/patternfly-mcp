@@ -270,6 +270,8 @@ exports[`Logging should allow setting logging options, default 1`] = `[]`;
 
 exports[`Logging should allow setting logging options, stderr 1`] = `
 [
+  "[INFO]: Server logging enabled.
+",
   "[INFO]: Registered tool: usePatternFlyDocs
 ",
   "[INFO]: Registered tool: fetchDocs

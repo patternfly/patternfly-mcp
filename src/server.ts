@@ -15,6 +15,8 @@ import {
   runWithSession
 } from './options.context';
 import { DEFAULT_OPTIONS } from './options.defaults';
+import { isZodRawShape, isZodSchema } from './server.schema';
+import { isPlainObject } from './server.helpers';
 
 type McpTool = [string, { description: string; inputSchema: any }, (args: any) => Promise<any> | any];
 
@@ -155,7 +157,15 @@ const runServer = async (options: ServerOptions = getOptions(), {
     // Setup server logging.
     const subUnsub = createServerLogger.memo(server);
 
-    log.debug(`Server logging enabled: isStderr = ${options?.logging?.stderr} isProtocol = ${enableProtocolLogging};`);
+    log.info(`Server logging enabled.`);
+
+    if (options?.logging?.stderr === undefined || enableProtocolLogging === undefined) {
+      log.debug(
+        `${options.name} server logging enabled with partial flags`,
+        `isStderr = ${options?.logging?.stderr !== undefined}`,
+        `isProtocol = ${enableProtocolLogging !== undefined};`
+      );
+    }
 
     if (subUnsub) {
       const { subscribe, unsubscribe } = subUnsub;
@@ -169,11 +179,47 @@ const runServer = async (options: ServerOptions = getOptions(), {
 
     tools.forEach(toolCreator => {
       const [name, schema, callback] = toolCreator(options);
+      // Do NOT normalize schemas here. This is by design and is a fallback check for malformed schemas.
+      const isZod = isZodSchema(schema?.inputSchema) || isZodRawShape(schema?.inputSchema);
+      const isSchemaDefined = schema?.inputSchema !== undefined;
 
       log.info(`Registered tool: ${name}`);
-      server?.registerTool(name, schema, (args = {}) =>
+
+      if (!isZod) {
+        log.warn(`Tool "${name}" has a non‑Zod inputSchema. This may cause unexpected issues.`);
+        log.debug(
+          `Tool "${name}" has received a non‑Zod inputSchema from the tool pipeline.`,
+          `This will cause unexpected issues, such as failure to pass arguments.`,
+          `MCP SDK requires Zod. Kneel before Zod.`
+        );
+      }
+
+      // Lightweight check for malformed schemas that bypass validation.
+      const isContextLike = (value: unknown) => isPlainObject(value) && 'requestId' in value && 'signal' in value;
+
+      server?.registerTool(name, schema, (args: unknown = {}, ..._args: unknown[]) =>
         runWithSession(session, async () =>
-          runWithOptions(options, async () => await callback(args))));
+          runWithOptions(options, async () => {
+            // Basic track for remaining args to account for future MCP SDK alterations.
+            log.debug(
+              `Running tool "${name}"`,
+              `isArgs = ${args !== undefined}`,
+              `isRemainingArgs = ${_args?.length > 0}`
+            );
+            const isContextLikeArgs = isContextLike(args);
+
+            // Log potential Zod validation errors triggered by context fail.
+            if (isContextLikeArgs) {
+              log.debug(
+                `Tool "${name}" handler received a context‑like object as the first parameter.`,
+                'If this is unexpected this is likely an undefined schema or a schema not registering as Zod.',
+                'Review the related schema definition and ensure it is defined and valid.',
+                `Schema-is-Defined = ${isSchemaDefined}; Schema-is-Zod = ${isZod}; | Context-like = ${isContextLikeArgs};`
+              );
+            }
+
+            return await callback(args);
+          })));
     });
 
     if (enableSigint) {
