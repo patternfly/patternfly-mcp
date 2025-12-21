@@ -1,0 +1,463 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`normalizeCreatorSchema should attempt to normalize a schema, with JSON inputSchema 1`] = `
+{
+  "manifestSchema": {
+    "additionalProperties": true,
+    "type": "object",
+  },
+  "normalizedSchema": "[object Object], isZod=true",
+  "tool": [
+    "lorem ipsum",
+    {
+      "description": "lorem ipsum",
+      "inputSchema": "[object Object], isZod=true",
+    },
+    [Function],
+  ],
+  "warnings": [],
+}
+`;
+
+exports[`normalizeCreatorSchema should attempt to normalize a schema, with invalid JSON inputSchema 1`] = `
+{
+  "manifestSchema": {
+    "additionalProperties": "busted",
+    "type": "object",
+  },
+  "normalizedSchema": "[object Object], isZod=true",
+  "tool": [
+    "lorem ipsum",
+    {
+      "description": "lorem ipsum",
+      "inputSchema": "[object Object], isZod=true",
+    },
+    [Function],
+  ],
+  "warnings": [],
+}
+`;
+
+exports[`normalizeCreatorSchema should attempt to normalize a schema, with partial 1`] = `
+{
+  "manifestSchema": {
+    "additionalProperties": true,
+    "type": "object",
+  },
+  "normalizedSchema": "undefined, isZod=false",
+  "tool": [
+    "lorem ipsum",
+    {
+      "description": "lorem ipsum",
+      "inputSchema": "undefined, isZod=false",
+    },
+    [Function],
+  ],
+  "warnings": [
+    "Using permissive JSON Schema fallback. Failed to convert Zod to JSON Schema for lorem ipsum.",
+    "Permissive JSON schemas may have unintended side-effects. Review lorem ipsum's inputSchema and ensure it's a valid JSON or Zod schema.",
+  ],
+}
+`;
+
+exports[`normalizeCreatorSchema should attempt to normalize a schema, with undefined name 1`] = `
+{
+  "manifestSchema": {
+    "additionalProperties": true,
+    "type": "object",
+  },
+  "normalizedSchema": "[object Object], isZod=true",
+  "tool": [
+    undefined,
+    {
+      "description": "lorem ipsum",
+      "inputSchema": "[object Object], isZod=true",
+    },
+    [Function],
+  ],
+  "warnings": [],
+}
+`;
+
+exports[`normalizeCreatorSchema should attempt to normalize a schema, with undefined name, schema 1`] = `
+{
+  "manifestSchema": {
+    "additionalProperties": true,
+    "type": "object",
+  },
+  "normalizedSchema": "undefined, isZod=false",
+  "tool": [
+    undefined,
+    {
+      "description": undefined,
+      "inputSchema": "undefined, isZod=false",
+    },
+    [Function],
+  ],
+  "warnings": [
+    "Using permissive JSON Schema fallback. Failed to convert Zod to JSON Schema for creator.",
+    "Permissive JSON schemas may have unintended side-effects. Review creator's inputSchema and ensure it's a valid JSON or Zod schema.",
+  ],
+}
+`;
+
+exports[`normalizeCreatorSchema should attempt to normalize a schema, with undefined schema 1`] = `
+{
+  "manifestSchema": {
+    "additionalProperties": true,
+    "type": "object",
+  },
+  "normalizedSchema": "undefined, isZod=false",
+  "tool": [
+    "lorem ipsum",
+    {
+      "description": undefined,
+      "inputSchema": "undefined, isZod=false",
+    },
+    [Function],
+  ],
+  "warnings": [
+    "Using permissive JSON Schema fallback. Failed to convert Zod to JSON Schema for lorem ipsum.",
+    "Permissive JSON schemas may have unintended side-effects. Review lorem ipsum's inputSchema and ensure it's a valid JSON or Zod schema.",
+  ],
+}
+`;
+
+exports[`normalizeCreatorSchema should attempt to normalize a schema, with valid zod inputSchema 1`] = `
+{
+  "manifestSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+  },
+  "normalizedSchema": "[object Object], isZod=true",
+  "tool": [
+    "lorem ipsum",
+    {
+      "description": "lorem ipsum",
+      "inputSchema": "[object Object], isZod=true",
+    },
+    [Function],
+  ],
+  "warnings": [],
+}
+`;
+
+exports[`requestFallback should send error response, with request id 1`] = `
+{
+  "error": "Test error",
+  "id": "test-id",
+  "ok": false,
+  "t": "invoke:result",
+}
+`;
+
+exports[`requestFallback should send error response, with string error 1`] = `
+{
+  "error": "String error",
+  "id": "test-id",
+  "ok": false,
+  "t": "invoke:result",
+}
+`;
+
+exports[`requestFallback should send error response, without request id 1`] = `
+{
+  "error": "Test error",
+  "id": "n/a",
+  "ok": false,
+  "t": "invoke:result",
+}
+`;
+
+exports[`requestHello should send hello:ack message, with different id 1`] = `
+[
+  [
+    {
+      "id": "test-id-2",
+      "t": "hello:ack",
+    },
+  ],
+]
+`;
+
+exports[`requestHello should send hello:ack message, with valid request 1`] = `
+[
+  [
+    {
+      "id": "test-id-1",
+      "t": "hello:ack",
+    },
+  ],
+]
+`;
+
+exports[`requestInvoke should attempt tool invocation, handler returning error 1`] = `
+{
+  "error": "Internal error",
+  "id": "request-id",
+  "ok": false,
+  "t": "invoke:result",
+}
+`;
+
+exports[`requestInvoke should attempt tool invocation, handler returning promise 1`] = `
+{
+  "id": "request-id",
+  "ok": true,
+  "result": {
+    "data": "async-result",
+  },
+  "t": "invoke:result",
+}
+`;
+
+exports[`requestInvoke should attempt tool invocation, handler throwing error 1`] = `
+{
+  "error": "Handler error",
+  "id": "request-id",
+  "ok": false,
+  "t": "invoke:result",
+}
+`;
+
+exports[`requestInvoke should attempt tool invocation, mismatched state and request tool IDs 1`] = `
+{
+  "error": "Unknown toolId",
+  "id": "request-id",
+  "ok": false,
+  "t": "invoke:result",
+}
+`;
+
+exports[`requestInvoke should attempt tool invocation, successful handler 1`] = `
+{
+  "id": "request-id",
+  "ok": true,
+  "result": {
+    "data": "result",
+  },
+  "t": "invoke:result",
+}
+`;
+
+exports[`requestInvoke should timeout when handler takes too long 1`] = `
+[
+  [
+    {
+      "error": {
+        "message": "Invoke timeout",
+      },
+      "id": "request-id",
+      "ok": false,
+      "t": "invoke:result",
+    },
+  ],
+]
+`;
+
+exports[`requestLoad should send load:ack message, with empty warnings and errors 1`] = `
+[
+  [
+    {
+      "errors": [],
+      "id": "test-id",
+      "t": "load:ack",
+      "warnings": [],
+    },
+  ],
+]
+`;
+
+exports[`requestLoad should send load:ack message, with only errors 1`] = `
+[
+  [
+    {
+      "errors": [
+        "error1",
+      ],
+      "id": "test-id",
+      "t": "load:ack",
+      "warnings": [],
+    },
+  ],
+]
+`;
+
+exports[`requestLoad should send load:ack message, with only warnings 1`] = `
+[
+  [
+    {
+      "errors": [],
+      "id": "test-id",
+      "t": "load:ack",
+      "warnings": [
+        "warning1",
+      ],
+    },
+  ],
+]
+`;
+
+exports[`requestLoad should send load:ack message, with undefined warnings and errors 1`] = `
+[
+  [
+    {
+      "errors": [],
+      "id": "test-id",
+      "t": "load:ack",
+      "warnings": [],
+    },
+  ],
+]
+`;
+
+exports[`requestLoad should send load:ack message, with warnings and errors 1`] = `
+[
+  [
+    {
+      "errors": [
+        "error1",
+      ],
+      "id": "test-id",
+      "t": "load:ack",
+      "warnings": [
+        "warning1",
+        "warning2",
+      ],
+    },
+  ],
+]
+`;
+
+exports[`requestManifestGet should send manifest:result message, with empty descriptors 1`] = `
+[
+  [
+    {
+      "id": "test-id",
+      "t": "manifest:result",
+      "tools": [],
+    },
+  ],
+]
+`;
+
+exports[`requestManifestGet should send manifest:result message, with multiple tool descriptors 1`] = `
+[
+  [
+    {
+      "id": "test-id",
+      "t": "manifest:result",
+      "tools": [
+        {
+          "description": "Description 1",
+          "id": "tool-1",
+          "inputSchema": {
+            "type": "object",
+          },
+          "name": "Tool1",
+          "source": "module1",
+        },
+        {
+          "description": "Description 2",
+          "id": "tool-2",
+          "inputSchema": {},
+          "name": "Tool2",
+          "source": "module2",
+        },
+      ],
+    },
+  ],
+]
+`;
+
+exports[`requestManifestGet should send manifest:result message, with single tool descriptor 1`] = `
+[
+  [
+    {
+      "id": "test-id",
+      "t": "manifest:result",
+      "tools": [
+        {
+          "description": "Description 1",
+          "id": "tool-1",
+          "inputSchema": {},
+          "name": "Tool1",
+          "source": "module1",
+        },
+      ],
+    },
+  ],
+]
+`;
+
+exports[`requestShutdown should send shutdown:ack and exit, with different id 1`] = `
+[
+  [
+    {
+      "id": "test-id-2",
+      "t": "shutdown:ack",
+    },
+  ],
+]
+`;
+
+exports[`requestShutdown should send shutdown:ack and exit, with valid request 1`] = `
+[
+  [
+    {
+      "id": "test-id-1",
+      "t": "shutdown:ack",
+    },
+  ],
+]
+`;
+
+exports[`setHandlers should set up message handlers and attempt handle requests, hello 1`] = `
+[
+  [
+    {
+      "id": "test-id",
+      "t": "hello:ack",
+    },
+  ],
+]
+`;
+
+exports[`setHandlers should set up message handlers and attempt handle requests, invoke 1`] = `
+[
+  [
+    {
+      "error": {
+        "message": "Unknown toolId",
+      },
+      "id": "test-id",
+      "ok": false,
+      "t": "invoke:result",
+    },
+  ],
+]
+`;
+
+exports[`setHandlers should set up message handlers and attempt handle requests, load 1`] = `
+[
+  [
+    {
+      "errors": [],
+      "id": "test-id",
+      "t": "load:ack",
+      "warnings": [],
+    },
+  ],
+]
+`;
+
+exports[`setHandlers should set up message handlers and attempt handle requests, manifest:get 1`] = `
+[
+  [
+    {
+      "id": "test-id",
+      "t": "manifest:result",
+      "tools": [],
+    },
+  ],
+]
+`;

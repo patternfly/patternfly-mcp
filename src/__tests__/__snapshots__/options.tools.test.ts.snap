@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`setToolOptions should set a subset of options for tools, default 1`] = `
+{
+  "nodeMajor": "22",
+  "repoName": "dolor-sit-amet",
+  "serverName": "lorem ipsum",
+  "serverVersion": "1.2.3",
+}
+`;
+
+exports[`setToolOptions should set a subset of options for tools, random keys 1`] = `
+{
+  "nodeMajor": undefined,
+  "repoName": undefined,
+  "serverName": undefined,
+  "serverVersion": undefined,
+}
+`;

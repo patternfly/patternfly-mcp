@@ -18,6 +18,7 @@ import packageJson from '../package.json';
  * @property {LoggingOptions} logging - Logging options.
  * @property name - Name of the package.
  * @property nodeVersion - Node.js major version.
+ * @property {PluginHostOptions} pluginHost - Plugin host options.
  * @property repoName - Name of the repository.
  * @property pfExternal - PatternFly external docs URL.
  * @property pfExternalDesignComponents - PatternFly design guidelines' components' URL.
@@ -45,6 +46,7 @@ interface DefaultOptions<TLogOptions = LoggingOptions> {
   logging: TLogOptions;
   name: string;
   nodeVersion: number;
+  pluginHost: PluginHostOptions;
   pfExternal: string;
   pfExternalDesignComponents: string;
   pfExternalExamplesComponents: string;
@@ -115,6 +117,19 @@ interface HttpOptions {
 }
 
 /**
+ * Tools Host options (pure data). Centralized defaults live here.
+ *
+ * @property loadTimeoutMs Timeout for child spawn + hello/load/manifest (ms).
+ * @property invokeTimeoutMs Timeout per external tool invocation (ms).
+ * @property gracePeriodMs Grace period for external tool invocations (ms).
+ */
+interface PluginHostOptions {
+  loadTimeoutMs: number;
+  invokeTimeoutMs: number;
+  gracePeriodMs: number;
+}
+
+/**
  * Logging session options, non-configurable by the user.
  *
  * @interface LoggingSession
@@ -144,6 +159,15 @@ const HTTP_OPTIONS: HttpOptions = {
   host: '127.0.0.1',
   allowedOrigins: [],
   allowedHosts: []
+};
+
+/**
+ * Default plugin host options.
+ */
+const PLUGIN_HOST_OPTIONS: PluginHostOptions = {
+  loadTimeoutMs: 5000,
+  invokeTimeoutMs: 10000,
+  gracePeriodMs: 2000
 };
 
 /**
@@ -291,6 +315,7 @@ const DEFAULT_OPTIONS: DefaultOptions = {
   logging: LOGGING_OPTIONS,
   name: packageJson.name,
   nodeVersion: (process.env.NODE_ENV === 'local' && 22) || getNodeMajorVersion(),
+  pluginHost: PLUGIN_HOST_OPTIONS,
   pfExternal: PF_EXTERNAL,
   pfExternalDesignComponents: PF_EXTERNAL_DESIGN_COMPONENTS,
   pfExternalExamplesComponents: PF_EXTERNAL_EXAMPLES_REACT_CORE,
@@ -328,5 +353,6 @@ export {
   type DefaultOptionsOverrides,
   type HttpOptions,
   type LoggingOptions,
-  type LoggingSession
+  type LoggingSession,
+  type PluginHostOptions
 };

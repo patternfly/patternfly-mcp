@@ -18,7 +18,7 @@ const isZodSchema = (value: unknown): boolean => {
   const obj = value as Record<string, unknown>;
 
   // Guard for property presence
-  const has = (key: string) => Object.prototype.hasOwnProperty.call(obj, key);
+  const has = (key: string) => Object.hasOwn(obj, key);
   const isFunc = (func: unknown) => typeof func === 'function';
 
   // Zod v4 detection: branded internals at `_zod`. In v4, `_zod` is an object
