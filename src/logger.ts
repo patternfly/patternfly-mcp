@@ -1,4 +1,5 @@
 import { channel, unsubscribe, subscribe } from 'node:diagnostics_channel';
+import { inspect } from 'node:util';
 import { type LoggingSession } from './options.defaults';
 import { getLoggerOptions } from './options.context';
 
@@ -49,6 +50,69 @@ const LOG_LEVELS: LogLevel[] = ['debug', 'info', 'warn', 'error'];
  */
 const logSeverity = (level: unknown): number =>
   LOG_LEVELS.indexOf(level as LogLevel);
+
+/**
+ * Basic string HARD truncate.
+ *
+ * - Passing a non-string returns the original value.
+ * - Suffix length is counted against `max`. If `suffix.length >= max`, only
+ *    `suffix` is returned, which may exceed the set `max`.
+ *
+ * @param str
+ * @param options
+ * @param options.max
+ * @param options.suffix - Appended suffix string. Suffix length is counted against max length.
+ * @returns Truncated string, or the suffix only, or the original string, or the original non-string value.
+ */
+const truncate = (str: string, { max = 250, suffix = '...[truncated]' }: { max?: number, suffix?: string } = {}) => {
+  if (typeof str === 'string') {
+    const updatedMax = Math.max(0, max - suffix.length);
+
+    if (updatedMax <= 0) {
+      return suffix;
+    }
+
+    return str.length > updatedMax ? `${str.slice(0, updatedMax)}${suffix}` : str;
+  }
+
+  return str;
+};
+
+/**
+ * Format an unknown value as a string, for logging.
+ *
+ * @param value
+ * @returns Formatted string
+ */
+const formatUnknownError = (value: unknown): string => {
+  if (value instanceof Error) {
+    const message = value.stack || value.message;
+
+    if (message) {
+      return message;
+    }
+
+    try {
+      return String(value);
+    } catch {
+      return Object.prototype.toString.call(value);
+    }
+  }
+
+  if (typeof value === 'string') {
+    return value;
+  }
+
+  try {
+    return `Non-Error thrown: ${truncate(JSON.stringify(value))}`;
+  } catch {
+    try {
+      return truncate(inspect(value, { depth: 3, maxArrayLength: 50, breakLength: 120 }));
+    } catch {
+      return Object.prototype.toString.call(value);
+    }
+  }
+};
 
 /**
  * Publish a structured log event to the diagnostics channel.
@@ -215,11 +279,13 @@ const createLogger = (options: LoggingSession = getLoggerOptions()): Unsubscribe
 export {
   LOG_LEVELS,
   createLogger,
+  formatUnknownError,
   log,
   logSeverity,
   publish,
   registerStderrSubscriber,
   subscribeToChannel,
+  truncate,
   type LogEvent,
   type LogLevel,
   type Unsubscribe

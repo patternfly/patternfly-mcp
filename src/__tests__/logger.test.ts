@@ -1,6 +1,6 @@
 import diagnostics_channel from 'node:diagnostics_channel';
 import { setOptions, getLoggerOptions } from '../options.context';
-import { logSeverity, publish, subscribeToChannel, registerStderrSubscriber, createLogger } from '../logger';
+import { logSeverity, truncate, formatUnknownError, publish, subscribeToChannel, registerStderrSubscriber, createLogger } from '../logger';
 
 describe('logSeverity', () => {
   it.each([
@@ -26,6 +26,90 @@ describe('logSeverity', () => {
     }
   ])('should return log severity, $description', ({ param }) => {
     expect(logSeverity(param as any)).toMatchSnapshot();
+  });
+});
+
+describe('truncate', () => {
+  it.each([
+    {
+      description: 'default',
+      value: 'lorem ipsum dolor sit amet',
+      max: 25
+    },
+    {
+      description: 'object string',
+      value: JSON.stringify({ lorem: 'ipsum dolor sit amet' }),
+      max: 25
+    },
+    {
+      description: 'suffix overrides max',
+      value: 'lorem',
+      max: 5
+    },
+    {
+      description: 'number',
+      value: 10_000,
+      max: 25
+    },
+    {
+      description: 'undefined',
+      value: undefined,
+      max: 25
+    },
+    {
+      description: 'null',
+      value: null,
+      max: 25
+    }
+  ])(`should truncate a string, $description`, ({ value, max }) => {
+    expect(truncate(value as any, { max })).toMatchSnapshot();
+  });
+});
+
+describe('formatUnknownError', () => {
+  it.each([
+    {
+      description: 'error, non-error',
+      err: { ...new Error('lorem ipsum dolor sit amet', { cause: 'dolor' }), message: 'lorem ipsum dolor sit amet' }
+    },
+    {
+      description: 'symbol',
+      err: Symbol('lorem ipsum')
+    },
+    {
+      description: 'function',
+      err: () => {}
+    },
+    {
+      description: 'boolean',
+      err: true
+    },
+    {
+      description: 'string',
+      err: 'lorem ipsum dolor sit amet'
+    },
+    {
+      description: 'object',
+      err: { lorem: 'ipsum dolor sit amet', dolor: 'sit amet', amet: 'consectetur adipiscing elit' }
+    },
+    {
+      description: 'bigint',
+      err: BigInt(Number.MAX_SAFE_INTEGER)
+    },
+    {
+      description: 'number',
+      err: 10_000
+    },
+    {
+      description: 'undefined',
+      err: undefined
+    },
+    {
+      description: 'null',
+      err: null
+    }
+  ])('should attempt to return a formatted error on non-errors, $description', ({ err }) => {
+    expect(formatUnknownError(err)).toMatchSnapshot();
   });
 });
 
