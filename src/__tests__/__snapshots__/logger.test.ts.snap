@@ -33,6 +33,26 @@ exports[`createLogger should attempt to subscribe and unsubscribe from a channel
 }
 `;
 
+exports[`formatUnknownError should attempt to return a formatted error on non-errors, bigint 1`] = `"9007199254740991n"`;
+
+exports[`formatUnknownError should attempt to return a formatted error on non-errors, boolean 1`] = `"Non-Error thrown: true"`;
+
+exports[`formatUnknownError should attempt to return a formatted error on non-errors, error, non-error 1`] = `"Non-Error thrown: {"message":"lorem ipsum dolor sit amet"}"`;
+
+exports[`formatUnknownError should attempt to return a formatted error on non-errors, function 1`] = `"Non-Error thrown: undefined"`;
+
+exports[`formatUnknownError should attempt to return a formatted error on non-errors, null 1`] = `"Non-Error thrown: null"`;
+
+exports[`formatUnknownError should attempt to return a formatted error on non-errors, number 1`] = `"Non-Error thrown: 10000"`;
+
+exports[`formatUnknownError should attempt to return a formatted error on non-errors, object 1`] = `"Non-Error thrown: {"lorem":"ipsum dolor sit amet","dolor":"sit amet","amet":"consectetur adipiscing elit"}"`;
+
+exports[`formatUnknownError should attempt to return a formatted error on non-errors, string 1`] = `"lorem ipsum dolor sit amet"`;
+
+exports[`formatUnknownError should attempt to return a formatted error on non-errors, symbol 1`] = `"Non-Error thrown: undefined"`;
+
+exports[`formatUnknownError should attempt to return a formatted error on non-errors, undefined 1`] = `"Non-Error thrown: undefined"`;
+
 exports[`logSeverity should return log severity, debug 1`] = `0`;
 
 exports[`logSeverity should return log severity, default 1`] = `-1`;
@@ -195,3 +215,15 @@ exports[`subscribeToChannel should attempt to subscribe and unsubscribe from a c
 `;
 
 exports[`subscribeToChannel should throw an error attempting to subscribe and unsubscribe from a channel: missing channel name 1`] = `"subscribeToChannel called without a configured logging channelName"`;
+
+exports[`truncate should truncate a string, default 1`] = `"lorem ipsum...[truncated]"`;
+
+exports[`truncate should truncate a string, null 1`] = `null`;
+
+exports[`truncate should truncate a string, number 1`] = `10000`;
+
+exports[`truncate should truncate a string, object string 1`] = `"{"lorem":"i...[truncated]"`;
+
+exports[`truncate should truncate a string, suffix overrides max 1`] = `"...[truncated]"`;
+
+exports[`truncate should truncate a string, undefined 1`] = `undefined`;
