@@ -1,0 +1,599 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`composeTools should attempt to setup creators, default package creators 1`] = `
+{
+  "log": [],
+  "toolsCount": 3,
+}
+`;
+
+exports[`composeTools should attempt to setup creators, file package creators 1`] = `
+{
+  "log": [],
+  "toolsCount": 5,
+}
+`;
+
+exports[`composeTools should attempt to setup creators, file package creators, Node.js 20 1`] = `
+{
+  "log": [
+    [
+      "External tool plugins require Node >= 22; skipping file-based tools.",
+    ],
+  ],
+  "toolsCount": 3,
+}
+`;
+
+exports[`composeTools should attempt to setup creators, file package creators, Node.js 24 1`] = `
+{
+  "log": [],
+  "toolsCount": 5,
+}
+`;
+
+exports[`composeTools should attempt to setup creators, file package creators, Node.js undefined 1`] = `
+{
+  "log": [
+    [
+      "External tool plugins require Node >= 22; skipping file-based tools.",
+    ],
+  ],
+  "toolsCount": 3,
+}
+`;
+
+exports[`composeTools should attempt to setup creators, file package duplicate creators 1`] = `
+{
+  "log": [
+    [
+      "Skipping tool plugin "@patternfly/tools" – name already used by built-in/inline tool.",
+    ],
+  ],
+  "toolsCount": 5,
+}
+`;
+
+exports[`composeTools should attempt to setup creators, inline and file package creators 1`] = `
+{
+  "log": [],
+  "toolsCount": 7,
+}
+`;
+
+exports[`composeTools should attempt to setup creators, inline and file package creators duplicate builtin creators 1`] = `
+{
+  "log": [
+    [
+      "Skipping inline tool "loremipsum" because a tool with the same name is already provided (built-in or earlier).",
+    ],
+    [
+      "Skipping tool plugin "dolorSitAmet" – name already used by built-in/inline tool.",
+    ],
+  ],
+  "toolsCount": 3,
+}
+`;
+
+exports[`composeTools should attempt to setup creators, inline and file package creators, duplicates 1`] = `
+{
+  "log": [
+    [
+      "Skipping tool plugin "@patternfly/tools" – name already used by built-in/inline tool.",
+    ],
+    [
+      "Skipping tool plugin "DOLOR   " – name already used by built-in/inline tool.",
+    ],
+  ],
+  "toolsCount": 6,
+}
+`;
+
+exports[`composeTools should attempt to setup creators, inline and file package creators, duplicates, Node.js 20 1`] = `
+{
+  "log": [
+    [
+      "External tool plugins require Node >= 22; skipping file-based tools.",
+    ],
+  ],
+  "toolsCount": 5,
+}
+`;
+
+exports[`composeTools should attempt to setup creators, inline creators 1`] = `
+{
+  "log": [],
+  "toolsCount": 5,
+}
+`;
+
+exports[`composeTools should attempt to setup creators, inline creators, missing toolNames 1`] = `
+{
+  "log": [
+    [
+      "Tool creator function is missing the static name property, "toolName". Set creator.toolName = "<name>",
+or author the tool as a tuple/object (example ['<name>', { ... }, handler]).",
+    ],
+    [
+      "Tool creator function is missing the static name property, "toolName". Set creator.toolName = "<name>",
+or author the tool as a tuple/object (example ['<name>', { ... }, handler]).",
+    ],
+  ],
+  "toolsCount": 3,
+}
+`;
+
+exports[`composeTools should attempt to setup creators, inline duplicate creators 1`] = `
+{
+  "log": [
+    [
+      "Skipping inline tool "dolor" because a tool with the same name is already provided (built-in or earlier).",
+    ],
+  ],
+  "toolsCount": 5,
+}
+`;
+
+exports[`composeTools should attempt to setup creators, invalid creator 1`] = `
+{
+  "log": [
+    [
+      "createMcpTool: invalid configuration used at index 0: Unsupported type object",
+    ],
+  ],
+  "toolsCount": 3,
+}
+`;
+
+exports[`composeTools should return default creators on tools host error 1`] = `
+{
+  "log": [
+    [
+      "Failed to start Tools Host; skipping externals and continuing with built-ins/inline. undefined",
+    ],
+  ],
+  "toolsCount": 3,
+}
+`;
+
+exports[`debugChild should attempt to highlight specific messages, access denied 1`] = `
+{
+  "debug": [],
+  "warn": [
+    [
+      "Error [ERR_ACCESS_DENIED]: Access denied: FileSystemRead, resource: /lorem/ipsum/dolor/sit/amet
+Tools Host denied fs read. In strict mode, add the resource's directory to --allow-fs-read.
+Optionally, you can disable strict mode entirely with pluginIsolation: 'none'.",
+    ],
+  ],
+}
+`;
+
+exports[`debugChild should attempt to highlight specific messages, access denied, alt messaging 1`] = `
+{
+  "debug": [],
+  "warn": [
+    [
+      "Error [ERR_ACCESS_DENIED]: fs.readFileSync access is denied by permission model: FileSystemRead, resource: /lorem/ipsum/dolor/sit/amet
+Tools Host denied fs read. In strict mode, add the resource's directory to --allow-fs-read.
+Optionally, you can disable strict mode entirely with pluginIsolation: 'none'.",
+    ],
+    [
+      "Error [ERR_ACCESS_DENIED]: Access denied: FileSystemRead, resource: /lorem/ipsum/dolor/sit/amet
+Tools Host denied fs read. In strict mode, add the resource's directory to --allow-fs-read.
+Optionally, you can disable strict mode entirely with pluginIsolation: 'none'.",
+    ],
+  ],
+}
+`;
+
+exports[`debugChild should attempt to highlight specific messages, access denied, multiple lines 1`] = `
+{
+  "debug": [
+    [
+      "[tools-host pid=123 sid=1234567890] Error [ERR_ACCESS_DENIED]: Access denied: FileSystemRead, resource: /lorem/ipsum/dolor/sit/amet",
+    ],
+  ],
+  "warn": [
+    [
+      "Error [ERR_ACCESS_DENIED]: Access denied: FileSystemRead, resource: /lorem/ipsum/dolor/sit/amet
+Tools Host denied fs read. In strict mode, add the resource's directory to --allow-fs-read.
+Optionally, you can disable strict mode entirely with pluginIsolation: 'none'.",
+    ],
+  ],
+}
+`;
+
+exports[`debugChild should attempt to highlight specific messages, default 1`] = `
+{
+  "debug": [
+    [
+      "[tools-host pid=123 sid=1234567890] lorem ipsum dolor sit amet",
+    ],
+  ],
+  "warn": [],
+}
+`;
+
+exports[`debugChild should attempt to highlight specific messages, empty string 1`] = `
+{
+  "debug": [],
+  "warn": [],
+}
+`;
+
+exports[`debugChild should attempt to highlight specific messages, generic multiline error 1`] = `
+{
+  "debug": [
+    [
+      "[tools-host pid=123 sid=1234567890] Lorem ipsum",
+    ],
+    [
+      "[tools-host pid=123 sid=1234567890] dolor sit",
+    ],
+    [
+      "[tools-host pid=123 sid=1234567890] amet",
+    ],
+  ],
+  "warn": [],
+}
+`;
+
+exports[`debugChild should attempt to highlight specific messages, generic multiline error with spaces 1`] = `
+{
+  "debug": [
+    [
+      "[tools-host pid=123 sid=1234567890] Lorem ipsum",
+    ],
+    [
+      "[tools-host pid=123 sid=1234567890] dolor sit",
+    ],
+    [
+      "[tools-host pid=123 sid=1234567890] amet",
+    ],
+  ],
+  "warn": [],
+}
+`;
+
+exports[`debugChild should attempt to highlight specific messages, module not found 1`] = `
+{
+  "debug": [],
+  "warn": [
+    [
+      "Tools Host import error. Ensure external tools are ESM (no raw .ts) and resolvable.
+For local files, prefer a file:// URL.",
+    ],
+  ],
+}
+`;
+
+exports[`debugChild should attempt to highlight specific messages, module not found, multiple lines 1`] = `
+{
+  "debug": [
+    [
+      "[tools-host pid=123 sid=1234567890] Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/lorem/ipsum/dolor/sit/amet' imported from /test/path",
+    ],
+  ],
+  "warn": [
+    [
+      "Tools Host import error. Ensure external tools are ESM (no raw .ts) and resolvable.
+For local files, prefer a file:// URL.",
+    ],
+  ],
+}
+`;
+
+exports[`getBuiltInToolNames should log a warning when a tool name does not exist: warning 1`] = `
+[
+  [
+    "Built-in tool at index 0 is missing the static name property, "toolName"",
+  ],
+]
+`;
+
+exports[`getFilePackageToolModules, should return filtered tool modules 1`] = `
+[
+  "@scope/pkg",
+  "file:///test/module.js",
+  "http://example.com/module.js",
+  "https://example.com/module.js",
+]
+`;
+
+exports[`logWarningsErrors should log warnings and errors, with both warnings and errors 1`] = `
+{
+  "errors": [
+    [
+      "Tools load errors (1)
+  - Error 1",
+    ],
+  ],
+  "warnings": [
+    [
+      "Tools load warnings (1)
+  - Warning 1",
+    ],
+  ],
+}
+`;
+
+exports[`logWarningsErrors should log warnings and errors, with empty arrays 1`] = `
+{
+  "errors": [],
+  "warnings": [],
+}
+`;
+
+exports[`logWarningsErrors should log warnings and errors, with errors only 1`] = `
+{
+  "errors": [
+    [
+      "Tools load errors (2)
+  - Error 1
+  - Error 2",
+    ],
+  ],
+  "warnings": [],
+}
+`;
+
+exports[`logWarningsErrors should log warnings and errors, with single error 1`] = `
+{
+  "errors": [
+    [
+      "Tools load errors (1)
+  - Single error",
+    ],
+  ],
+  "warnings": [],
+}
+`;
+
+exports[`logWarningsErrors should log warnings and errors, with single warning 1`] = `
+{
+  "errors": [],
+  "warnings": [
+    [
+      "Tools load warnings (1)
+  - Single warning",
+    ],
+  ],
+}
+`;
+
+exports[`logWarningsErrors should log warnings and errors, with undefined warnings and errors 1`] = `
+{
+  "errors": [],
+  "warnings": [],
+}
+`;
+
+exports[`logWarningsErrors should log warnings and errors, with warnings only 1`] = `
+{
+  "errors": [],
+  "warnings": [
+    [
+      "Tools load warnings (2)
+  - Warning 1
+  - Warning 2",
+    ],
+  ],
+}
+`;
+
+exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false with error: handler 1`] = `[Error: Error message]`;
+
+exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false with error: send 1`] = `
+[
+  [
+    undefined,
+    {
+      "args": {
+        "loremIpsum": 7,
+      },
+      "id": "id-1",
+      "t": "invoke",
+      "toolId": "loremIpsum",
+    },
+  ],
+]
+`;
+
+exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false with full error: handler 1`] = `[Error: Error message]`;
+
+exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false with full error: send 1`] = `
+[
+  [
+    undefined,
+    {
+      "args": {
+        "loremIpsum": 7,
+      },
+      "id": "id-1",
+      "t": "invoke",
+      "toolId": "loremIpsum",
+    },
+  ],
+]
+`;
+
+exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false: handler 1`] = `[Error: Tool invocation failed]`;
+
+exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false: send 1`] = `
+[
+  [
+    undefined,
+    {
+      "args": {
+        "loremIpsum": 7,
+      },
+      "id": "id-1",
+      "t": "invoke",
+      "toolId": "loremIpsum",
+    },
+  ],
+]
+`;
+
+exports[`makeProxyCreators should attempt to return proxy creators, a function wrapper per tool, basic 1`] = `
+{
+  "debug": [],
+  "output": [
+    [
+      "Lorem Ipsum",
+      {
+        "description": "Lorem ipsum dolor sit amet",
+        "inputSchema": "isZod = true",
+      },
+      [Function],
+    ],
+  ],
+}
+`;
+
+exports[`makeProxyCreators should attempt to return proxy creators, a function wrapper per tool, no tools 1`] = `
+{
+  "debug": [],
+  "output": [],
+}
+`;
+
+exports[`makeProxyCreators should attempt to return proxy creators, a function wrapper per tool, null JSON input schema 1`] = `
+{
+  "debug": [
+    [
+      "Tool "Lorem Ipsum" from unknown source failed strict JSON to Zod reconstruction.",
+      "Using fallback best effort schema. Review the tool's inputSchema and ensure it is a valid JSON or Zod schema.",
+      "[ZOD_SCHEMA: defined: true]",
+    ],
+  ],
+  "output": [
+    [
+      "Lorem Ipsum",
+      {
+        "description": "Lorem ipsum dolor sit amet",
+        "inputSchema": "isZod = true",
+      },
+      [Function],
+    ],
+  ],
+}
+`;
+
+exports[`makeProxyCreators should attempt to return proxy creators, a function wrapper per tool, undefined JSON input schema 1`] = `
+{
+  "debug": [
+    [
+      "Tool "Lorem Ipsum" from unknown source failed strict JSON to Zod reconstruction.",
+      "Using fallback best effort schema. Review the tool's inputSchema and ensure it is a valid JSON or Zod schema.",
+      "[ZOD_SCHEMA: defined: true]",
+    ],
+  ],
+  "output": [
+    [
+      "Lorem Ipsum",
+      {
+        "description": "Lorem ipsum dolor sit amet",
+        "inputSchema": "isZod = true",
+      },
+      [Function],
+    ],
+  ],
+}
+`;
+
+exports[`sendToolsHostShutdown should attempt force shutdown of child and fail NaN`] = `
+[
+  [
+    "Failed to send shutdown signal to Tools Host child process: Error: Mock send failure",
+  ],
+  [
+    "Failed to force-kill Tools Host child process: Error: Mock failed to kill child process",
+  ],
+  [
+    "Failed to close Tools Host stderr reader: Error: Mock close failure 1",
+  ],
+  [
+    "Slow shutdown response. Primary fallback force-killing Tools Host child process.",
+  ],
+]
+`;
+
+exports[`spawnToolsHost attempt to spawn the Tools Host, with no pluginIsolation, node 24: spawn 1`] = `
+{
+  "spawn": [
+    [
+      "/mock/path/to/toolsHost.js",
+    ],
+    {
+      "stdio": [
+        "ignore",
+        "pipe",
+        "pipe",
+        "ipc",
+      ],
+    },
+  ],
+}
+`;
+
+exports[`spawnToolsHost attempt to spawn the Tools Host, with strict pluginIsolation, node 22: spawn 1`] = `
+{
+  "spawn": [
+    [
+      "--experimental-permission",
+      "--allow-fs-read=/",
+      "--allow-fs-read=/mock/path/to",
+      "/mock/path/to/toolsHost.js",
+    ],
+    {
+      "stdio": [
+        "ignore",
+        "pipe",
+        "pipe",
+        "ipc",
+      ],
+    },
+  ],
+}
+`;
+
+exports[`spawnToolsHost attempt to spawn the Tools Host, with strict pluginIsolation, node 24: spawn 1`] = `
+{
+  "spawn": [
+    [
+      "--permission",
+      "--allow-fs-read=/",
+      "--allow-fs-read=/mock/path/to",
+      "/mock/path/to/toolsHost.js",
+    ],
+    {
+      "stdio": [
+        "ignore",
+        "pipe",
+        "pipe",
+        "ipc",
+      ],
+    },
+  ],
+}
+`;
+
+exports[`spawnToolsHost attempt to spawn the Tools Host, with undefined pluginIsolation, node 22: spawn 1`] = `
+{
+  "spawn": [
+    [
+      "/mock/path/to/toolsHost.js",
+    ],
+    {
+      "stdio": [
+        "ignore",
+        "pipe",
+        "pipe",
+        "ipc",
+      ],
+    },
+  ],
+}
+`;

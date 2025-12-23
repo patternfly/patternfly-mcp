@@ -56,4 +56,9 @@ const fetchDocsTool = (options = getOptions()): McpTool => {
   ];
 };
 
+/**
+ * A tool name, typically the first entry in the tuple. Used in logging and deduplication.
+ */
+fetchDocsTool.toolName = 'fetchDocs';
+
 export { fetchDocsTool };

@@ -168,7 +168,7 @@ exports[`runServer should attempt to run server, register a tool: diagnostics 1`
       "test-server-5 server running on stdio transport",
     ],
     [
-      "Tool "loremIpsum" has a non‑Zod inputSchema. This may cause unexpected issues.",
+      "Tool "loremIpsum" has a non Zod inputSchema. This may cause unexpected issues.",
     ],
   ],
   "hasDebugLogs": true,
@@ -213,10 +213,10 @@ exports[`runServer should attempt to run server, register multiple tools: diagno
       "test-server-6 server running on stdio transport",
     ],
     [
-      "Tool "loremIpsum" has a non‑Zod inputSchema. This may cause unexpected issues.",
+      "Tool "loremIpsum" has a non Zod inputSchema. This may cause unexpected issues.",
     ],
     [
-      "Tool "dolorSit" has a non‑Zod inputSchema. This may cause unexpected issues.",
+      "Tool "dolorSit" has a non Zod inputSchema. This may cause unexpected issues.",
     ],
   ],
   "hasDebugLogs": true,

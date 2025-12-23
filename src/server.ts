@@ -18,9 +18,27 @@ import { DEFAULT_OPTIONS } from './options.defaults';
 import { isZodRawShape, isZodSchema } from './server.schema';
 import { isPlainObject } from './server.helpers';
 
-type McpTool = [string, { description: string; inputSchema: any }, (args: any) => Promise<any> | any];
+/**
+ * A tool registered with the MCP server.
+ *
+ * @note Use of `any` here is intentional as part of a pass-through policy around
+ * `inputSchema`. Input schemas are actually reconstructed as part of the
+ * tools-as-plugins architecture to help guarantee that a minimal tool schema is
+ * always available and minimally valid.
+ */
+type McpTool = [
+  name: string,
+  schema: {
+    description: string;
+    inputSchema: any;
+  },
+  handler: (arg?: unknown) => any | Promise<any>
+];
 
-type McpToolCreator = (options?: GlobalOptions) => McpTool;
+/**
+ * A function that creates a tool registered with the MCP server.
+ */
+type McpToolCreator = ((options?: GlobalOptions) => McpTool) & { toolName?: string };
 
 /**
  * Server options. Equivalent to GlobalOptions.
@@ -186,9 +204,9 @@ const runServer = async (options: ServerOptions = getOptions(), {
       log.info(`Registered tool: ${name}`);
 
       if (!isZod) {
-        log.warn(`Tool "${name}" has a non‑Zod inputSchema. This may cause unexpected issues.`);
+        log.warn(`Tool "${name}" has a non Zod inputSchema. This may cause unexpected issues.`);
         log.debug(
-          `Tool "${name}" has received a non‑Zod inputSchema from the tool pipeline.`,
+          `Tool "${name}" has received a non Zod inputSchema from the tool pipeline.`,
           `This will cause unexpected issues, such as failure to pass arguments.`,
           `MCP SDK requires Zod. Kneel before Zod.`
         );
@@ -211,10 +229,10 @@ const runServer = async (options: ServerOptions = getOptions(), {
             // Log potential Zod validation errors triggered by context fail.
             if (isContextLikeArgs) {
               log.debug(
-                `Tool "${name}" handler received a context‑like object as the first parameter.`,
+                `Tool "${name}" handler received a context like object as the first parameter.`,
                 'If this is unexpected this is likely an undefined schema or a schema not registering as Zod.',
                 'Review the related schema definition and ensure it is defined and valid.',
-                `Schema-is-Defined = ${isSchemaDefined}; Schema-is-Zod = ${isZod}; | Context-like = ${isContextLikeArgs};`
+                `Schema is Defined = ${isSchemaDefined}; Schema is Zod = ${isZod}; Context like = ${isContextLikeArgs};`
               );
             }
 
