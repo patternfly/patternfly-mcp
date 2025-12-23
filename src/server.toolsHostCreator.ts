@@ -48,26 +48,26 @@ type ResolveOptions = {
  *
  * - Probes function exports at most once with toolOptions and never re-probes without options.
  * - Supported export shapes:
- *   - A `default export` that is a function returning a tool tuple -> wraps and caches as a creator (with .toolName)
- *   - A `default export` that is a function returning an array of functions returning tool tuples -> no unwrapping, returns them directly
- *   - A `default export` that is an array of functions returning tool tuples -> no unwrapping, returns them directly
+ *   - A `default export` that is a tool creator (function returning a tool tuple) -> wraps and caches as a creator (with .toolName)
+ *   - A `default export` that is a function returning an array of tool creators (functions returning tool tuples) -> no unwrapping, returns them directly
+ *   - A `default export` that is an array of tool creators (functions returning tool tuples) -> no unwrapping, returns them directly
  *
  * @example
- * // A default export function returning a tool tuple
+ * // A default export creator (function returning a tool tuple)
  * export default () => ['toolName', { description: 'recommended', inputSchema: { ... } }, handler];
  *
  * @example
- * // A default export function returning an array of tool tuples
- * const dolorSit = () => ['toolName1', { description: 'recommended', inputSchema: { ... }  }, handler];
- * const ametConsectetur = () => ['toolName2', { description: 'recommended', inputSchema: { ... }  }, handler];
+ * // A default export function returning an array of tool creators (functions returning tool tuples)
+ * const dolorSit = () => ['toolName1', { description: 'recommended', inputSchema: { ... } }, handler];
+ * const ametConsectetur = () => ['toolName2', { description: 'recommended', inputSchema: { ... } }, handler];
  *
  * export default () => [dolorSit, ametConsectetur];
  *
  * @example
- * // A default export array of functions returning tool tuples
+ * // A default export array of tool creators (functions returning tool tuples)
  * export default [
- *   () => ['toolName1', { description: 'recommended', inputSchema: { ... }  }, handler],
- *   () => ['toolName2', { description: 'recommended', inputSchema: { ... }  }, handler]
+ *   () => ['toolName1', { description: 'recommended', inputSchema: { ... } }, handler],
+ *   () => ['toolName2', { description: 'recommended', inputSchema: { ... } }, handler]
  * ];
  *
  * @param moduleExports - The module exports object from the child process.

@@ -72,7 +72,8 @@ const isZodRawShape = (value: unknown): boolean => {
  * @param jsonSchema - Plain JSON Schema object
  * @param settings - Optional settings
  * @param settings.failFast - Fail fast on unsupported types, or be nice and attempt to convert. Defaults to true.
- * @returns Zod schema equivalent
+ * @returns A Zod schema when convertible, returns undefined when failFast and input are unsupported, or falls back
+ *     to z.any() when failFast `false`
  */
 const jsonSchemaToZod = (
   jsonSchema: unknown,

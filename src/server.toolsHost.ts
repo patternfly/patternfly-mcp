@@ -83,7 +83,7 @@ const serializeError = (errorValue: unknown) => {
 /**
  * Result of `normalizeCreatorSchema`.
  *
- * @property tool - The normalized tool creator function.
+ * @property tool - The realized tool tuple returned by the creator function.
  * @property normalizedSchema - Normalized input schema.
  * @property manifestSchema - JSON Schema representation of the normalized input schema.
  * @property warnings - List of warnings generated during normalization.
