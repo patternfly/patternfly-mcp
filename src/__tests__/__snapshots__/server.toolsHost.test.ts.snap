@@ -190,11 +190,88 @@ exports[`requestHello should send hello:ack message, with valid request 1`] = `
 ]
 `;
 
+exports[`requestInvoke should attempt tool invocation, handler attempting to return a DOMException-like object, with name, message and multiline line stack 1`] = `
+{
+  "error": "Internal error",
+  "id": "request-id",
+  "ok": false,
+  "t": "invoke:result",
+}
+`;
+
+exports[`requestInvoke should attempt tool invocation, handler attempting to return a browser-like ErrorEvent-like object, with name, message and multiline line stack 1`] = `
+{
+  "error": "Internal error",
+  "id": "request-id",
+  "ok": false,
+  "t": "invoke:result",
+}
+`;
+
+exports[`requestInvoke should attempt tool invocation, handler attempting to return an error-like object, with message 1`] = `
+{
+  "id": "request-id",
+  "ok": true,
+  "result": {
+    "message": "Handler error",
+  },
+  "t": "invoke:result",
+}
+`;
+
+exports[`requestInvoke should attempt tool invocation, handler attempting to return an error-like object, with name and multiline line stack 1`] = `
+{
+  "error": "Internal error",
+  "id": "request-id",
+  "ok": false,
+  "t": "invoke:result",
+}
+`;
+
+exports[`requestInvoke should attempt tool invocation, handler attempting to return an error-like object, with name and single line stack 1`] = `
+{
+  "error": "Internal error",
+  "id": "request-id",
+  "ok": false,
+  "t": "invoke:result",
+}
+`;
+
+exports[`requestInvoke should attempt tool invocation, handler attempting to return an error-like object, with single line stack 1`] = `
+{
+  "id": "request-id",
+  "ok": true,
+  "result": {
+    "message": "Handler error",
+    "stack": "Stack trace",
+  },
+  "t": "invoke:result",
+}
+`;
+
+exports[`requestInvoke should attempt tool invocation, handler returning AggregateError 1`] = `
+{
+  "error": "Internal error",
+  "id": "request-id",
+  "ok": false,
+  "t": "invoke:result",
+}
+`;
+
 exports[`requestInvoke should attempt tool invocation, handler returning error 1`] = `
 {
   "error": "Internal error",
   "id": "request-id",
   "ok": false,
+  "t": "invoke:result",
+}
+`;
+
+exports[`requestInvoke should attempt tool invocation, handler returning null 1`] = `
+{
+  "id": "request-id",
+  "ok": true,
+  "result": null,
   "t": "invoke:result",
 }
 `;
@@ -206,6 +283,15 @@ exports[`requestInvoke should attempt tool invocation, handler returning promise
   "result": {
     "data": "async-result",
   },
+  "t": "invoke:result",
+}
+`;
+
+exports[`requestInvoke should attempt tool invocation, handler returning undefined 1`] = `
+{
+  "id": "request-id",
+  "ok": true,
+  "result": undefined,
   "t": "invoke:result",
 }
 `;

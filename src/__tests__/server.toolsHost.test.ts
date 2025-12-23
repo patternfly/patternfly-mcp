@@ -183,6 +183,60 @@ describe('requestInvoke', () => {
       handlerResult: { data: 'result' },
       stateToolId: 'tool-1',
       requestToolId: 'tool-2'
+    },
+    {
+      description: 'handler returning AggregateError',
+      handlerResult: new AggregateError(['Handler error']),
+      stateToolId: 'tool-1',
+      requestToolId: 'tool-1'
+    },
+    {
+      description: 'handler attempting to return an error-like object, with message',
+      handlerResult: { message: 'Handler error' },
+      stateToolId: 'tool-1',
+      requestToolId: 'tool-1'
+    },
+    {
+      description: 'handler attempting to return an error-like object, with single line stack',
+      handlerResult: { message: 'Handler error', stack: 'Stack trace' },
+      stateToolId: 'tool-1',
+      requestToolId: 'tool-1'
+    },
+    {
+      description: 'handler attempting to return an error-like object, with name and single line stack',
+      handlerResult: { name: 'Mock ERROR', message: 'Handler error', stack: 'Stack trace' },
+      stateToolId: 'tool-1',
+      requestToolId: 'tool-1'
+    },
+    {
+      description: 'handler attempting to return an error-like object, with name and multiline line stack',
+      handlerResult: { name: 'Mock', message: 'Handler error', stack: 'Stack trace\nSecond line' },
+      stateToolId: 'tool-1',
+      requestToolId: 'tool-1'
+    },
+    {
+      description: 'handler attempting to return a DOMException-like object, with name, message and multiline line stack',
+      handlerResult: { name: 'DOMException', message: 'Handler error', stack: 'DOMException: message\n at line x' },
+      stateToolId: 'tool-1',
+      requestToolId: 'tool-1'
+    },
+    {
+      description: 'handler attempting to return a browser-like ErrorEvent-like object, with name, message and multiline line stack',
+      handlerResult: { name: 'ErrorEvent', message: 'Handler error', stack: 'ErrorEvent: message\n at line x' },
+      stateToolId: 'tool-1',
+      requestToolId: 'tool-1'
+    },
+    {
+      description: 'handler returning undefined',
+      handlerResult: undefined,
+      stateToolId: 'tool-1',
+      requestToolId: 'tool-1'
+    },
+    {
+      description: 'handler returning null',
+      handlerResult: null,
+      stateToolId: 'tool-1',
+      requestToolId: 'tool-1'
     }
   ])('should attempt tool invocation, $description', async ({ handlerResult, stateToolId, requestToolId }) => {
     const mockState = {

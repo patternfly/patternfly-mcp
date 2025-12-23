@@ -96,6 +96,45 @@ type NormalizeCreatorSchemaResult = {
 };
 
 /**
+ * Check if a value is an error or an error-like object.
+ *
+ * Handles cross‑realm Error detection via tag checks for `[object Error]`, `[object AggregateError]`,
+ * and `[object DOMException]`. Does not treat `[object ErrorEvent]` as error‑like in the
+ * Node context; add if your runtime can emit `ErrorEvent`.
+ *
+ * @param value
+ * @returns True if the value is an error-like object, false otherwise.
+ */
+const isErrorLike = (value: unknown) => {
+  if (!value || (typeof value !== 'object' && typeof value !== 'function')) {
+    return false;
+  }
+
+  if (value instanceof Error || value instanceof AggregateError) {
+    return true;
+  }
+
+  const tag = Object.prototype.toString.call(value);
+
+  if (tag === '[object Error]' || tag === '[object AggregateError]' || tag === '[object DOMException]') {
+    return true;
+  }
+
+  const val = value as Record<string, unknown>;
+  const has = (key: string) =>
+    Object.hasOwn(val, key) && typeof val[key] === 'string' && val[key].length > 0;
+
+  if (!has('message')) {
+    return false;
+  }
+
+  const isNameLike = has('name') && (val.name as string).toLowerCase().endsWith('error');
+  const isStackLike = has('stack') && (val.stack as string).includes('\n');
+
+  return isNameLike || isStackLike;
+};
+
+/**
  * Normalize a tool creator function and its input schema.
  *
  * @param creator
@@ -325,7 +364,8 @@ const requestInvoke = async (state: HostState, request: InvokeRequest) => {
     // Invoke the tool
     const result = await Promise.resolve(handler(updatedRequestArgs));
 
-    if (result instanceof Error) {
+    // Some handlers may mistakenly return an Error instance instead of throwing. Normalize it to a failure.
+    if (isErrorLike(result)) {
       const err: SerializedError = new Error('Internal error', { cause: { details: result } });
 
       err.code = 'INTERNAL_ERROR';
