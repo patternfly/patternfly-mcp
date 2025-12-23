@@ -439,3 +439,42 @@ exports[`PatternFly MCP, STDIO should expose expected tools and stable shape 1`]
   ],
 }
 `;
+
+exports[`Tools should access a new tool 1`] = `
+[
+  "[INFO]: Server logging enabled.
+",
+  "[INFO]: Registered tool: usePatternFlyDocs
+",
+  "[INFO]: Registered tool: fetchDocs
+",
+  "[INFO]: Registered tool: componentSchemas
+",
+  "[INFO]: Registered tool: echo_plugin_tool
+",
+  "[INFO]: @patternfly/patternfly-mcp server running on stdio transport
+",
+]
+`;
+
+exports[`Tools should interact with the new tool 1`] = `
+{
+  "args": {
+    "dolor": "sit amet",
+    "lorem": "ipsum",
+    "type": "echo",
+  },
+  "content": [
+    {
+      "text": "{"type":"echo","lorem":"ipsum","dolor":"sit amet"}",
+      "type": "text",
+    },
+  ],
+  "options": {
+    "nodeMajor": 22,
+    "repoName": "patternfly-mcp",
+    "serverName": "@patternfly/patternfly-mcp",
+    "serverVersion": "0.4.0",
+  },
+}
+`;

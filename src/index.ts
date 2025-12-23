@@ -8,11 +8,12 @@ import {
   type ServerOnLogHandler,
   type ServerLogEvent
 } from './server';
+import { createMcpTool, type ToolCreator, type ToolModule, type ToolConfig, type MultiToolConfig } from './server.toolsUser';
+// import { type ToolOptions } from './options.tools';
+// import { createMcpTool, type ToolCreator, type ToolConfig, type MultiToolConfig } from './server.toolsUser';
 
 /**
  * Options for "programmatic" use. Extends the `DefaultOptions` interface.
- *
- * @interface
  *
  * @property {('cli' | 'programmatic' | 'test')} [mode] - Optional string property that specifies the mode of operation.
  *     Defaults to `'programmatic'`.
@@ -36,12 +37,40 @@ type PfMcpOptions = DefaultOptionsOverrides & {
 type PfMcpSettings = Pick<ServerSettings, 'allowProcessExit'>;
 
 /**
- * Main function - CLI entry point with optional programmatic overrides
+ * Server instance with shutdown capability
+ *
+ * @alias ServerInstance
+ */
+type PfMcpInstance = ServerInstance;
+
+/**
+ * Subscribes a handler function, `PfMcpOnLogHandler`, to server logs. Automatically unsubscribed on server shutdown.
+ *
+ * @alias ServerOnLog
+ */
+type PfMcpOnLog = ServerOnLog;
+
+/**
+ * The handler function passed by `onLog`, `PfMcpOnLog`, to subscribe to server logs. Automatically unsubscribed on server shutdown.
+ *
+ * @alias ServerOnLogHandler
+ */
+type PfMcpOnLogHandler = ServerOnLogHandler;
+
+/**
+ * The log event passed to the `onLog` handler, `PfMcpOnLogHandler`.
+ *
+ * @alias ServerLogEvent
+ */
+type PfMcpLogEvent = ServerLogEvent;
+
+/**
+ * Main function - Programmatic and CLI entry point with optional overrides
  *
  * @param [pfMcpOptions] - User configurable options
  * @param [pfMcpSettings] - MCP server settings
  *
- * @returns {Promise<ServerInstance>} Server-instance with shutdown capability
+ * @returns {Promise<PfMcpInstance>} Server-instance with shutdown capability
  *
  * @throws {Error} If the server fails to start or any error occurs during initialization,
  *     and `allowProcessExit` is set to `false`, the error will be thrown rather than exiting
@@ -50,7 +79,7 @@ type PfMcpSettings = Pick<ServerSettings, 'allowProcessExit'>;
 const main = async (
   pfMcpOptions: PfMcpOptions = {},
   pfMcpSettings: PfMcpSettings = {}
-): Promise<ServerInstance> => {
+): Promise<PfMcpInstance> => {
   const { mode, ...options } = pfMcpOptions;
   const { allowProcessExit } = pfMcpSettings;
 
@@ -65,8 +94,10 @@ const main = async (
 
     // use runWithSession to enable session in listeners
     return await runWithSession(session, async () =>
-      // `runServer` doesn't require it, but `memo` does for "uniqueness", pass in the merged options for a hashable argument
-      runServer.memo(mergedOptions, { allowProcessExit: updatedAllowProcessExit }));
+      // `runServer` doesn't require options in the memo key, but we pass fully-merged options for stable hashing
+      await runServer.memo(mergedOptions, {
+        allowProcessExit: updatedAllowProcessExit
+      }));
   } catch (error) {
     console.error('Failed to start server:', error);
 
@@ -79,13 +110,18 @@ const main = async (
 };
 
 export {
+  createMcpTool,
   main,
   main as start,
   type CliOptions,
   type PfMcpOptions,
   type PfMcpSettings,
-  type ServerInstance,
-  type ServerLogEvent,
-  type ServerOnLog,
-  type ServerOnLogHandler
+  type PfMcpInstance,
+  type PfMcpLogEvent,
+  type PfMcpOnLog,
+  type PfMcpOnLogHandler,
+  type ToolCreator,
+  type ToolModule,
+  type ToolConfig,
+  type MultiToolConfig
 };

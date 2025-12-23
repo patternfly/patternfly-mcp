@@ -17,6 +17,8 @@ exports[`parseCliOptions should attempt to parse args with --allowed-hosts 1`] =
     "stderr": false,
     "transport": "stdio",
   },
+  "pluginIsolation": undefined,
+  "toolModules": [],
 }
 `;
 
@@ -37,6 +39,8 @@ exports[`parseCliOptions should attempt to parse args with --allowed-origins 1`]
     "stderr": false,
     "transport": "stdio",
   },
+  "pluginIsolation": undefined,
+  "toolModules": [],
 }
 `;
 
@@ -52,6 +56,8 @@ exports[`parseCliOptions should attempt to parse args with --docs-host flag 1`] 
     "stderr": false,
     "transport": "stdio",
   },
+  "pluginIsolation": undefined,
+  "toolModules": [],
 }
 `;
 
@@ -69,6 +75,8 @@ exports[`parseCliOptions should attempt to parse args with --http and --host 1`]
     "stderr": false,
     "transport": "stdio",
   },
+  "pluginIsolation": undefined,
+  "toolModules": [],
 }
 `;
 
@@ -86,6 +94,8 @@ exports[`parseCliOptions should attempt to parse args with --http and --port 1`]
     "stderr": false,
     "transport": "stdio",
   },
+  "pluginIsolation": undefined,
+  "toolModules": [],
 }
 `;
 
@@ -101,6 +111,8 @@ exports[`parseCliOptions should attempt to parse args with --http and invalid --
     "stderr": false,
     "transport": "stdio",
   },
+  "pluginIsolation": undefined,
+  "toolModules": [],
 }
 `;
 
@@ -116,6 +128,8 @@ exports[`parseCliOptions should attempt to parse args with --http flag 1`] = `
     "stderr": false,
     "transport": "stdio",
   },
+  "pluginIsolation": undefined,
+  "toolModules": [],
 }
 `;
 
@@ -131,6 +145,8 @@ exports[`parseCliOptions should attempt to parse args with --log-level flag 1`] 
     "stderr": false,
     "transport": "stdio",
   },
+  "pluginIsolation": undefined,
+  "toolModules": [],
 }
 `;
 
@@ -146,6 +162,8 @@ exports[`parseCliOptions should attempt to parse args with --log-stderr flag and
     "stderr": true,
     "transport": "stdio",
   },
+  "pluginIsolation": undefined,
+  "toolModules": [],
 }
 `;
 
@@ -161,6 +179,8 @@ exports[`parseCliOptions should attempt to parse args with --verbose flag 1`] = 
     "stderr": false,
     "transport": "stdio",
   },
+  "pluginIsolation": undefined,
+  "toolModules": [],
 }
 `;
 
@@ -176,6 +196,8 @@ exports[`parseCliOptions should attempt to parse args with --verbose flag and --
     "stderr": false,
     "transport": "stdio",
   },
+  "pluginIsolation": undefined,
+  "toolModules": [],
 }
 `;
 
@@ -191,6 +213,8 @@ exports[`parseCliOptions should attempt to parse args with other arguments 1`] =
     "stderr": false,
     "transport": "stdio",
   },
+  "pluginIsolation": undefined,
+  "toolModules": [],
 }
 `;
 
@@ -206,5 +230,7 @@ exports[`parseCliOptions should attempt to parse args without --docs-host flag 1
     "stderr": false,
     "transport": "stdio",
   },
+  "pluginIsolation": undefined,
+  "toolModules": [],
 }
 `;

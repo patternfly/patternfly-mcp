@@ -7,6 +7,7 @@ import { startHttpTransport, type HttpServerHandle } from './server.http';
 import { memo } from './server.caching';
 import { log, type LogEvent } from './logger';
 import { createServerLogger } from './server.logger';
+import { composeTools, sendToolsHostShutdown } from './server.tools';
 import { type GlobalOptions } from './options';
 import {
   getOptions,
@@ -129,6 +130,10 @@ const runServer = async (options: ServerOptions = getOptions(), {
       await server?.close();
       running = false;
 
+      try {
+        await sendToolsHostShutdown();
+      } catch {}
+
       log.info(`${options.name} closed!\n`);
       unsubscribeServerLogger?.();
 
@@ -167,6 +172,9 @@ const runServer = async (options: ServerOptions = getOptions(), {
       );
     }
 
+    // Combine built-in tools with custom ones after logging is set up.
+    const updatedTools = await composeTools(tools);
+
     if (subUnsub) {
       const { subscribe, unsubscribe } = subUnsub;
 
@@ -177,7 +185,7 @@ const runServer = async (options: ServerOptions = getOptions(), {
       onLogSetup = (handler: ServerOnLogHandler) => subscribe(handler);
     }
 
-    tools.forEach(toolCreator => {
+    updatedTools.forEach(toolCreator => {
       const [name, schema, callback] = toolCreator(options);
       // Do NOT normalize schemas here. This is by design and is a fallback check for malformed schemas.
       const isZod = isZodSchema(schema?.inputSchema) || isZodRawShape(schema?.inputSchema);
@@ -291,6 +299,10 @@ runServer.memo = memo(
               // Avoid engaging the contextual log channel on rollout.
               console.error(`Error stopping server: ${error}`);
             }
+
+            try {
+              await sendToolsHostShutdown();
+            } catch {}
           }
         } else {
           // Avoid engaging the contextual log channel on rollout.

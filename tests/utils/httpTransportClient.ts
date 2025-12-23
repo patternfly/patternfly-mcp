@@ -16,6 +16,7 @@ export type StartHttpServerOptions = {
   http?: Partial<PfMcpOptions['http']>;
   isHttp?: boolean;
   logging?: Partial<PfMcpOptions['logging']> & { level?: LoggingLevel };
+  toolModules?: PfMcpOptions['toolModules'];
 };
 
 export type StartHttpServerSettings = PfMcpSettings;

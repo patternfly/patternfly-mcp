@@ -20,6 +20,7 @@
     "exactOptionalPropertyTypes": true,
     "resolveJsonModule": true,
     "noEmit": true,
+    "stripInternal": true,
     "rootDirs": ["./src", "./tests"]
   },
   "include": [

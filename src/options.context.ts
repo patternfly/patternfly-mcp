@@ -67,6 +67,12 @@ const optionsContext = new AsyncLocalStorage<GlobalOptions>();
 const setOptions = (options?: DefaultOptionsOverrides): GlobalOptions => {
   const base = mergeObjects(DEFAULT_OPTIONS, options, { allowNullValues: false, allowUndefinedValues: false });
   const baseLogging = isPlainObject(base.logging) ? base.logging : DEFAULT_OPTIONS.logging;
+
+  // We handle plugin isolation here to account for both CLI and programmatic usage.
+  const requestedPluginIsolation = options?.pluginIsolation;
+  const defaultPluginIsolation = Array.isArray(base.toolModules) && base.toolModules.length > 0 ? 'strict' : 'none';
+  const pluginIsolation = requestedPluginIsolation ?? defaultPluginIsolation;
+
   const merged: GlobalOptions = {
     ...base,
     logging: {
@@ -76,11 +82,21 @@ const setOptions = (options?: DefaultOptionsOverrides): GlobalOptions => {
       protocol: baseLogging.protocol,
       transport: baseLogging.transport
     },
+    pluginIsolation,
     resourceMemoOptions: DEFAULT_OPTIONS.resourceMemoOptions,
     toolMemoOptions: DEFAULT_OPTIONS.toolMemoOptions
   };
 
-  const frozen = freezeObject(structuredClone(merged));
+  // AFTER
+  const originalToolModules = Array.isArray(merged.toolModules) ? merged.toolModules : [];
+
+  // Avoid cloning functions in toolModules
+  const mergedCloneSafe = { ...merged, toolModules: [] as unknown[] };
+  const cloned = structuredClone(mergedCloneSafe);
+
+  // Restore the non‑cloneable array reference
+  const restored: GlobalOptions = { ...cloned, toolModules: originalToolModules } as GlobalOptions;
+  const frozen = freezeObject(restored);
 
   optionsContext.enterWith(frozen);
 
@@ -123,7 +139,11 @@ const runWithOptions = async <TReturn>(
   options: GlobalOptions,
   callback: () => TReturn | Promise<TReturn>
 ) => {
-  const frozen = freezeObject(structuredClone(options));
+  const originalToolModules = Array.isArray((options as any).toolModules) ? (options as any).toolModules : [];
+  const optionsCloneSafe = { ...(options as any), toolModules: [] as unknown[] };
+  const cloned = structuredClone(optionsCloneSafe);
+  const restored = { ...cloned, toolModules: originalToolModules } as GlobalOptions;
+  const frozen = freezeObject(restored);
 
   return optionsContext.run(frozen, callback);
 };
