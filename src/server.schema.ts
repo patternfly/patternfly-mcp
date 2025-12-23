@@ -18,7 +18,7 @@ const isZodSchema = (value: unknown): boolean => {
   const obj = value as Record<string, unknown>;
 
   // Guard for property presence
-  const has = (key: string) => Object.prototype.hasOwnProperty.call(obj, key);
+  const has = (key: string) => Object.hasOwn(obj, key);
   const isFunc = (func: unknown) => typeof func === 'function';
 
   // Zod v4 detection: branded internals at `_zod`. In v4, `_zod` is an object
@@ -72,7 +72,8 @@ const isZodRawShape = (value: unknown): boolean => {
  * @param jsonSchema - Plain JSON Schema object
  * @param settings - Optional settings
  * @param settings.failFast - Fail fast on unsupported types, or be nice and attempt to convert. Defaults to true.
- * @returns Zod schema equivalent
+ * @returns A Zod schema when convertible, returns undefined when failFast and input are unsupported, or falls back
+ *     to z.any() when failFast `false`
  */
 const jsonSchemaToZod = (
   jsonSchema: unknown,

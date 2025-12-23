@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`resolveExternalCreators should return a normalized module output with expected properties: normalized 1`] = `
+[
+  "Tool1",
+  {
+    "description": "Tool 1",
+    "inputSchema": "[object Object] isZod = true",
+  },
+  [MockFunction],
+]
+`;
