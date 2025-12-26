@@ -81,7 +81,25 @@ export default [
       }],
       'n/no-process-exit': 0,
       // Disallow console.log/info in runtime to protect STDIO; allow warn/error
-      'no-console': ['error', { allow: ['warn', 'error'] }]
+      'no-console': ['error', { allow: ['warn', 'error'] }],
+      // Custom syntax rules
+      'no-restricted-syntax': [
+        'error',
+        {
+          // Disallow rest parameters in a property named `keyHash`
+          selector:
+            "Property[key.name='keyHash'] > :matches(FunctionExpression, ArrowFunctionExpression) > RestElement",
+          message:
+            'keyHash must accept a single array parameter (args). Do not use rest params (...args).'
+        },
+        {
+          // Also catch when `keyHash` lives in a CallExpression options object (e.g., memo(fn, { keyHash() {} }))
+          selector:
+            "CallExpression > ObjectExpression > Property[key.name='keyHash'] > :matches(FunctionExpression, ArrowFunctionExpression) > RestElement",
+          message:
+            'keyHash must accept a single array parameter (args). Do not use rest params (...args).'
+        }
+      ]
     }
   },
   {

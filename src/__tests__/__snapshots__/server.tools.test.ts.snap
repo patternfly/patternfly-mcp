@@ -1,0 +1,392 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`debugChild should attempt to highlight specific messages, access denied 1`] = `
+{
+  "debug": [],
+  "warn": [
+    [
+      "Error [ERR_ACCESS_DENIED]: Access denied: FileSystemRead, resource: /lorem/ipsum/dolor/sit/amet
+Tools Host denied fs read. In strict mode, add the resource's directory to --allow-fs-read.
+Optionally, you can disable strict mode entirely with pluginIsolation: 'none'.",
+    ],
+  ],
+}
+`;
+
+exports[`debugChild should attempt to highlight specific messages, access denied, alt messaging 1`] = `
+{
+  "debug": [],
+  "warn": [
+    [
+      "Error [ERR_ACCESS_DENIED]: fs.readFileSync access is denied by permission model: FileSystemRead, resource: /lorem/ipsum/dolor/sit/amet
+Tools Host denied fs read. In strict mode, add the resource's directory to --allow-fs-read.
+Optionally, you can disable strict mode entirely with pluginIsolation: 'none'.",
+    ],
+    [
+      "Error [ERR_ACCESS_DENIED]: Access denied: FileSystemRead, resource: /lorem/ipsum/dolor/sit/amet
+Tools Host denied fs read. In strict mode, add the resource's directory to --allow-fs-read.
+Optionally, you can disable strict mode entirely with pluginIsolation: 'none'.",
+    ],
+  ],
+}
+`;
+
+exports[`debugChild should attempt to highlight specific messages, access denied, multiple lines 1`] = `
+{
+  "debug": [
+    [
+      "[tools-host pid=123 sid=1234567890] Error [ERR_ACCESS_DENIED]: Access denied: FileSystemRead, resource: /lorem/ipsum/dolor/sit/amet",
+    ],
+  ],
+  "warn": [
+    [
+      "Error [ERR_ACCESS_DENIED]: Access denied: FileSystemRead, resource: /lorem/ipsum/dolor/sit/amet
+Tools Host denied fs read. In strict mode, add the resource's directory to --allow-fs-read.
+Optionally, you can disable strict mode entirely with pluginIsolation: 'none'.",
+    ],
+  ],
+}
+`;
+
+exports[`debugChild should attempt to highlight specific messages, default 1`] = `
+{
+  "debug": [
+    [
+      "[tools-host pid=123 sid=1234567890] lorem ipsum dolor sit amet",
+    ],
+  ],
+  "warn": [],
+}
+`;
+
+exports[`debugChild should attempt to highlight specific messages, empty string 1`] = `
+{
+  "debug": [],
+  "warn": [],
+}
+`;
+
+exports[`debugChild should attempt to highlight specific messages, generic multiline error 1`] = `
+{
+  "debug": [
+    [
+      "[tools-host pid=123 sid=1234567890] Lorem ipsum",
+    ],
+    [
+      "[tools-host pid=123 sid=1234567890] dolor sit",
+    ],
+    [
+      "[tools-host pid=123 sid=1234567890] amet",
+    ],
+  ],
+  "warn": [],
+}
+`;
+
+exports[`debugChild should attempt to highlight specific messages, generic multiline error with spaces 1`] = `
+{
+  "debug": [
+    [
+      "[tools-host pid=123 sid=1234567890] Lorem ipsum",
+    ],
+    [
+      "[tools-host pid=123 sid=1234567890] dolor sit",
+    ],
+    [
+      "[tools-host pid=123 sid=1234567890] amet",
+    ],
+  ],
+  "warn": [],
+}
+`;
+
+exports[`debugChild should attempt to highlight specific messages, module not found 1`] = `
+{
+  "debug": [],
+  "warn": [
+    [
+      "Tools Host import error. Ensure external tools are ESM (no raw .ts) and resolvable.
+For local files, prefer a file:// URL.",
+    ],
+  ],
+}
+`;
+
+exports[`debugChild should attempt to highlight specific messages, module not found, multiple lines 1`] = `
+{
+  "debug": [
+    [
+      "[tools-host pid=123 sid=1234567890] Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/lorem/ipsum/dolor/sit/amet' imported from /test/path",
+    ],
+  ],
+  "warn": [
+    [
+      "Tools Host import error. Ensure external tools are ESM (no raw .ts) and resolvable.
+For local files, prefer a file:// URL.",
+    ],
+  ],
+}
+`;
+
+exports[`getFilePackageToolModules, should return filtered tool modules 1`] = `
+[
+  "@scope/pkg",
+  "file:///test/module.js",
+  "http://example.com/module.js",
+  "https://example.com/module.js",
+]
+`;
+
+exports[`logWarningsErrors should log warnings and errors, with both warnings and errors 1`] = `
+[
+  [
+    "Tools load warnings (1)
+  - Warning 1",
+  ],
+  [
+    "Tools load errors (1)
+  - Error 1",
+  ],
+]
+`;
+
+exports[`logWarningsErrors should log warnings and errors, with empty arrays 1`] = `[]`;
+
+exports[`logWarningsErrors should log warnings and errors, with errors only 1`] = `
+[
+  [
+    "Tools load errors (2)
+  - Error 1
+  - Error 2",
+  ],
+]
+`;
+
+exports[`logWarningsErrors should log warnings and errors, with single error 1`] = `
+[
+  [
+    "Tools load errors (1)
+  - Single error",
+  ],
+]
+`;
+
+exports[`logWarningsErrors should log warnings and errors, with single warning 1`] = `
+[
+  [
+    "Tools load warnings (1)
+  - Single warning",
+  ],
+]
+`;
+
+exports[`logWarningsErrors should log warnings and errors, with undefined warnings and errors 1`] = `[]`;
+
+exports[`logWarningsErrors should log warnings and errors, with warnings only 1`] = `
+[
+  [
+    "Tools load warnings (2)
+  - Warning 1
+  - Warning 2",
+  ],
+]
+`;
+
+exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false with error: handler 1`] = `[Error: Error message]`;
+
+exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false with error: send 1`] = `
+[
+  [
+    undefined,
+    {
+      "args": {
+        "loremIpsum": 7,
+      },
+      "id": "id-1",
+      "t": "invoke",
+      "toolId": "loremIpsum",
+    },
+  ],
+]
+`;
+
+exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false with full error: handler 1`] = `[Error: Error message]`;
+
+exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false with full error: send 1`] = `
+[
+  [
+    undefined,
+    {
+      "args": {
+        "loremIpsum": 7,
+      },
+      "id": "id-1",
+      "t": "invoke",
+      "toolId": "loremIpsum",
+    },
+  ],
+]
+`;
+
+exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false: handler 1`] = `[Error: Tool invocation failed]`;
+
+exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false: send 1`] = `
+[
+  [
+    undefined,
+    {
+      "args": {
+        "loremIpsum": 7,
+      },
+      "id": "id-1",
+      "t": "invoke",
+      "toolId": "loremIpsum",
+    },
+  ],
+]
+`;
+
+exports[`makeProxyCreators should attempt to return proxy creators, a function wrapper per tool, basic 1`] = `
+{
+  "debug": [],
+  "output": [
+    [
+      "Lorem Ipsum",
+      {
+        "description": "Lorem ipsum dolor sit amet",
+        "inputSchema": "isZod = true",
+      },
+      [Function],
+    ],
+  ],
+}
+`;
+
+exports[`makeProxyCreators should attempt to return proxy creators, a function wrapper per tool, no tools 1`] = `
+{
+  "debug": [],
+  "output": [],
+}
+`;
+
+exports[`makeProxyCreators should attempt to return proxy creators, a function wrapper per tool, null JSON input schema 1`] = `
+{
+  "debug": [
+    [
+      "Tool "Lorem Ipsum" from unknown source failed strict JSON to Zod reconstruction.",
+      "Using fallback best-effort schema. Review the tool's inputSchema and ensure it is a valid JSON or Zod schema.",
+      "[ZOD_SCHEMA: defined: true]",
+    ],
+  ],
+  "output": [
+    [
+      "Lorem Ipsum",
+      {
+        "description": "Lorem ipsum dolor sit amet",
+        "inputSchema": "isZod = true",
+      },
+      [Function],
+    ],
+  ],
+}
+`;
+
+exports[`makeProxyCreators should attempt to return proxy creators, a function wrapper per tool, undefined JSON input schema 1`] = `
+{
+  "debug": [
+    [
+      "Tool "Lorem Ipsum" from unknown source failed strict JSON to Zod reconstruction.",
+      "Using fallback best-effort schema. Review the tool's inputSchema and ensure it is a valid JSON or Zod schema.",
+      "[ZOD_SCHEMA: defined: true]",
+    ],
+  ],
+  "output": [
+    [
+      "Lorem Ipsum",
+      {
+        "description": "Lorem ipsum dolor sit amet",
+        "inputSchema": "isZod = true",
+      },
+      [Function],
+    ],
+  ],
+}
+`;
+
+exports[`spawnToolsHost attempt to spawn the Tools Host, with no pluginIsolation, node 24: spawn 1`] = `
+{
+  "spawn": [
+    [
+      "/mock/path/to/toolsHost.js",
+    ],
+    {
+      "stdio": [
+        "ignore",
+        "pipe",
+        "pipe",
+        "ipc",
+      ],
+    },
+  ],
+}
+`;
+
+exports[`spawnToolsHost attempt to spawn the Tools Host, with strict pluginIsolation, node 22: spawn 1`] = `
+{
+  "spawn": [
+    [
+      "--experimental-permission",
+      "--allow-fs-read=/",
+      "--allow-fs-read=/mock/path/to",
+      "/mock/path/to/toolsHost.js",
+    ],
+    {
+      "stdio": [
+        "ignore",
+        "pipe",
+        "pipe",
+        "ipc",
+      ],
+    },
+  ],
+}
+`;
+
+exports[`spawnToolsHost attempt to spawn the Tools Host, with strict pluginIsolation, node 24: spawn 1`] = `
+{
+  "spawn": [
+    [
+      "--permission",
+      "--allow-fs-read=/",
+      "--allow-fs-read=/mock/path/to",
+      "/mock/path/to/toolsHost.js",
+    ],
+    {
+      "stdio": [
+        "ignore",
+        "pipe",
+        "pipe",
+        "ipc",
+      ],
+    },
+  ],
+}
+`;
+
+exports[`spawnToolsHost attempt to spawn the Tools Host, with undefined pluginIsolation, node 22: spawn 1`] = `
+{
+  "spawn": [
+    [
+      "/mock/path/to/toolsHost.js",
+    ],
+    {
+      "stdio": [
+        "ignore",
+        "pipe",
+        "pipe",
+        "ipc",
+      ],
+    },
+  ],
+}
+`;
