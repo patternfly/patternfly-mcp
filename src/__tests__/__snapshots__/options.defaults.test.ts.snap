@@ -37,6 +37,7 @@ exports[`options defaults should return specific properties: defaults 1`] = `
     "invokeTimeoutMs": 10000,
     "loadTimeoutMs": 5000,
   },
+  "pluginIsolation": "none",
   "repoName": "patternfly-mcp",
   "resourceMemoOptions": {
     "default": {
@@ -70,6 +71,7 @@ exports[`options defaults should return specific properties: defaults 1`] = `
       "expire": 60000,
     },
   },
+  "toolModules": [],
   "urlRegex": /\\^\\(https\\?:\\)\\\\/\\\\//i,
   "version": "0.0.0",
 }

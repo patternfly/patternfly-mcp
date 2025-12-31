@@ -60,12 +60,12 @@ type MemoDebugHandler<TReturn = unknown> = (info: { type: string; value: unknown
  * @property {OnMemoCacheHandler<TReturn>} [onCacheExpire] Callback when cache expires. Only fires when the `expire` option is set.
  * @property {OnMemoCacheHandler<TReturn>} [onCacheRollout] Callback when cache entries are rolled off due to cache limit.
  */
-interface MemoOptions<TReturn = unknown> {
+interface MemoOptions<TArgs extends unknown[] = unknown[], TReturn = unknown> {
   cacheErrors?: boolean;
   cacheLimit?: number;
   debug?: MemoDebugHandler<TReturn>;
   expire?: number;
-  keyHash?: (args: unknown[]) => unknown;
+  keyHash?: (args: Readonly<TArgs>, ..._forbidRest: never[]) => unknown;
   onCacheExpire?: OnMemoCacheHandler<TReturn>;
   onCacheRollout?: OnMemoCacheHandler<TReturn>;
 }
@@ -98,7 +98,7 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
     keyHash = generateHash,
     onCacheExpire,
     onCacheRollout
-  }: MemoOptions<TReturn> = {}
+  }: MemoOptions<TArgs, TReturn> = {}
 ): (...args: TArgs) => TReturn => {
   const isCacheErrors = Boolean(cacheErrors);
   const isFuncPromise = isPromise(func);
@@ -107,7 +107,7 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
   const isOnCacheRolloutPromise = isPromise(onCacheRollout);
   const isOnCacheRollout = typeof onCacheRollout === 'function' || isOnCacheRolloutPromise;
   const updatedExpire = Number.parseInt(String(expire), 10) || undefined;
-  const setKey = function (value: unknown[]): unknown {
+  const setKey = function (value: TArgs): unknown {
     return keyHash.call(null, value);
   };
 

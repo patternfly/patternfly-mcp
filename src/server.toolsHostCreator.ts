@@ -1,8 +1,28 @@
 import { type McpTool, type McpToolCreator } from './server';
 
 /**
+ * Apply a static property to an object.
+ *
+ * @private
+ * @param property - Name of the property to apply
+ * @param value - Value of the property to apply
+ * @param obj - Object to apply the property towards
+ * @returns `true` if the property was applied successfully, `false` otherwise.
+ */
+const applyStaticProperty = (property: string, value: unknown, obj: unknown) => {
+  try {
+    Object.defineProperty(obj, property, { value, writable: false, enumerable: false, configurable: false });
+  } catch {
+    return false;
+  }
+
+  return true;
+};
+
+/**
  * Guard for an array of creators. File-scoped helper.
  *
+ * @private
  * @param value
  * @returns `true` if value is an array of functions.
  */
@@ -12,6 +32,7 @@ const isCreatorsArray = (value: unknown): value is McpToolCreator[] =>
 /**
  * Guard for tool tuple. File-scoped helper.
  *
+ * @private
  * @param value
  * @returns `true` if value is a tool tuple.
  */
@@ -25,13 +46,14 @@ const isRealizedToolTuple = (value: unknown): value is McpTool =>
  * Wrap a realized tool tuple in a creator function that returns the tuple itself.
  * File-scoped helper.
  *
+ * @private
  * @param cached
  * @returns A normalized creator function that returns the cached tool tuple.
  */
 const wrapCachedTuple = (cached: McpTool): McpToolCreator & { toolName: string } => {
   const wrapped: McpToolCreator = () => cached;
 
-  (wrapped as any).toolName = cached[0];
+  applyStaticProperty('toolName', cached[0], wrapped);
 
   return wrapped as McpToolCreator & { toolName: string };
 };

@@ -1,6 +1,7 @@
 import { basename, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import packageJson from '../package.json';
+import { type ToolModule } from './server.toolsUser';
 
 /**
  * Application defaults, not all fields are user-configurable
@@ -18,6 +19,7 @@ import packageJson from '../package.json';
  * @property {LoggingOptions} logging - Logging options.
  * @property name - Name of the package.
  * @property nodeVersion - Node.js major version.
+ * @property pluginIsolation - Isolation preset for external plugins.
  * @property {PluginHostOptions} pluginHost - Plugin host options.
  * @property repoName - Name of the repository.
  * @property pfExternal - PatternFly external docs URL.
@@ -31,6 +33,8 @@ import packageJson from '../package.json';
  * @property pfExternalAccessibility - PatternFly accessibility URL.
  * @property {typeof RESOURCE_MEMO_OPTIONS} resourceMemoOptions - Resource-level memoization options.
  * @property {typeof TOOL_MEMO_OPTIONS} toolMemoOptions - Tool-specific memoization options.
+ * @property {ToolModule|ToolModule[]} toolModules - Array of external tool modules (ESM specs or paths) to be loaded and
+ *     registered with the server.
  * @property separator - Default string delimiter.
  * @property urlRegex - Regular expression pattern for URL matching.
  * @property version - Version of the package.
@@ -46,6 +50,7 @@ interface DefaultOptions<TLogOptions = LoggingOptions> {
   logging: TLogOptions;
   name: string;
   nodeVersion: number;
+  pluginIsolation: 'none' | 'strict';
   pluginHost: PluginHostOptions;
   pfExternal: string;
   pfExternalDesignComponents: string;
@@ -60,6 +65,7 @@ interface DefaultOptions<TLogOptions = LoggingOptions> {
   resourceMemoOptions: Partial<typeof RESOURCE_MEMO_OPTIONS>;
   separator: string;
   toolMemoOptions: Partial<typeof TOOL_MEMO_OPTIONS>;
+  toolModules: ToolModule | ToolModule[];
   urlRegex: RegExp;
   version: string;
 }
@@ -68,10 +74,12 @@ interface DefaultOptions<TLogOptions = LoggingOptions> {
  * Overrides for default options.
  */
 type DefaultOptionsOverrides = Partial<
-  Omit<DefaultOptions, 'http' | 'logging'>
+  Omit<DefaultOptions, 'http' | 'logging' | 'pluginIsolation' | 'toolModules'>
 > & {
   http?: Partial<HttpOptions>;
   logging?: Partial<LoggingOptions>;
+  pluginIsolation?: 'none' | 'strict' | undefined;
+  toolModules?: ToolModule | ToolModule[] | undefined;
 };
 
 /**
@@ -114,6 +122,19 @@ interface HttpOptions {
   host: string;
   allowedOrigins: string[];
   allowedHosts: string[];
+}
+
+/**
+ * Tools Host options (pure data). Centralized defaults live here.
+ *
+ * @property loadTimeoutMs Timeout for child spawn + hello/load/manifest (ms).
+ * @property invokeTimeoutMs Timeout per external tool invocation (ms).
+ * @property gracePeriodMs Grace period for external tool invocations (ms).
+ */
+interface PluginHostOptions {
+  loadTimeoutMs: number;
+  invokeTimeoutMs: number;
+  gracePeriodMs: number;
 }
 
 /**
@@ -315,6 +336,7 @@ const DEFAULT_OPTIONS: DefaultOptions = {
   logging: LOGGING_OPTIONS,
   name: packageJson.name,
   nodeVersion: (process.env.NODE_ENV === 'local' && 22) || getNodeMajorVersion(),
+  pluginIsolation: 'none',
   pluginHost: PLUGIN_HOST_OPTIONS,
   pfExternal: PF_EXTERNAL,
   pfExternalDesignComponents: PF_EXTERNAL_DESIGN_COMPONENTS,
@@ -328,6 +350,7 @@ const DEFAULT_OPTIONS: DefaultOptions = {
   resourceMemoOptions: RESOURCE_MEMO_OPTIONS,
   repoName: basename(process.cwd() || '').trim(),
   toolMemoOptions: TOOL_MEMO_OPTIONS,
+  toolModules: [],
   separator: DEFAULT_SEPARATOR,
   urlRegex: URL_REGEX,
   version: (process.env.NODE_ENV === 'local' && '0.0.0') || packageJson.version

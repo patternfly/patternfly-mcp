@@ -26,13 +26,22 @@ const isPlainObject = (obj: unknown): obj is Record<string, unknown> => {
 };
 
 /**
+ * Is value reference-like? Exclude null and primitives.
+ *
+ * @param value
+ * @returns - `true` if value is reference-like, object or function.
+ */
+const isReferenceLike = (value: unknown) =>
+  value !== null && (typeof value === 'object' || typeof value === 'function');
+
+/**
  * Merge two objects recursively, then return a new object, deep merge.
  *
  * Only recurses into plain objects. Arrays and non-plain objects are replaced, not merged.
  * Prototype-pollution keys are ignored.
  *
  * @param baseObj - Base object to merge into
- * @param sourceObj - Source object to merge from. Source may be `undefined` or `any` value; `non‑plain objects` are ignored, and the
+ * @param sourceObj - Source object to merge from. Source may be `undefined` or `any` value; `non-plain objects` are ignored, and the
  *     base is returned cloned.
  * @param [options] - Merge options
  * @param [options.allowNullValues] - If `true`, `null` values in `sourceObj` will overwrite `baseObj` values. Default: `true`
@@ -275,5 +284,6 @@ export {
   isObject,
   isPlainObject,
   isPromise,
+  isReferenceLike,
   mergeObjects
 };

@@ -91,4 +91,9 @@ const componentSchemasTool = (options = getOptions()): McpTool => {
   ];
 };
 
+/**
+ * A tool name, typically the first entry in the tuple. Used in logging and deduplication.
+ */
+componentSchemasTool.toolName = 'componentSchemas';
+
 export { componentSchemasTool };

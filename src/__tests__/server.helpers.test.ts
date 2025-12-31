@@ -1,4 +1,4 @@
-import { freezeObject, generateHash, hashCode, isPlainObject, isPromise, mergeObjects } from '../server.helpers';
+import { freezeObject, generateHash, hashCode, isPlainObject, isPromise, isReferenceLike, mergeObjects } from '../server.helpers';
 
 describe('freezeObject', () => {
   it.each([
@@ -427,6 +427,93 @@ describe('isPlainObject', () => {
     }
   ])('should determine a plain object for $description', ({ param, value }) => {
     expect(isPlainObject(param)).toBe(value);
+  });
+});
+
+describe('isReferenceLike', () => {
+  it.each([
+    {
+      description: 'string',
+      param: 'lorem',
+      value: false
+    },
+    {
+      description: 'number',
+      param: 10_0000,
+      value: false
+    },
+    {
+      description: 'plain object, empty',
+      param: {},
+      value: true
+    },
+    {
+      description: 'plain object',
+      param: { 1: 'lorem', 2: 'ipsum' },
+      value: true
+    },
+    {
+      description: 'create object',
+      param: Object.create(null),
+      value: true
+    },
+    {
+      description: 'array',
+      param: [],
+      value: true
+    },
+    {
+      description: 'null',
+      param: null,
+      value: false
+    },
+    {
+      description: 'undefined',
+      param: undefined,
+      value: false
+    },
+    {
+      description: 'NaN',
+      param: NaN,
+      value: false
+    },
+    {
+      description: 'function',
+      param: () => 'lorem',
+      value: true
+    },
+    {
+      description: 'date',
+      param: new Date('2023-01-01'),
+      value: true
+    },
+    {
+      description: 'symbol',
+      param: Symbol('lorem ipsum'),
+      value: false
+    },
+    {
+      description: 'error',
+      param: new Error('lorem ipsum'),
+      value: true
+    },
+    {
+      description: 'regex',
+      param: /lorem/g,
+      value: true
+    },
+    {
+      description: 'map',
+      param: new Map([['lorem', 1], ['ipsum', 2]]),
+      value: true
+    },
+    {
+      description: 'set',
+      param: new Set([1, 2, 3]),
+      value: true
+    }
+  ])('should determine a non-primitive for $description', ({ param, value }) => {
+    expect(isReferenceLike(param)).toBe(value);
   });
 });
 

@@ -77,4 +77,9 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
   ];
 };
 
+/**
+ * A tool name, typically the first entry in the tuple. Used in logging and deduplication.
+ */
+usePatternFlyDocsTool.toolName = 'usePatternFlyDocs';
+
 export { usePatternFlyDocsTool };
