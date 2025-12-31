@@ -664,6 +664,23 @@ normalizeFilePackage.memo = memo(normalizeFilePackage, {
 /**
  * Normalize tool configuration(s) into a normalized tool entry.
  *
+ * @note There are two commented alternatives left that would filter out `falsy` values
+ * (example, `null`, `undefined`) from `updatedConfigs`/`flattenedConfigs`. We intentionally
+ * do not filter them right now to preserve original array positions in error messages.
+ * Falsy entries are carried through and ultimately become `invalid` entries with their
+ * original index (example, "Unsupported type undefined" at index N).
+ *
+ * This also accounts for inline tuple values during flattening: tuple-looking arrays are
+ * detected first and kept whole, avoiding accidental element-level flattening.
+ *
+ * @example Falsy values carried through to retain indexing on messaging
+ * Input: [
+ *   () => ['a', { inputSchema: {} }, () => {}],
+ *   undefined,
+ *   { name: 'b', description: 'b', inputSchema: {}, handler: () => {} }
+ * ]
+ * Output: ['creator', 'invalid', 'object']
+ *
  * @param config - The configuration(s) to normalize.
  * @param options - Optional settings
  * @param options.contextPath - The context path to use for resolving file paths.
