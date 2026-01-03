@@ -178,6 +178,7 @@ describe('Tools', () => {
 
   beforeEach(async () => {
     const echoBasicFileUrl = pathToFileURL(resolve(process.cwd(), 'tests/__fixtures__/tool.echoBasic.js')).href;
+    const echoBasicErrorFileUrl = pathToFileURL(resolve(process.cwd(), 'tests/__fixtures__/tool.echoBasicError.js')).href;
     const echoToolHelperFileUrl = pathToFileURL(resolve(process.cwd(), 'tests/__fixtures__/tool.echoToolHelper.js')).href;
 
     CLIENT = await startServer({
@@ -187,6 +188,8 @@ describe('Tools', () => {
         'strict',
         '--tool',
         echoBasicFileUrl,
+        '--tool',
+        echoBasicErrorFileUrl,
         '--tool',
         echoToolHelperFileUrl
       ]
@@ -202,10 +205,12 @@ describe('Tools', () => {
     };
 
     const resp = await CLIENT.send(req);
-    const names = (resp?.result?.tools ?? []).map((tool: any) => tool.name);
+    const names = (resp?.result?.tools || []).map((tool: any) => tool.name);
 
     expect(CLIENT.logs().join(',')).toContain('Registered tool: echo_basic_tool');
     expect(names).toContain('echo_basic_tool');
+
+    expect(CLIENT.logs().join(',')).toContain('No usable tool creators found from module.');
 
     expect(CLIENT.logs().join(',')).toContain('Registered tool: echo_createMcp_tool');
     expect(names).toContain('echo_createMcp_tool');

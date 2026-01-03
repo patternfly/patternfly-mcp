@@ -18,6 +18,6 @@ const echo_plugin_tool = options => [
   })
 ];
 
-echo_plugin_tool.toolName = 'echo_plugin_tool';
+echo_plugin_tool.toolName = 'echo_basic_tool';
 
 export default echo_plugin_tool;

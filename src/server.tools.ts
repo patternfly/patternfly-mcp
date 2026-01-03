@@ -227,6 +227,9 @@ const debugChild = (child: ChildProcess, { sessionId } = getSessionOptions()) =>
  *
  * @param {GlobalOptions} options - Global options.
  * @returns Host handle used by `makeProxyCreators` and shutdown.
+ *
+ * @throws {Error} If the Tools Host entry `#toolsHost` cannot be resolved, or if the child process fails to
+ *    spawn or respond during the handshake within the configured timeout.
  */
 const spawnToolsHost = async (
   options: GlobalOptions = getOptions()
@@ -287,7 +290,7 @@ const spawnToolsHost = async (
   }
 
   // Pre-compute file and package tool modules before spawning to reduce latency
-  const filePackageToolModules = getFilePackageToolModules();
+  const filePackageToolModules = getFilePackageToolModules() || [];
 
   const child: ChildProcess = spawn(process.execPath, [...nodeArgs, updatedEntry], {
     stdio: ['ignore', 'pipe', 'pipe', 'ipc']

@@ -511,9 +511,12 @@ normalizeObject.memo = memo(normalizeObject, { cacheErrors: false, keyHash: args
 /**
  * Normalize a creator function into a tool creator function.
  *
- * @note We intentionally do not execute creator functions during normalization. This means
- * deduplication will only happen if the `toolName` property is set manually or another
- * configuration option is used.
+ * @note
+ * - We intentionally do not execute creator functions during normalization. This means
+ *   deduplication will only happen if the `toolName` property is set manually or another
+ *   configuration option is used.
+ * - Only minimal error handling is done here, errors for malformed tuples are surfaced
+ *   in logs by design.
  *
  * @param config
  * @returns A tool creator function, or undefined if the config is invalid.
@@ -537,8 +540,10 @@ const normalizeFunction = (config: unknown): CreatorEntry | undefined => {
     }
 
     // Currently, we only support tuples in creator functions.
-    if (normalizeTuple.memo(response)) {
-      const { value } = normalizeTuple.memo(response) || {};
+    const tupleResult = normalizeTuple.memo(response);
+
+    if (tupleResult) {
+      const { value } = tupleResult;
 
       return (value as ToolCreator)?.();
     }
@@ -898,7 +903,8 @@ normalizeTools.memo = memo(normalizeTools, {
  *   - An array of the aforementioned configuration types in any combination.
  * @returns An array of strings and/or tool creators that can be applied to the MCP server `toolModules` option.
  *
- * @throws {Error} If a configuration is invalid, an error is thrown on the first invalid entry.
+ * @throws {Error} If a configuration is invalid, an error is thrown on the first invalid entry. The error message
+ *    includes the index and a brief description of the invalid entry.
  */
 const createMcpTool = (config: string | Tool | ToolConfig | ToolCreator | ToolMultiConfig | ToolModule): ToolModule => {
   const entries = normalizeTools.memo(config);
