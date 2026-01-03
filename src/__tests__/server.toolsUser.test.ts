@@ -18,7 +18,7 @@ import {
   sanitizeStaticToolName,
   type Tool,
   type ToolCreator,
-  type MultiToolConfig,
+  type ToolMultiConfig,
   type ToolConfig
 } from '../server.toolsUser';
 import { isZodSchema } from '../server.schema';
@@ -710,7 +710,7 @@ describe('createMcpTool', () => {
         createMcpTool(['dolorSit', { description: 'dolor sit', inputSchema: { type: 'object', properties: {} } }, () => {}]),
         createMcpTool('@scope/pkg4'),
         '@scope/pkg5'
-      ] as MultiToolConfig
+      ] as ToolMultiConfig
     }
   ])('should normalize configs, $description', ({ config }) => {
     const result = createMcpTool(config);

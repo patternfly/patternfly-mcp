@@ -22,6 +22,13 @@ type CliOptions = {
   http?: Partial<HttpOptions>;
   isHttp: boolean;
   logging: Partial<LoggingOptions>;
+  toolModules: string[];
+
+  /**
+   * Isolation preset for external plugins (CLI-provided). If omitted, defaults
+   * to 'strict' when external tools are requested, otherwise 'none'.
+   */
+  pluginIsolation: 'none' | 'strict' | undefined;
 };
 
 /**
@@ -72,6 +79,9 @@ const getArgValue = (flag: string, { defaultValue, argv = process.argv }: { defa
  * - `--host`: The host name specified via `--host`
  * - `--allowed-origins`: List of allowed origins derived from the `--allowed-origins` parameter, split by commas, or undefined if not provided.
  * - `--allowed-hosts`: List of allowed hosts derived from the `--allowed-hosts` parameter, split by commas, or undefined if not provided.
+ * - `--plugin-isolation <none|strict>`: Isolation preset for external tools-as-plugins.
+ * - `--tool <tool-spec>`: Either a repeatable single tool-as-plugin specification or a comma-separated list of tool-as-plugin specifications. Each tool-as-plugin
+ *     specification is a local module name or path.
  *
  * @param [argv] - Command-line arguments to parse. Defaults to `process.argv`.
  * @returns Parsed command-line options.
@@ -133,7 +143,61 @@ const parseCliOptions = (argv: string[] = process.argv): CliOptions => {
     }
   }
 
-  return { docsHost, logging, isHttp, http };
+  // Parse external tool modules: single canonical flag `--tool`
+  // Supported forms:
+  //   --tool a --tool b      (repeatable)
+  //   --tool a,b             (comma-separated)
+  const toolModules: string[] = [];
+  const seenSpecs = new Set<string>();
+
+  const addSpec = (spec?: string) => {
+    const trimmed = String(spec || '').trim();
+
+    if (!trimmed || seenSpecs.has(trimmed)) {
+      return;
+    }
+
+    seenSpecs.add(trimmed);
+    toolModules.push(trimmed);
+  };
+
+  for (let argIndex = 0; argIndex < argv.length; argIndex += 1) {
+    const token = argv[argIndex];
+    const next = argv[argIndex + 1];
+
+    if (token === '--tool' && typeof next === 'string' && !next.startsWith('-')) {
+      next
+        .split(',')
+        .map(value => value.trim())
+        .filter(Boolean)
+        .forEach(addSpec);
+
+      argIndex += 1;
+    }
+  }
+
+  // Parse isolation preset: --plugin-isolation <none|strict>
+  let pluginIsolation: CliOptions['pluginIsolation'];// = DEFAULT_OPTIONS.pluginIsolation;
+  const isolationIndex = argv.indexOf('--plugin-isolation');
+
+  if (isolationIndex >= 0) {
+    const val = String(argv[isolationIndex + 1] || '').toLowerCase();
+
+    switch (val) {
+      case 'none':
+      case 'strict':
+        pluginIsolation = val;
+    }
+  }
+
+  return {
+    docsHost,
+    logging,
+    isHttp,
+    http,
+    toolModules,
+    pluginIsolation
+  };
 };
 
 export {

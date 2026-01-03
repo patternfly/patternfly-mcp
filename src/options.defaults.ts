@@ -138,19 +138,6 @@ interface PluginHostOptions {
 }
 
 /**
- * Tools Host options (pure data). Centralized defaults live here.
- *
- * @property loadTimeoutMs Timeout for child spawn + hello/load/manifest (ms).
- * @property invokeTimeoutMs Timeout per external tool invocation (ms).
- * @property gracePeriodMs Grace period for external tool invocations (ms).
- */
-interface PluginHostOptions {
-  loadTimeoutMs: number;
-  invokeTimeoutMs: number;
-  gracePeriodMs: number;
-}
-
-/**
  * Logging session options, non-configurable by the user.
  *
  * @interface LoggingSession
@@ -336,7 +323,7 @@ const DEFAULT_OPTIONS: DefaultOptions = {
   logging: LOGGING_OPTIONS,
   name: packageJson.name,
   nodeVersion: (process.env.NODE_ENV === 'local' && 22) || getNodeMajorVersion(),
-  pluginIsolation: 'none',
+  pluginIsolation: 'strict',
   pluginHost: PLUGIN_HOST_OPTIONS,
   pfExternal: PF_EXTERNAL,
   pfExternalDesignComponents: PF_EXTERNAL_DESIGN_COMPONENTS,

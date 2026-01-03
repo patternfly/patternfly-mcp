@@ -7,6 +7,9 @@ exports[`runServer should allow server to be stopped, http stop server: diagnost
       "Server logging enabled.",
     ],
     [
+      "No external tools loaded.",
+    ],
+    [
       "Registered tool: usePatternFlyDocs",
     ],
     [
@@ -36,6 +39,9 @@ exports[`runServer should allow server to be stopped, stdio stop server: diagnos
       "Server logging enabled.",
     ],
     [
+      "No external tools loaded.",
+    ],
+    [
       "Registered tool: usePatternFlyDocs",
     ],
     [
@@ -63,6 +69,9 @@ exports[`runServer should attempt to run server, create transport, connect, and 
   "events": [
     [
       "Server logging enabled.",
+    ],
+    [
+      "No external tools loaded.",
     ],
     [
       "test-server-4 server running on stdio transport",
@@ -99,6 +108,9 @@ exports[`runServer should attempt to run server, disable SIGINT handler: diagnos
       "Server logging enabled.",
     ],
     [
+      "No external tools loaded.",
+    ],
+    [
       "test-server-7 server running on stdio transport",
     ],
   ],
@@ -126,6 +138,9 @@ exports[`runServer should attempt to run server, enable SIGINT handler explicitl
   "events": [
     [
       "Server logging enabled.",
+    ],
+    [
+      "No external tools loaded.",
     ],
     [
       "test-server-8 server running on stdio transport",
@@ -162,10 +177,16 @@ exports[`runServer should attempt to run server, register a tool: diagnostics 1`
       "Server logging enabled.",
     ],
     [
+      "No external tools loaded.",
+    ],
+    [
       "Registered tool: loremIpsum",
     ],
     [
       "test-server-5 server running on stdio transport",
+    ],
+    [
+      "Built-in tool at index 0 is missing the static name property, "toolName"",
     ],
     [
       "Tool "loremIpsum" has a non Zod inputSchema. This may cause unexpected issues.",
@@ -204,6 +225,9 @@ exports[`runServer should attempt to run server, register multiple tools: diagno
       "Server logging enabled.",
     ],
     [
+      "No external tools loaded.",
+    ],
+    [
       "Registered tool: loremIpsum",
     ],
     [
@@ -211,6 +235,12 @@ exports[`runServer should attempt to run server, register multiple tools: diagno
     ],
     [
       "test-server-6 server running on stdio transport",
+    ],
+    [
+      "Built-in tool at index 0 is missing the static name property, "toolName"",
+    ],
+    [
+      "Built-in tool at index 1 is missing the static name property, "toolName"",
     ],
     [
       "Tool "loremIpsum" has a non Zod inputSchema. This may cause unexpected issues.",
@@ -253,6 +283,9 @@ exports[`runServer should attempt to run server, use custom options: diagnostics
       "Server logging enabled.",
     ],
     [
+      "No external tools loaded.",
+    ],
+    [
       "test-server-3 server running on stdio transport",
     ],
   ],
@@ -285,6 +318,9 @@ exports[`runServer should attempt to run server, use default tools, http: diagno
   "events": [
     [
       "Server logging enabled.",
+    ],
+    [
+      "No external tools loaded.",
     ],
     [
       "Registered tool: usePatternFlyDocs",
@@ -332,6 +368,9 @@ exports[`runServer should attempt to run server, use default tools, stdio: diagn
   "events": [
     [
       "Server logging enabled.",
+    ],
+    [
+      "No external tools loaded.",
     ],
     [
       "Registered tool: usePatternFlyDocs",

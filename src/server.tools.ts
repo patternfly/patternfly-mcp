@@ -227,6 +227,9 @@ const debugChild = (child: ChildProcess, { sessionId } = getSessionOptions()) =>
  *
  * @param {GlobalOptions} options - Global options.
  * @returns Host handle used by `makeProxyCreators` and shutdown.
+ *
+ * @throws {Error} If the Tools Host entry `#toolsHost` cannot be resolved, or if the child process fails to
+ *    spawn or respond during the handshake within the configured timeout.
  */
 const spawnToolsHost = async (
   options: GlobalOptions = getOptions()
@@ -287,7 +290,7 @@ const spawnToolsHost = async (
   }
 
   // Pre-compute file and package tool modules before spawning to reduce latency
-  const filePackageToolModules = getFilePackageToolModules();
+  const filePackageToolModules = getFilePackageToolModules() || [];
 
   const child: ChildProcess = spawn(process.execPath, [...nodeArgs, updatedEntry], {
     stdio: ['ignore', 'pipe', 'pipe', 'ipc']
@@ -528,9 +531,6 @@ const sendToolsHostShutdown = async (
  *    - Node < 22, externals are skipped with a warning and only built-ins are returned.
  * - Registry is self-correcting for preload or midrun crashes without changing normal shutdown
  *
- * @note Review adding a defensive check for existing hosts before creating a new one. This is
- * to prevent an orphaned child process if `composeTools` is called multiple times.
- *
  * @param builtinCreators - Built-in tool creators
  * @param {GlobalOptions} options - Global options.
  * @param {AppSession} sessionOptions - Session options.
@@ -541,6 +541,13 @@ const composeTools = async (
   { toolModules, nodeVersion, contextUrl, contextPath }: GlobalOptions = getOptions(),
   { sessionId }: AppSession = getSessionOptions()
 ): Promise<McpToolCreator[]> => {
+  const existingSession = activeHostsBySession.get(sessionId);
+
+  if (existingSession) {
+    log.warn(`Existing Tools Host session detected ${sessionId}. Shutting down the existing host before creating a new one.`);
+    await sendToolsHostShutdown();
+  }
+
   const toolCreators: McpToolCreator[] = [...builtinCreators];
   const usedNames = getBuiltInToolNames(builtinCreators);
 

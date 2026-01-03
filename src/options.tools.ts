@@ -1,7 +1,7 @@
 import { type GlobalOptions } from './options';
 
 /**
- * Options for tools.
+ * Options for tools. A limited subset of options.
  *
  * @property serverName - Name of the server instance.
  * @property serverVersion - Version of the server instance.

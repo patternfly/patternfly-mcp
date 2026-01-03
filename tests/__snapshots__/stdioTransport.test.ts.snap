@@ -272,6 +272,8 @@ exports[`Logging should allow setting logging options, stderr 1`] = `
 [
   "[INFO]: Server logging enabled.
 ",
+  "[INFO]: No external tools loaded.
+",
   "[INFO]: Registered tool: usePatternFlyDocs
 ",
   "[INFO]: Registered tool: fetchDocs
@@ -436,6 +438,44 @@ exports[`PatternFly MCP, STDIO should expose expected tools and stable shape 1`]
     "componentSchemas",
     "fetchDocs",
     "usePatternFlyDocs",
+  ],
+}
+`;
+
+exports[`Tools should interact with a tool, echo basic tool 1`] = `
+{
+  "args": {
+    "dolor": "sit amet",
+    "lorem": "ipsum",
+    "type": "echo",
+  },
+  "content": [
+    {
+      "text": "{"type":"echo","lorem":"ipsum","dolor":"sit amet"}",
+      "type": "text",
+    },
+  ],
+  "options": [
+    "serverName",
+    "serverVersion",
+    "nodeMajor",
+    "repoName",
+  ],
+}
+`;
+
+exports[`Tools should interact with a tool, echo create MCP tool 1`] = `
+{
+  "args": {
+    "dolor": "sit amet",
+    "lorem": "ipsum",
+    "type": "echo",
+  },
+  "content": [
+    {
+      "text": "{"type":"echo","lorem":"ipsum","dolor":"sit amet"}",
+      "type": "text",
+    },
   ],
 }
 `;
