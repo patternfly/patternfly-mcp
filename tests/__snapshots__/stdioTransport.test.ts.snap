@@ -442,7 +442,7 @@ exports[`PatternFly MCP, STDIO should expose expected tools and stable shape 1`]
 }
 `;
 
-exports[`Tools should interact with the new tool 1`] = `
+exports[`Tools should interact with a tool, echo basic tool 1`] = `
 {
   "args": {
     "dolor": "sit amet",
@@ -460,6 +460,22 @@ exports[`Tools should interact with the new tool 1`] = `
     "serverVersion",
     "nodeMajor",
     "repoName",
+  ],
+}
+`;
+
+exports[`Tools should interact with a tool, echo create MCP tool 1`] = `
+{
+  "args": {
+    "dolor": "sit amet",
+    "lorem": "ipsum",
+    "type": "echo",
+  },
+  "content": [
+    {
+      "text": "{"type":"echo","lorem":"ipsum","dolor":"sit amet"}",
+      "type": "text",
+    },
   ],
 }
 `;

@@ -1,13 +1,11 @@
 /**
  * Requires: npm run build prior to running Jest.
+ * - If typings are needed, use public types from dist to avoid type identity mismatches between src and dist
  */
-// import { resolve } from 'node:path';
-// import { pathToFileURL } from 'node:url';
 // @ts-ignore - dist/index.js isn't necessarily built yet, remember to build before running tests
 import { createMcpTool } from '../dist/index.js';
 import { startServer, type HttpTransportClient, type RpcRequest } from './utils/httpTransportClient';
 import { setupFetchMock } from './utils/fetchMock';
-// Use public types from dist to avoid type identity mismatches between src and dist
 
 describe('PatternFly MCP, HTTP Transport', () => {
   let FETCH_MOCK: Awaited<ReturnType<typeof setupFetchMock>> | undefined;
@@ -47,7 +45,6 @@ describe('PatternFly MCP, HTTP Transport', () => {
 
   afterAll(async () => {
     if (CLIENT) {
-      // You may still receive jest warnings about a running process, but clean up case we forget at the test level.
       await CLIENT.close();
       CLIENT = undefined;
     }
@@ -97,9 +94,6 @@ describe('PatternFly MCP, HTTP Transport', () => {
     const response = await CLIENT?.send(req);
     const text = response?.result?.content?.[0]?.text || '';
 
-    // expect(CLIENT?.logs()).toMatchSnapshot();
-    // expect(CLIENT?.protocolLogs()).toMatchSnapshot();
-
     expect(text.startsWith('# Documentation from')).toBe(true);
     expect(text).toMatchSnapshot();
   });
@@ -126,7 +120,7 @@ describe('PatternFly MCP, HTTP Transport', () => {
 
     expect(text.startsWith('# Documentation from')).toBe(true);
     expect(text).toMatchSnapshot();
-    CLIENT.close();
+    await CLIENT.close();
   });
 });
 

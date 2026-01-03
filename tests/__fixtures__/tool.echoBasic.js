@@ -1,9 +1,9 @@
 // Fixture exports a creator function directly;
 
 const echo_plugin_tool = options => [
-  'echo_plugin_tool',
+  'echo_basic_tool',
   {
-    description: 'Echo back the provided args, but with a different description',
+    description: 'Echo basic tool. Echos back the provided args.',
     inputSchema: { additionalProperties: true }
   },
   args => ({

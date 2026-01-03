@@ -1,5 +1,7 @@
 /**
  *  Requires: npm run build prior to running Jest.
+ * - If typings are needed, use public types from dist to avoid type identity mismatches between src and dist
+ * - We're unable to mock fetch for stdio since it runs in a separate process, so we run a server and use that path for mocking external URLs.
  */
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -13,7 +15,6 @@ import { setupFetchMock } from './utils/fetchMock';
 describe('PatternFly MCP, STDIO', () => {
   let FETCH_MOCK: Awaited<ReturnType<typeof setupFetchMock>> | undefined;
   let CLIENT: StdioTransportClient;
-  // We're unable to mock fetch for stdio since it runs in a separate process, so we run a server and use that path for mocking external URLs.
   let URL_MOCK: string;
 
   beforeAll(async () => {
@@ -22,7 +23,6 @@ describe('PatternFly MCP, STDIO', () => {
       routes: [
         {
           url: /\/README\.md$/,
-          // url: '/notARealPath/README.md',
           status: 200,
           headers: { 'Content-Type': 'text/markdown; charset=utf-8' },
           body: `# PatternFly Development Rules
@@ -39,7 +39,6 @@ describe('PatternFly MCP, STDIO', () => {
         },
         {
           url: /.*\.md$/,
-          // url: '/notARealPath/AboutModal.md',
           status: 200,
           headers: { 'Content-Type': 'text/markdown; charset=utf-8' },
           body: '# Test Document\n\nThis is a test document for mocking remote HTTP requests.'
@@ -53,7 +52,6 @@ describe('PatternFly MCP, STDIO', () => {
 
   afterAll(async () => {
     if (CLIENT) {
-      // You may still receive jest warnings about a running process, but clean up case we forget at the test level.
       await CLIENT.close();
     }
 
@@ -116,7 +114,7 @@ describe('PatternFly MCP, STDIO', () => {
     const response = await CLIENT.send(req, { timeoutMs: 10000 });
     const text = response?.result?.content?.[0]?.text || '';
 
-    // expect(text.startsWith('# Documentation from')).toBe(true);
+    expect(text.startsWith('# Documentation from')).toBe(true);
     expect(text).toMatchSnapshot();
   });
 });
@@ -179,15 +177,25 @@ describe('Tools', () => {
   let CLIENT: StdioTransportClient;
 
   beforeEach(async () => {
-    const abs = resolve(process.cwd(), 'tests/__fixtures__/tool.echo.js');
-    const url = pathToFileURL(abs).href;
+    const echoBasicFileUrl = pathToFileURL(resolve(process.cwd(), 'tests/__fixtures__/tool.echoBasic.js')).href;
+    const echoToolHelperFileUrl = pathToFileURL(resolve(process.cwd(), 'tests/__fixtures__/tool.echoToolHelper.js')).href;
 
-    CLIENT = await startServer({ args: ['--log-stderr', '--plugin-isolation', 'strict', '--tool', url] });
+    CLIENT = await startServer({
+      args: [
+        '--log-stderr',
+        '--plugin-isolation',
+        'strict',
+        '--tool',
+        echoBasicFileUrl,
+        '--tool',
+        echoToolHelperFileUrl
+      ]
+    });
   });
 
   afterEach(async () => CLIENT.stop());
 
-  itSkip(envNodeVersion >= 22)('should access a new tool', async () => {
+  itSkip(envNodeVersion >= 22)('should access new tools', async () => {
     const req = {
       method: 'tools/list',
       params: {}
@@ -196,8 +204,11 @@ describe('Tools', () => {
     const resp = await CLIENT.send(req);
     const names = (resp?.result?.tools ?? []).map((tool: any) => tool.name);
 
-    expect(CLIENT.logs().join(',')).toContain('Registered tool: echo_plugin_tool');
-    expect(names).toContain('echo_plugin_tool');
+    expect(CLIENT.logs().join(',')).toContain('Registered tool: echo_basic_tool');
+    expect(names).toContain('echo_basic_tool');
+
+    expect(CLIENT.logs().join(',')).toContain('Registered tool: echo_createMcp_tool');
+    expect(names).toContain('echo_createMcp_tool');
   });
 
   itSkip(envNodeVersion <= 20)('should fail to access a new tool', async () => {
@@ -211,16 +222,23 @@ describe('Tools', () => {
     expect(CLIENT.logs().join(',')).toContain('External tool plugins require Node >= 22; skipping file-based tools.');
   });
 
-  itSkip(envNodeVersion >= 22)('should interact with the new tool', async () => {
+  itSkip(envNodeVersion >= 22).each([
+    {
+      description: 'echo basic tool',
+      name: 'echo_basic_tool',
+      args: { type: 'echo', lorem: 'ipsum', dolor: 'sit amet' }
+    },
+    {
+      description: 'echo create MCP tool',
+      name: 'echo_createMcp_tool',
+      args: { type: 'echo', lorem: 'ipsum', dolor: 'sit amet' }
+    }
+  ])('should interact with a tool, $description', async ({ name, args }) => {
     const req = {
       method: 'tools/call',
       params: {
-        name: 'echo_plugin_tool',
-        arguments: {
-          type: 'echo',
-          lorem: 'ipsum',
-          dolor: 'sit amet'
-        }
+        name,
+        arguments: args
       }
     };
 
@@ -230,16 +248,23 @@ describe('Tools', () => {
     expect(resp.result.isError).toBeUndefined();
   });
 
-  itSkip(envNodeVersion <= 20)('should fail to interact with the new tool', async () => {
+  itSkip(envNodeVersion <= 20).each([
+    {
+      description: 'echo basic tool',
+      name: 'echo_basic_tool',
+      args: { type: 'echo', lorem: 'ipsum', dolor: 'sit amet' }
+    },
+    {
+      description: 'echo create MCP tool',
+      name: 'echo_createMcp_tool',
+      args: { type: 'echo', lorem: 'ipsum', dolor: 'sit amet' }
+    }
+  ])('should fail to interact with a tool, $description', async ({ name, args }) => {
     const req = {
       method: 'tools/call',
       params: {
-        name: 'echo_plugin_tool',
-        arguments: {
-          type: 'echo',
-          lorem: 'ipsum',
-          dolor: 'sit amet'
-        }
+        name,
+        arguments: args
       }
     };
 
