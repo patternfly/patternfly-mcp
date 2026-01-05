@@ -1,6 +1,6 @@
 import diagnostics_channel from 'node:diagnostics_channel';
 import { setOptions, getLoggerOptions } from '../options.context';
-import { logSeverity, truncate, formatUnknownError, publish, subscribeToChannel, registerStderrSubscriber, createLogger } from '../logger';
+import { logSeverity, truncate, formatUnknownError, formatLogEvent, publish, subscribeToChannel, registerStderrSubscriber, createLogger } from '../logger';
 
 describe('logSeverity', () => {
   it.each([
@@ -110,6 +110,47 @@ describe('formatUnknownError', () => {
     }
   ])('should attempt to return a formatted error on non-errors, $description', ({ err }) => {
     expect(formatUnknownError(err)).toMatchSnapshot();
+  });
+});
+
+describe('formatLogEvent', () => {
+  it.each([
+    {
+      description: 'default',
+      event: {
+        level: 'debug',
+        timestamp: new Date('2025-11-01T00:00:00Z'),
+        msg: 'lorem ipsum, debug'
+      }
+    },
+    {
+      description: 'all available fields',
+      event: {
+        level: 'info',
+        timestamp: new Date('2025-11-01T00:00:00.000Z'),
+        msg: 'lorem ipsum, debug',
+        fields: { lorem: 'ipsum dolor sit amet' },
+        source: 'loremIpsum',
+        args: [1, 2, 3],
+        transport: 'dolorSit'
+      }
+    },
+    {
+      description: 'undefined',
+      event: undefined
+    },
+    {
+      description: 'null',
+      event: null
+    },
+    {
+      description: 'partial',
+      event: {
+        level: 'debug'
+      }
+    }
+  ])('should return a formatted log event, $description', ({ event }) => {
+    expect(formatLogEvent(event as any)).toMatchSnapshot();
   });
 });
 

@@ -115,6 +115,29 @@ const formatUnknownError = (value: unknown): string => {
 };
 
 /**
+ * Format a structured log event for output to stderr.
+ *
+ * @param event - Log event to format
+ */
+const formatLogEvent = (event: LogEvent) => {
+  const level = event?.level?.toUpperCase() || 'INFO';
+  const eventLevel = `[${level}]`;
+  const message = event?.msg || '';
+
+  const rest = event?.args?.map(arg => {
+    try {
+      return typeof arg === 'string' ? arg : JSON.stringify(arg);
+    } catch {
+      return String(arg);
+    }
+  }).join(' ') || '';
+
+  const separator = rest ? '\t:' : '';
+
+  return `${eventLevel}: ${message}${separator}${rest}`.trim();
+};
+
+/**
  * Publish a structured log event to the diagnostics channel.
  *
  * @param level - Log level for the event
@@ -207,7 +230,7 @@ const subscribeToChannel = (
     try {
       handler.call(null, event);
     } catch (error) {
-      log.debug('Error invoking logging subscriber', event, error);
+      process.stderr.write(`Error invoking logging subscriber: ${formatUnknownError(error)}\n`);
     }
   };
 
@@ -227,28 +250,14 @@ const subscribeToChannel = (
  * @param [formatter] - Optional custom formatter for log events. Default prints: `[LEVEL] msg ...args`
  * @returns Unsubscribe function to remove the subscriber
  */
-const registerStderrSubscriber = (options: LoggingSession, formatter?: (e: LogEvent) => string): Unsubscribe => {
-  const format = formatter || ((event: LogEvent) => {
-    const eventLevel = `[${event.level.toUpperCase()}]`;
-    const message = event.msg || '';
-    const rest = event?.args?.map(arg => {
-      try {
-        return typeof arg === 'string' ? arg : JSON.stringify(arg);
-      } catch {
-        return String(arg);
-      }
-    }).join(' ') || '';
-    const separator = rest ? '\t:' : '';
-
-    return `${eventLevel}: ${message}${separator}${rest}`.trim();
-  });
-
-  return subscribeToChannel((event: LogEvent) => {
-    if (logSeverity(event.level) >= logSeverity(options.level)) {
-      process.stderr.write(`${format(event)}\n`);
-    }
-  });
-};
+const registerStderrSubscriber = (
+  options: LoggingSession,
+  formatter: (e: LogEvent) => string = formatLogEvent
+): Unsubscribe => subscribeToChannel((event: LogEvent) => {
+  if (logSeverity(event.level) >= logSeverity(options.level)) {
+    process.stderr.write(`${formatter(event)}\n`);
+  }
+});
 
 /**
  * Creates a logger initialization function and supports registering logging subscribers.
@@ -268,7 +277,7 @@ const createLogger = (options: LoggingSession = getLoggerOptions()): Unsubscribe
       try {
         unsubscribe();
       } catch (error) {
-        log.debug('Error unsubscribing from diagnostics channel', error);
+        process.stderr.write(`Error unsubscribing from diagnostics channel: ${formatUnknownError(error)}\n`);
       }
     });
 
@@ -279,6 +288,7 @@ const createLogger = (options: LoggingSession = getLoggerOptions()): Unsubscribe
 export {
   LOG_LEVELS,
   createLogger,
+  formatLogEvent,
   formatUnknownError,
   log,
   logSeverity,

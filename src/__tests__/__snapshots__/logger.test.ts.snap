@@ -33,6 +33,16 @@ exports[`createLogger should attempt to subscribe and unsubscribe from a channel
 }
 `;
 
+exports[`formatLogEvent should return a formatted log event, all available fields 1`] = `"[INFO]: lorem ipsum, debug	:1 2 3"`;
+
+exports[`formatLogEvent should return a formatted log event, default 1`] = `"[DEBUG]: lorem ipsum, debug"`;
+
+exports[`formatLogEvent should return a formatted log event, null 1`] = `"[INFO]:"`;
+
+exports[`formatLogEvent should return a formatted log event, partial 1`] = `"[DEBUG]:"`;
+
+exports[`formatLogEvent should return a formatted log event, undefined 1`] = `"[INFO]:"`;
+
 exports[`formatUnknownError should attempt to return a formatted error on non-errors, bigint 1`] = `"9007199254740991n"`;
 
 exports[`formatUnknownError should attempt to return a formatted error on non-errors, boolean 1`] = `"Non-Error thrown: true"`;
