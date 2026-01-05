@@ -26,6 +26,7 @@ describe('runServer', () => {
   let mockHttpHandle: HttpServerHandle;
   let mockClose: jest.Mock;
   let processOnSpy: jest.SpyInstance;
+  let processOffSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -51,8 +52,9 @@ describe('runServer', () => {
 
     MockStartHttpTransport.mockResolvedValue(mockHttpHandle);
 
-    // Spy on process.on method
+    // Spy on process methods
     processOnSpy = jest.spyOn(process, 'on').mockImplementation();
+    processOffSpy = jest.spyOn(process, 'off');
 
     // Mock process.exit to prevent Jest from exiting
     jest.spyOn(process, 'exit').mockImplementation((() => {}) as never);
@@ -60,6 +62,7 @@ describe('runServer', () => {
 
   afterEach(() => {
     processOnSpy.mockRestore();
+    processOffSpy.mockRestore();
     // Note: We don't call jest.restoreAllMocks() here as it would clear module mocks
     // The memoization cache persists across tests, which is expected behavior
   });
@@ -175,6 +178,7 @@ describe('runServer', () => {
 
     await serverInstance.stop();
 
+    expect(processOffSpy).toHaveBeenCalledWith('SIGINT', expect.any(Function));
     expect(serverInstance.isRunning()).toBe(false);
     expect({
       events: MockLog.info.mock.calls
