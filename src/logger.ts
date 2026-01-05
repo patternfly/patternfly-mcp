@@ -120,8 +120,10 @@ const formatUnknownError = (value: unknown): string => {
  * @param event - Log event to format
  */
 const formatLogEvent = (event: LogEvent) => {
-  const eventLevel = `[${event.level.toUpperCase()}]`;
-  const message = event.msg || '';
+  const level = event?.level?.toUpperCase() || 'INFO';
+  const eventLevel = `[${level}]`;
+  const message = event?.msg || '';
+
   const rest = event?.args?.map(arg => {
     try {
       return typeof arg === 'string' ? arg : JSON.stringify(arg);
@@ -129,6 +131,7 @@ const formatLogEvent = (event: LogEvent) => {
       return String(arg);
     }
   }).join(' ') || '';
+
   const separator = rest ? '\t:' : '';
 
   return `${eventLevel}: ${message}${separator}${rest}`.trim();

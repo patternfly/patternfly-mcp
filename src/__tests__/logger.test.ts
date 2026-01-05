@@ -134,6 +134,20 @@ describe('formatLogEvent', () => {
         args: [1, 2, 3],
         transport: 'dolorSit'
       }
+    },
+    {
+      description: 'undefined',
+      event: undefined
+    },
+    {
+      description: 'null',
+      event: null
+    },
+    {
+      description: 'partial',
+      event: {
+        level: 'debug'
+      }
     }
   ])('should return a formatted log event, $description', ({ event }) => {
     expect(formatLogEvent(event as any)).toMatchSnapshot();
