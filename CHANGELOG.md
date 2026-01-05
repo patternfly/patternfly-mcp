@@ -1,6 +1,40 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.5.0](https://github.com/patternfly/patternfly-mcp/compare/3c49d4babc7344013c55c67326a3a001c44e02c0...3ee99f52c126471e03bf1baf1003e2259d2d9d21) (2026-01-05)
+
+
+### Tests
+*  minor typing, annotation, config refactor ([#55](https://github.com/patternfly/patternfly-mcp/pull/55)) ([83c6f2d](https://github.com/patternfly/patternfly-mcp/commit/83c6f2dc0063f3eee0cb0d371adf28e29ac9fa4e))
+*  lint consistency ([#45](https://github.com/patternfly/patternfly-mcp/pull/45)) ([f0c2a34](https://github.com/patternfly/patternfly-mcp/commit/f0c2a34e96b1774e2da3b510fa6eea55d5c0960e))
+
+### Features
+* **tools-plugins** allow mcp tool plugins ([#41](https://github.com/patternfly/patternfly-mcp/pull/41)) ([e6a9aed](https://github.com/patternfly/patternfly-mcp/commit/e6a9aed210ee6a8433d3235250ec1855b34b90a5))
+* **tools-user** user-facing helpers for tools-as-plugins ([#63](https://github.com/patternfly/patternfly-mcp/pull/63)) ([84c9efb](https://github.com/patternfly/patternfly-mcp/commit/84c9efbf63181c673fac3815ad2a778b764f0f5a))
+* **tools-host** creators, child validation for tools-as-plugins ([#62](https://github.com/patternfly/patternfly-mcp/pull/62)) ([97f855a](https://github.com/patternfly/patternfly-mcp/commit/97f855a64c5315a8d170bc4cfa4cb429043c80eb))
+* **logger** format unknown errors ([#59](https://github.com/patternfly/patternfly-mcp/pull/59)) ([55df65e](https://github.com/patternfly/patternfly-mcp/commit/55df65e872d0406d1777a5416087a5c455041da9))
+* **schema** schema support helpers ([#57](https://github.com/patternfly/patternfly-mcp/pull/57)) ([e55eea5](https://github.com/patternfly/patternfly-mcp/commit/e55eea52db0004ab2140db5562273e8784417e41))
+*  memo, add keyHash option ([#54](https://github.com/patternfly/patternfly-mcp/pull/54)) ([0755c28](https://github.com/patternfly/patternfly-mcp/commit/0755c28ab1b92780021d0723115d08df30a1d362))
+
+### Code Refactoring
+*  options, nodejs version, path resolves ([#58](https://github.com/patternfly/patternfly-mcp/pull/58)) ([6634b01](https://github.com/patternfly/patternfly-mcp/commit/6634b01c62095910d01932b34961a5470b8dd5bc))
+* **server** use builtInTools const, logging, annotations ([#56](https://github.com/patternfly/patternfly-mcp/pull/56)) ([048a70a](https://github.com/patternfly/patternfly-mcp/commit/048a70ad30621b44ab68ee4ecbb459d7583e4916))
+
+### Builds
+* **deps** bump actions/cache from 4 to 5 ([#69](https://github.com/patternfly/patternfly-mcp/pull/69)) ([870fd68](https://github.com/patternfly/patternfly-mcp/commit/870fd68209f8f620c582ca4d9451bca4615a28aa))
+* **deps** bump actions/setup-node from 4 to 6 ([#68](https://github.com/patternfly/patternfly-mcp/pull/68)) ([f14605a](https://github.com/patternfly/patternfly-mcp/commit/f14605a9975c3b4f72b7ab01c2c9c1c22390b116))
+* **deps-dev** bump dev group with 4 updates ([#67](https://github.com/patternfly/patternfly-mcp/pull/67)) ([b34425f](https://github.com/patternfly/patternfly-mcp/commit/b34425f72853abbeaa7b8f322ec57e583b7d3277))
+* **deps** bump @modelcontextprotocol/sdk in the prod group ([#65](https://github.com/patternfly/patternfly-mcp/pull/65)) ([be4f884](https://github.com/patternfly/patternfly-mcp/commit/be4f8849232a0f2c7c01060a4983e26163788fdc))
+* **deps** @modelcontextprotocol/sdk from 1.23.0 to 1.24.1 ([#53](https://github.com/patternfly/patternfly-mcp/pull/53)) ([3986841](https://github.com/patternfly/patternfly-mcp/commit/3986841c78dc3654df9e16d68f84eb10b70d1092))
+* **deps-dev** bump dev group with 3 updates ([#51](https://github.com/patternfly/patternfly-mcp/pull/51)) ([49d37d9](https://github.com/patternfly/patternfly-mcp/commit/49d37d9b07ccc6a3e2d31831b31312effd221f48))
+* **deps-dev** bump dev group with 4 updates ([#50](https://github.com/patternfly/patternfly-mcp/pull/50)) ([729dcd9](https://github.com/patternfly/patternfly-mcp/commit/729dcd9ffdd2beae070da72b34f3e310f4f12491))
+* **deps** @modelcontextprotocol/sdk from 1.22.0 to 1.23.0 ([#48](https://github.com/patternfly/patternfly-mcp/pull/48)) ([25b63c8](https://github.com/patternfly/patternfly-mcp/commit/25b63c825df45cf9b8c447d91a1a84969399f8f9))
+* **deps-dev** @types/node from 22.18.8 to 24.10.1 ([#47](https://github.com/patternfly/patternfly-mcp/pull/47)) ([b8b72d9](https://github.com/patternfly/patternfly-mcp/commit/b8b72d9d85e1ba985ba3e1b5d5a1c4678b7b9b07))
+
+### Bug Fixes
+* **server** clean sigint handler on shutdown ([#72](https://github.com/patternfly/patternfly-mcp/pull/72)) ([3ee99f5](https://github.com/patternfly/patternfly-mcp/commit/3ee99f52c126471e03bf1baf1003e2259d2d9d21))
+* **logger** avoid recursive error handling ([#71](https://github.com/patternfly/patternfly-mcp/pull/71)) ([fb78d63](https://github.com/patternfly/patternfly-mcp/commit/fb78d6354a42520bdd6b2591d2ddd36504fd0f6d))
+
 ## [0.4.0](https://github.com/patternfly/patternfly-mcp/compare/088d56496e9e3534b15c6975daece01ecd607c42...727fc0a8ee45ffb54c8bc47b6324cc01904611d8) (2025-12-07)
 
 
