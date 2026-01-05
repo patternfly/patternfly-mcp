@@ -1,8 +1,8 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { randomUUID } from 'node:crypto';
 import { type AppSession, type GlobalOptions, type DefaultOptionsOverrides } from './options';
-import { DEFAULT_OPTIONS, LOG_BASENAME, type LoggingSession } from './options.defaults';
-import { mergeObjects, freezeObject, isPlainObject } from './server.helpers';
+import { DEFAULT_OPTIONS, LOG_BASENAME, type LoggingSession, type StatsSession } from './options.defaults';
+import { mergeObjects, freezeObject, isPlainObject, hashCode } from './server.helpers';
 
 /**
  * AsyncLocalStorage instance for a per-instance session state.
@@ -13,6 +13,14 @@ import { mergeObjects, freezeObject, isPlainObject } from './server.helpers';
 const sessionContext = new AsyncLocalStorage<AppSession>();
 
 /**
+ * Generates a consistent, one-way hash of the sessionId for public exposure.
+ *
+ * @param sessionId
+ */
+const getPublicSessionHash = (sessionId: string): string =>
+  hashCode(sessionId, { algorithm: 'sha256', encoding: 'hex' }).substring(0, 12);
+
+/**
  * Initialize and return session data.
  *
  * @returns {AppSession} Immutable session with a session ID and channel name.
@@ -20,8 +28,9 @@ const sessionContext = new AsyncLocalStorage<AppSession>();
 const initializeSession = (): AppSession => {
   const sessionId = (process.env.NODE_ENV === 'local' && '1234d567-1ce9-123d-1413-a1234e56c789') || randomUUID();
   const channelName = `${LOG_BASENAME}:${sessionId}`;
+  const publicSessionId = getPublicSessionHash(sessionId);
 
-  return freezeObject({ sessionId, channelName });
+  return freezeObject({ sessionId, channelName, publicSessionId });
 };
 
 /**
@@ -122,6 +131,24 @@ const getLoggerOptions = (session = getSessionOptions()): LoggingSession => {
 };
 
 /**
+ * Get stat channel options from the current context.
+ *
+ * @param {AppSession} [options] - Session options to use in context.
+ * @returns {StatsSession} Stats options from context.
+ */
+const getStatsOptions = (options = getSessionOptions()): StatsSession => {
+  const base = getOptions().stats;
+  const publicSessionId = options.publicSessionId;
+  const health = `pf-mcp:stats:health:${publicSessionId}`;
+  const session = `pf-mcp:stats:session:${publicSessionId}`;
+  const transport = `pf-mcp:stats:transport:${publicSessionId}`;
+  const traffic = `pf-mcp:stats:traffic:${publicSessionId}`;
+  const channels = { health, transport, traffic, session };
+
+  return { ...base, publicSessionId, channels };
+};
+
+/**
  * Run a function with specific options context. Useful for testing or programmatic usage.
  *
  * @template TReturn
@@ -145,7 +172,9 @@ const runWithOptions = async <TReturn>(
 export {
   getLoggerOptions,
   getOptions,
+  getPublicSessionHash,
   getSessionOptions,
+  getStatsOptions,
   initializeSession,
   optionsContext,
   runWithOptions,

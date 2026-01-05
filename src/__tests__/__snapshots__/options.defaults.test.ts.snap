@@ -59,6 +59,12 @@ exports[`options defaults should return specific properties: defaults 1`] = `
 ---
 
 ",
+  "stats": {
+    "reportIntervalMs": {
+      "health": 30000,
+      "transport": 10000,
+    },
+  },
   "toolMemoOptions": {
     "fetchDocs": {
       "cacheErrors": false,

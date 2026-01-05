@@ -67,7 +67,7 @@ export const startServer = async (
     docsHost: false,
     ...options,
     http: {
-      port: 5000,
+      port: 8000,
       host: '127.0.0.1',
       allowedOrigins: [],
       allowedHosts: [],
@@ -100,11 +100,14 @@ export const startServer = async (
     throw new Error(`Server failed to start on port ${port}`);
   }
 
+  // const httpClientPort = server.port ?? updatedOptions?.http?.port;
+  const stats = await server.getStats();
+  const httpClientPort = stats.reports.transport.port;
   let httpClientUrl: URL;
 
   try {
-    // Construct base URL from options
-    const baseUrl = `http://${host}:${port}/mcp`;
+    // Construct base URL from options, apply port from server stats
+    const baseUrl = `http://${host}:${httpClientPort}/mcp`;
 
     httpClientUrl = new URL(baseUrl);
   } catch (error) {

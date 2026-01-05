@@ -39,7 +39,7 @@ interface StartHttpFixtureOptions {
 const startHttpFixture = (
   { routes = {}, address = '127.0.0.1', port = 0 }: StartHttpFixtureOptions = {},
   regexRoutes: FetchRoute[] = []
-): Promise<{ baseUrl: string; close: () => Promise<void>; addRoute?: (path: string, route: Route) => void }> =>
+): Promise<{ port: number; baseUrl: string; close: () => Promise<void>; addRoute?: (path: string, route: Route) => void }> =>
   new Promise((resolve, reject) => {
     const dynamicRoutes: Record<string, Route> = { ...routes };
 
@@ -117,6 +117,7 @@ const startHttpFixture = (
         const baseUrl = `http://${host}:${addr.port}`;
 
         resolve({
+          port: addr.port,
           baseUrl,
           close: () => new Promise<void>(res => server.close(() => res())),
           addRoute: (path: string, route: Route) => {
@@ -126,6 +127,7 @@ const startHttpFixture = (
       } else {
         // Fallback if the address isn't available as AddressInfo
         resolve({
+          port,
           baseUrl: `http://${address}`,
           close: () => new Promise<void>(res => server.close(() => res())),
           addRoute: (path: string, route: Route) => {

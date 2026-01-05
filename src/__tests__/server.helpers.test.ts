@@ -1,4 +1,13 @@
-import { freezeObject, generateHash, hashCode, isPlainObject, isPromise, isReferenceLike, mergeObjects } from '../server.helpers';
+import {
+  freezeObject,
+  generateHash,
+  hashCode,
+  isPlainObject,
+  isPromise,
+  isReferenceLike,
+  mergeObjects,
+  portValid
+} from '../server.helpers';
 
 describe('freezeObject', () => {
   it.each([
@@ -596,5 +605,72 @@ describe('mergeObjects', () => {
 
     expect((merged as any).polluted).toBeUndefined();
     expect((Object.prototype as any).polluted).toBeUndefined();
+  });
+});
+
+describe('portValid', () => {
+  it.each([
+    {
+      description: 'valid',
+      port: 8080,
+      expected: 8080
+    },
+    {
+      description: 'zero',
+      port: 0,
+      expected: 0
+    },
+    {
+      description: 'upper-range',
+      port: 65535,
+      expected: 65535
+    },
+    {
+      description: 'out-of-range',
+      port: 10_0000,
+      expected: undefined
+    },
+    {
+      description: 'out-of-range negative',
+      port: -10_0000,
+      expected: undefined
+    },
+    {
+      description: 'string',
+      port: '9000',
+      expected: 9000
+    },
+    {
+      description: 'empty string',
+      port: '',
+      expected: undefined
+    },
+    {
+      description: 'NaN',
+      port: NaN,
+      expected: undefined
+    },
+    {
+      description: 'float',
+      port: 1.088,
+      expected: undefined
+    },
+    {
+      description: 'out-of-range float',
+      port: -1.088,
+      expected: undefined
+    },
+    {
+      description: 'undefined',
+      port: undefined,
+      expected: undefined
+    },
+    {
+      description: 'null',
+      port: null,
+      expected: undefined
+    }
+  ])('should validate a port, $description', ({ port, expected }) => {
+    expect(portValid(port)).toBe(expected);
   });
 });

@@ -8,6 +8,7 @@ import { type McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { portToPid } from 'pid-port';
 import { getOptions } from './options.context';
 import { log } from './logger';
+import { portValid } from './server.helpers';
 
 /**
  * Fixed base path for MCP transport endpoints.
@@ -28,7 +29,7 @@ const MCP_HOST = 'http://mcp.local';
  * @returns Process info or undefined if port is free
  */
 const getProcessOnPort = async (port: number) => {
-  if (!port) {
+  if (typeof portValid(port) !== 'number') {
     return undefined;
   }
 
@@ -143,6 +144,7 @@ const handleStreamableHttpRequest = async (
  */
 type HttpServerHandle = {
   close: () => Promise<void>;
+  port: number;
 };
 
 /**
@@ -155,7 +157,7 @@ type HttpServerHandle = {
 const startHttpTransport = async (mcpServer: McpServer, options = getOptions()): Promise<HttpServerHandle> => {
   const { name, http } = options;
 
-  if (!http?.port || !http?.host) {
+  if (typeof portValid(http?.port) !== 'number' || !http?.host) {
     throw new Error('Port and host options are required for HTTP transport');
   }
 
@@ -203,10 +205,16 @@ const startHttpTransport = async (mcpServer: McpServer, options = getOptions()):
     void handleStreamableHttpRequest(req, res, transport);
   });
 
+  const getPort = () => {
+    const addr = server?.address?.();
+
+    return (typeof addr !== 'string' && addr?.port) || http.port;
+  };
+
   // Start the server. Port conflicts will be handled in the error handler below
   await new Promise<void>((resolve, reject) => {
     server.listen(http.port, http.host, () => {
-      log.info(`${name} server running on http://${http.host}:${http.port}`);
+      log.info(`${name} server running on http://${http.host}:${getPort()}`);
       resolve();
     });
 
@@ -230,6 +238,7 @@ const startHttpTransport = async (mcpServer: McpServer, options = getOptions()):
   });
 
   return {
+    port: getPort(),
     close: async () => {
       // 1) Stop accepting new connections and finish requests quickly
       // If the transport exposes a close/shutdown, call it here (pseudo):

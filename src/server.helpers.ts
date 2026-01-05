@@ -1,6 +1,24 @@
 import { createHash, type BinaryToTextEncoding } from 'node:crypto';
 
 /**
+ * Check if a value is a valid port number.
+ *
+ * @param port - Port number to check.
+ * @returns Valid port number, or `undefined` if invalid.
+ */
+const portValid = (port: unknown) => {
+  const toStr = String(port);
+  const isFloatLike = toStr.includes('.');
+  const parsedPort = Number.parseInt(toStr, 10);
+
+  if (!isFloatLike && Number.isInteger(parsedPort) && parsedPort >= 0 && parsedPort < 65536) {
+    return parsedPort;
+  }
+
+  return undefined;
+};
+
+/**
  * Check if an object is an object
  *
  * @param obj - Object, or otherwise, to check
@@ -285,5 +303,6 @@ export {
   isPlainObject,
   isPromise,
   isReferenceLike,
-  mergeObjects
+  mergeObjects,
+  portValid
 };

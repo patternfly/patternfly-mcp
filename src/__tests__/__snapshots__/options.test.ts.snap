@@ -102,7 +102,9 @@ exports[`parseCliOptions should attempt to parse args with --http and --port 1`]
 exports[`parseCliOptions should attempt to parse args with --http and invalid --port 1`] = `
 {
   "docsHost": false,
-  "http": {},
+  "http": {
+    "port": 0,
+  },
   "isHttp": true,
   "logging": {
     "level": "info",
