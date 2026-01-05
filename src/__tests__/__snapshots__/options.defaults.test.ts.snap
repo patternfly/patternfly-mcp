@@ -21,6 +21,7 @@ exports[`options defaults should return specific properties: defaults 1`] = `
     "stderr": false,
     "transport": "stdio",
   },
+  "maxDocsToLoad": 500,
   "name": "@patternfly/patternfly-mcp",
   "nodeVersion": 22,
   "pfExternal": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content",
@@ -38,6 +39,7 @@ exports[`options defaults should return specific properties: defaults 1`] = `
     "loadTimeoutMs": 5000,
   },
   "pluginIsolation": "strict",
+  "recommendedMaxDocsToLoad": 15,
   "repoName": "patternfly-mcp",
   "resourceMemoOptions": {
     "default": {
@@ -54,6 +56,7 @@ exports[`options defaults should return specific properties: defaults 1`] = `
       "expire": 120000,
     },
   },
+  "resourceModules": [],
   "separator": "
 
 ---
@@ -66,10 +69,10 @@ exports[`options defaults should return specific properties: defaults 1`] = `
     },
   },
   "toolMemoOptions": {
-    "fetchDocs": {
+    "searchPatternFlyDocs": {
       "cacheErrors": false,
-      "cacheLimit": 15,
-      "expire": 60000,
+      "cacheLimit": 10,
+      "expire": 600000,
     },
     "usePatternFlyDocs": {
       "cacheErrors": false,

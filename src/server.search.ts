@@ -22,7 +22,7 @@ interface ClosestSearchOptions {
 interface FuzzySearchResult {
   item: string;
   distance: number;
-  matchType: 'exact' | 'prefix' | 'suffix' | 'contains' | 'fuzzy';
+  matchType: 'exact' | 'prefix' | 'suffix' | 'contains' | 'fuzzy' | 'all';
 }
 
 /**
@@ -71,7 +71,7 @@ const normalizeString: NormalizeString = (str: string) => String(str || '')
 /**
  * Memoized version of normalizeString
  */
-normalizeString.memo = memo(normalizeString, { cacheLimit: 25 });
+normalizeString.memo = memo(normalizeString, { cacheLimit: 50 });
 
 /**
  * Find the closest match using fastest-levenshtein's closest function.
@@ -124,6 +124,15 @@ const findClosest = (
  * @param query - Search query string
  * @param items - Array of strings to search
  * @param {FuzzySearchOptions} options - Search configuration options
+ * @param {number} options.maxDistance - Maximum edit distance for a match. Distance is defined as
+ * @param {number} options.maxResults - Maximum number of results to return
+ * @param {NormalizeString} options.normalizeFn - Function to normalize strings (default: `normalizeString`)
+ * @param {boolean} options.isExactMatch - Include exact matches in results (default: `true`)
+ * @param {boolean} options.isPrefixMatch - Include prefix matches in results (default: `true`)
+ * @param {boolean} options.isSuffixMatch - Include suffix matches in results (default: `true`)
+ * @param {boolean} options.isContainsMatch - Include contains matches in results (default: `true`)
+ * @param {boolean} options.isFuzzyMatch - Allow fuzzy matches even when `maxDistance` is negative or zero.
+ * @param {boolean} options.deduplicateByNormalized - If `true`, deduplicate results by normalized value instead of original string.
  * @returns {FuzzySearchResult[]} Array of matching strings with distance and match type
  *
  * @example

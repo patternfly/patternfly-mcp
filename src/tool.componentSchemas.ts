@@ -1,10 +1,11 @@
 import { z } from 'zod';
 import { ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js';
-import { componentNames, getComponentSchema } from '@patternfly/patternfly-component-schemas/json';
+import { getComponentSchema } from '@patternfly/patternfly-component-schemas/json';
 import { type McpTool } from './server';
 import { getOptions } from './options.context';
 import { memo } from './server.caching';
 import { fuzzySearch } from './server.search';
+import { componentNames } from './tool.searchPatternFlyDocs';
 
 /**
  * Derive the component schema type from @patternfly/patternfly-component-schemas
@@ -12,18 +13,18 @@ import { fuzzySearch } from './server.search';
 type ComponentSchema = Awaited<ReturnType<typeof getComponentSchema>>;
 
 /**
- * componentSchemas tool function (tuple pattern)
+ * componentSchemas tool function
  *
  * Creates an MCP tool that retrieves JSON Schema for PatternFly React components.
  * Uses fuzzy search to handle typos and case variations, with related fallback suggestions.
  *
  * @param options - Optional configuration options (defaults to OPTIONS)
- * @returns {McpTool} MCP tool tuple [name, schema, callback]
+ * @returns MCP tool tuple [name, schema, callback]
  */
 const componentSchemasTool = (options = getOptions()): McpTool => {
   const memoGetComponentSchema = memo(
     async (componentName: string): Promise<ComponentSchema> => getComponentSchema(componentName),
-    options?.toolMemoOptions?.fetchDocs // Use the same memo options as fetchDocs
+    options?.toolMemoOptions?.usePatternFlyDocs
   );
 
   const callback = async (args: any = {}) => {
@@ -32,7 +33,7 @@ const componentSchemasTool = (options = getOptions()): McpTool => {
     if (typeof componentName !== 'string') {
       throw new McpError(
         ErrorCode.InvalidParams,
-        `Missing required parameter: componentName (must be a string): ${componentName}`
+        `Missing required parameter: componentName must be a string: ${componentName}`
       );
     }
 
@@ -82,7 +83,11 @@ const componentSchemasTool = (options = getOptions()): McpTool => {
   return [
     'componentSchemas',
     {
-      description: 'Get JSON Schema for a PatternFly React component. Returns prop definitions, types, and validation rules. Use this for structured component metadata, not documentation.',
+      description: `[Deprecated: Use "usePatternFlyDocs" to retrieve component schemas from PatternFly documentation URLs.]
+
+      Get JSON Schema for a PatternFly React component.
+
+      Returns prop definitions, types, and validation rules. Use this for structured component metadata, not documentation.`,
       inputSchema: {
         componentName: z.string().describe('Name of the PatternFly component (e.g., "Button", "Table")')
       }

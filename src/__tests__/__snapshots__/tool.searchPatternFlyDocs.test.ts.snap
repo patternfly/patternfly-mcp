@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`searchPatternFlyDocsTool should have a consistent return structure: structure 1`] = `
+{
+  "callback": [Function],
+  "name": "searchPatternFlyDocs",
+  "schema": true,
+}
+`;
+
+exports[`searchPatternFlyDocsTool, callback should parse parameters, default: search 1`] = `"# Search results for "Button", 1 matches found:"`;
+
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with "*" searchQuery all: search 1`] = `"# Search results for "all components", 8 matches found:"`;
+
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with "all" searchQuery all: search 1`] = `"# Search results for "all components", 8 matches found:"`;
+
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with empty searchQuery all: search 1`] = `"# Search results for "all components", 8 matches found:"`;
+
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with lower case componentName: search 1`] = `"# Search results for "button", 1 matches found:"`;
+
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with made up componentName: search 1`] = `"No PatternFly documentation found matching "lorem ipsum dolor sit amet""`;
+
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with multiple words: search 1`] = `"No PatternFly documentation found matching "Button Card Table""`;
+
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with partial componentName: search 1`] = `"# Search results for "ton", 2 matches found:"`;
+
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with trimmed componentName: search 1`] = `"# Search results for " Button  ", 1 matches found:"`;
+
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with upper case componentName: search 1`] = `"# Search results for "BUTTON", 1 matches found:"`;

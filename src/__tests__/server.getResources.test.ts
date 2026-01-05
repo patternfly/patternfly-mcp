@@ -1,5 +1,12 @@
 import { readFile } from 'node:fs/promises';
-import { readLocalFileFunction, fetchUrlFunction, resolveLocalPathFunction, processDocsFunction } from '../server.getResources';
+import {
+  readLocalFileFunction,
+  fetchUrlFunction,
+  processDocsFunction,
+  promiseQueue,
+  loadFileFetch,
+  resolveLocalPathFunction
+} from '../server.getResources';
 import { type GlobalOptions } from '../options';
 
 // Mock dependencies
@@ -82,25 +89,74 @@ describe('fetchUrlFunction', () => {
 describe('resolveLocalPathFunction', () => {
   it.each([
     {
-      description: 'with docsHost true',
-      options: {
-        docsHost: true,
-        llmsFilesPath: '/llms-files'
-      },
-      path: 'react-core/6.0.0/llms.txt'
+      description: 'basic',
+      path: 'lorem-ipsum.md'
     },
     {
-      description: 'with docsHost false',
-      options: {
-        docsHost: false,
-        llmsFilesPath: '/llms-files'
-      },
-      path: 'documentation/README.md'
+      description: 'url, http',
+      path: 'http://example.com/dolor-sit.md'
+    },
+    {
+      description: 'url, https',
+      path: 'https://example.com/dolor-sit.md'
+    },
+    {
+      description: 'url, file',
+      path: 'file://someDirectory/dolor-sit.md'
     }
-  ])('should return a consistent path, $description', ({ path, options }) => {
-    const result = resolveLocalPathFunction(path, options as GlobalOptions);
+  ])('should return a consistent path, $description', ({ path }) => {
+    const result = resolveLocalPathFunction(path);
 
     expect(result).toMatchSnapshot();
+  });
+});
+
+describe('loadFileFetch', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it.each([
+    {
+      description: 'with local file',
+      pathUrl: 'dolor-sit.md',
+      expectedIsFetch: false
+    },
+    {
+      description: 'with remote URL',
+      pathUrl: 'https://example.com/remote.md',
+      expectedIsFetch: true
+    }
+  ])('should attempt to load a file or fetch, $description', async ({ pathUrl, expectedIsFetch }) => {
+    const mockFetchCall = jest.fn().mockResolvedValue('content');
+    const mockReadCall = jest.fn().mockResolvedValue('content');
+
+    readLocalFileFunction.memo = mockReadCall;
+    fetchUrlFunction.memo = mockFetchCall;
+
+    const result = await loadFileFetch(pathUrl);
+
+    expect(mockFetchCall).toHaveBeenCalledTimes(expectedIsFetch ? 1 : 0);
+    expect(mockReadCall).toHaveBeenCalledTimes(expectedIsFetch ? 0 : 1);
+    expect(result).toEqual({
+      content: 'content',
+      resolvedPath: expect.any(String)
+    });
+  });
+});
+
+describe('promiseQueue', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should execute promises in order', async () => {
+    readLocalFileFunction.memo = jest.fn().mockImplementation(path => Promise.resolve(path));
+    fetchUrlFunction.memo = jest.fn().mockImplementation(url => Promise.reject(url));
+
+    const pathUrlQueue = ['dolor-sit.md', 'https://example.com/remote.md', 'lorem-ipsum.md'];
+
+    await expect(promiseQueue(pathUrlQueue, 1)).resolves.toMatchSnapshot('allSettled');
   });
 });
 
