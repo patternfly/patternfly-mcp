@@ -55,6 +55,7 @@ describe('main', () => {
     const mockServerInstance = {
       stop: jest.fn().mockResolvedValue(undefined),
       isRunning: jest.fn().mockReturnValue(true),
+      getStats: jest.fn().mockReturnValue({}),
       onLog: jest.fn()
     };
 

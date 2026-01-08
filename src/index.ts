@@ -6,7 +6,9 @@ import {
   type ServerSettings,
   type ServerOnLog,
   type ServerOnLogHandler,
-  type ServerLogEvent
+  type ServerLogEvent,
+  type ServerStats,
+  type ServerGetStats
 } from './server';
 import {
   createMcpTool,
@@ -71,6 +73,20 @@ type PfMcpOnLogHandler = ServerOnLogHandler;
 type PfMcpLogEvent = ServerLogEvent;
 
 /**
+ * Get statistics about the server.
+ *
+ * @alias ServerGetStats
+ */
+type PfMcpGetStats = ServerGetStats;
+
+/**
+ * Statistics about the server.
+ *
+ * @alias ServerStats
+ */
+type PfMcpStats = ServerStats;
+
+/**
  * Main function - Programmatic and CLI entry point with optional overrides
  *
  * @param [pfMcpOptions] - User configurable options
@@ -95,6 +111,21 @@ type PfMcpLogEvent = ServerLogEvent;
  * const { stop, isRunning } = await start({ http: { port: 8000 } });
  *
  * if (isRunning()) {
+ *   stop();
+ * }
+ *
+ * @example Programmatic: Listening for server stats
+ * import { subscribe, unsubscribe } from 'node:diagnostics_channel';
+ * import { start, createMcpTool } from '@patternfly/patternfly-mcp';
+ *
+ * const { stop, isRunning, getStats } = await start();
+ * const stats = await getStats();
+ * const statsChannel = subscribe(stats.health.channelId, (healthStats: PfMcpHealthStats) => {
+ *   stderr.write(`Health uptime: ${healthStats.uptime}\n`);
+ * })
+ *
+ * if (isRunning()) {
+ *   unsubscribe(stats.health.channelId);
  *   stop();
  * }
  *
@@ -156,6 +187,8 @@ export {
   type PfMcpLogEvent,
   type PfMcpOnLog,
   type PfMcpOnLogHandler,
+  type PfMcpStats,
+  type PfMcpGetStats,
   type ToolCreator,
   type ToolModule,
   type ToolConfig,

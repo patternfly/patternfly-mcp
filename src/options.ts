@@ -1,11 +1,13 @@
 import { DEFAULT_OPTIONS, type DefaultOptions, type DefaultOptionsOverrides, type LoggingOptions, type HttpOptions } from './options.defaults';
 import { type LogLevel, logSeverity } from './logger';
+import { portValid } from './server.helpers';
 
 /**
  * Session defaults, not user-configurable
  */
 type AppSession = {
   readonly sessionId: string;
+  readonly publicSessionId: string;
   readonly channelName: string
 };
 
@@ -110,7 +112,7 @@ const parseCliOptions = (argv: string[] = process.argv): CliOptions => {
 
   if (isHttp) {
     const rawPort = getArgValue('--port', { argv });
-    const parsedPort = Number.parseInt(String(rawPort || ''), 10);
+    const parsedPort = portValid(rawPort);
     const host = getArgValue('--host', { argv });
 
     const allowedOrigins = (getArgValue('--allowed-origins', { argv }) as string)
@@ -123,8 +125,7 @@ const parseCliOptions = (argv: string[] = process.argv): CliOptions => {
       ?.map((host: string) => host.trim())
       ?.filter(Boolean);
 
-    const isPortValid = Number.isInteger(parsedPort) && parsedPort > 0 && parsedPort < 65536;
-    const port = isPortValid ? parsedPort : undefined;
+    const port = parsedPort;
 
     if (port !== undefined) {
       http.port = port;
