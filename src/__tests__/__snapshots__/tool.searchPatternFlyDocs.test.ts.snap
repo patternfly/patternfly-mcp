@@ -1,0 +1,118 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`searchPatternFlyDocsTool should have a consistent return structure: structure 1`] = `
+{
+  "callback": [Function],
+  "name": "searchPatternFlyDocs",
+  "schema": true,
+}
+`;
+
+exports[`searchPatternFlyDocsTool, callback should parse parameters, default 1`] = `
+{
+  "content": [
+    {
+      "text": "Documentation URLs for "Button":
+
+1. https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/button/button.md
+2. https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/button/button.md
+3. https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-core/src/components/Button/examples/Button.md
+
+Use the "usePatternFlyDocs" tool with these URLs to fetch content.",
+      "type": "text",
+    },
+  ],
+}
+`;
+
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with lower case componentName 1`] = `
+{
+  "content": [
+    {
+      "text": "Documentation URLs for "button":
+
+1. https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/button/button.md
+2. https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/button/button.md
+3. https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-core/src/components/Button/examples/Button.md
+
+Use the "usePatternFlyDocs" tool with these URLs to fetch content.",
+      "type": "text",
+    },
+  ],
+}
+`;
+
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with made up componentName 1`] = `
+{
+  "content": [
+    {
+      "text": "No PatternFly components found matching "lorem ipsum dolor sit amet"
+To browse all available components, read the "patternfly://schemas/index" resource.",
+      "type": "text",
+    },
+  ],
+}
+`;
+
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with multiple words 1`] = `
+{
+  "content": [
+    {
+      "text": "No PatternFly components found matching "Button Card Table"
+To browse all available components, read the "patternfly://schemas/index" resource.",
+      "type": "text",
+    },
+  ],
+}
+`;
+
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with partial componentName 1`] = `
+{
+  "content": [
+    {
+      "text": "Documentation URLs for "ton":
+
+1. https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/button/button.md
+2. https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/button/button.md
+3. https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-core/src/components/Button/examples/Button.md
+
+Use the "usePatternFlyDocs" tool with these URLs to fetch content.",
+      "type": "text",
+    },
+  ],
+}
+`;
+
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with trimmed componentName 1`] = `
+{
+  "content": [
+    {
+      "text": "Documentation URLs for " Button  ":
+
+1. https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/button/button.md
+2. https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/button/button.md
+3. https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-core/src/components/Button/examples/Button.md
+
+Use the "usePatternFlyDocs" tool with these URLs to fetch content.",
+      "type": "text",
+    },
+  ],
+}
+`;
+
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with upper case componentName 1`] = `
+{
+  "content": [
+    {
+      "text": "Documentation URLs for "BUTTON":
+
+1. https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/button/button.md
+2. https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/button/button.md
+3. https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/v6.4.0/packages/react-core/src/components/Button/examples/Button.md
+
+Use the "usePatternFlyDocs" tool with these URLs to fetch content.",
+      "type": "text",
+    },
+  ],
+}
+`;

@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`patternFlyDocsIndexResource should have a consistent return structure: structure 1`] = `
+{
+  "config": true,
+  "handler": [Function],
+  "name": "patternfly-docs-index",
+  "uri": "patternfly://docs/index",
+}
+`;

@@ -4,7 +4,15 @@
  */
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
-import { ListToolsResultSchema, ResultSchema, LoggingMessageNotificationSchema, type LoggingLevel } from '@modelcontextprotocol/sdk/types.js';
+import {
+  ListToolsResultSchema,
+  ResultSchema,
+  ReadResourceResultSchema,
+  ListResourcesResultSchema,
+  ListResourceTemplatesResultSchema,
+  LoggingMessageNotificationSchema,
+  type LoggingLevel
+} from '@modelcontextprotocol/sdk/types.js';
 
 // @ts-ignore - dist/index.js isn't necessarily built yet, remember to build before running tests
 import { start, type PfMcpOptions, type PfMcpSettings, type ServerLogEvent } from '../../dist/index.js';
@@ -173,7 +181,24 @@ export const startServer = async (
     sessionId: transport.sessionId,
 
     async send(request: { method: string; params?: any }): Promise<RpcResponse> {
-      // Use the SDK client's request method
+      if (request.method === 'resources/list') {
+        const result = await mcpClient.request(request, ListResourcesResultSchema);
+
+        return { jsonrpc: '2.0', id: null, result: result as any };
+      }
+
+      if (request.method === 'resources/templates/list') {
+        const result = await mcpClient.request(request, ListResourceTemplatesResultSchema);
+
+        return { jsonrpc: '2.0', id: null, result: result as any };
+      }
+
+      if (request.method === 'resources/read') {
+        const result = await mcpClient.request(request, ReadResourceResultSchema);
+
+        return { jsonrpc: '2.0', id: null, result: result as any };
+      }
+
       // For tools/list, use the proper schema
       if (request.method === 'tools/list') {
         const result = await mcpClient.request(request, ListToolsResultSchema);

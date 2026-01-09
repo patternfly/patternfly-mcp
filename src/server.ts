@@ -1,13 +1,18 @@
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { McpServer, type ResourceTemplate, type ResourceMetadata } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { usePatternFlyDocsTool } from './tool.patternFlyDocs';
-import { fetchDocsTool } from './tool.fetchDocs';
+import { searchPatternFlyDocsTool } from './tool.searchPatternFlyDocs';
 import { componentSchemasTool } from './tool.componentSchemas';
+import { patternFlyContextResource } from './resource.patternFlyContext';
+import { patternFlyDocsIndexResource } from './resource.patternFlyDocsIndex';
+import { patternFlyDocsTemplateResource } from './resource.patternFlyDocsTemplate';
+import { patternFlySchemasIndexResource } from './resource.patternFlySchemasIndex';
 import { startHttpTransport, type HttpServerHandle } from './server.http';
 import { memo } from './server.caching';
 import { log, type LogEvent } from './logger';
 import { createServerLogger } from './server.logger';
 import { composeTools, sendToolsHostShutdown } from './server.tools';
+import { composeResources } from './server.resources';
 import { type GlobalOptions } from './options';
 import {
   getOptions,
@@ -44,6 +49,21 @@ type McpTool = [
 type McpToolCreator = ((options?: GlobalOptions) => McpTool) & { toolName?: string };
 
 /**
+ * A resource registered with the MCP server.
+ */
+type McpResource = [
+  name: string,
+  uriOrTemplate: string | ResourceTemplate,
+  config: ResourceMetadata,
+  handler: (...args: any[]) => any | Promise<any>
+];
+
+/**
+ * A function that creates a resource registered with the MCP server.
+ */
+type McpResourceCreator = ((options?: GlobalOptions) => McpResource) & { resourceName?: string };
+
+/**
  * Server options. Equivalent to GlobalOptions.
  */
 type ServerOptions = GlobalOptions;
@@ -54,11 +74,13 @@ type ServerOptions = GlobalOptions;
  * @interface ServerSettings
  *
  * @property {McpToolCreator[]} [tools] - An optional array of tool creators used by the server.
+ * @property {McpResourceCreator[]} [resources] - An optional array of resource creators used by the server.
  * @property [enableSigint] - Indicates whether SIGINT signal handling is enabled.
  * @property [allowProcessExit] - Determines if the process is allowed to exit explicitly.
  */
 interface ServerSettings {
   tools?: McpToolCreator[];
+  resources?: McpResourceCreator[];
   enableSigint?: boolean;
   allowProcessExit?: boolean;
 }
@@ -117,8 +139,20 @@ interface ServerInstance {
  */
 const builtinTools: McpToolCreator[] = [
   usePatternFlyDocsTool,
-  fetchDocsTool,
+  searchPatternFlyDocsTool,
   componentSchemasTool
+];
+
+/**
+ * Built-in resources.
+ *
+ * Array of built-in resources
+ */
+const builtinResources: McpResourceCreator[] = [
+  patternFlyContextResource,
+  patternFlyDocsIndexResource,
+  patternFlyDocsTemplateResource,
+  patternFlySchemasIndexResource
 ];
 
 /**
@@ -132,10 +166,12 @@ const builtinTools: McpToolCreator[] = [
  * @param [settings.tools] - Built-in tools to register.
  * @param [settings.enableSigint] - Indicates whether SIGINT signal handling is enabled.
  * @param [settings.allowProcessExit] - Determines if the process is allowed to exit explicitly, useful for testing.
+ * @param settings.resources
  * @returns Server instance with `stop()`, `getStats()` `isRunning()`, and `onLog()` subscription.
  */
 const runServer = async (options: ServerOptions = getOptions(), {
   tools = builtinTools,
+  resources = builtinResources,
   enableSigint = true,
   allowProcessExit = true
 }: ServerSettings = {}): Promise<ServerInstance> => {
@@ -195,6 +231,7 @@ const runServer = async (options: ServerOptions = getOptions(), {
       {
         capabilities: {
           tools: {},
+          resources: {},
           ...(enableProtocolLogging ? { logging: {} } : {})
         }
       }
@@ -217,6 +254,9 @@ const runServer = async (options: ServerOptions = getOptions(), {
 
     log.info(`Server stats enabled.`);
 
+    // Compose resources after logging is set up.
+    const updatedResources = await composeResources(resources);
+
     // Combine built-in tools with custom ones after logging is set up.
     const updatedTools = await composeTools(tools);
 
@@ -237,6 +277,28 @@ const runServer = async (options: ServerOptions = getOptions(), {
       // Setup server stats for external handlers
       getStatsSetup = () => statsTracker.getStats();
     }
+
+    updatedResources.forEach(resourceCreator => {
+      const [name, uri, config, callback] = resourceCreator(options);
+
+      log.info(`Registered resource: ${name}`);
+
+      server?.registerResource(name, uri as any, config, (...args: unknown[]) =>
+        runWithSession(session, async () =>
+          runWithOptions(options, async () => {
+            log.debug(
+              `Running resource "${name}"`,
+              `isArgs = ${args?.length > 0}`
+            );
+
+            const timedReport = stat.traffic();
+            const resourceResult = await callback(...args);
+
+            timedReport({ resource: name });
+
+            return resourceResult;
+          })));
+    });
 
     updatedTools.forEach(toolCreator => {
       const [name, schema, callback] = toolCreator(options);
@@ -379,6 +441,8 @@ export {
   builtinTools,
   type McpTool,
   type McpToolCreator,
+  type McpResource,
+  type McpResourceCreator,
   type ServerInstance,
   type ServerLogEvent,
   type ServerOnLog,

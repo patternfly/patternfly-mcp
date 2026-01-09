@@ -22,7 +22,7 @@ describe('setOptions', () => {
 
     expect(updatedOptions.logging.protocol).toBe(DEFAULT_OPTIONS.logging.protocol);
     expect(updatedOptions.resourceMemoOptions?.readFile?.expire).toBe(DEFAULT_OPTIONS.resourceMemoOptions?.readFile?.expire);
-    expect(updatedOptions.toolMemoOptions?.fetchDocs?.expire).toBe(DEFAULT_OPTIONS.toolMemoOptions?.fetchDocs?.expire);
+    expect(updatedOptions.toolMemoOptions?.usePatternFlyDocs?.expire).toBe(DEFAULT_OPTIONS.toolMemoOptions?.usePatternFlyDocs?.expire);
     expect(updatedOptions.pluginIsolation).toBe(DEFAULT_OPTIONS.pluginIsolation);
   });
 
@@ -35,8 +35,8 @@ describe('setOptions', () => {
     expect(typeof updatedOptions.resourceMemoOptions?.readFile?.expire).toBe('number');
     expect(updatedOptions.resourceMemoOptions?.readFile?.expire).toBe(DEFAULT_OPTIONS.resourceMemoOptions?.readFile?.expire);
 
-    expect(typeof updatedOptions.toolMemoOptions?.fetchDocs?.expire).toBe('number');
-    expect(updatedOptions.toolMemoOptions?.fetchDocs?.expire).toBe(DEFAULT_OPTIONS.toolMemoOptions?.fetchDocs?.expire);
+    expect(typeof updatedOptions.toolMemoOptions?.usePatternFlyDocs?.expire).toBe('number');
+    expect(updatedOptions.toolMemoOptions?.usePatternFlyDocs?.expire).toBe(DEFAULT_OPTIONS.toolMemoOptions?.usePatternFlyDocs?.expire);
 
     expect(typeof updatedOptions.pluginIsolation).toBe('string');
     expect(updatedOptions.pluginIsolation).toBe(DEFAULT_OPTIONS.pluginIsolation);
@@ -85,6 +85,7 @@ describe('tool creator options context', () => {
     // Mock server instance
     mockServer = {
       registerTool: jest.fn(),
+      registerResource: jest.fn(),
       connect: jest.fn().mockResolvedValue(undefined),
       close: jest.fn().mockResolvedValue(undefined)
     };
