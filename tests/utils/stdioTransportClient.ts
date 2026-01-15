@@ -164,6 +164,26 @@ export const startServer = async ({
     async send(request: { method: string; params?: any }, _opts?: { timeoutMs?: number }): Promise<RpcResponse> {
       try {
         // Use high-level SDK methods when available for better type safety
+        if (request.method === 'resources/list') {
+          const result = await mcpClient.listResources(request.params);
+
+          return { jsonrpc: '2.0', id: null, result };
+        }
+
+        if (request.method === 'resources/templates/list') {
+          const result = await mcpClient.listResourceTemplates(request.params);
+
+          return { jsonrpc: '2.0', id: null, result };
+        }
+
+        if (request.method === 'resources/read' && request.params?.uri) {
+          const result = await mcpClient.readResource({
+            uri: request.params.uri
+          });
+
+          return { jsonrpc: '2.0', id: null, result };
+        }
+
         if (request.method === 'tools/list') {
           const result = await mcpClient.listTools(request.params);
 

@@ -164,12 +164,34 @@ const freezeObject = <TBase>(obj: TBase, _seen?: WeakSet<object>): TBase => {
 };
 
 /**
+ * Check if "is an Async function".
+ *
+ * @param obj
+ */
+const isAsync = (obj: unknown) => /^\[object (Async|AsyncFunction)]/.test(Object.prototype.toString.call(obj));
+
+/**
  * Check if "is a Promise", "Promise like".
  *
  * @param obj - Object, or otherwise, to check
  * @returns `true` if the object is a Promise
  */
 const isPromise = (obj: unknown) => /^\[object (Promise|Async|AsyncFunction)]/.test(Object.prototype.toString.call(obj));
+
+/**
+ * Check if a value is a valid URL.
+ *
+ * @param str
+ */
+const isUrl = (str: unknown) => {
+  try {
+    new URL(str as any);
+
+    return true;
+  } catch {
+    return false;
+  }
+};
 
 /**
  * Generate a hash from a string
@@ -294,15 +316,95 @@ const generateHash = (anyValue: unknown): string => {
   return hashCode(stringify);
 };
 
+/**
+ * Join an array of values with a separator, optionally filtering out falsy values.
+ *
+ * - `stringJoin.basic` Join argument values with a single space separator
+ * - `stringJoin.newline` Join argument values with a newline separator
+ * - `stringJoin.filtered` Join argument values with a single space separator, filtering out falsy values
+ * - `stringJoin.newlineFiltered` Join argument values with a newline separator, filtering out falsy values
+ *
+ * @param arr - Array of strings to join
+ * @param settings - Join settings
+ * @param settings.sep - Separator to use
+ * @param settings.filterFalsyValues - If `true`, filter out falsy values before joining (default: `false`)
+ * @returns Joined string, with optional separator
+ */
+const stringJoin = (arr: unknown[], { sep = ' ', filterFalsyValues = false } = {}): string =>
+  (filterFalsyValues ? arr.filter(Boolean).join(sep) : arr.join(sep));
+
+/**
+ * Join argument values with a single space separator.
+ *
+ * @param args - Array of values to join
+ */
+stringJoin.basic = (...args: unknown[]) => stringJoin(args);
+
+/**
+ * Join argument values with a newline separator.
+ *
+ * @param args - Array of values to join
+ */
+stringJoin.newline = (...args: unknown[]) => stringJoin(args, { sep: '\n' });
+
+/**
+ * Join argument values with a single space separator, filtering out falsy values.
+ *
+ * @param args - Array of values to join
+ */
+stringJoin.filtered = (...args: unknown[]) => stringJoin(args, { filterFalsyValues: true });
+
+/**
+ * Join argument values with a newline separator, filtering out falsy values.
+ *
+ * @param args - Array of values to join
+ */
+stringJoin.newlineFiltered = (...args: unknown[]) => stringJoin(args, { sep: '\n', filterFalsyValues: true });
+
+/**
+ * Wrap a function, or another Promise in a timeout, returning a
+ * Promise that either resolves, rejects, or rejects after the timeout.
+ *
+ * @param func - Function or Promise to wrap
+ * @param settings - Timeout settings
+ * @param settings.timeout - Timeout in milliseconds (default: `10_000`)
+ * @param settings.errorMessage - Error message to use if timeout occurs (default: `'Call timed out'`)
+ */
+const timeoutFunction = async <TReturn>(
+  func: Promise<TReturn> | (() => TReturn | Promise<TReturn>),
+  { timeout = 10_000, errorMessage = 'Call timed out' }: { timeout?: number, errorMessage?: string } = {}
+) => {
+  let funcTimer: NodeJS.Timeout | undefined;
+  const timer = () => new Promise<never>((_, reject) => {
+    funcTimer = setTimeout(reject, timeout, new Error(errorMessage));
+    funcTimer?.unref();
+  });
+
+  try {
+    const updatedFunc = async () =>
+      (!isAsync(func) && isPromise(func) ? func as Promise<TReturn> : (func as () => TReturn | Promise<TReturn>)());
+
+    return await Promise.race([updatedFunc(), timer()]);
+  } finally {
+    if (funcTimer) {
+      clearTimeout(funcTimer);
+    }
+  }
+};
+
 export {
   freezeObject,
   generateHash,
   hashCode,
   hashNormalizeValue,
+  isAsync,
   isObject,
   isPlainObject,
   isPromise,
   isReferenceLike,
+  isUrl,
   mergeObjects,
-  portValid
+  portValid,
+  stringJoin,
+  timeoutFunction
 };

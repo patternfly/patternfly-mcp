@@ -49,37 +49,47 @@ npx @patternfly/patternfly-mcp
 
 ## Usage
 
-The MCP server can communicate over **stdio** (default) or **HTTP** transport. It provides access to PatternFly documentation through built-in tools.
+The MCP server tools are focused on being a resource library for PatternFly. Server tools are extensible by design and intended to be used in conjunction with the available MCP resources.
 
 ### Built-in Tools
 
-All tools accept an argument named `urlList` (array of strings) or `componentName` (string).
+#### Tool: searchPatternFlyDocs
+Use this to search for PatternFly documentation URLs and component names. Accepts partial string matches or `*` to list all available components. From the content, you can select specific URLs and component names to use with `usePatternFlyDocs`
+
+- **Parameters**: `searchQuery`: `string` (required)
 
 #### Tool: usePatternFlyDocs
-Use this to fetch high-level index content (for example, a local `README.md` that contains relevant links, or `llms.txt` files in docs-host mode). From that content, you can select specific URLs to pass to `fetchDocs`.
+Fetch full documentation and component JSON schemas for specific PatternFly URLs or component names.
 
-- **Parameters**: `urlList`: `string[]` (required)
+> **Feature**: This tool automatically detects if a URL belongs to a component (or if a "name" is provided) and appends its machine-readable JSON schema (props, types, validation) to the response, providing a fused context of human-readable docs and technical specs.
 
-#### Tool: fetchDocs
-Use this to fetch one or more specific documentation pages (e.g., concrete design guidelines or accessibility pages) after you’ve identified them via `usePatternFlyDocs`.
+- **Parameters**: _Parameters are mutually exclusive. Provide either `name` OR `urlList` not both._
+  - `name`: `string` (optional) - The name of the PatternFly component (e.g., "Button", "Modal"). **Recommended** for known component lookups.
+  - `urlList`: `string[]` (optional) - A list of specific documentation URLs discovered via `searchPatternFlyDocs`.
 
-- **Parameters**: `urlList`: `string[]` (required)
+#### Removed: ~~Tool: fetchDocs~~
+> "fetchDocs" has been integrated into "usePatternFlyDocs."
 
-#### Tool: componentSchemas
-Use this to fetch the JSON Schema for a specific PatternFly component.
+~~Use this to fetch one or more specific documentation pages (e.g., concrete design guidelines or accessibility pages) after you’ve identified them via `usePatternFlyDocs`.~~
 
-- **Parameters**: `componentName`: `string` (required)
+- ~~**Parameters**: `urlList`: `string[]` (required)~~
 
-### Docs-host mode (local llms.txt mode)
+#### Deprecated: ~~Tool: componentSchemas~~
+> "componentSchemas" has been integrated into "usePatternFlyDocs."
 
-If you run the server with `--docs-host`, local paths you pass in `urlList` are resolved relative to the `llms-files` folder at the repository root. This is useful when you have pre-curated `llms.txt` files locally.
+~~Use this to fetch the JSON Schema for a specific PatternFly component.~~
 
-Example:
-```bash
-npx @patternfly/patternfly-mcp --docs-host
-```
+- ~~**Parameters**: `componentName`: `string` (required)~~
 
-Then, passing a local path such as `react-core/6.0.0/llms.txt` in `urlList` will load from `llms-files/react-core/6.0.0/llms.txt`.
+### Built-in Resources
+
+The server exposes a resource-centric architecture via the `patternfly://` URI scheme:
+
+- **`patternfly://context`**: General PatternFly development context and high-level rules.
+- **`patternfly://docs/index`**: Index of all available documentation pages.
+- **`patternfly://docs/{name}`**: Documentation for a specific component (e.g., `patternfly://docs/Button`).
+- **`patternfly://schemas/index`**: Index of all available component schemas.
+- **`patternfly://schemas/{name}`**: JSON Schema for a specific component (e.g., `patternfly://schemas/Button`).
 
 ### MCP Client Configuration
 
@@ -106,19 +116,6 @@ Most MCP clients use a JSON configuration to specify how to start this server. B
       "command": "npx",
       "args": ["-y", "@patternfly/patternfly-mcp@latest", "--http", "--port", "8080"],
       "description": "PatternFly docs (HTTP transport)"
-    }
-  }
-}
-```
-
-#### Docs-host mode
-```json
-{
-  "mcpServers": {
-    "patternfly-docs": {
-      "command": "npx",
-      "args": ["-y", "@patternfly/patternfly-mcp@latest", "--docs-host"],
-      "description": "PatternFly docs (docs-host mode)"
     }
   }
 }
@@ -172,6 +169,30 @@ Example:
 ```bash
 npx @patternfly/patternfly-mcp --log-stderr --log-level debug
 ```
+
+### Disabled: ~~Docs-host mode (local llms.txt mode)~~
+
+> Docs-host mode will be removed or replaced in a future release.
+> 
+> Docs-host mode was intended to be a more efficient way for accessing text file versions of PatternFly documentation and link
+> resources. That effort was intended to help load times and token counts while attempting to account for future API work.
+> Docs-host mode documentation and links have experienced drift with recent updates to PatternFly resources. That drift combined
+> with the introduction of MCP server resources concludes in disabling Docs-host mode while we evaluate its removal or replacement.
+>
+> If you have been using Docs-host mode, there's a probability you've been leveraging model inference instead of PatternFly
+> documentation. You can continue passing the `--docs-host` flag, it will not break the CLI, but it will no-longer affect how the
+> PatternFly MCP server loads documentation and link resources.
+
+~~If you run the server with `--docs-host`, local paths you pass in `urlList` are resolved relative to the `llms-files` folder at the repository root. This is useful when you have pre-curated `llms.txt` files locally.~~
+
+- `--docs-host`: Running this flag produces no results. ~~Local paths you pass in `urlList` are resolved relative to the `llms-files` folder.~~
+
+Example:
+```bash
+npx @patternfly/patternfly-mcp --docs-host
+```
+
+~~Then, passing a local path such as `react-core/6.0.0/llms.txt` in `urlList` will load from `llms-files/react-core/6.0.0/llms.txt`.~~
 
 ### MCP Tool Plugins
 

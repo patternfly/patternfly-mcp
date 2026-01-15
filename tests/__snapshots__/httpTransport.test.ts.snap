@@ -1,6 +1,20 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`PatternFly MCP, HTTP Transport should concatenate headers and separator with two local files 1`] = `
+exports[`Builtin resources, HTTP transport should expose expected resources and templates: resources 1`] = `
+{
+  "resourceNames": [
+    "patternfly://context",
+    "patternfly://docs/index",
+    "patternfly://schemas/index",
+  ],
+  "templateNames": [
+    "patternfly://docs/{name}",
+    "patternfly://schemas/{name}",
+  ],
+}
+`;
+
+exports[`Builtin tools, HTTP transport should concatenate headers and separator with two local files 1`] = `
 "# Documentation from documentation/guidelines/README.md
 
 # PatternFly Guidelines
@@ -108,7 +122,7 @@ You can find documentation on PatternFly's components at [PatternFly All compone
 "
 `;
 
-exports[`PatternFly MCP, HTTP Transport should concatenate headers and separator with two remote files 1`] = `
+exports[`Builtin tools, HTTP transport should concatenate headers and separator with two remote files 1`] = `
 "# Documentation from https://www.patternfly.org/notARealPath/README.md
 
 # PatternFly Development Rules
@@ -132,17 +146,17 @@ exports[`PatternFly MCP, HTTP Transport should concatenate headers and separator
 This is a test document for mocking remote HTTP requests."
 `;
 
-exports[`PatternFly MCP, HTTP Transport should expose expected tools and stable shape 1`] = `
+exports[`Builtin tools, HTTP transport should expose expected tools and stable shape: tools 1`] = `
 {
   "toolNames": [
     "componentSchemas",
-    "fetchDocs",
+    "searchPatternFlyDocs",
     "usePatternFlyDocs",
   ],
 }
 `;
 
-exports[`PatternFly MCP, HTTP Transport should initialize MCP session over HTTP 1`] = `
+exports[`Builtin tools, HTTP transport should initialize MCP session over HTTP 1`] = `
 {
   "baseUrl": "http://127.0.0.1:5001",
   "name": "@patternfly/patternfly-mcp",

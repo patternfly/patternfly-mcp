@@ -44,55 +44,67 @@ describe('usePatternFlyDocsTool, callback', () => {
       urlList: ['components/button.md', 'components/card.md', 'components/table.md']
     },
     {
-      description: 'with empty files',
-      value: 'trimmed content',
-      urlList: ['components/button.md', '', '   ', 'components/card.md', 'components/table.md']
-    },
-    {
-      description: 'with empty urlList',
-      value: 'empty content',
-      urlList: []
-    },
-    {
-      description: 'with empty strings in a urlList',
-      value: 'trimmed and empty content',
-      urlList: ['', ' ']
-    },
-    {
       description: 'with invalid urlList',
       value: 'invalid path',
       urlList: ['invalid-url']
+    },
+    {
+      description: 'with name',
+      value: 'button content',
+      name: 'button'
     }
-  ])('should parse parameters, $description', async ({ value, urlList }) => {
-    mockProcessDocs.mockResolvedValue(value);
+  ])('should parse parameters, $description', async ({ value, urlList, name }) => {
+    mockProcessDocs.mockResolvedValue([{ content: value }] as any);
     const [_name, _schema, callback] = usePatternFlyDocsTool();
-    const result = await callback({ urlList });
+    const result = await callback({ urlList, name });
 
-    expect(mockProcessDocs).toHaveBeenCalledWith(urlList);
-    expect(result).toMatchSnapshot();
+    expect(mockProcessDocs).toHaveBeenCalledTimes(1);
+    expect(result.content[0].text).toBeDefined();
+    expect(result.content[0].text.startsWith('# Documentation from')).toBe(true);
   });
 
   it.each([
     {
       description: 'with missing or undefined urlList',
-      error: 'Missing required parameter: urlList',
+      error: 'Provide either a string',
       urlList: undefined
     },
     {
       description: 'with null urlList',
-      error: 'Missing required parameter: urlList',
+      error: 'Provide either a string',
       urlList: null
     },
     {
       description: 'when urlList is not an array',
-      error: 'must be an array of strings',
+      error: 'Provide either a string',
       urlList: 'not-an-array'
+    },
+    {
+      description: 'with empty files',
+      error: 'Provide either a string',
+      urlList: ['components/button.md', '', '   ', 'components/card.md', 'components/table.md']
+    },
+    {
+      description: 'with empty urlList',
+      error: 'Provide either a string',
+      urlList: []
+    },
+    {
+      description: 'with empty strings in a urlList',
+      error: 'Provide either a string',
+      urlList: ['', ' ']
+    },
+    {
+      description: 'with both urlList and name',
+      error: 'Provide either a string',
+      urlList: ['components/button.md'],
+      name: 'lorem ipsum'
     }
-  ])('should handle errors, $description', async ({ error, urlList }) => {
+  ])('should handle errors, $description', async ({ error, urlList, name }) => {
     const [_name, _schema, callback] = usePatternFlyDocsTool();
 
-    await expect(callback({ urlList })).rejects.toThrow(McpError);
-    await expect(callback({ urlList })).rejects.toThrow(error);
+    await expect(callback({ urlList, name })).rejects.toThrow(McpError);
+    await expect(callback({ urlList, name })).rejects.toThrow(error);
   });
 
   it('should handle processing errors', async () => {

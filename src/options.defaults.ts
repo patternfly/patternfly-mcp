@@ -11,12 +11,14 @@ import { type ToolModule } from './server.toolsUser';
  * @template TLogOptions The logging options type, defaulting to LoggingOptions.
  * @property contextPath - Current working directory.
  * @property contextUrl - Current working directory URL.
- * @property docsHost - Flag indicating whether to use the docs-host.
+ * @property docsHost - `@DISABLED` This flag no longer produces a result.
  * @property docsPath - Path to the documentation directory.
  * @property isHttp - Flag indicating whether the server is running in HTTP mode.
  * @property {HttpOptions} http - HTTP server options.
  * @property llmsFilesPath - Path to the LLMs files directory.
  * @property {LoggingOptions} logging - Logging options.
+ * @property maxDocsToLoad - Maximum number of docs to load.
+ * @property recommendedMaxDocsToLoad - Recommended maximum number of docs to load.
  * @property name - Name of the package.
  * @property nodeVersion - Node.js major version.
  * @property pluginIsolation - Isolation preset for external plugins.
@@ -43,12 +45,14 @@ import { type ToolModule } from './server.toolsUser';
 interface DefaultOptions<TLogOptions = LoggingOptions> {
   contextPath: string;
   contextUrl: string;
-  docsHost: boolean;
+  docsHost?: boolean;
   docsPath: string;
   http: HttpOptions;
   isHttp: boolean;
   llmsFilesPath: string;
   logging: TLogOptions;
+  maxDocsToLoad: number;
+  recommendedMaxDocsToLoad: number;
   name: string;
   nodeVersion: number;
   pluginIsolation: 'none' | 'strict';
@@ -64,6 +68,7 @@ interface DefaultOptions<TLogOptions = LoggingOptions> {
   pfExternalAccessibility: string;
   repoName: string | undefined;
   resourceMemoOptions: Partial<typeof RESOURCE_MEMO_OPTIONS>;
+  resourceModules: unknown | unknown[];
   separator: string;
   stats: StatsOptions;
   toolMemoOptions: Partial<typeof TOOL_MEMO_OPTIONS>;
@@ -239,9 +244,9 @@ const TOOL_MEMO_OPTIONS = {
     expire: 1 * 60 * 1000, // 1 minute sliding cache
     cacheErrors: false
   },
-  fetchDocs: {
-    cacheLimit: 15,
-    expire: 1 * 60 * 1000, // 1 minute sliding cache
+  searchPatternFlyDocs: {
+    cacheLimit: 10,
+    expire: 10 * 60 * 1000, // 10 minute sliding cache
     cacheErrors: false
   }
 };
@@ -348,6 +353,9 @@ const getNodeMajorVersion = (nodeVersion = process.versions.node) => {
 /**
  * Global default options. Base defaults before CLI/programmatic overrides.
  *
+ * @note `maxDocsToLoad` and `recommendedMaxDocsToLoad` should be generated from the length
+ * of doc-link resources once we migrate over to a new docs structure.
+ *
  * @type {DefaultOptions} Default options object.
  */
 const DEFAULT_OPTIONS: DefaultOptions = {
@@ -359,6 +367,8 @@ const DEFAULT_OPTIONS: DefaultOptions = {
   http: HTTP_OPTIONS,
   llmsFilesPath: (process.env.NODE_ENV === 'local' && '/llms-files') || join(resolve(process.cwd()), 'llms-files'),
   logging: LOGGING_OPTIONS,
+  maxDocsToLoad: 500,
+  recommendedMaxDocsToLoad: 15,
   name: packageJson.name,
   nodeVersion: (process.env.NODE_ENV === 'local' && 22) || getNodeMajorVersion(),
   pluginIsolation: 'strict',
@@ -375,6 +385,7 @@ const DEFAULT_OPTIONS: DefaultOptions = {
   resourceMemoOptions: RESOURCE_MEMO_OPTIONS,
   repoName: basename(process.cwd() || '').trim(),
   stats: STATS_OPTIONS,
+  resourceModules: [],
   toolMemoOptions: TOOL_MEMO_OPTIONS,
   toolModules: [],
   separator: DEFAULT_SEPARATOR,

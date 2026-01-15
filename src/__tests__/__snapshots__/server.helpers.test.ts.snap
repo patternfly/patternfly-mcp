@@ -106,3 +106,29 @@ exports[`mergeObjects should merge two objects, recursive plain object against r
   },
 }
 `;
+
+exports[`stringJoin should join values, default 1`] = `"lorem ipsum 0 1 2 3 true false  "`;
+
+exports[`stringJoin should join values, filtered 1`] = `"lorem ipsum 1 2 3 true"`;
+
+exports[`stringJoin should join values, newline 1`] = `
+"lorem
+ipsum
+0
+1
+2
+3
+true
+false
+
+"
+`;
+
+exports[`stringJoin should join values, newline filtered 1`] = `
+"lorem
+ipsum
+1
+2
+3
+true"
+`;

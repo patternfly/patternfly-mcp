@@ -1,51 +1,100 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`processDocsFunction should handle errors gracefully: errors 1`] = `
-"# Documentation from good-file.md
-
-success content
-
----
-
-❌ Failed to load bad-file.md: Error: File not found"
+[
+  {
+    "content": "success content",
+    "isSuccess": true,
+    "path": "good-file.md",
+    "resolvedPath": "/good-file.md",
+  },
+  {
+    "content": "❌ Failed to load bad-file.md: File not found",
+    "isSuccess": false,
+    "path": "bad-file.md",
+    "resolvedPath": undefined,
+  },
+]
 `;
 
 exports[`processDocsFunction should process local and remote inputs, duplicate files and URLS 1`] = `
-"# Documentation from file.md
-
-local file content
-
----
-
-# Documentation from https://example.com/remote.md
-
-fetched content"
+[
+  {
+    "content": "local file content",
+    "isSuccess": true,
+    "path": "file.md",
+    "resolvedPath": "/file.md",
+  },
+  {
+    "content": "fetched content",
+    "isSuccess": true,
+    "path": "https://example.com/remote.md",
+    "resolvedPath": "https://example.com/remote.md",
+  },
+]
 `;
 
 exports[`processDocsFunction should process local and remote inputs, files and URLS 1`] = `
-"# Documentation from local-file.md
-
-local file content
-
----
-
-# Documentation from https://example.com/remote.md
-
-fetched content"
+[
+  {
+    "content": "local file content",
+    "isSuccess": true,
+    "path": "local-file.md",
+    "resolvedPath": "/local-file.md",
+  },
+  {
+    "content": "fetched content",
+    "isSuccess": true,
+    "path": "https://example.com/remote.md",
+    "resolvedPath": "https://example.com/remote.md",
+  },
+]
 `;
 
 exports[`processDocsFunction should process local and remote inputs, filter empty strings 1`] = `
-"# Documentation from file.md
-
-local file content
-
----
-
-# Documentation from file2.md
-
-local file content"
+[
+  {
+    "content": "local file content",
+    "isSuccess": true,
+    "path": "file.md",
+    "resolvedPath": "/file.md",
+  },
+  {
+    "content": "local file content",
+    "isSuccess": true,
+    "path": "file2.md",
+    "resolvedPath": "/file2.md",
+  },
+]
 `;
 
-exports[`resolveLocalPathFunction should return a consistent path, with docsHost false 1`] = `"documentation/README.md"`;
+exports[`promiseQueue should execute promises in order: allSettled 1`] = `
+[
+  {
+    "status": "fulfilled",
+    "value": {
+      "content": "/dolor-sit.md",
+      "resolvedPath": "/dolor-sit.md",
+    },
+  },
+  {
+    "reason": "https://example.com/remote.md",
+    "status": "rejected",
+  },
+  {
+    "status": "fulfilled",
+    "value": {
+      "content": "/lorem-ipsum.md",
+      "resolvedPath": "/lorem-ipsum.md",
+    },
+  },
+]
+`;
 
-exports[`resolveLocalPathFunction should return a consistent path, with docsHost true 1`] = `"/llms-files/react-core/6.0.0/llms.txt"`;
+exports[`resolveLocalPathFunction should return a consistent path, basic 1`] = `"/lorem-ipsum.md"`;
+
+exports[`resolveLocalPathFunction should return a consistent path, url, file 1`] = `"file://someDirectory/dolor-sit.md"`;
+
+exports[`resolveLocalPathFunction should return a consistent path, url, http 1`] = `"http://example.com/dolor-sit.md"`;
+
+exports[`resolveLocalPathFunction should return a consistent path, url, https 1`] = `"https://example.com/dolor-sit.md"`;

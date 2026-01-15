@@ -524,7 +524,7 @@ const sendToolsHostShutdown = async (
 };
 
 /**
- * Compose built-in creators with any externally loaded creators.
+ * Compose built-in tool creators with any externally loaded creators.
  *
  * - Node.js version policy:
  *    - Node >= 22, external plugins are executed out-of-process via a Tools Host.
