@@ -67,13 +67,24 @@ const patternFlyDocsTemplateResource = (options = getOptions()): McpResource => 
 
       try {
         const exactMatchesUrls = exactMatches.flatMap(match => match.urls);
-        const processedDocs = await memoProcess(exactMatchesUrls);
 
-        docs.push(...processedDocs);
+        if (exactMatchesUrls.length > 0) {
+          const processedDocs = await memoProcess(exactMatchesUrls);
+
+          docs.push(...processedDocs);
+        }
       } catch (error) {
         throw new McpError(
           ErrorCode.InternalError,
           `Failed to fetch documentation: ${error}`
+        );
+      }
+
+      // Redundancy check, technically this should never happen, future proofing
+      if (docs.length === 0) {
+        throw new McpError(
+          ErrorCode.InvalidParams,
+          `Component "${name.trim()}" was found, but no documentation URLs are available for it.`
         );
       }
 
