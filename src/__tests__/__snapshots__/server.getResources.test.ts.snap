@@ -9,7 +9,7 @@ exports[`processDocsFunction should handle errors gracefully: errors 1`] = `
     "resolvedPath": "/good-file.md",
   },
   {
-    "content": "❌ Failed to load bad-file.md: Error: File not found",
+    "content": "❌ Failed to load bad-file.md: File not found",
     "isSuccess": false,
     "path": "bad-file.md",
     "resolvedPath": undefined,

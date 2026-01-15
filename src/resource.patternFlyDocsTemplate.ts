@@ -54,7 +54,7 @@ const patternFlyDocsTemplateResource = (options = getOptions()): McpResource => 
       const { exactMatches, searchResults } = searchComponents.memo(name);
 
       if (exactMatches.length === 0 || exactMatches.every(match => match.urls.length === 0)) {
-        const suggestions = searchResults.map(result => result.item).slice(0, 3);
+        const suggestions = searchResults.map(searchResult => searchResult.item).slice(0, 3);
         const suggestionMessage = suggestions.length
           ? `Did you mean ${suggestions.map(suggestion => `"${suggestion}"`).join(', ')}?`
           : 'No similar components found.';

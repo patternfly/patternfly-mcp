@@ -105,15 +105,20 @@ const loadFileFetch = async (pathOrUrl: string) => {
 const promiseQueue = async (queue: string[], limit = 5) => {
   const results = [];
   const slidingQueue = new Set();
+  let activeCount = 0;
 
   for (const item of queue) {
     // Use a sliding window to limit the number of concurrent promises.
-    const promise = loadFileFetch(item).finally(() => slidingQueue.delete(promise));
+    const promise = loadFileFetch(item).finally(() => {
+      slidingQueue.delete(promise);
+      activeCount -= 1;
+    });
 
     results.push(promise);
     slidingQueue.add(promise);
+    activeCount += 1;
 
-    if (slidingQueue.size >= limit) {
+    if (activeCount >= limit) {
       // Silent fail if one promise fails to load, but keep processing the rest.
       await Promise.race(slidingQueue).catch(() => {});
     }
@@ -155,7 +160,9 @@ const processDocsFunction = async (
       content = docContent;
       isSuccess = true;
     } else {
-      content = `❌ Failed to load ${original}: ${res.reason}`;
+      const errorMessage = res.reason instanceof Error ? res.reason.message : String(res.reason);
+
+      content = `❌ Failed to load ${original}: ${errorMessage}`;
     }
 
     docs.push({

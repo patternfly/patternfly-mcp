@@ -49,7 +49,7 @@ const patternFlySchemasTemplateResource = (): McpResource => [
     }
 
     const { exactMatches, searchResults } = searchComponents.memo(name, { names: pfComponentNames });
-    let result: ComponentSchema;
+    let result: ComponentSchema | undefined = undefined;
 
     if (exactMatches.length > 0) {
       for (const match of exactMatches) {
@@ -63,7 +63,7 @@ const patternFlySchemasTemplateResource = (): McpResource => [
     }
 
     if (result === undefined) {
-      const suggestions = searchResults.map(result => result.item).slice(0, 3);
+      const suggestions = searchResults.map(searchResult => searchResult.item).slice(0, 3);
       const suggestionMessage = suggestions.length
         ? `Did you mean ${suggestions.map(suggestion => `"${suggestion}"`).join(', ')}?`
         : 'No similar components found.';
