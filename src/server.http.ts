@@ -3,6 +3,7 @@ import { type Socket } from 'node:net';
 import { execSync } from 'node:child_process';
 import { platform } from 'node:os';
 import { randomUUID } from 'node:crypto';
+import { type Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import { StreamableHTTPServerTransport, type StreamableHTTPServerTransportOptions } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { type McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { portToPid } from 'pid-port';
@@ -164,7 +165,7 @@ const startHttpTransport = async (mcpServer: McpServer, options = getOptions()):
   const transport = createStreamableHttpTransport(options);
 
   // Connect MCP server to transport
-  await mcpServer.connect(transport);
+  await mcpServer.connect(transport as Transport);
 
   // Set up
   const connections = new Set<Socket>();
