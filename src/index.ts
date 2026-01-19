@@ -7,6 +7,7 @@ import {
   type ServerOnLog,
   type ServerOnLogHandler,
   type ServerLogEvent,
+  type ServerStatReport,
   type ServerStats,
   type ServerGetStats
 } from './server';
@@ -85,6 +86,13 @@ type PfMcpGetStats = ServerGetStats;
  * @alias ServerStats
  */
 type PfMcpStats = ServerStats;
+
+/**
+ * Statistics report about the server.
+ *
+ * @alias ServerStatReport
+ */
+type PfMcpStatReport = ServerStatReport;
 
 /**
  * Main function - Programmatic and CLI entry point with optional overrides
@@ -187,6 +195,7 @@ export {
   type PfMcpLogEvent,
   type PfMcpOnLog,
   type PfMcpOnLogHandler,
+  type PfMcpStatReport,
   type PfMcpStats,
   type PfMcpGetStats,
   type ToolCreator,

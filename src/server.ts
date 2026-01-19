@@ -25,7 +25,7 @@ import { DEFAULT_OPTIONS } from './options.defaults';
 import { isZodRawShape, isZodSchema } from './server.schema';
 import { isPlainObject, timeoutFunction } from './server.helpers';
 import { createServerStats, type Stats } from './server.stats';
-import { stat } from './stats';
+import { stat, type StatReport } from './stats';
 
 /**
  * A tool registered with the MCP server.
@@ -92,6 +92,13 @@ interface ServerSettings {
  * @alias Stats
  */
 type ServerStats = Stats;
+
+/**
+ * Server stats report.
+ *
+ * @alias StatReport
+ */
+type ServerStatReport = StatReport;
 
 /**
  * A callback to Promise return server stats.
@@ -458,6 +465,7 @@ export {
   type ServerOnLogHandler,
   type ServerOptions,
   type ServerSettings,
+  type ServerStatReport,
   type ServerStats,
   type ServerGetStats
 };
