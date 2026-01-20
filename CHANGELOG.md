@@ -1,6 +1,22 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.6.0](https://github.com/patternfly/patternfly-mcp/compare/7ed6ff8b977ec1a15cec5a75a99df172be5caa01...c86ad8ad5dfe9eac41ef17a63afa0b2e191c3b4b) (2026-01-19)
+
+
+### Features
+* **search,resources** search for docs, migrate to mcp resources ([#74](https://github.com/patternfly/patternfly-mcp/pull/74)) ([2cb5ca7](https://github.com/patternfly/patternfly-mcp/commit/2cb5ca7bbac18285136498f652d23c1807fc383e))
+* **stats** getStats, server report channels ([#78](https://github.com/patternfly/patternfly-mcp/pull/78)) ([3b7c9a0](https://github.com/patternfly/patternfly-mcp/commit/3b7c9a0eb78f3ef570d43d44662603457414d014))
+
+### Builds
+* **deps** @modelcontextprotocol/sdk from 1.24.3 to 1.25.1 ([#66](https://github.com/patternfly/patternfly-mcp/pull/66)) ([fbabe34](https://github.com/patternfly/patternfly-mcp/commit/fbabe346edcf66a5dc990fb01ab4be55b0513b64))
+* **deps-dev** bump the dev group with 3 updates ([#79](https://github.com/patternfly/patternfly-mcp/pull/79)) ([e7e5c64](https://github.com/patternfly/patternfly-mcp/commit/e7e5c64646528f9f280821791c91283ed9ecb739))
+* **deps-dev** bump @types/node from 24.10.1 to 25.0.3 ([#77](https://github.com/patternfly/patternfly-mcp/pull/77)) ([562b4a6](https://github.com/patternfly/patternfly-mcp/commit/562b4a6b3e86262376cbf75d8c686ae46baf7ae3))
+* **deps-dev** bump the dev group with 3 updates ([#76](https://github.com/patternfly/patternfly-mcp/pull/76)) ([0a8eb99](https://github.com/patternfly/patternfly-mcp/commit/0a8eb9957296526ddba9ce2ad65b32cf3d35e9f3))
+
+### Bug Fixes
+*  stat report typing ([#83](https://github.com/patternfly/patternfly-mcp/pull/83)) ([c86ad8a](https://github.com/patternfly/patternfly-mcp/commit/c86ad8ad5dfe9eac41ef17a63afa0b2e191c3b4b))
+
 ## [0.5.0](https://github.com/patternfly/patternfly-mcp/compare/3c49d4babc7344013c55c67326a3a001c44e02c0...3ee99f52c126471e03bf1baf1003e2259d2d9d21) (2026-01-05)
 
 
