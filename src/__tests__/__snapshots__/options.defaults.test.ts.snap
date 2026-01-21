@@ -22,6 +22,7 @@ exports[`options defaults should return specific properties: defaults 1`] = `
     "transport": "stdio",
   },
   "maxDocsToLoad": 500,
+  "maxSearchLength": 256,
   "name": "@patternfly/patternfly-mcp",
   "nodeVersion": 22,
   "pfExternal": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content",

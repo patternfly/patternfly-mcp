@@ -2,6 +2,7 @@ import { ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js';
 import { componentNames as pfComponentNames } from '@patternfly/patternfly-component-schemas/json';
 import { type McpResource } from './server';
+import { getOptions } from './options.context';
 import { getComponentSchema } from './tool.patternFlyDocs';
 import { searchComponents } from './tool.searchPatternFlyDocs';
 
@@ -32,9 +33,10 @@ const CONFIG = {
 /**
  * Resource creator for the component schemas template.
  *
+ * @param options - Global options
  * @returns {McpResource} The resource definition tuple
  */
-const patternFlySchemasTemplateResource = (): McpResource => [
+const patternFlySchemasTemplateResource = (options = getOptions()): McpResource => [
   NAME,
   URI_TEMPLATE,
   CONFIG,
@@ -45,6 +47,13 @@ const patternFlySchemasTemplateResource = (): McpResource => [
       throw new McpError(
         ErrorCode.InvalidParams,
         `Missing required parameter: name must be a string: ${name}`
+      );
+    }
+
+    if (name.length > options.maxSearchLength) {
+      throw new McpError(
+        ErrorCode.InvalidParams,
+        `Resource name exceeds maximum length of ${options.maxSearchLength} characters.`
       );
     }
 

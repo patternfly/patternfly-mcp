@@ -61,6 +61,13 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
       );
     }
 
+    if (isName && name.length > options.maxSearchLength) {
+      throw new McpError(
+        ErrorCode.InvalidParams,
+        `String "name" exceeds maximum length of ${options.maxSearchLength} characters.`
+      );
+    }
+
     const updatedUrlList = isUrlList ? urlList.slice(0, options.recommendedMaxDocsToLoad) : [];
 
     if (isUrlList && urlList.length > options.recommendedMaxDocsToLoad) {
@@ -171,7 +178,7 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
       `,
       inputSchema: {
         urlList: z.array(z.string()).max(options.recommendedMaxDocsToLoad).optional().describe(`The list of URLs to fetch the documentation from (max ${options.recommendedMaxDocsToLoad} at a time`),
-        name: z.string().optional().describe('The name of a PatternFly component to fetch documentation for (e.g., "Button", "Table")')
+        name: z.string().max(options.maxSearchLength).optional().describe('The name of a PatternFly component to fetch documentation for (e.g., "Button", "Table")')
       }
     },
     callback
