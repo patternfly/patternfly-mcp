@@ -28,7 +28,8 @@
     "tests/**/*",
     "jest.setupTests.ts",
     "jest.config.ts",
-    "types/**/*.d.ts"
+    "types/**/*.d.ts",
+    "docs/**/*.ts"
   ],
   "exclude": [
     "node_modules",
