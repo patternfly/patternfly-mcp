@@ -194,7 +194,7 @@ const logSubscription = subscribe(logChannel, logHandler);
 
 ### Typing reference
 
-Reference typings are exported from the package. The full listing can be found in [src/index.ts](/src/index.ts).
+Reference typings are exported from the package. The full listing can be found in [src/index.ts](../src/index.ts).
 
 ### Embedding the Server
 
