@@ -93,7 +93,7 @@ Commit messages follow two basic guidelines:
 Before any review takes place, all tests should pass. You may be asked to update your pull request to resolve any failing tests
 before a review.
 
-> If you are unsure why your tests are failing, you should [review testing documentation](#testing). 
+> If you are unsure why your tests are failing, you should [review testing documentation](#testing).
 
 
 ### Code style guidance and conventions
