@@ -37,6 +37,13 @@ const componentSchemasTool = (options = getOptions()): McpTool => {
       );
     }
 
+    if (componentName.length > options.maxSearchLength) {
+      throw new McpError(
+        ErrorCode.InvalidParams,
+        `Component name exceeds maximum length of ${options.maxSearchLength} characters.`
+      );
+    }
+
     // Use fuzzySearch with `isFuzzyMatch` to handle exact and intentional suggestions in one pass
     const results = fuzzySearch(componentName, componentNames, {
       maxDistance: 3,
@@ -89,7 +96,7 @@ const componentSchemasTool = (options = getOptions()): McpTool => {
 
       Returns prop definitions, types, and validation rules. Use this for structured component metadata, not documentation.`,
       inputSchema: {
-        componentName: z.string().describe('Name of the PatternFly component (e.g., "Button", "Table")')
+        componentName: z.string().max(options.maxSearchLength).describe('Name of the PatternFly component (e.g., "Button", "Table")')
       }
     },
     callback

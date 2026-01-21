@@ -18,6 +18,7 @@ import { type ToolModule } from './server.toolsUser';
  * @property llmsFilesPath - Path to the LLMs files directory.
  * @property {LoggingOptions} logging - Logging options.
  * @property maxDocsToLoad - Maximum number of docs to load.
+ * @property maxSearchLength - Maximum length for search strings.
  * @property recommendedMaxDocsToLoad - Recommended maximum number of docs to load.
  * @property name - Name of the package.
  * @property nodeVersion - Node.js major version.
@@ -52,6 +53,7 @@ interface DefaultOptions<TLogOptions = LoggingOptions> {
   llmsFilesPath: string;
   logging: TLogOptions;
   maxDocsToLoad: number;
+  maxSearchLength: number;
   recommendedMaxDocsToLoad: number;
   name: string;
   nodeVersion: number;
@@ -368,6 +370,7 @@ const DEFAULT_OPTIONS: DefaultOptions = {
   llmsFilesPath: (process.env.NODE_ENV === 'local' && '/llms-files') || join(resolve(process.cwd()), 'llms-files'),
   logging: LOGGING_OPTIONS,
   maxDocsToLoad: 500,
+  maxSearchLength: 256,
   recommendedMaxDocsToLoad: 15,
   name: packageJson.name,
   nodeVersion: (process.env.NODE_ENV === 'local' && 22) || getNodeMajorVersion(),

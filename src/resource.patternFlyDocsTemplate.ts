@@ -49,6 +49,13 @@ const patternFlyDocsTemplateResource = (options = getOptions()): McpResource => 
         );
       }
 
+      if (name.length > options.maxSearchLength) {
+        throw new McpError(
+          ErrorCode.InvalidParams,
+          `Resource name exceeds maximum length of ${options.maxSearchLength} characters.`
+        );
+      }
+
       const docResults = [];
       const docs = [];
       const { exactMatches, searchResults } = searchComponents.memo(name);

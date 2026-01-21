@@ -7,6 +7,7 @@ import { LAYOUT_DOCS } from './docs.layout';
 import { CHART_DOCS } from './docs.chart';
 import { getLocalDocs } from './docs.local';
 import { fuzzySearch, type FuzzySearchResult } from './server.search';
+import { getOptions } from './options.context';
 import { memo } from './server.caching';
 import { stringJoin } from './server.helpers';
 import { DEFAULT_OPTIONS } from './options.defaults';
@@ -194,9 +195,10 @@ searchComponents.memo = memo(searchComponents, DEFAULT_OPTIONS.toolMemoOptions.s
  * Searches for PatternFly component documentation URLs using fuzzy search.
  * Returns URLs only (does not fetch content). Use usePatternFlyDocs to fetch the actual content.
  *
+ * @param options - Optional configuration options (defaults to OPTIONS)
  * @returns MCP tool tuple [name, schema, callback]
  */
-const searchPatternFlyDocsTool = (): McpTool => {
+const searchPatternFlyDocsTool = (options = getOptions()): McpTool => {
   const callback = async (args: any = {}) => {
     const { searchQuery } = args;
 
@@ -204,6 +206,13 @@ const searchPatternFlyDocsTool = (): McpTool => {
       throw new McpError(
         ErrorCode.InvalidParams,
         `Missing required parameter: searchQuery must be a string: ${searchQuery}`
+      );
+    }
+
+    if (searchQuery.length > options.maxSearchLength) {
+      throw new McpError(
+        ErrorCode.InvalidParams,
+        `Search query exceeds ${options.maxSearchLength} character max length.`
       );
     }
 
@@ -271,7 +280,7 @@ const searchPatternFlyDocsTool = (): McpTool => {
         - Documentation URLs that can be used with "usePatternFlyDocs"
       `,
       inputSchema: {
-        searchQuery: z.string().describe('Full or partial component name to search for (e.g., "button", "table", "*")')
+        searchQuery: z.string().max(options.maxSearchLength).describe('Full or partial component name to search for (e.g., "button", "table", "*")')
       }
     },
     callback
