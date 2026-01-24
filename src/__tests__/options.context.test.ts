@@ -47,8 +47,8 @@ describe('apply context options', () => {
   it.each([
     {
       description: 'default',
-      options: [{ docsHost: true }],
-      findProperty: 'docsHost'
+      options: [{}],
+      findProperty: 'name'
     },
     {
       description: 'confirm by applying a potential property outside of typings',
@@ -98,15 +98,15 @@ describe('tool creator options context', () => {
   });
 
   it('should maintain equivalent option values inside tool callback', async () => {
-    setOptions({ name: 'als-contract-test', docsHost: true });
+    setOptions({ name: 'als-contract-test' });
 
     const tool = (options = getOptions()): McpTool => {
       const callback = async () => {
         const ctxOptions = getOptions();
 
         const result = {
-          creator: { name: options.name, docsHost: options.docsHost },
-          ctx: { name: ctxOptions.name, docsHost: ctxOptions.docsHost },
+          creator: { name: options.name },
+          ctx: { name: ctxOptions.name },
           isSameReference: Object.is(options, ctxOptions)
         };
 

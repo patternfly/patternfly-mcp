@@ -4,7 +4,6 @@ exports[`options defaults should return specific properties: defaults 1`] = `
 {
   "contextPath": "/",
   "contextUrl": "file:///",
-  "docsHost": false,
   "docsPath": "/documentation",
   "http": {
     "allowedHosts": [],
@@ -13,7 +12,6 @@ exports[`options defaults should return specific properties: defaults 1`] = `
     "port": 8080,
   },
   "isHttp": false,
-  "llmsFilesPath": "/llms-files",
   "logging": {
     "level": "info",
     "logger": "@patternfly/patternfly-mcp",

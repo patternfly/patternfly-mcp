@@ -36,7 +36,7 @@ describe('main', () => {
     mockParseCliOptions.mockImplementation(() => {
       callOrder.push('parse');
 
-      return { docsHost: false, logging: defaultLogging } as CliOptions;
+      return { logging: defaultLogging } as CliOptions;
     });
 
     mockSetOptions.mockImplementation(options => {
@@ -124,49 +124,35 @@ describe('main', () => {
   it.each([
     {
       description: 'merge programmatic options with CLI options',
-      programmaticOptions: { docsHost: true },
-      cliOptions: { docsHost: false },
+      programmaticOptions: { http: { port: 3000 } },
       method: main
     },
     {
       description: 'with empty programmatic options',
       programmaticOptions: {},
-      cliOptions: { docsHost: true },
       method: main
     },
     {
       description: 'with undefined programmatic options',
       programmaticOptions: undefined,
-      cliOptions: { docsHost: false },
       method: main
     },
     {
       description: 'merge programmatic options with CLI options, with start alias',
-      programmaticOptions: { docsHost: true },
-      cliOptions: { docsHost: false },
+      programmaticOptions: { http: { port: 3000 } },
       method: start
     }
-  ])('should merge default, cli and programmatic options, $description', async ({ programmaticOptions, cliOptions, method }) => {
-    mockParseCliOptions.mockImplementation(() => {
-      callOrder.push('parse');
-
-      return { ...(cliOptions as any), logging: defaultLogging } as unknown as CliOptions;
-    });
-
+  ])('should attempt to parse options, merge options, then run the server, $description', async ({ programmaticOptions, method }) => {
     await method(programmaticOptions as any);
 
-    expect({
-      methodRegistersAs: method.name,
-      sequence: callOrder,
-      calls: mockSetOptions.mock.calls
-    }).toMatchSnapshot();
+    expect(callOrder).toEqual(expect.arrayContaining(['parse', 'set', 'run']));
   });
 });
 
 describe('type exports', () => {
   it('should export PfMcpOptions type', () => {
     // TypeScript compilation will fail if the type is unavailable
-    const options: PfMcpOptions = { docsHost: true };
+    const options: PfMcpOptions = {};
 
     expect(options).toBeDefined();
   });

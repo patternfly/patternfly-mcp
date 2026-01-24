@@ -9,14 +9,6 @@ describe('parseCliOptions', () => {
 
   it.each([
     {
-      description: 'with --docs-host flag',
-      args: ['node', 'script.js', '--docs-host']
-    },
-    {
-      description: 'without --docs-host flag',
-      args: ['node', 'script.js']
-    },
-    {
       description: 'with --verbose flag',
       args: ['node', 'script.js', '--verbose']
     },
@@ -59,6 +51,10 @@ describe('parseCliOptions', () => {
     {
       description: 'with --allowed-hosts',
       args: ['node', 'script.js', '--http', '--allowed-hosts', 'localhost,127.0.0.1']
+    },
+    {
+      description: 'with --tool',
+      args: ['node', 'script.js', '--tool', 'my-tool', '--tool', 'my-other-tool']
     }
   ])('should attempt to parse args $description', ({ args = [] }) => {
     process.argv = args;
