@@ -177,10 +177,9 @@ describe('processDocsFunction', () => {
         'https://example.com/remote.md'
       ],
       options: {
-        docsHost: false,
+        isHttp: false,
         urlRegex: /^(https?:)\/\//i,
-        separator: '\n\n---\n\n',
-        llmsFilesPath: '/llms-files'
+        separator: '\n\n---\n\n'
       },
       fileMemoHits: 1,
       fetchMemoHits: 1
@@ -195,10 +194,9 @@ describe('processDocsFunction', () => {
         'https://example.com/remote.md'
       ],
       options: {
-        docsHost: false,
+        isHttp: false,
         urlRegex: /^(https?:)\/\//i,
-        separator: '\n\n---\n\n',
-        llmsFilesPath: '/llms-files'
+        separator: '\n\n---\n\n'
       },
       fileMemoHits: 1,
       fetchMemoHits: 1
@@ -212,10 +210,9 @@ describe('processDocsFunction', () => {
         'file2.md'
       ],
       options: {
-        docsHost: false,
+        isHttp: false,
         urlRegex: /^(https?:)\/\//i,
-        separator: '\n\n---\n\n',
-        llmsFilesPath: '/llms-files'
+        separator: '\n\n---\n\n'
       },
       fileMemoHits: 2
     }
@@ -229,10 +226,9 @@ describe('processDocsFunction', () => {
 
   it('should handle errors gracefully', async () => {
     const mockOptions = {
-      docsHost: false,
+      isHttp: false,
       urlRegex: /^(https?:)\/\//i,
-      separator: '\n\n---\n\n',
-      llmsFilesPath: '/llms-files'
+      separator: '\n\n---\n\n'
     };
 
     // Mock one success and one failure

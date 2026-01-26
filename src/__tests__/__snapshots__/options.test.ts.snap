@@ -2,7 +2,6 @@
 
 exports[`parseCliOptions should attempt to parse args with --allowed-hosts 1`] = `
 {
-  "docsHost": false,
   "http": {
     "allowedHosts": [
       "localhost",
@@ -24,7 +23,6 @@ exports[`parseCliOptions should attempt to parse args with --allowed-hosts 1`] =
 
 exports[`parseCliOptions should attempt to parse args with --allowed-origins 1`] = `
 {
-  "docsHost": false,
   "http": {
     "allowedOrigins": [
       "https://app.com",
@@ -44,26 +42,8 @@ exports[`parseCliOptions should attempt to parse args with --allowed-origins 1`]
 }
 `;
 
-exports[`parseCliOptions should attempt to parse args with --docs-host flag 1`] = `
-{
-  "docsHost": true,
-  "http": {},
-  "isHttp": false,
-  "logging": {
-    "level": "info",
-    "logger": "@patternfly/patternfly-mcp",
-    "protocol": false,
-    "stderr": false,
-    "transport": "stdio",
-  },
-  "pluginIsolation": undefined,
-  "toolModules": [],
-}
-`;
-
 exports[`parseCliOptions should attempt to parse args with --http and --host 1`] = `
 {
-  "docsHost": false,
   "http": {
     "host": "0.0.0.0",
   },
@@ -82,7 +62,6 @@ exports[`parseCliOptions should attempt to parse args with --http and --host 1`]
 
 exports[`parseCliOptions should attempt to parse args with --http and --port 1`] = `
 {
-  "docsHost": false,
   "http": {
     "port": 6000,
   },
@@ -101,7 +80,6 @@ exports[`parseCliOptions should attempt to parse args with --http and --port 1`]
 
 exports[`parseCliOptions should attempt to parse args with --http and invalid --port 1`] = `
 {
-  "docsHost": false,
   "http": {
     "port": 0,
   },
@@ -120,7 +98,6 @@ exports[`parseCliOptions should attempt to parse args with --http and invalid --
 
 exports[`parseCliOptions should attempt to parse args with --http flag 1`] = `
 {
-  "docsHost": false,
   "http": {},
   "isHttp": true,
   "logging": {
@@ -137,7 +114,6 @@ exports[`parseCliOptions should attempt to parse args with --http flag 1`] = `
 
 exports[`parseCliOptions should attempt to parse args with --log-level flag 1`] = `
 {
-  "docsHost": false,
   "http": {},
   "isHttp": false,
   "logging": {
@@ -154,7 +130,6 @@ exports[`parseCliOptions should attempt to parse args with --log-level flag 1`] 
 
 exports[`parseCliOptions should attempt to parse args with --log-stderr flag and --log-protocol flag 1`] = `
 {
-  "docsHost": false,
   "http": {},
   "isHttp": false,
   "logging": {
@@ -169,9 +144,27 @@ exports[`parseCliOptions should attempt to parse args with --log-stderr flag and
 }
 `;
 
+exports[`parseCliOptions should attempt to parse args with --tool 1`] = `
+{
+  "http": {},
+  "isHttp": false,
+  "logging": {
+    "level": "info",
+    "logger": "@patternfly/patternfly-mcp",
+    "protocol": false,
+    "stderr": false,
+    "transport": "stdio",
+  },
+  "pluginIsolation": undefined,
+  "toolModules": [
+    "my-tool",
+    "my-other-tool",
+  ],
+}
+`;
+
 exports[`parseCliOptions should attempt to parse args with --verbose flag 1`] = `
 {
-  "docsHost": false,
   "http": {},
   "isHttp": false,
   "logging": {
@@ -188,7 +181,6 @@ exports[`parseCliOptions should attempt to parse args with --verbose flag 1`] = 
 
 exports[`parseCliOptions should attempt to parse args with --verbose flag and --log-level flag 1`] = `
 {
-  "docsHost": false,
   "http": {},
   "isHttp": false,
   "logging": {
@@ -205,24 +197,6 @@ exports[`parseCliOptions should attempt to parse args with --verbose flag and --
 
 exports[`parseCliOptions should attempt to parse args with other arguments 1`] = `
 {
-  "docsHost": false,
-  "http": {},
-  "isHttp": false,
-  "logging": {
-    "level": "info",
-    "logger": "@patternfly/patternfly-mcp",
-    "protocol": false,
-    "stderr": false,
-    "transport": "stdio",
-  },
-  "pluginIsolation": undefined,
-  "toolModules": [],
-}
-`;
-
-exports[`parseCliOptions should attempt to parse args without --docs-host flag 1`] = `
-{
-  "docsHost": false,
   "http": {},
   "isHttp": false,
   "logging": {

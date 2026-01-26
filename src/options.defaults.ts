@@ -11,11 +11,9 @@ import { type ToolModule } from './server.toolsUser';
  * @template TLogOptions The logging options type, defaulting to LoggingOptions.
  * @property contextPath - Current working directory.
  * @property contextUrl - Current working directory URL.
- * @property docsHost - `@DISABLED` This flag no longer produces a result.
  * @property docsPath - Path to the documentation directory.
  * @property isHttp - Flag indicating whether the server is running in HTTP mode.
  * @property {HttpOptions} http - HTTP server options.
- * @property llmsFilesPath - Path to the LLMs files directory.
  * @property {LoggingOptions} logging - Logging options.
  * @property maxDocsToLoad - Maximum number of docs to load.
  * @property maxSearchLength - Maximum length for search strings.
@@ -46,11 +44,9 @@ import { type ToolModule } from './server.toolsUser';
 interface DefaultOptions<TLogOptions = LoggingOptions> {
   contextPath: string;
   contextUrl: string;
-  docsHost?: boolean;
   docsPath: string;
   http: HttpOptions;
   isHttp: boolean;
-  llmsFilesPath: string;
   logging: TLogOptions;
   maxDocsToLoad: number;
   maxSearchLength: number;
@@ -361,13 +357,11 @@ const getNodeMajorVersion = (nodeVersion = process.versions.node) => {
  * @type {DefaultOptions} Default options object.
  */
 const DEFAULT_OPTIONS: DefaultOptions = {
-  docsHost: false,
   contextPath: (process.env.NODE_ENV === 'local' && '/') || resolve(process.cwd()),
   contextUrl: pathToFileURL((process.env.NODE_ENV === 'local' && '/') || resolve(process.cwd())).href,
   docsPath: (process.env.NODE_ENV === 'local' && '/documentation') || join(resolve(process.cwd()), 'documentation'),
   isHttp: false,
   http: HTTP_OPTIONS,
-  llmsFilesPath: (process.env.NODE_ENV === 'local' && '/llms-files') || join(resolve(process.cwd()), 'llms-files'),
   logging: LOGGING_OPTIONS,
   maxDocsToLoad: 500,
   maxSearchLength: 256,

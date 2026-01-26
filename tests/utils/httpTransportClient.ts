@@ -20,7 +20,6 @@ import { start, type PfMcpOptions, type PfMcpSettings, type ServerLogEvent } fro
 export type { Request as RpcRequest } from '@modelcontextprotocol/sdk/types.js';
 
 export type StartHttpServerOptions = {
-  docsHost?: boolean;
   http?: Partial<PfMcpOptions['http']>;
   isHttp?: boolean;
   logging?: Partial<PfMcpOptions['logging']> & { level?: LoggingLevel };
@@ -72,7 +71,6 @@ export const startServer = async (
 ): Promise<HttpTransportClient> => {
   const updatedOptions: PfMcpOptions = {
     isHttp: true,
-    docsHost: false,
     ...options,
     http: {
       port: 8000,

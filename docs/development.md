@@ -25,10 +25,8 @@ Complete guide to using the PatternFly MCP Server for development including CLI 
 | `--log-protocol`                      | Forward logs to MCP clients                           | `false`              |
 | `--log-level <level>`                 | Set log level (`debug`, `info`, `warn`, `error`)      | `info`               |
 | `--verbose`                           | Shortcut for `--log-level debug`                      | `false`              |
-| `--docs-host`                         | **Disabled**, continued use will not break the server | `false`              |
 
 #### Notes
-- **Docs-host mode** - Docs-host mode has been disabled and will be removed in a future release. Its original purpose has been superseded by the move to MCP server resources.
 - **HTTP transport mode** - By default, the server uses `stdio`. Use the `--http` flag to enable HTTP transport.
 - **Logging** - The server uses a `diagnostics_channel`-based logger that keeps STDIO stdout pure by default.
 - **Programmatic API** - The server can also be used programmatically with options. See [Programmatic Usage](#programmatic-usage) for more details.
