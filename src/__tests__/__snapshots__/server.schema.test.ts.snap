@@ -46,6 +46,7 @@ exports[`jsonSchemaToZod should convert JSON Schema to Zod, complex unsupported 
   "items": {
     "type": "string",
   },
+  "lorem": "ipsum random string",
   "type": "array",
 }
 `;
@@ -56,6 +57,7 @@ exports[`jsonSchemaToZod should convert JSON Schema to Zod, complex unsupported 
   "items": {
     "type": "string",
   },
+  "lorem": "ipsum random string",
   "type": "array",
 }
 `;
