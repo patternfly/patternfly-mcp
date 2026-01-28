@@ -40,12 +40,12 @@ import { type ToolModule } from './server.toolsUser';
  *     registered with the server.
  * @property urlRegex - Regular expression pattern for URL matching.
  * @property version - Version of the package.
+ * @property xhrFetch - XHR and Fetch options.
  */
 interface DefaultOptions<TLogOptions = LoggingOptions> {
   contextPath: string;
   contextUrl: string;
   docsPath: string;
-  xhrFetch: XhrFetchOptions;
   http: HttpOptions;
   isHttp: boolean;
   logging: TLogOptions;
@@ -74,6 +74,7 @@ interface DefaultOptions<TLogOptions = LoggingOptions> {
   toolModules: ToolModule | ToolModule[];
   urlRegex: RegExp;
   version: string;
+  xhrFetch: XhrFetchOptions;
 }
 
 /**
@@ -438,5 +439,6 @@ export {
   type LoggingOptions,
   type LoggingSession,
   type PluginHostOptions,
-  type StatsSession
+  type StatsSession,
+  type XhrFetchOptions
 };
