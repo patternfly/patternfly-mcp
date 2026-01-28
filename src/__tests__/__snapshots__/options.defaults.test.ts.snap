@@ -82,5 +82,8 @@ exports[`options defaults should return specific properties: defaults 1`] = `
   "toolModules": [],
   "urlRegex": /\\^\\(https\\?:\\)\\\\/\\\\//i,
   "version": "0.0.0",
+  "xhrFetch": {
+    "timeoutMs": 15000,
+  },
 }
 `;
