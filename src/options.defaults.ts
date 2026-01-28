@@ -40,6 +40,7 @@ import { type ToolModule } from './server.toolsUser';
  *     registered with the server.
  * @property urlRegex - Regular expression pattern for URL matching.
  * @property version - Version of the package.
+ * @property xhrFetch - XHR and Fetch options.
  */
 interface DefaultOptions<TLogOptions = LoggingOptions> {
   contextPath: string;
@@ -73,6 +74,7 @@ interface DefaultOptions<TLogOptions = LoggingOptions> {
   toolModules: ToolModule | ToolModule[];
   urlRegex: RegExp;
   version: string;
+  xhrFetch: XhrFetchOptions;
 }
 
 /**
@@ -153,6 +155,9 @@ interface LoggingSession extends LoggingOptions {
   readonly channelName: string;
 }
 
+/**
+ * Base stats options.
+ */
 type StatsOptions = {
   reportIntervalMs: {
     health: number;
@@ -160,6 +165,9 @@ type StatsOptions = {
   }
 };
 
+/**
+ * Stats channel names.
+ */
 type StatsChannels = {
   readonly health: string;
   readonly session: string;
@@ -177,6 +185,17 @@ type StatsChannels = {
 interface StatsSession extends StatsOptions {
   readonly publicSessionId: string;
   channels: StatsChannels
+}
+
+/**
+ * XHR and Fetch options.
+ *
+ * @interface XhrFetchOptions
+ *
+ * @property timeoutMs Timeout for XHR and Fetch requests (ms).
+ */
+interface XhrFetchOptions {
+  timeoutMs: number;
 }
 
 /**
@@ -205,7 +224,7 @@ const HTTP_OPTIONS: HttpOptions = {
  */
 const PLUGIN_HOST_OPTIONS: PluginHostOptions = {
   loadTimeoutMs: 5000,
-  invokeTimeoutMs: 10000,
+  invokeTimeoutMs: 10_000,
   gracePeriodMs: 2000
 };
 
@@ -250,13 +269,20 @@ const TOOL_MEMO_OPTIONS = {
 };
 
 /**
- * Stats options.
+ * Default stats options.
  */
 const STATS_OPTIONS: StatsOptions = {
   reportIntervalMs: {
     health: 30_000,
     transport: 10_000
   }
+};
+
+/**
+ * Default XHR and Fetch options.
+ */
+const XHR_FETCH_OPTIONS: XhrFetchOptions = {
+  timeoutMs: 15_000
 };
 
 /**
@@ -387,7 +413,8 @@ const DEFAULT_OPTIONS: DefaultOptions = {
   toolModules: [],
   separator: DEFAULT_SEPARATOR,
   urlRegex: URL_REGEX,
-  version: (process.env.NODE_ENV === 'local' && '0.0.0') || packageJson.version
+  version: (process.env.NODE_ENV === 'local' && '0.0.0') || packageJson.version,
+  xhrFetch: XHR_FETCH_OPTIONS
 };
 
 export {
@@ -412,5 +439,6 @@ export {
   type LoggingOptions,
   type LoggingSession,
   type PluginHostOptions,
-  type StatsSession
+  type StatsSession,
+  type XhrFetchOptions
 };

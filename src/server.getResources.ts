@@ -23,12 +23,12 @@ readLocalFileFunction.memo = memo(readLocalFileFunction, DEFAULT_OPTIONS.resourc
  *
  * @note Review expanding fetch to handle more file types like JSON.
  *
- * @param url
+ * @param url - URL to fetch
+ * @param options - Options
  */
-const fetchUrlFunction = async (url: string) => {
+const fetchUrlFunction = async (url: string, options = getOptions()) => {
   const controller = new AbortController();
-  const timeoutMs = Number(process.env.DOC_MCP_FETCH_TIMEOUT_MS || 15_000);
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  const timeout = setTimeout(() => controller.abort(), options.xhrFetch.timeoutMs);
 
   // Allow the process to exit
   timeout.unref();
