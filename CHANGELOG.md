@@ -1,6 +1,27 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.7.0](https://github.com/patternfly/patternfly-mcp/compare/177783c66e9676cb5bcbe7d66026fd84c2add228...8eae2529b391b9b7d813bf7d982f1770c33af05d) (2026-02-02)
+
+
+### Documentation
+*  restructure, expand documentation ([#81](https://github.com/patternfly/patternfly-mcp/pull/81)) ([1d69fcd](https://github.com/patternfly/patternfly-mcp/commit/1d69fcd5aaf88d5e5eea9ba1a65ef4f34642f7cf))
+
+### Code Refactoring
+*  remove unused llms files, docsHost option ([#89](https://github.com/patternfly/patternfly-mcp/pull/89)) ([b056d5b](https://github.com/patternfly/patternfly-mcp/commit/b056d5b83ef29abdced7afc8330191e117033d6b))
+
+### Builds
+* **deps** bump actions/checkout from 4 to 6 ([#94](https://github.com/patternfly/patternfly-mcp/pull/94)) ([8eae252](https://github.com/patternfly/patternfly-mcp/commit/8eae2529b391b9b7d813bf7d982f1770c33af05d))
+* **deps** lock update ([#93](https://github.com/patternfly/patternfly-mcp/pull/93)) ([5726c87](https://github.com/patternfly/patternfly-mcp/commit/5726c87300a124813ad8051df5fb06735b6c28a1))
+* **deps-dev** bump dev group with 4 updates ([#91](https://github.com/patternfly/patternfly-mcp/pull/91)) ([5d60f08](https://github.com/patternfly/patternfly-mcp/commit/5d60f082a8195789d5d0b932738a866729ec7ef7))
+* **deps** bump prod group with 2 updates ([#92](https://github.com/patternfly/patternfly-mcp/pull/92)) ([2275313](https://github.com/patternfly/patternfly-mcp/commit/2275313cf674b3a1e7ca0dbbda1c9e31e17227e0))
+* **deps** bump zod from 4.2.1 to 4.3.5 ([#86](https://github.com/patternfly/patternfly-mcp/pull/86)) ([764b55f](https://github.com/patternfly/patternfly-mcp/commit/764b55f3a24a855b2b37ea81795f300e3d7b4273))
+* **deps-dev** bump the dev group with 5 updates ([#85](https://github.com/patternfly/patternfly-mcp/pull/85)) ([7031dc3](https://github.com/patternfly/patternfly-mcp/commit/7031dc397535af2ab37395094bb4402a78fb42d6))
+
+### Bug Fixes
+* **getResources** move dotenv to default options ([#90](https://github.com/patternfly/patternfly-mcp/pull/90)) ([34a250b](https://github.com/patternfly/patternfly-mcp/commit/34a250b8796b0cdd88e48e03aba895dd88dc94ff))
+*  search, max string length ([#88](https://github.com/patternfly/patternfly-mcp/pull/88)) ([0d607db](https://github.com/patternfly/patternfly-mcp/commit/0d607db1ed6a7d8d1a85f2c5c98bc0b39913cefd))
+
 ## [0.6.0](https://github.com/patternfly/patternfly-mcp/compare/7ed6ff8b977ec1a15cec5a75a99df172be5caa01...c86ad8ad5dfe9eac41ef17a63afa0b2e191c3b4b) (2026-01-19)
 
 
