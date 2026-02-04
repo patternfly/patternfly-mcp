@@ -47,7 +47,12 @@ describe('Builtin tools, STDIO', () => {
     });
 
     URL_MOCK = `${FETCH_MOCK?.fixture?.baseUrl}/`;
-    CLIENT = await startServer();
+    CLIENT = await startServer({
+      args: [
+        '--mode-test-url',
+        FETCH_MOCK?.fixture?.baseUrl
+      ]
+    });
   });
 
   afterAll(async () => {
@@ -81,7 +86,7 @@ describe('Builtin tools, STDIO', () => {
         arguments: {
           urlList: [
             'documentation/guidelines/README.md',
-            'documentation/components/README.md'
+            'documentation:components/README.md'
           ]
         }
       }
@@ -152,7 +157,12 @@ describe('Builtin resources, STDIO', () => {
       ]
     });
 
-    CLIENT = await startServer();
+    CLIENT = await startServer({
+      args: [
+        '--mode-test-url',
+        FETCH_MOCK?.fixture?.baseUrl
+      ]
+    });
   });
 
   afterAll(async () => {
@@ -197,6 +207,17 @@ describe('Builtin resources, STDIO', () => {
 
     expect(content.uri).toBe('patternfly://docs/index');
     expect(content.text).toContain('PatternFly Documentation Index');
+  });
+
+  it('should read a doc through a template', async () => {
+    const response = await CLIENT.send({
+      method: 'resources/read',
+      params: { uri: 'patternfly://docs/Button' }
+    });
+    const content = response?.result.contents[0];
+
+    expect(content.uri).toBe('patternfly://docs/Button');
+    expect(content.text).toContain('This is a test document for mocking remote HTTP requests');
   });
 
   it('should read the patternfly-schemas-index', async () => {

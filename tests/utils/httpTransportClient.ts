@@ -24,6 +24,7 @@ export type StartHttpServerOptions = {
   isHttp?: boolean;
   logging?: Partial<PfMcpOptions['logging']> & { level?: LoggingLevel };
   toolModules?: PfMcpOptions['toolModules'];
+  modeOptions?: PfMcpOptions['modeOptions'];
 };
 
 export type StartHttpServerSettings = PfMcpSettings;
@@ -117,7 +118,7 @@ export const startServer = async (
 
     httpClientUrl = new URL(baseUrl);
   } catch (error) {
-    throw new Error(`Failed to construct base URL: ${error}, host: ${host}, port: ${port}`);
+    throw new Error(`Failed to construct base URL: ${error}, host: ${host}, port: ${port}, httpClientPort: ${httpClientPort}`);
   }
 
   // Create MCP SDK client and transport

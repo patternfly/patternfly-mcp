@@ -9,7 +9,8 @@ import {
   type ServerLogEvent,
   type ServerStatReport,
   type ServerStats,
-  type ServerGetStats
+  type ServerGetStats,
+  type ServerOptions
 } from './server';
 import {
   createMcpTool,
@@ -23,16 +24,8 @@ import {
 
 /**
  * Options for "programmatic" use. Extends the `DefaultOptions` interface.
- *
- * @property {('cli' | 'programmatic' | 'test')} [mode] - Optional string property that specifies the mode of operation.
- *     Defaults to `'programmatic'`.
- *     - `'cli'`: Functionality is being executed in a cli context. Allows process exits.
- *     - `'programmatic'`: Functionality is invoked programmatically. Allows process exits.
- *     - `'test'`: Functionality is being tested. Does NOT allow process exits.
  */
-type PfMcpOptions = DefaultOptionsOverrides & {
-  mode?: 'cli' | 'programmatic' | 'test';
-};
+type PfMcpOptions = DefaultOptionsOverrides;
 
 /**
  * Additional settings for programmatic control.
@@ -102,9 +95,8 @@ type PfMcpStatReport = ServerStatReport;
  *
  * @returns {Promise<PfMcpInstance>} Server-instance with shutdown capability
  *
- * @throws {Error} If the server fails to start or any error occurs during initialization,
- *     and `allowProcessExit` is set to `false`, the error will be thrown rather than exiting
- *     the process.
+ * @throws {Error} If `allowProcessExit` is set to `false` an error will be thrown rather than exiting
+ *     the process. Server errors are noted as options or start failures.
  *
  * @example Programmatic: A MCP server with STDIO (Standard Input Output) transport.
  * import { start } from '@patternfly/patternfly-mcp';
@@ -157,30 +149,46 @@ const main = async (
   pfMcpOptions: PfMcpOptions = {},
   pfMcpSettings: PfMcpSettings = {}
 ): Promise<PfMcpInstance> => {
-  const { mode, ...options } = pfMcpOptions;
+  const { mode: programmaticMode, ...options } = pfMcpOptions;
   const { allowProcessExit } = pfMcpSettings;
 
-  const modes = ['cli', 'programmatic', 'test'];
-  const updatedMode = mode && modes.includes(mode) ? mode : 'programmatic';
-  const updatedAllowProcessExit = allowProcessExit ?? updatedMode !== 'test';
+  // Check early for allowing process exits
+  let updatedAllowProcessExit = allowProcessExit ?? programmaticMode !== 'test';
+  let mergedOptions: ServerOptions;
 
-  try {
-    const cliOptions = parseCliOptions();
-    const mergedOptions = setOptions({ ...cliOptions, ...options });
-    const session = getSessionOptions();
-
-    // use runWithSession to enable session in listeners
-    return await runWithSession(session, async () =>
-      // `runServer` doesn't require options in the memo key, but we pass fully merged options for stable hashing
-      await runServer.memo(mergedOptions, { allowProcessExit: updatedAllowProcessExit }));
-  } catch (error) {
-    console.error('Failed to start server:', error);
+  // If allowed, exit the process on error
+  const processExit = (message: string, error: unknown) => {
+    console.error(message, error);
 
     if (updatedAllowProcessExit) {
       process.exit(1);
-    } else {
-      throw error;
     }
+  };
+
+  try {
+    // Parse CLI options
+    const { mode: cliMode, ...cliOptions } = parseCliOptions();
+
+    // Apply `mode` separately because `cli.ts` applies it programmatically. Doing this allows us to set mode through `CLI options`.
+    mergedOptions = setOptions({ ...cliOptions, ...options, mode: cliMode ?? programmaticMode });
+
+    // Finalize exit policy after merging options
+    updatedAllowProcessExit = allowProcessExit ?? mergedOptions.mode !== 'test';
+  } catch (error) {
+    processExit('Set options error, failed to start server:', error);
+    throw error;
+  }
+
+  try {
+    // Generate session options
+    const session = getSessionOptions();
+
+    // Start the server, apply session values, then apply merged options to ensure stable hashing.
+    return await runWithSession(session, async () =>
+      await runServer.memo(mergedOptions, { allowProcessExit: updatedAllowProcessExit }));
+  } catch (error) {
+    processExit('Failed to start server:', error);
+    throw error;
   }
 };
 

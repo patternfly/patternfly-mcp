@@ -79,7 +79,7 @@ describe('main', () => {
 
     mockRunServer.mockRejectedValue(error);
 
-    await main();
+    await expect(async () => main()).rejects.toThrow(error.message);
 
     expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to start server:', error);
     expect(processExitSpy).toHaveBeenCalledWith(1);
@@ -89,25 +89,25 @@ describe('main', () => {
     {
       description: 'parseCliOptions',
       error: new Error('Failed to parse CLI options'),
-      message: 'Failed to start server:',
+      message: 'Set options error, failed to start server:',
       method: main
     },
     {
       description: 'setOptions',
       error: new Error('Failed to set options'),
-      message: 'Failed to start server:',
+      message: 'Set options error, failed to start server:',
       method: main
     },
     {
       description: 'parseCliOptions, with start alias',
       error: new Error('Failed to parse CLI options'),
-      message: 'Failed to start server:',
+      message: 'Set options error, failed to start server:',
       method: start
     },
     {
       description: 'setOptions, with start alias',
       error: new Error('Failed to set options'),
-      message: 'Failed to start server:',
+      message: 'Set options error, failed to start server:',
       method: start
     }
   ])('should handle errors, $description', async ({ error, message, method }) => {
@@ -115,7 +115,7 @@ describe('main', () => {
       throw error;
     });
 
-    await method();
+    await expect(async () => method()).rejects.toThrow(error.message);
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(message, error);
     expect(processExitSpy).toHaveBeenCalledWith(1);

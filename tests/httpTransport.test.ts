@@ -36,11 +36,14 @@ describe('Builtin tools, HTTP transport', () => {
           headers: { 'Content-Type': 'text/markdown; charset=utf-8' },
           body: '# Test Document\n\nThis is a test document for mocking remote HTTP requests.'
         }
-      ],
-      excludePorts: [5001]
+      ]
     });
 
-    CLIENT = await startServer({ http: { port: 5001 }, logging: { level: 'debug', protocol: true } });
+    CLIENT = await startServer({
+      isHttp: true,
+      modeOptions: { test: { baseUrl: FETCH_MOCK?.fixture?.baseUrl } },
+      logging: { level: 'debug', protocol: true }
+    });
   });
 
   afterAll(async () => {
@@ -85,7 +88,7 @@ describe('Builtin tools, HTTP transport', () => {
         arguments: {
           urlList: [
             'documentation/guidelines/README.md',
-            'documentation/components/README.md'
+            'documentation:components/README.md'
           ]
         }
       }
@@ -108,7 +111,7 @@ describe('Builtin tools, HTTP transport', () => {
         name: 'usePatternFlyDocs',
         arguments: {
           urlList: [
-            'https://www.patternfly.org/notARealPath/README.md',
+            'https://www.patternfly.org/notARealPath/ChartLegend.md',
             'https://www.patternfly.org/notARealPath/AboutModal.md'
           ]
         }
@@ -153,11 +156,14 @@ describe('Builtin resources, HTTP transport', () => {
           headers: { 'Content-Type': 'text/markdown; charset=utf-8' },
           body: '# Test Document\n\nThis is a test document for mocking remote HTTP requests.'
         }
-      ],
-      excludePorts: [5002]
+      ]
     });
 
-    CLIENT = await startServer({ http: { port: 5002 }, logging: { level: 'debug', protocol: true } });
+    CLIENT = await startServer({
+      isHttp: true,
+      modeOptions: { test: { baseUrl: FETCH_MOCK?.fixture?.baseUrl } },
+      logging: { level: 'debug', protocol: true }
+    });
   });
 
   afterAll(async () => {
