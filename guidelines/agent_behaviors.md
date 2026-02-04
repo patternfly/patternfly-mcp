@@ -118,11 +118,15 @@ When implementing tools that interact with the local filesystem, always use `res
 ```typescript
 import { resolveLocalPathFunction } from './server.getResources';
 // ...
-const safePath = await resolveLocalPathFunction(requestedPath, rootDir);
+let safePath;
 
-if (!safePath) {
+try {
+  safePath = resolveLocalPathFunction(requestedPath);
+} catch {
   throw new McpError(ErrorCode.InvalidParams, 'Access denied');
 }
+
+// use safePath for subsequent file operations
 ```
 
 ### 6.2 Plugin Isolation

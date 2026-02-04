@@ -1,4 +1,5 @@
 import { createHash, type BinaryToTextEncoding } from 'node:crypto';
+import { extname, sep } from 'node:path';
 
 /**
  * Check if a value is a valid port number.
@@ -179,18 +180,87 @@ const isAsync = (obj: unknown) => /^\[object (Async|AsyncFunction)]/.test(Object
 const isPromise = (obj: unknown) => /^\[object (Promise|Async|AsyncFunction)]/.test(Object.prototype.toString.call(obj));
 
 /**
- * Check if a value is a valid URL.
+ * Check if a value is a valid URL, URL-like.
  *
- * @param str
+ * @note URL-like validation can be updated to support more URL schemes (e.g. `blob:`).
+ * Be aware this helper is used to gate-keep tools-as-plugins. Consider additions carefully
+ * since they may fall outside our use cases.
+ *
+ * @param str - String to check
+ * @param [options] - Options
+ * @param [options.allowedProtocols] - List of allowed URL protocols. Default: `['file', 'http', 'https', 'data', 'node']`
+ * @param [options.isStrict] - If `true`, only strict URL validation is performed. Default: `true`
+ * @returns `true` if the string is a valid URL, URL-like.
  */
-const isUrl = (str: unknown) => {
+const isUrl = (str: unknown, { allowedProtocols = ['file', 'http', 'https', 'data', 'node'], isStrict = true } = {}) => {
+  if (typeof str !== 'string' || !str.trim()) {
+    return false;
+  }
+
+  const isAllowed = allowedProtocols.some(type => str.toLowerCase().startsWith(`${type}:`));
+
+  // Strict and not allowed protocols
+  if (isStrict && !isAllowed) {
+    return false;
+  }
+
+  // Not strict and allowed protocols
+  if (!isStrict && isAllowed) {
+    return true;
+  }
+
+  // URL validation
   try {
-    new URL(str as any);
+    new URL(str);
 
     return true;
   } catch {
     return false;
   }
+};
+
+/**
+ * Check if a value is a valid path.
+ *
+ * @param str - String to check
+ * @param [options] - Options
+ * @param [options.allowedPrefixes] - List of allowed path prefixes. Default: `['.', '..', '/', '\\']`
+ * @param [options.isStrict] - If `true`, only strict path validation is performed. Default: `true`
+ * @param [options.sep] - Path separator to use. Default: `path.sep`
+ * @returns `true` if the string is a valid path.
+ */
+const isPath = (str: unknown, { allowedPrefixes = ['.', '..', '/', '\\'], isStrict = true, sep: separator = sep } = {}) => {
+  if (typeof str !== 'string' || !str.trim()) {
+    return false;
+  }
+
+  // File URLs
+  if (str.startsWith('file:')) {
+    return isUrl(str, { isStrict });
+  }
+
+  // Windows drive letter paths
+  if (/^[A-Za-z]:[\\/]/.test(str)) {
+    return true;
+  }
+
+  const isAllowed = allowedPrefixes.some(prefix => {
+    if (prefix === '.' || prefix === '..') {
+      return str.startsWith(`${prefix}${separator}`);
+    }
+
+    return str.startsWith(prefix);
+  });
+
+  if (isStrict && !isAllowed) {
+    return false;
+  }
+
+  if (!isStrict && isAllowed) {
+    return true;
+  }
+
+  return isAllowed || str.includes(separator) || extname(str).length >= 2;
 };
 
 /**
@@ -330,8 +400,8 @@ const generateHash = (anyValue: unknown): string => {
  * @param settings.filterFalsyValues - If `true`, filter out falsy values before joining (default: `false`)
  * @returns Joined string, with optional separator
  */
-const stringJoin = (arr: unknown[], { sep = ' ', filterFalsyValues = false } = {}): string =>
-  (filterFalsyValues ? arr.filter(Boolean).join(sep) : arr.join(sep));
+const stringJoin = (arr: unknown[], { sep: separator = ' ', filterFalsyValues = false } = {}): string =>
+  (filterFalsyValues ? arr.filter(Boolean).join(separator) : arr.join(separator));
 
 /**
  * Join argument values with a single space separator.
@@ -399,6 +469,7 @@ export {
   hashNormalizeValue,
   isAsync,
   isObject,
+  isPath,
   isPlainObject,
   isPromise,
   isReferenceLike,

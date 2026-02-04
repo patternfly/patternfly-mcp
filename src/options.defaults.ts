@@ -348,9 +348,9 @@ const LOG_BASENAME = 'pf-mcp:log';
  * Default PatternFly-specific options.
  */
 const PATTERNFLY_OPTIONS: PatternFlyOptions = {
-  availableResourceVersions: ['v6'],
+  availableResourceVersions: ['6.0.0'],
   default: {
-    defaultVersion: 'v6',
+    defaultVersion: '6.0.0',
     versionWhitelist: [
       '@patternfly/react-core',
       '@patternfly/patternfly'

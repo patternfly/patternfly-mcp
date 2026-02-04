@@ -59,12 +59,14 @@
     "@patternfly/patternfly-component-schemas": "1.2.0",
     "fastest-levenshtein": "1.0.16",
     "pid-port": "2.0.1",
+    "semver": "7.7.3",
     "zod": "4.3.6"
   },
   "devDependencies": {
     "@cdcabrera/eslint-config-toolkit": "^0.4.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.0.10",
+    "@types/semver": "7.7.1",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
     "changelog-light": "^3.0.5",

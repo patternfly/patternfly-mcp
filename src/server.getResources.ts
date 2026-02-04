@@ -1,10 +1,12 @@
 import { readFile } from 'node:fs/promises';
-import { isAbsolute, normalize, resolve, sep } from 'node:path';
+import { accessSync } from 'node:fs';
+import { isAbsolute, normalize, resolve, dirname, join, parse, sep } from 'node:path';
+import semver, { type SemVer } from 'semver';
 import { getOptions } from './options.context';
 import { DEFAULT_OPTIONS } from './options.defaults';
 import { memo } from './server.caching';
 import { normalizeString } from './server.search';
-import { isUrl } from './server.helpers';
+import { isUrl, isPath } from './server.helpers';
 import { log, formatUnknownError } from './logger';
 
 interface ProcessedDoc {
@@ -13,6 +15,83 @@ interface ProcessedDoc {
   resolvedPath: string | undefined;
   isSuccess: boolean;
 }
+
+/**
+ * Match a dependency version against a list of supported versions.
+ *
+ * @note
+ * - Ignore URLs
+ * - Attempt to ignore paths, and aliases (:/.). and avoid `isPath` since semver
+ *     versions could be considered a valid path.
+ *
+ * @param value - The dependency semver version string to match
+ * @param supportedVersions - An array of supported semver version strings
+ * @param options - Options object
+ * @param options.sep - Optional path separator. Defaults to `sep` from `path`.
+ * @returns A matched SemVer object containing a version string or `undefined` if no match is found.
+ */
+const matchPackageVersion = (value: string | undefined, supportedVersions: string[] = [], { sep: separator = sep } = {}) => {
+  if (
+    supportedVersions.length === 0 ||
+    typeof value !== 'string' ||
+    !value.trim() ||
+    value.includes(separator) ||
+    value.startsWith('.') ||
+    (value.includes('>') && value.includes('<') && !value.includes('=')) ||
+    isUrl(value)
+  ) {
+    return undefined;
+  }
+
+  const updatedSupportedVersions = supportedVersions.map(version => semver.coerce(version)).filter(Boolean) as SemVer[];
+  const updatedValue = semver.maxSatisfying(updatedSupportedVersions, value);
+
+  if (updatedValue) {
+    return updatedValue;
+  }
+
+  return undefined;
+};
+
+/**
+ * Find the nearest package.json by walking up the directory tree.
+ *
+ * @note Path lookup behavior has nuance when using relative paths. See unit tests for examples.
+ * - Relative made-up directories to the working directory will return the closest match.
+ * - Absolute starting paths with relative working directories will return the closest match.
+ *
+ * @note There is subtle behavior around using async `access` and looping. We ended up moving towards
+ * `accessSync` when combined with the loop because it kept returning false positives. You can alter
+ * it as-is back to async and witness the unit tests fail. If it is moved back to async, it
+ * should be thoroughly tested.
+ *
+ * @param startPath - Directory to start searching from
+ * @param options - Options object
+ * @param options.resolvedPath - Set to `true` to return the absolute path, or `false` to return the relative path. Defaults to `true`.
+ * @returns The resolved/relative path to the nearest package.json, or `undefined` if none is found.
+ */
+const findNearestPackageJson = (startPath: string, { resolvedPath = true } = {}) => {
+  if (typeof startPath !== 'string' || isUrl(startPath) || !isPath(startPath, { isStrict: false })) {
+    return undefined;
+  }
+
+  let currentDir = startPath.trim();
+  const { root } = parse(currentDir);
+
+  while (currentDir !== root) {
+    const pkgPath = join(currentDir, 'package.json');
+
+    try {
+      accessSync(pkgPath);
+
+      return resolvedPath ? resolve(pkgPath) : pkgPath;
+    } catch {
+      currentDir = dirname(currentDir);
+    }
+  }
+
+  return undefined;
+};
 
 /**
  * Read a local file and return its contents as a string
@@ -69,18 +148,20 @@ fetchUrlFunction.memo = memo(fetchUrlFunction, DEFAULT_OPTIONS.resourceMemoOptio
  * Ensures the resolved path stays within the intended base for security.
  *
  * @param path - Path to resolve. If it's relative, it will be resolved against the base directory.'
+ * @param settings - Optional settings object.
+ * @param settings.sep - Optional path separator. Defaults to `sep` from `path`.
  * @param options - Options
  * @returns Resolved file or URL path.
  *
  * @throws {Error} - Throws an error if the resolved path is invalid or outside the allowed base directory.
  */
-const resolveLocalPathFunction = (path: string, options = getOptions()) => {
+const resolveLocalPathFunction = (path: string, { sep: separator = sep } = {}, options = getOptions()) => {
   const documentationPrefix = options.docsPathSlug;
 
   // Safety check: Ensure the path is within the allowed directory
-  const assertPathWithinBaseAndReturn = (base: string, resolved: string) => {
+  const confirmThenReturnResolvedBase = (base: string, resolved: string) => {
     const normalizedBase = normalize(base);
-    const refinedBase = normalizedBase.endsWith(sep) ? normalizedBase : `${normalizedBase}${sep}`;
+    const refinedBase = normalizedBase.endsWith(separator) ? normalizedBase : `${normalizedBase}${separator}`;
 
     if (!resolved.startsWith(refinedBase) && resolved !== normalizedBase) {
       throw new Error(`Access denied: path ${path} is outside of allowed directory ${base}`);
@@ -89,15 +170,13 @@ const resolveLocalPathFunction = (path: string, options = getOptions()) => {
     return resolved;
   };
 
-  // Paths starting with the documentation prefix are resolved relative to the documentation path
   if (path.startsWith(documentationPrefix)) {
     const base = options.docsPath;
     const resolved = resolve(base, path.slice(documentationPrefix.length));
 
-    return assertPathWithinBaseAndReturn(base, resolved);
+    return confirmThenReturnResolvedBase(base, resolved);
   }
 
-  // URLs are returned as-is
   if (isUrl(path)) {
     return path;
   }
@@ -105,7 +184,7 @@ const resolveLocalPathFunction = (path: string, options = getOptions()) => {
   const base = options.contextPath;
   const resolved = isAbsolute(path) ? normalize(path) : resolve(base, path);
 
-  return assertPathWithinBaseAndReturn(base, resolved);
+  return confirmThenReturnResolvedBase(base, resolved);
 };
 
 /**
@@ -253,7 +332,9 @@ processDocsFunction.memo = memo(processDocsFunction, DEFAULT_OPTIONS.toolMemoOpt
 
 export {
   fetchUrlFunction,
+  findNearestPackageJson,
   loadFileFetch,
+  matchPackageVersion,
   processDocsFunction,
   promiseQueue,
   readLocalFileFunction,

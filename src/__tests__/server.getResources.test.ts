@@ -1,5 +1,8 @@
 import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import {
+  matchPackageVersion,
+  findNearestPackageJson,
   readLocalFileFunction,
   fetchUrlFunction,
   processDocsFunction,
@@ -23,6 +26,143 @@ jest.mock('../server.caching', () => ({
 }));
 
 const mockReadFile = readFile as jest.MockedFunction<typeof readFile>;
+
+describe('matchPackageVersion', () => {
+  it.each([
+    {
+      description: 'with semver',
+      version: '1.2.3',
+      expectedIndex: 0
+    },
+    {
+      description: 'with semver with leading v',
+      version: 'v1.2.3',
+      expectedIndex: 0
+    },
+    {
+      description: 'with greater than',
+      version: '>1.0.0',
+      expectedIndex: 2
+    },
+    {
+      description: 'with less than',
+      version: '<2.0.0',
+      expectedIndex: 0
+    },
+    {
+      description: 'unavailable version',
+      version: 'v4',
+      expectedIndex: -1
+    },
+    {
+      description: 'with inclusive range',
+      version: '1.2.3 - 3.0.0',
+      expectedIndex: 2
+    },
+    {
+      description: 'with range greater than and less than',
+      version: '>1.2.3 <2.0.0',
+      expectedIndex: -1
+    },
+    {
+      description: 'with range reversed greater than and less than',
+      version: '<2.0.0 >1.2.3',
+      expectedIndex: -1
+    },
+    {
+      description: 'with range greater than and less than equal',
+      version: '>1.2.3 <=2.0.0',
+      expectedIndex: 1
+    },
+    {
+      description: 'with range greater than equal and less than',
+      version: '>=1.2.3 <v2.0.0',
+      expectedIndex: 0
+    },
+    {
+      description: 'with range reversed greater than equal and less than',
+      version: '<2.0.0 >=1.2.3',
+      expectedIndex: 0
+    },
+    {
+      description: 'with range reversed, wildcards, greater than and less than equal',
+      version: '<=2.x.x >1.2.3',
+      expectedIndex: 1
+    },
+    {
+      description: 'with range greater than equal and less than equal',
+      version: '>=1.2.3 <=3.0.0',
+      expectedIndex: 2
+    },
+    {
+      description: 'with range reversed greater than equal and less than equal',
+      version: '<=3.0.0 >=1.2.3',
+      expectedIndex: 2
+    }
+  ])('should match version: $description', ({ version, expectedIndex }) => {
+    const supportedVersions = ['1.2.3', '2.0.0', '3.0.0'];
+    const result = matchPackageVersion(version, supportedVersions);
+
+    expect(supportedVersions.indexOf(result?.version as any)).toBe(expectedIndex);
+  });
+});
+
+describe('findNearestPackageJson', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should find the nearest package.json', () => {
+    // Use the PF MCP package.json
+    const path = findNearestPackageJson(process.cwd());
+
+    expect(path).toBe(join(process.cwd(), 'package.json'));
+  });
+
+  it.each([
+    {
+      description: 'current working directory with relative made up directory',
+      packagePath: `${process.cwd()}/./madeUpLoremIpsum/directory`
+    },
+    {
+      description: 'current working directory with relative made up and one up directory',
+      packagePath: `${process.cwd()}/../madeUpLoremIpsum/directory`
+    },
+    {
+      description: 'relative made up directory',
+      packagePath: './madeUpLoremIpsum/directory'
+    },
+    {
+      description: 'relative made up and one up directory',
+      packagePath: '../madeUpLoremIpsum/directory'
+    },
+    {
+      description: 'Windows relative made up and one up directory',
+      packagePath: '..\\madeUpLoremIpsum\\directory'
+    }
+  ])('should attempt to find the nearest package.json, $description', ({ packagePath }) => {
+    // Use the PF MCP package.json
+    const path = findNearestPackageJson(packagePath);
+
+    expect(path).toBeDefined();
+    expect(path).not.toContain('madeUpLoremIpsum');
+  });
+
+  it.each([
+    {
+      description: 'absolute made up directory',
+      packagePath: '/madeUpLoremIpsum/directory'
+    },
+    {
+      description: 'file URL',
+      packagePath: 'file://madeUpLoremIpsum/directory'
+    }
+  ])('should return undefined if no package.json is found', ({ packagePath }) => {
+    const path = findNearestPackageJson(packagePath);
+
+    expect(path).toBeUndefined();
+  });
+});
 
 describe('readLocalFileFunction', () => {
   beforeEach(() => {
@@ -114,7 +254,7 @@ describe('resolveLocalPathFunction', () => {
       path: './subdir/../file.md'
     }
   ])('should return a consistent path, $description', ({ path }) => {
-    const result = resolveLocalPathFunction(path, { ...DEFAULT_OPTIONS, contextPath: '/app/project' });
+    const result = resolveLocalPathFunction(path, undefined, { ...DEFAULT_OPTIONS, contextPath: '/app/project' });
 
     expect(result).toMatchSnapshot();
   });
@@ -141,7 +281,7 @@ describe('resolveLocalPathFunction', () => {
       shouldThrow: 'Access denied'
     }
   ])('should return a consistent path or throw, $description', ({ path, shouldThrow }) => {
-    expect(() => resolveLocalPathFunction(path, { ...DEFAULT_OPTIONS, contextPath: '/app/project' })).toThrow(shouldThrow);
+    expect(() => resolveLocalPathFunction(path, undefined, { ...DEFAULT_OPTIONS, contextPath: '/app/project' })).toThrow(shouldThrow);
   });
 });
 
