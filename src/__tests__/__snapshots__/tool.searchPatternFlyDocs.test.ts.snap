@@ -20,7 +20,7 @@ exports[`searchPatternFlyDocsTool, callback should parse parameters, with lower 
 
 exports[`searchPatternFlyDocsTool, callback should parse parameters, with made up componentName: search 1`] = `"No PatternFly documentation found matching "lorem ipsum dolor sit amet""`;
 
-exports[`searchPatternFlyDocsTool, callback should parse parameters, with multiple words: search 1`] = `"No PatternFly documentation found matching "Button Card Table""`;
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with multiple words: search 1`] = `"# Search results for "Button Card Table", 3 matches found:"`;
 
 exports[`searchPatternFlyDocsTool, callback should parse parameters, with partial componentName: search 1`] = `"# Search results for "ton", 2 matches found:"`;
 
