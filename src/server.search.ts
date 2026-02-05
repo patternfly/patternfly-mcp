@@ -191,7 +191,7 @@ const fuzzySearch = (
     } else if (normalizedQuery !== '' && normalizedItem.includes(normalizedQuery)) {
       matchType = 'contains';
       editDistance = 2;
-    } else if (normalizedQuery !== '' && normalizedQuery.includes(normalizedItem)) {
+    } else if (normalizedQuery !== '' && normalizedItem !== '' && normalizedQuery.includes(normalizedItem)) {
       matchType = 'partial';
       editDistance = 2;
     } else if (isFuzzyMatch && Math.abs(normalizedItem.length - normalizedQuery.length) <= maxDistance) {
