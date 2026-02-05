@@ -50,12 +50,13 @@ const startHttpFixture = (
       // If route not found and we have regex routes, try to match them
       if (!route && regexRoutes.length > 0) {
         const pathname = url;
+        const pathnameNoSlash = url.startsWith('/') ? url.slice(1) : url;
 
         // Try to match against regex routes
         for (const regexRoute of regexRoutes) {
           if (regexRoute.url instanceof RegExp) {
             // Test regex against pathname
-            if (regexRoute.url.test(pathname) || regexRoute.url.test(`http://${address}${pathname}`)) {
+            if (regexRoute.url.test(pathname) || regexRoute.url.test(pathnameNoSlash) || regexRoute.url.test(`http://${address}${pathname}`)) {
               // Register this route dynamically
               route = {
                 status: regexRoute.status || 200,
@@ -72,7 +73,7 @@ const startHttpFixture = (
             const pattern = regexRoute.url.replace(/\*/g, '.*');
             const regex = new RegExp(`^${pattern}$`);
 
-            if (regex.test(pathname) || regex.test(`http://${address}${pathname}`)) {
+            if (regex.test(pathname) || regex.test(pathnameNoSlash) || regex.test(`http://${address}${pathname}`)) {
               route = {
                 status: regexRoute.status || 200,
                 headers: regexRoute.headers || { 'Content-Type': 'text/plain; charset=utf-8' },
@@ -288,8 +289,9 @@ export const setupFetchMock = async (options: FetchMockSetup = {}): Promise<Fetc
       // Support wildcards for pattern matching (test against full URL)
       const pattern = route.url.replace(/\*/g, '.*');
       const regex = new RegExp(`^${pattern}$`);
+      const pathnameNoSlash = pathname.startsWith('/') ? pathname.slice(1) : pathname;
 
-      return regex.test(url);
+      return regex.test(url) || regex.test(pathname) || regex.test(pathnameNoSlash);
     });
   };
 
@@ -299,9 +301,10 @@ export const setupFetchMock = async (options: FetchMockSetup = {}): Promise<Fetc
 
     // Check if URL should be excluded (e.g., MCP server requests)
     const shouldExclude = excludePorts.some(port => url.includes(`:${port}`));
+    const isDocSlug = url.startsWith('documentation:');
 
-    // Only intercept remote HTTP/HTTPS URLs that match our routes
-    if (!shouldExclude && (url.startsWith('http://') || url.startsWith('https://'))) {
+    // Only intercept remote HTTP/HTTPS URLs OR documentation protocol that match our routes
+    if (!shouldExclude && (url.startsWith('http://') || url.startsWith('https://') || isDocSlug)) {
       const matchedRoute = matchRoute(url);
 
       if (matchedRoute) {
@@ -317,8 +320,8 @@ export const setupFetchMock = async (options: FetchMockSetup = {}): Promise<Fetc
 
             fixturePath = urlObj.pathname;
           } catch {
-            // If URL parsing fails, fall back to index-based path
-            fixturePath = `/${routes.indexOf(matchedRoute)}`;
+            // If URL parsing fails, fall back to index-based path or use the slug directly
+            fixturePath = isDocSlug ? `/${url}` : `/${routes.indexOf(matchedRoute)}`;
           }
 
           // Register the route dynamically at the extracted path

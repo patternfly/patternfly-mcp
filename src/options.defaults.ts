@@ -12,17 +12,18 @@ import { type ToolModule } from './server.toolsUser';
  * @property contextPath - Current working directory.
  * @property contextUrl - Current working directory URL.
  * @property docsPath - Path to the documentation directory.
+ * @property docsPathSlug - Local docs slug. Used for resolving local stored documentation.
  * @property isHttp - Flag indicating whether the server is running in HTTP mode.
  * @property {HttpOptions} http - HTTP server options.
  * @property {LoggingOptions} logging - Logging options.
  * @property maxDocsToLoad - Maximum number of docs to load.
  * @property maxSearchLength - Maximum length for search strings.
  * @property recommendedMaxDocsToLoad - Recommended maximum number of docs to load.
+ * @property {typeof MODE_LEVELS} mode - Specifies the mode of operation.
+ * @property {ModeOptions} modeOptions - Mode-specific options.
  * @property name - Name of the package.
  * @property nodeVersion - Node.js major version.
- * @property pluginIsolation - Isolation preset for external plugins.
- * @property {PluginHostOptions} pluginHost - Plugin host options.
- * @property repoName - Name of the repository.
+ * @property {PatternFlyOptions} patternflyOptions - PatternFly-specific options.
  * @property pfExternal - PatternFly external docs URL.
  * @property pfExternalDesignComponents - PatternFly design guidelines' components' URL.
  * @property pfExternalExamplesComponents - PatternFly examples' core components' URL.
@@ -32,6 +33,9 @@ import { type ToolModule } from './server.toolsUser';
  * @property pfExternalChartsDesign - PatternFly charts' design guidelines URL.
  * @property pfExternalDesignLayouts - PatternFly design guidelines' layouts' URL.
  * @property pfExternalAccessibility - PatternFly accessibility URL.
+ * @property pluginIsolation - Isolation preset for external plugins.
+ * @property {PluginHostOptions} pluginHost - Plugin host options.
+ * @property repoName - Name of the repository.
  * @property {typeof RESOURCE_MEMO_OPTIONS} resourceMemoOptions - Resource-level memoization options.
  * @property separator - Default string delimiter.
  * @property {StatsOptions} stats - Stats options.
@@ -46,14 +50,18 @@ interface DefaultOptions<TLogOptions = LoggingOptions> {
   contextPath: string;
   contextUrl: string;
   docsPath: string;
+  docsPathSlug: string;
   http: HttpOptions;
   isHttp: boolean;
   logging: TLogOptions;
   maxDocsToLoad: number;
   maxSearchLength: number;
   recommendedMaxDocsToLoad: number;
+  mode: 'cli' | 'programmatic' | 'test';
+  modeOptions: ModeOptions;
   name: string;
   nodeVersion: number;
+  patternflyOptions: PatternFlyOptions;
   pluginIsolation: 'none' | 'strict';
   pluginHost: PluginHostOptions;
   pfExternal: string;
@@ -78,16 +86,37 @@ interface DefaultOptions<TLogOptions = LoggingOptions> {
 }
 
 /**
- * Overrides for default options.
+ * Overrides for default options. Exposed to the consumer/user.
  */
 type DefaultOptionsOverrides = Partial<
-  Omit<DefaultOptions, 'http' | 'logging' | 'pluginIsolation' | 'toolModules'>
+  Omit<DefaultOptions, 'mode' | 'modeOptions' | 'http' | 'logging' | 'pluginIsolation' | 'toolModules'>
 > & {
+  mode?: DefaultOptions['mode'] | undefined;
+  modeOptions?: Partial<ModeOptions> | undefined;
   http?: Partial<HttpOptions>;
   logging?: Partial<LoggingOptions>;
   pluginIsolation?: 'none' | 'strict' | undefined;
   toolModules?: ToolModule | ToolModule[] | undefined;
 };
+
+/**
+ * HTTP server options.
+ *
+ * See `HTTP_OPTIONS` for defaults.
+ *
+ * @interface HttpOptions
+ *
+ * @property port Port number.
+ * @property host Host name.
+ * @property allowedOrigins List of allowed origins.
+ * @property allowedHosts List of allowed hosts.
+ */
+interface HttpOptions {
+  port: number;
+  host: string;
+  allowedOrigins: string[];
+  allowedHosts: string[];
+}
 
 /**
  * Logging options.
@@ -113,22 +142,38 @@ interface LoggingOptions {
 }
 
 /**
- * HTTP server options.
+ * Mode-specific options.
  *
- * See `HTTP_OPTIONS` for defaults.
- *
- * @interface HttpOptions
- *
- * @property port Port number.
- * @property host Host name.
- * @property allowedOrigins List of allowed origins.
- * @property allowedHosts List of allowed hosts.
+ * @interface ModeOptions
+ * @property test Test-specific options.
+ * @property test.baseUrl Base URL for testing.
  */
-interface HttpOptions {
-  port: number;
-  host: string;
-  allowedOrigins: string[];
-  allowedHosts: string[];
+interface ModeOptions {
+  cli?: object | undefined;
+  programmatic?: object | undefined;
+  test?: {
+    baseUrl?: string | undefined;
+  } | undefined;
+}
+
+/**
+ * PatternFly-specific options.
+ *
+ * @property availableResourceVersions List of intended available PatternFly resource versions to the MCP server.
+ * @property default Default specific options.
+ * @property default.defaultVersion Default PatternFly version.
+ * @property default.versionWhitelist List of mostly reliable dependencies to scan for when detecting the PatternFly version.
+ * @property default.versionStrategy Strategy to use when multiple PatternFly versions are detected.
+ *    - 'highest': Use the highest major version found.
+ *    - 'lowest': Use the lowest major version found.
+ */
+interface PatternFlyOptions {
+  availableResourceVersions: string[];
+  default: {
+    defaultVersion: string;
+    versionWhitelist: string[];
+    versionStrategy: 'highest' | 'lowest';
+  }
 }
 
 /**
@@ -220,6 +265,15 @@ const HTTP_OPTIONS: HttpOptions = {
 };
 
 /**
+ * Mode-specific options.
+ */
+const MODE_OPTIONS: ModeOptions = {
+  cli: {},
+  programmatic: {},
+  test: {}
+};
+
+/**
  * Default plugin host options.
  */
 const PLUGIN_HOST_OPTIONS: PluginHostOptions = {
@@ -291,9 +345,34 @@ const XHR_FETCH_OPTIONS: XhrFetchOptions = {
 const LOG_BASENAME = 'pf-mcp:log';
 
 /**
+ * Default PatternFly-specific options.
+ */
+const PATTERNFLY_OPTIONS: PatternFlyOptions = {
+  availableResourceVersions: ['v6'],
+  default: {
+    defaultVersion: 'v6',
+    versionWhitelist: [
+      '@patternfly/react-core',
+      '@patternfly/patternfly'
+    ],
+    versionStrategy: 'highest'
+  }
+};
+
+/**
  * URL regex pattern for detecting external URLs
  */
 const URL_REGEX = /^(https?:)\/\//i;
+
+/**
+ * Available operational modes for the MCP server.
+ *
+ * Each mode represents an operational domain:
+ * - `cli`: Command-line interface mode.
+ * - `programmatic`: Programmatic interaction mode where the application is used as a library or API.
+ * - `test`: Testing or debugging mode.
+ */
+const MODE_LEVELS: DefaultOptions['mode'][] = ['cli', 'programmatic', 'test'];
 
 const PF_EXTERNAL_EXAMPLES_VERSION = 'v6.4.0';
 
@@ -386,16 +465,18 @@ const DEFAULT_OPTIONS: DefaultOptions = {
   contextPath: (process.env.NODE_ENV === 'local' && '/') || resolve(process.cwd()),
   contextUrl: pathToFileURL((process.env.NODE_ENV === 'local' && '/') || resolve(process.cwd())).href,
   docsPath: (process.env.NODE_ENV === 'local' && '/documentation') || join(resolve(process.cwd()), 'documentation'),
+  docsPathSlug: 'documentation:',
   isHttp: false,
   http: HTTP_OPTIONS,
   logging: LOGGING_OPTIONS,
   maxDocsToLoad: 500,
   maxSearchLength: 256,
   recommendedMaxDocsToLoad: 15,
+  mode: 'programmatic',
+  modeOptions: MODE_OPTIONS,
   name: packageJson.name,
   nodeVersion: (process.env.NODE_ENV === 'local' && 22) || getNodeMajorVersion(),
-  pluginIsolation: 'strict',
-  pluginHost: PLUGIN_HOST_OPTIONS,
+  patternflyOptions: PATTERNFLY_OPTIONS,
   pfExternal: PF_EXTERNAL,
   pfExternalDesignComponents: PF_EXTERNAL_DESIGN_COMPONENTS,
   pfExternalExamplesComponents: PF_EXTERNAL_EXAMPLES_REACT_CORE,
@@ -405,6 +486,8 @@ const DEFAULT_OPTIONS: DefaultOptions = {
   pfExternalChartsDesign: PF_EXTERNAL_CHARTS_DESIGN,
   pfExternalDesignLayouts: PF_EXTERNAL_DESIGN_LAYOUTS,
   pfExternalAccessibility: PF_EXTERNAL_ACCESSIBILITY,
+  pluginIsolation: 'strict',
+  pluginHost: PLUGIN_HOST_OPTIONS,
   resourceMemoOptions: RESOURCE_MEMO_OPTIONS,
   repoName: basename(process.cwd() || '').trim(),
   stats: STATS_OPTIONS,
@@ -418,6 +501,9 @@ const DEFAULT_OPTIONS: DefaultOptions = {
 };
 
 export {
+  LOG_BASENAME,
+  DEFAULT_OPTIONS,
+  MODE_LEVELS,
   PF_EXTERNAL,
   PF_EXTERNAL_VERSION,
   PF_EXTERNAL_EXAMPLES,
@@ -430,14 +516,14 @@ export {
   PF_EXTERNAL_DESIGN_COMPONENTS,
   PF_EXTERNAL_DESIGN_LAYOUTS,
   PF_EXTERNAL_ACCESSIBILITY,
-  LOG_BASENAME,
-  DEFAULT_OPTIONS,
   getNodeMajorVersion,
   type DefaultOptions,
   type DefaultOptionsOverrides,
   type HttpOptions,
   type LoggingOptions,
   type LoggingSession,
+  type ModeOptions,
+  type PatternFlyOptions,
   type PluginHostOptions,
   type StatsSession,
   type XhrFetchOptions

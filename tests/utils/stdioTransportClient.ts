@@ -57,7 +57,7 @@ export const startServer = async ({
   // Set stderr to 'pipe' so we can handle server logs separately from JSON-RPC messages
   const transport = new StdioClientTransport({
     command,
-    args: [serverPath, ...args],
+    args: [serverPath, '--mode', 'test', ...args],
     env: { ...process.env, ...env } as any,
     stderr: 'pipe' // Pipe stderr so server logs don't interfere with JSON-RPC on stdout
   });

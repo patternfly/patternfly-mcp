@@ -1,15 +1,24 @@
 import { readFile } from 'node:fs/promises';
-import { isAbsolute, normalize, resolve } from 'node:path';
+import { isAbsolute, normalize, resolve, sep } from 'node:path';
 import { getOptions } from './options.context';
 import { DEFAULT_OPTIONS } from './options.defaults';
 import { memo } from './server.caching';
 import { normalizeString } from './server.search';
 import { isUrl } from './server.helpers';
+import { log, formatUnknownError } from './logger';
+
+interface ProcessedDoc {
+  content: string;
+  path: string | undefined;
+  resolvedPath: string | undefined;
+  isSuccess: boolean;
+}
 
 /**
  * Read a local file and return its contents as a string
  *
- * @param filePath
+ * @param filePath - Path to the file to be read.
+ * @returns The file contents as a string.
  */
 const readLocalFileFunction = async (filePath: string) => await readFile(filePath, 'utf-8');
 
@@ -25,6 +34,7 @@ readLocalFileFunction.memo = memo(readLocalFileFunction, DEFAULT_OPTIONS.resourc
  *
  * @param url - URL to fetch
  * @param options - Options
+ * @returns The fetched content as a string.
  */
 const fetchUrlFunction = async (url: string, options = getOptions()) => {
   const controller = new AbortController();
@@ -60,8 +70,34 @@ fetchUrlFunction.memo = memo(fetchUrlFunction, DEFAULT_OPTIONS.resourceMemoOptio
  *
  * @param path - Path to resolve. If it's relative, it will be resolved against the base directory.'
  * @param options - Options
+ * @returns Resolved file or URL path.
+ *
+ * @throws {Error} - Throws an error if the resolved path is invalid or outside the allowed base directory.
  */
 const resolveLocalPathFunction = (path: string, options = getOptions()) => {
+  const documentationPrefix = options.docsPathSlug;
+
+  // Safety check: Ensure the path is within the allowed directory
+  const assertPathWithinBaseAndReturn = (base: string, resolved: string) => {
+    const normalizedBase = normalize(base);
+    const refinedBase = normalizedBase.endsWith(sep) ? normalizedBase : `${normalizedBase}${sep}`;
+
+    if (!resolved.startsWith(refinedBase) && resolved !== normalizedBase) {
+      throw new Error(`Access denied: path ${path} is outside of allowed directory ${base}`);
+    }
+
+    return resolved;
+  };
+
+  // Paths starting with the documentation prefix are resolved relative to the documentation path
+  if (path.startsWith(documentationPrefix)) {
+    const base = options.docsPath;
+    const resolved = resolve(base, path.slice(documentationPrefix.length));
+
+    return assertPathWithinBaseAndReturn(base, resolved);
+  }
+
+  // URLs are returned as-is
   if (isUrl(path)) {
     return path;
   }
@@ -69,25 +105,51 @@ const resolveLocalPathFunction = (path: string, options = getOptions()) => {
   const base = options.contextPath;
   const resolved = isAbsolute(path) ? normalize(path) : resolve(base, path);
 
-  // Safety check: ensure the resolved path actually starts with the base directory
-  if (!resolved.startsWith(normalize(base))) {
-    throw new Error(`Access denied: path ${path} is outside of base directory ${base}`);
+  return assertPathWithinBaseAndReturn(base, resolved);
+};
+
+/**
+ * Mock a given path or URL. Used for testing with fixture servers.
+ *
+ * @param pathOrUrl - Input path or URL to be resolved.
+ * @param options - Options
+ * @returns Resolves to the finalized URL or path as a memoized fetchable resource.
+ *
+ * @throws {Error} Throws an error if the given path cannot be resolved in the specified mode and is neither a valid URL nor fetchable.
+ */
+const mockPathOrUrlFunction = async (pathOrUrl: string, options = getOptions()) => {
+  const documentationPrefix = options.docsPathSlug;
+  const fixtureUrl = options.modeOptions?.test?.baseUrl;
+  let updatedPathOrUrl = pathOrUrl.startsWith(documentationPrefix) ? pathOrUrl : resolveLocalPathFunction(pathOrUrl);
+
+  if (fixtureUrl) {
+    updatedPathOrUrl = `${fixtureUrl}${updatedPathOrUrl.startsWith('/') ? updatedPathOrUrl : `/${updatedPathOrUrl}`}`;
+  } else if (!isUrl(updatedPathOrUrl)) {
+    throw new Error(`Access denied: path ${updatedPathOrUrl} cannot be accessed in ${options.mode} mode`);
   }
 
-  return resolved;
+  // In test mode, everything is treated as a fetchable resource to allow mocking
+  return fetchUrlFunction.memo(updatedPathOrUrl);
 };
 
 /**
  * Load a file from disk or `URL`, depending on the input type.
  *
  * @param pathOrUrl - Path or URL to load. If it's a URL, it will be fetched with `timeout` and `error` handling.
+ * @param options - Options
+ * @returns Resolves to an object containing the loaded content and the resolved path.
  */
-const loadFileFetch = async (pathOrUrl: string) => {
-  const isUrlStr = isUrl(pathOrUrl);
-  const updatedPathOrUrl = (isUrlStr && pathOrUrl) || resolveLocalPathFunction(pathOrUrl);
+const loadFileFetch = async (pathOrUrl: string, options = getOptions()) => {
+  if (options.mode === 'test') {
+    const mockContent = await mockPathOrUrlFunction(pathOrUrl);
+
+    return { content: mockContent, resolvedPath: pathOrUrl };
+  }
+
+  const updatedPathOrUrl = resolveLocalPathFunction(pathOrUrl);
   let content;
 
-  if (isUrlStr) {
+  if (isUrl(updatedPathOrUrl)) {
     content = await fetchUrlFunction.memo(updatedPathOrUrl);
   } else {
     content = await readLocalFileFunction.memo(updatedPathOrUrl);
@@ -101,6 +163,7 @@ const loadFileFetch = async (pathOrUrl: string) => {
  *
  * @param queue - List of paths or URLs to load
  * @param limit - Optional limit on the number of concurrent promises. Defaults to 5.
+ * @returns An array of `PromiseSettledResult` objects, one for each input path or URL.
  */
 const promiseQueue = async (queue: string[], limit = 5) => {
   const results = [];
@@ -120,7 +183,9 @@ const promiseQueue = async (queue: string[], limit = 5) => {
 
     if (activeCount >= limit) {
       // Silent fail if one promise fails to load, but keep processing the rest.
-      await Promise.race(slidingQueue).catch(() => {});
+      await Promise.race(slidingQueue).catch((reason: unknown) => {
+        log.debug(`Failed to load promise from queue: ${formatUnknownError(reason)}`);
+      });
     }
   }
 
@@ -133,11 +198,16 @@ const promiseQueue = async (queue: string[], limit = 5) => {
  * @note Remember to limit the number of docs to load to avoid OOM.
  * @param inputs - List of paths or URLs to load
  * @param options - Optional options
+ * @returns An array of loaded docs with content, path, resolvedPath, and isSuccess properties:
+ *   - `content` is the loaded content string.
+ *   - `path` is the original input path or URL.
+ *   - `resolvedPath` is the resolved path after normalization.
+ *   - `isSuccess` is true if the doc was successfully loaded, false otherwise.
  */
 const processDocsFunction = async (
   inputs: string[],
   options = getOptions()
-) => {
+): Promise<ProcessedDoc[]> => {
   const uniqueInputs = new Map(
     inputs.map(input => [normalizeString.memo(input), input.trim()])
   );
@@ -176,4 +246,17 @@ const processDocsFunction = async (
   return docs;
 };
 
-export { fetchUrlFunction, loadFileFetch, processDocsFunction, promiseQueue, readLocalFileFunction, resolveLocalPathFunction };
+/**
+ * Memoized version of processDocsFunction. Use default memo options.
+ */
+processDocsFunction.memo = memo(processDocsFunction, DEFAULT_OPTIONS.toolMemoOptions.usePatternFlyDocs);
+
+export {
+  fetchUrlFunction,
+  loadFileFetch,
+  processDocsFunction,
+  promiseQueue,
+  readLocalFileFunction,
+  resolveLocalPathFunction,
+  type ProcessedDoc
+};

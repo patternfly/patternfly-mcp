@@ -127,6 +127,14 @@ Unit tests are located in the `__tests__` directory.
 
 E2E tests are located in the root `./tests` directory.
 
+Contributors can run the MCP server in a specialized `test` mode against mock resources.
+
+```bash
+npm run test:integration
+```
+
+This mode leverages the `--mode test` and `--mode-test-url` flags to redirect resource lookups to a fixture server instead of live or local resources.
+
 ## AI agent
 
 ### User Section

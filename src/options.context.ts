@@ -1,7 +1,13 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { randomUUID } from 'node:crypto';
 import { type AppSession, type GlobalOptions, type DefaultOptionsOverrides } from './options';
-import { DEFAULT_OPTIONS, LOG_BASENAME, type LoggingSession, type StatsSession } from './options.defaults';
+import {
+  DEFAULT_OPTIONS,
+  LOG_BASENAME,
+  MODE_LEVELS,
+  type LoggingSession,
+  type StatsSession
+} from './options.defaults';
 import { mergeObjects, freezeObject, isPlainObject, hashCode } from './server.helpers';
 
 /**
@@ -83,6 +89,7 @@ const setOptions = (options?: DefaultOptionsOverrides): GlobalOptions => {
 
   const merged: GlobalOptions = {
     ...base,
+    mode: MODE_LEVELS.includes(base.mode) ? base.mode : DEFAULT_OPTIONS.mode,
     logging: {
       level: ['debug', 'info', 'warn', 'error'].includes(baseLogging.level) ? baseLogging.level : DEFAULT_OPTIONS.logging.level,
       logger: baseLogging.logger,

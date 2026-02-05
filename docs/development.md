@@ -12,25 +12,28 @@ Complete guide to using the PatternFly MCP Server for development including CLI 
 
 ### Available options
 
-| Flag                                  | Description                                           | Default              |
-|:--------------------------------------|:------------------------------------------------------|:---------------------|
-| `--http`                              | Enable HTTP transport mode                            | `false` (stdio mode) |
-| `--port <num>`                        | Port for HTTP transport                               | `8080`               |
-| `--host <string>`                     | Host to bind to                                       | `127.0.0.1`          |
-| `--allowed-origins <origins>`         | Comma-separated list of allowed CORS origins          | `none`               |
-| `--allowed-hosts <hosts>`             | Comma-separated list of allowed host headers          | `none`               |
-| `--tool <path>`                       | Path to external Tool Plugin (repeatable)             | `none`               |
-| `--plugin-isolation <none \| strict>` | Isolation preset for external tools-as-plugins        | `strict`             |
-| `--log-stderr`                        | Enable terminal logging                               | `false`              |
-| `--log-protocol`                      | Forward logs to MCP clients                           | `false`              |
-| `--log-level <level>`                 | Set log level (`debug`, `info`, `warn`, `error`)      | `info`               |
-| `--verbose`                           | Shortcut for `--log-level debug`                      | `false`              |
+| Flag                                  | Description                                      | Default              |
+|:--------------------------------------|:-------------------------------------------------|:---------------------|
+| `--http`                              | Enable HTTP transport mode                       | `false` (stdio mode) |
+| `--port <num>`                        | Port for HTTP transport                          | `8080`               |
+| `--host <string>`                     | Host to bind to                                  | `127.0.0.1`          |
+| `--allowed-origins <origins>`         | Comma-separated list of allowed CORS origins     | `none`               |
+| `--allowed-hosts <hosts>`             | Comma-separated list of allowed host headers     | `none`               |
+| `--tool <path>`                       | Path to external Tool Plugin (repeatable)        | `none`               |
+| `--plugin-isolation <none \| strict>` | Isolation preset for external tools-as-plugins   | `strict`             |
+| `--log-stderr`                        | Enable terminal logging                          | `false`              |
+| `--log-protocol`                      | Forward logs to MCP clients                      | `false`              |
+| `--log-level <level>`                 | Set log level (`debug`, `info`, `warn`, `error`) | `info`               |
+| `--mode <mode>`                       | Operational mode (`cli`, `programmatic`, `test`) | `cli`                |
+| `--mode-test-url <url>`               | Base URL for fixture/mock servers in `test` mode | `none`               |
+| `--verbose`                           | Shortcut for `--log-level debug`                 | `false`              |
 
 #### Notes
 - **HTTP transport mode** - By default, the server uses `stdio`. Use the `--http` flag to enable HTTP transport.
 - **Logging** - The server uses a `diagnostics_channel`-based logger that keeps STDIO stdout pure by default.
 - **Programmatic API** - The server can also be used programmatically with options. See [Programmatic Usage](#programmatic-usage) for more details.
-- **Tool Plugins** - The server can load external tool plugins at startup. See [Tool Plugins](#tool-plugins) for more details. 
+- **Tool Plugins** - The server can load external tool plugins at startup. See [Tool Plugins](#tool-plugins) for more details.
+- **Test Mode** - When `--mode test` is used, the server redirects resource requests to the URL provided by `--mode-test-url`, enabling E2E testing without local filesystem access.
 
 ### Basic use scenarios
 
@@ -52,6 +55,10 @@ npx @patternfly/patternfly-mcp --http --port 3000 --allowed-origins "https://app
 **Loading external tool plugins**:
 ```bash
 npx @patternfly/patternfly-mcp --tool ./first-tool.js --tool ./second-tool.ts
+```
+**Testing with a fixture server**:
+```bash
+npx @patternfly/patternfly-mcp --mode test --mode-test-url "http://localhost:3000"
 ```
 
 ### Testing with MCP Inspector
@@ -81,20 +88,21 @@ npx @modelcontextprotocol/inspector-cli \
 
 The `start()` function accepts an optional `PfMcpOptions` object for programmatic configuration. Use these options to customize behavior, transport, and logging for embedded instances.
 
-| Option                | Type                                     | Description                                                           | Default            |
-|:----------------------|:-----------------------------------------|:----------------------------------------------------------------------|:-------------------|
-| `toolModules`         | `ToolModule \| ToolModule[]`             | Array of tool modules or paths to external tool plugins to be loaded. | `[]`               |
-| `isHttp`              | `boolean`                                | Enable HTTP transport mode.                                           | `false`            |
-| `http.port`           | `number`                                 | Port for HTTP transport.                                              | `8080`             |
-| `http.host`           | `string`                                 | Host to bind to.                                                      | `127.0.0.1`        |
-| `http.allowedOrigins` | `string[]`                               | List of allowed CORS origins.                                         | `[]`               |
-| `http.allowedHosts`   | `string[]`                               | List of allowed host headers.                                         | `[]`               |
-| `pluginIsolation`     | `'none' \| 'strict'`                     | Isolation preset for external tools-as-plugins.                       | `'strict'`         |
-| `logging.level`       | `'debug' \| 'info' \| 'warn' \| 'error'` | Set the logging level.                                                | `'info'`           |
-| `logging.stderr`      | `boolean`                                | Enable terminal logging to stderr.                                    | `false`            |
-| `logging.protocol`    | `boolean`                                | Forward logs to MCP clients.                                          | `false`            |
-| `mode`                | `'cli' \| 'programmatic' \| 'test'`      | Specifies the operation mode.                                         | `'programmatic'`   |
-| `docsPath`            | `string`                                 | Path to the documentation directory.                                  | (Internal default) |
+| Option                     | Type                                     | Description                                                           | Default            |
+|:---------------------------|:-----------------------------------------|:----------------------------------------------------------------------|:-------------------|
+| `toolModules`              | `ToolModule \| ToolModule[]`             | Array of tool modules or paths to external tool plugins to be loaded. | `[]`               |
+| `isHttp`                   | `boolean`                                | Enable HTTP transport mode.                                           | `false`            |
+| `http.port`                | `number`                                 | Port for HTTP transport.                                              | `8080`             |
+| `http.host`                | `string`                                 | Host to bind to.                                                      | `127.0.0.1`        |
+| `http.allowedOrigins`      | `string[]`                               | List of allowed CORS origins.                                         | `[]`               |
+| `http.allowedHosts`        | `string[]`                               | List of allowed host headers.                                         | `[]`               |
+| `pluginIsolation`          | `'none' \| 'strict'`                     | Isolation preset for external tools-as-plugins.                       | `'strict'`         |
+| `logging.level`            | `'debug' \| 'info' \| 'warn' \| 'error'` | Set the logging level.                                                | `'info'`           |
+| `logging.stderr`           | `boolean`                                | Enable terminal logging to stderr.                                    | `false`            |
+| `logging.protocol`         | `boolean`                                | Forward logs to MCP clients.                                          | `false`            |
+| `mode`                     | `'cli' \| 'programmatic' \| 'test'`      | Specifies the operation mode.                                         | `'programmatic'`   |
+| `modeOptions.test.baseUrl` | `string`                                 | Base URL for fixture/mock servers in `test` mode.                     | `undefined`        |
+| `docsPath`                 | `string`                                 | Path to the documentation directory.                                  | (Internal default) |
 
 #### Example usage
 
@@ -114,6 +122,20 @@ const options: PfMcpOptions = {
 };
 
 const server: PfMcpInstance = await start(options);
+```
+
+**Example: Programmatic test mode**
+```typescript
+import { start, type PfMcpInstance } from '@patternfly/patternfly-mcp';
+
+const server: PfMcpInstance = await start({
+  mode: 'test',
+  modeOptions: {
+    test: {
+      baseUrl: 'http://my-fixture-server:3000'
+    }
+  }
+});
 ```
 
 ### Server instance

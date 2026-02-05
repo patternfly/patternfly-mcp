@@ -5,6 +5,7 @@ exports[`options defaults should return specific properties: defaults 1`] = `
   "contextPath": "/",
   "contextUrl": "file:///",
   "docsPath": "/documentation",
+  "docsPathSlug": "documentation:",
   "http": {
     "allowedHosts": [],
     "allowedOrigins": [],
@@ -21,8 +22,27 @@ exports[`options defaults should return specific properties: defaults 1`] = `
   },
   "maxDocsToLoad": 500,
   "maxSearchLength": 256,
+  "mode": "programmatic",
+  "modeOptions": {
+    "cli": {},
+    "programmatic": {},
+    "test": {},
+  },
   "name": "@patternfly/patternfly-mcp",
   "nodeVersion": 22,
+  "patternflyOptions": {
+    "availableResourceVersions": [
+      "v6",
+    ],
+    "default": {
+      "defaultVersion": "v6",
+      "versionStrategy": "highest",
+      "versionWhitelist": [
+        "@patternfly/react-core",
+        "@patternfly/patternfly",
+      ],
+    },
+  },
   "pfExternal": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content",
   "pfExternalAccessibility": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility",
   "pfExternalChartsDesign": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts",
