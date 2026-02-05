@@ -156,13 +156,15 @@ const main = async (
   let updatedAllowProcessExit = allowProcessExit ?? programmaticMode !== 'test';
   let mergedOptions: ServerOptions;
 
-  // If allowed, exit the process on error
+  // If allowed, exit the process on error otherwise log then throw the error.
   const processExit = (message: string, error: unknown) => {
     console.error(message, error);
 
     if (updatedAllowProcessExit) {
       process.exit(1);
     }
+
+    throw error;
   };
 
   try {
@@ -176,7 +178,6 @@ const main = async (
     updatedAllowProcessExit = allowProcessExit ?? mergedOptions.mode !== 'test';
   } catch (error) {
     processExit('Set options error, failed to start server:', error);
-    throw error;
   }
 
   try {
@@ -188,8 +189,9 @@ const main = async (
       await runServer.memo(mergedOptions, { allowProcessExit: updatedAllowProcessExit }));
   } catch (error) {
     processExit('Failed to start server:', error);
-    throw error;
   }
+
+  return undefined as never;
 };
 
 export {

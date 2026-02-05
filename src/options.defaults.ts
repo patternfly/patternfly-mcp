@@ -348,7 +348,6 @@ const LOG_BASENAME = 'pf-mcp:log';
  * Default PatternFly-specific options.
  */
 const PATTERNFLY_OPTIONS: PatternFlyOptions = {
-  // availableVersions: ['v3', 'v4', 'v5', 'v6'],
   availableResourceVersions: ['v6'],
   default: {
     defaultVersion: 'v6',

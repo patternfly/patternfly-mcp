@@ -78,7 +78,7 @@ const resolveLocalPathFunction = (path: string, options = getOptions()) => {
   const documentationPrefix = options.docsPathSlug;
 
   // Safety check: Ensure the path is within the allowed directory
-  const confirmThenReturnResolvedBase = (base: string, resolved: string) => {
+  const assertPathWithinBaseAndReturn = (base: string, resolved: string) => {
     const normalizedBase = normalize(base);
     const refinedBase = normalizedBase.endsWith(sep) ? normalizedBase : `${normalizedBase}${sep}`;
 
@@ -89,13 +89,15 @@ const resolveLocalPathFunction = (path: string, options = getOptions()) => {
     return resolved;
   };
 
+  // Paths starting with the documentation prefix are resolved relative to the documentation path
   if (path.startsWith(documentationPrefix)) {
     const base = options.docsPath;
     const resolved = resolve(base, path.slice(documentationPrefix.length));
 
-    return confirmThenReturnResolvedBase(base, resolved);
+    return assertPathWithinBaseAndReturn(base, resolved);
   }
 
+  // URLs are returned as-is
   if (isUrl(path)) {
     return path;
   }
@@ -103,7 +105,7 @@ const resolveLocalPathFunction = (path: string, options = getOptions()) => {
   const base = options.contextPath;
   const resolved = isAbsolute(path) ? normalize(path) : resolve(base, path);
 
-  return confirmThenReturnResolvedBase(base, resolved);
+  return assertPathWithinBaseAndReturn(base, resolved);
 };
 
 /**
