@@ -191,6 +191,7 @@ const main = async (
     processExit('Failed to start server:', error);
   }
 
+  // Unreachable, processExit exits or throws. Kept for type satisfaction.
   return undefined as never;
 };
 
