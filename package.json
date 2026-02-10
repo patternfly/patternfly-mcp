@@ -64,20 +64,20 @@
   "devDependencies": {
     "@cdcabrera/eslint-config-toolkit": "^0.4.0",
     "@types/jest": "^30.0.0",
-    "@types/node": "^25.0.8",
-    "@typescript-eslint/eslint-plugin": "^8.53.0",
-    "@typescript-eslint/parser": "^8.53.0",
+    "@types/node": "^25.0.10",
+    "@typescript-eslint/eslint-plugin": "^8.54.0",
+    "@typescript-eslint/parser": "^8.54.0",
     "changelog-light": "^3.0.5",
-    "cspell": "^9.4.0",
+    "cspell": "^9.6.2",
     "eslint": "^9.39.2",
     "jest": "^30.2.0",
-    "pkgroll": "^2.20.1",
+    "pkgroll": "^2.22.0",
     "ts-jest": "29.4.4",
     "ts-jest-mock-import-meta": "^1.3.1",
     "ts-node": "^10.1.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.53.0"
+    "typescript-eslint": "^8.54.0"
   },
   "engines": {
     "node": ">=20.0.0"
