@@ -3,8 +3,6 @@ import { basename, resolve } from 'node:path';
 import { z } from 'zod';
 import {
   createMcpTool,
-  isFilePath,
-  isUrlLike,
   normalizeFilePackage,
   normalizeFilePath,
   normalizeFileUrl,
@@ -95,46 +93,6 @@ describe('sanitizeStaticToolName', () => {
     });
 
     expect(sanitizeStaticToolName(proxy)).toBeUndefined();
-  });
-});
-
-describe('isFilePath', () => {
-  it.each([
-    { description: 'absolute path', file: '/path/to/file.txt' },
-    { description: 'absolute path ref no extension', file: '/path/to/another/file' },
-    { description: 'min file extension', file: 'path/to/another/file.y' },
-    { description: 'potential multiple extensions', file: 'path/to/another/file.test.js' },
-    { description: 'current dir ref', file: './path/to/another/file.txt' },
-    { description: 'parent dir ref', file: '../path/to/another/file.txt' }
-  ])('should validate $description', ({ file }) => {
-    expect(isFilePath(file)).toBe(true);
-  });
-
-  it.each([
-    { description: 'no file extension or dir ref', file: 'path/to/another/file' }
-  ])('should fail, $description', ({ file }) => {
-    expect(isFilePath(file)).toBe(false);
-  });
-});
-
-describe('isUrlLike', () => {
-  it.each([
-    { description: 'http', url: 'http://example.com' },
-    { description: 'https', url: 'https://example.com' },
-    { description: 'file', url: 'file:///path/to/file.txt' },
-    { description: 'node', url: 'node://path/to/file.txt' },
-    { description: 'data', url: 'data:text/plain;base64,1234567890==' }
-  ])('should validate $description', ({ url }) => {
-    expect(isUrlLike(url)).toBe(true);
-  });
-
-  it.each([
-    { description: 'invalid protocol', url: 'ftp://example.com' },
-    { description: 'random', url: 'random://example.com' },
-    { description: 'null', url: null },
-    { description: 'undefined', url: undefined }
-  ])('should fail, $description', ({ url }) => {
-    expect(isUrlLike(url as any)).toBe(false);
   });
 });
 

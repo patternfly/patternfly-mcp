@@ -32,10 +32,10 @@ exports[`options defaults should return specific properties: defaults 1`] = `
   "nodeVersion": 22,
   "patternflyOptions": {
     "availableResourceVersions": [
-      "v6",
+      "6.0.0",
     ],
     "default": {
-      "defaultVersion": "v6",
+      "defaultVersion": "6.0.0",
       "versionStrategy": "highest",
       "versionWhitelist": [
         "@patternfly/react-core",

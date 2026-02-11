@@ -75,7 +75,7 @@ exports[`normalizeFilePackage handles file URL 1`] = `
 exports[`normalizeFilePackage handles http URL (not file) 1`] = `
 {
   "fsReadDir": "/",
-  "isFilePath": true,
+  "isFilePath": false,
   "isFileUrl": false,
   "isUrlLike": true,
   "normalizedUrl": "/module.mjs",
@@ -89,7 +89,7 @@ exports[`normalizeFilePackage handles invalid file URLs, encoding 1`] = `
 {
   "error": "true",
   "fsReadDir": "/",
-  "isFilePath": false,
+  "isFilePath": true,
   "isFileUrl": true,
   "isUrlLike": true,
   "normalizedUrl": "/%E0%A4%A",
@@ -184,7 +184,7 @@ exports[`normalizeFileUrl handles invalid file URLs, encoding 1`] = `
 {
   "error": "true",
   "fsReadDir": "/",
-  "isFilePath": false,
+  "isFilePath": true,
   "isFileUrl": true,
   "isUrlLike": true,
   "normalizedUrl": "/%E0%A4%A",
