@@ -1,0 +1,2933 @@
+{
+  "version": "1",
+  "generated": "2026-02-18T00:00:00.000Z",
+  "meta": {
+    "totalEntries": 126,
+    "totalDocs": 267,
+    "source": "patternfly-mcp-internal"
+  },
+  "docs": {
+    "AboutModal": [
+      {
+        "displayName": "About Modal",
+        "description": "Design Guidelines for the about modal component.",
+        "pathSlug": "about-modal",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/about-modal/about-modal.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "About Modal",
+        "description": "Accessibility for the about modal component.",
+        "pathSlug": "about-modal",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/about-modal/about-modal.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "About Modal",
+        "description": "Examples for the about modal component.",
+        "pathSlug": "about-modal",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/AboutModal/examples/AboutModal.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "About Modal",
+        "description": "Design Guidelines for the about modal component (v5).",
+        "pathSlug": "about-modal",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/v5/packages/documentation-site/patternfly-docs/content/design-guidelines/components/about-modal/about-modal.md",
+        "version": "v5"
+      }
+    ],
+    "Accordion": [
+      {
+        "displayName": "Accordion",
+        "description": "Design Guidelines for the accordion component.",
+        "pathSlug": "accordion",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/accordion/accordion.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Accordion",
+        "description": "Accessibility for the accordion component.",
+        "pathSlug": "accordion",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/accordion/accordion.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Accordion",
+        "description": "Examples for the accordion component.",
+        "pathSlug": "accordion",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Accordion/examples/Accordion.md",
+        "version": "v6"
+      }
+    ],
+    "ActionList": [
+      {
+        "displayName": "Action List",
+        "description": "Design Guidelines for the action list component.",
+        "pathSlug": "action-list",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/action-list/action-list.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Action List",
+        "description": "Accessibility for the action list component.",
+        "pathSlug": "action-list",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/action-list/action-list.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Action List",
+        "description": "Examples for the action list component.",
+        "pathSlug": "action-list",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/ActionList/examples/ActionList.md",
+        "version": "v6"
+      }
+    ],
+    "Alert": [
+      {
+        "displayName": "Alert",
+        "description": "Design Guidelines for the alert component.",
+        "pathSlug": "alert",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/alert/alert.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Alert",
+        "description": "Accessibility for the alert component.",
+        "pathSlug": "alert",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/alert/alert.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Alert",
+        "description": "Examples for the alert component.",
+        "pathSlug": "alert",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Alert/examples/Alert.md",
+        "version": "v6"
+      }
+    ],
+    "ApplicationLauncher": [
+      {
+        "displayName": "Application Launcher",
+        "description": "Design Guidelines for the application launcher component.",
+        "pathSlug": "application-launcher",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/application-launcher/application-launcher.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Application Launcher",
+        "description": "Accessibility for the application launcher component.",
+        "pathSlug": "application-launcher",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/application-launcher/application-launcher.md",
+        "version": "v6"
+      }
+    ],
+    "Avatar": [
+      {
+        "displayName": "Avatar",
+        "description": "Design Guidelines for the avatar component.",
+        "pathSlug": "avatar",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/avatar/avatar.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Avatar",
+        "description": "Accessibility for the avatar component.",
+        "pathSlug": "avatar",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/avatar/avatar.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Avatar",
+        "description": "Examples for the avatar component.",
+        "pathSlug": "avatar",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Avatar/examples/Avatar.md",
+        "version": "v6"
+      }
+    ],
+    "BackToTop": [
+      {
+        "displayName": "Back To Top",
+        "description": "Design Guidelines for the back to top component.",
+        "pathSlug": "back-to-top",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/back-to-top/back-to-top.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Back To Top",
+        "description": "Examples for the back to top component.",
+        "pathSlug": "back-to-top",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/BackToTop/examples/BackToTop.md",
+        "version": "v6"
+      }
+    ],
+    "Backdrop": [
+      {
+        "displayName": "Backdrop",
+        "description": "Design Guidelines for the backdrop component.",
+        "pathSlug": "backdrop",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/backdrop/backdrop.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Backdrop",
+        "description": "Accessibility for the backdrop component.",
+        "pathSlug": "backdrop",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/backdrop/backdrop.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Backdrop",
+        "description": "Examples for the backdrop component.",
+        "pathSlug": "backdrop",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Backdrop/examples/Backdrop.md",
+        "version": "v6"
+      }
+    ],
+    "BackgroundImage": [
+      {
+        "displayName": "Background Image",
+        "description": "Design Guidelines for the background image component.",
+        "pathSlug": "background-image",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/background-image/background-image.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Background Image",
+        "description": "Accessibility for the background image component.",
+        "pathSlug": "background-image",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/background-image/background-image.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Background Image",
+        "description": "Examples for the background image component.",
+        "pathSlug": "background-image",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/BackgroundImage/examples/BackgroundImage.md",
+        "version": "v6"
+      }
+    ],
+    "Badge": [
+      {
+        "displayName": "Badge",
+        "description": "Design Guidelines for the badge component.",
+        "pathSlug": "badge",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/badge/badge.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Badge",
+        "description": "Accessibility for the badge component.",
+        "pathSlug": "badge",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/badge/badge.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Badge",
+        "description": "Examples for the badge component.",
+        "pathSlug": "badge",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Badge/examples/Badge.md",
+        "version": "v6"
+      }
+    ],
+    "Banner": [
+      {
+        "displayName": "Banner",
+        "description": "Design Guidelines for the banner component.",
+        "pathSlug": "banner",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/banner/banner.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Banner",
+        "description": "Accessibility for the banner component.",
+        "pathSlug": "banner",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/banner/banner.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Banner",
+        "description": "Examples for the banner component.",
+        "pathSlug": "banner",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Banner/examples/Banner.md",
+        "version": "v6"
+      }
+    ],
+    "Brand": [
+      {
+        "displayName": "Brand",
+        "description": "Design Guidelines for the brand component.",
+        "pathSlug": "brand",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/brand/brand.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Brand",
+        "description": "Accessibility for the brand component.",
+        "pathSlug": "brand",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/brand/brand.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Brand",
+        "description": "Examples for the brand component.",
+        "pathSlug": "brand",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Brand/examples/Brand.md",
+        "version": "v6"
+      }
+    ],
+    "Breadcrumb": [
+      {
+        "displayName": "Breadcrumb",
+        "description": "Design Guidelines for the breadcrumb component.",
+        "pathSlug": "breadcrumb",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/breadcrumb/breadcrumb.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Breadcrumb",
+        "description": "Accessibility for the breadcrumb component.",
+        "pathSlug": "breadcrumb",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/breadcrumb/breadcrumb.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Breadcrumb",
+        "description": "Examples for the breadcrumb component.",
+        "pathSlug": "breadcrumb",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Breadcrumb/examples/Breadcrumb.md",
+        "version": "v6"
+      }
+    ],
+    "Button": [
+      {
+        "displayName": "Button",
+        "description": "Design Guidelines for the button component.",
+        "pathSlug": "button",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/button/button.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Button",
+        "description": "Accessibility for the button component.",
+        "pathSlug": "button",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/button/button.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Button",
+        "description": "Examples for the button component.",
+        "pathSlug": "button",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Button/examples/Button.md",
+        "version": "v6"
+      }
+    ],
+    "CalendarMonth": [
+      {
+        "displayName": "Calendar Month",
+        "description": "Design Guidelines for the calendar month component.",
+        "pathSlug": "calendar-month",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/calendar-month/calendar-month.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Calendar Month",
+        "description": "Accessibility for the calendar month component.",
+        "pathSlug": "calendar-month",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/calendar-month/calendar-month.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Calendar Month",
+        "description": "Examples for the calendar month component.",
+        "pathSlug": "calendar-month",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/CalendarMonth/examples/CalendarMonth.md",
+        "version": "v6"
+      }
+    ],
+    "Card": [
+      {
+        "displayName": "Card",
+        "description": "Design Guidelines for the card component.",
+        "pathSlug": "card",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/card/card.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Card",
+        "description": "Accessibility for the card component.",
+        "pathSlug": "card",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/card/card.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Card",
+        "description": "Examples for the card component.",
+        "pathSlug": "card",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Card/examples/Card.md",
+        "version": "v6"
+      }
+    ],
+    "Checkbox": [
+      {
+        "displayName": "Checkbox",
+        "description": "Design Guidelines for the checkbox component.",
+        "pathSlug": "checkbox",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/checkbox/checkbox.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Checkbox",
+        "description": "Accessibility for the checkbox component.",
+        "pathSlug": "checkbox",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/checkbox/checkbox.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Checkbox",
+        "description": "Examples for the checkbox component.",
+        "pathSlug": "checkbox",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Checkbox/examples/Checkbox.md",
+        "version": "v6"
+      }
+    ],
+    "ChipDeprecated": [
+      {
+        "displayName": "Chip Deprecated",
+        "description": "Design Guidelines for the chip deprecated component.",
+        "pathSlug": "chip-deprecated",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/chip/chip.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Chip Deprecated",
+        "description": "Accessibility for the chip deprecated component.",
+        "pathSlug": "chip-deprecated",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/chip/chip.md",
+        "version": "v6"
+      }
+    ],
+    "ClipboardCopy": [
+      {
+        "displayName": "Clipboard Copy",
+        "description": "Design Guidelines for the clipboard copy component.",
+        "pathSlug": "clipboard-copy",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/clipboard-copy/clipboard-copy.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Clipboard Copy",
+        "description": "Accessibility for the clipboard copy component.",
+        "pathSlug": "clipboard-copy",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/clipboard-copy/clipboard-copy.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Clipboard Copy",
+        "description": "Examples for the clipboard copy component.",
+        "pathSlug": "clipboard-copy",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/ClipboardCopy/examples/ClipboardCopy.md",
+        "version": "v6"
+      }
+    ],
+    "CodeBlock": [
+      {
+        "displayName": "Code Block",
+        "description": "Design Guidelines for the code block component.",
+        "pathSlug": "code-block",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/code-block/code-block.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Code Block",
+        "description": "Examples for the code block component.",
+        "pathSlug": "code-block",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/CodeBlock/examples/CodeBlock.md",
+        "version": "v6"
+      }
+    ],
+    "CodeEditor": [
+      {
+        "displayName": "Code Editor",
+        "description": "Design Guidelines for the code editor component.",
+        "pathSlug": "code-editor",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/code-editor/code-editor.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Code Editor",
+        "description": "Accessibility for the code editor component.",
+        "pathSlug": "code-editor",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/code-editor/code-editor.md",
+        "version": "v6"
+      }
+    ],
+    "Content": [
+      {
+        "displayName": "Content",
+        "description": "Design Guidelines for the content component.",
+        "pathSlug": "content",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/content/content.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Content",
+        "description": "Examples for the content component.",
+        "pathSlug": "content",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Content/examples/Content.md",
+        "version": "v6"
+      }
+    ],
+    "DataList": [
+      {
+        "displayName": "Data List",
+        "description": "Design Guidelines for the data list component.",
+        "pathSlug": "data-list",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/data-list/data-list.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Data List",
+        "description": "Examples for the data list component.",
+        "pathSlug": "data-list",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/DataList/examples/DataList.md",
+        "version": "v6"
+      }
+    ],
+    "DatePicker": [
+      {
+        "displayName": "Date Picker",
+        "description": "Design Guidelines for the date picker component.",
+        "pathSlug": "date-picker",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/date-picker/date-picker.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Date Picker",
+        "description": "Examples for the date picker component.",
+        "pathSlug": "date-picker",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/DatePicker/examples/DatePicker.md",
+        "version": "v6"
+      }
+    ],
+    "DescriptionList": [
+      {
+        "displayName": "Description List",
+        "description": "Design Guidelines for the description list component.",
+        "pathSlug": "description-list",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/description-list/description-list.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Description List",
+        "description": "Examples for the description list component.",
+        "pathSlug": "description-list",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/DescriptionList/examples/DescriptionList.md",
+        "version": "v6"
+      }
+    ],
+    "Divider": [
+      {
+        "displayName": "Divider",
+        "description": "Design Guidelines for the divider component.",
+        "pathSlug": "divider",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/divider/divider.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Divider",
+        "description": "Examples for the divider component.",
+        "pathSlug": "divider",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Divider/examples/Divider.md",
+        "version": "v6"
+      }
+    ],
+    "DragAndDrop": [
+      {
+        "displayName": "Drag And Drop",
+        "description": "Design Guidelines for the drag and drop component.",
+        "pathSlug": "drag-and-drop",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/drag-and-drop/drag.md",
+        "version": "v6"
+      }
+    ],
+    "Drawer": [
+      {
+        "displayName": "Drawer",
+        "description": "Design Guidelines for the drawer component.",
+        "pathSlug": "drawer",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/drawer/drawer.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Drawer",
+        "description": "Examples for the drawer component.",
+        "pathSlug": "drawer",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Drawer/examples/Drawer.md",
+        "version": "v6"
+      }
+    ],
+    "Dropdown": [
+      {
+        "displayName": "Dropdown",
+        "description": "Design Guidelines for the dropdown component.",
+        "pathSlug": "dropdown",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/dropdown/dropdown.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Dropdown",
+        "description": "Examples for the dropdown component.",
+        "pathSlug": "dropdown",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Dropdown/examples/Dropdown.md",
+        "version": "v6"
+      }
+    ],
+    "DualListSelector": [
+      {
+        "displayName": "Dual List Selector",
+        "description": "Design Guidelines for the dual list selector component.",
+        "pathSlug": "dual-list-selector",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/dual-list-selector/dual-list-selector.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Dual List Selector",
+        "description": "Examples for the dual list selector component.",
+        "pathSlug": "dual-list-selector",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/DualListSelector/examples/DualListSelector.md",
+        "version": "v6"
+      }
+    ],
+    "EmptyState": [
+      {
+        "displayName": "Empty State",
+        "description": "Design Guidelines for the empty state component.",
+        "pathSlug": "empty-state",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/empty-state/empty-state.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Empty State",
+        "description": "Examples for the empty state component.",
+        "pathSlug": "empty-state",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/EmptyState/examples/EmptyState.md",
+        "version": "v6"
+      }
+    ],
+    "ExpandableSection": [
+      {
+        "displayName": "Expandable Section",
+        "description": "Design Guidelines for the expandable section component.",
+        "pathSlug": "expandable-section",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/expandable-section/expandable-section.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Expandable Section",
+        "description": "Accessibility for the expandable section component.",
+        "pathSlug": "expandable-section",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/expandable-section/expandable-section.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Expandable Section",
+        "description": "Examples for the expandable section component.",
+        "pathSlug": "expandable-section",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/ExpandableSection/examples/ExpandableSection.md",
+        "version": "v6"
+      }
+    ],
+    "FileUpload": [
+      {
+        "displayName": "File Upload",
+        "description": "Design Guidelines for the file upload component.",
+        "pathSlug": "file-upload",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/file-upload/file-upload.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "File Upload",
+        "description": "Examples for the file upload component.",
+        "pathSlug": "file-upload",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/FileUpload/examples/FileUpload.md",
+        "version": "v6"
+      }
+    ],
+    "Form": [
+      {
+        "displayName": "Form",
+        "description": "Design Guidelines for the form component.",
+        "pathSlug": "form",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/form/forms.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Form",
+        "description": "Examples for the form component.",
+        "pathSlug": "form",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Form/examples/Form.md",
+        "version": "v6"
+      }
+    ],
+    "FormControl": [
+      {
+        "displayName": "Form Control",
+        "description": "Design Guidelines for the form control component.",
+        "pathSlug": "form-control",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/form-control/form-control.md",
+        "version": "v6"
+      }
+    ],
+    "FormSelect": [
+      {
+        "displayName": "Form Select",
+        "description": "Design Guidelines for the form select component.",
+        "pathSlug": "form-select",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/form-select/form-select.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Form Select",
+        "description": "Examples for the form select component.",
+        "pathSlug": "form-select",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/FormSelect/examples/FormSelect.md",
+        "version": "v6"
+      }
+    ],
+    "HelperText": [
+      {
+        "displayName": "Helper Text",
+        "description": "Design Guidelines for the helper text component.",
+        "pathSlug": "helper-text",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/helper-text/helper-text.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Helper Text",
+        "description": "Accessibility for the helper text component.",
+        "pathSlug": "helper-text",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/helper-text/helper-text.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Helper Text",
+        "description": "Examples for the helper text component.",
+        "pathSlug": "helper-text",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/HelperText/examples/HelperText.md",
+        "version": "v6"
+      }
+    ],
+    "Hint": [
+      {
+        "displayName": "Hint",
+        "description": "Design Guidelines for the hint component.",
+        "pathSlug": "hint",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/hint/hint.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Hint",
+        "description": "Examples for the hint component.",
+        "pathSlug": "hint",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Hint/examples/Hint.md",
+        "version": "v6"
+      }
+    ],
+    "Icon": [
+      {
+        "displayName": "Icon",
+        "description": "Examples for the icon component.",
+        "pathSlug": "icon",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Icon/examples/Icon.md",
+        "version": "v6"
+      }
+    ],
+    "InlineEdit": [
+      {
+        "displayName": "Inline Edit",
+        "description": "Design Guidelines for the inline edit component.",
+        "pathSlug": "inline-edit",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/inline-edit/inline-edit.md",
+        "version": "v6"
+      }
+    ],
+    "InputGroup": [
+      {
+        "displayName": "Input Group",
+        "description": "Design Guidelines for the input group component.",
+        "pathSlug": "input-group",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/input-group/input-group.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Input Group",
+        "description": "Examples for the input group component.",
+        "pathSlug": "input-group",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/InputGroup/examples/InputGroup.md",
+        "version": "v6"
+      }
+    ],
+    "JumpLinks": [
+      {
+        "displayName": "Jump Links",
+        "description": "Design Guidelines for the jump links component.",
+        "pathSlug": "jump-links",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/jump-link/jump-link.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Jump Links",
+        "description": "Accessibility for the jump links component.",
+        "pathSlug": "jump-links",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/jump-links/jump-links.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Jump Links",
+        "description": "Examples for the jump links component.",
+        "pathSlug": "jump-links",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/JumpLinks/examples/JumpLinks.md",
+        "version": "v6"
+      }
+    ],
+    "Label": [
+      {
+        "displayName": "Label",
+        "description": "Design Guidelines for the label component.",
+        "pathSlug": "label",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/label/label.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Label",
+        "description": "Accessibility for the label component.",
+        "pathSlug": "label",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/label/label.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Label",
+        "description": "Examples for the label component.",
+        "pathSlug": "label",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Label/examples/Label.md",
+        "version": "v6"
+      }
+    ],
+    "List": [
+      {
+        "displayName": "List",
+        "description": "Design Guidelines for the list component.",
+        "pathSlug": "list",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/list/list.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "List",
+        "description": "Examples for the list component.",
+        "pathSlug": "list",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/List/examples/List.md",
+        "version": "v6"
+      }
+    ],
+    "LoginPage": [
+      {
+        "displayName": "Login Page",
+        "description": "Design Guidelines for the login page component.",
+        "pathSlug": "login-page",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/login-page/login-page.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Login Page",
+        "description": "Examples for the login page component.",
+        "pathSlug": "login-page",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/LoginPage/examples/LoginPage.md",
+        "version": "v6"
+      }
+    ],
+    "Masthead": [
+      {
+        "displayName": "Masthead",
+        "description": "Design Guidelines for the masthead component.",
+        "pathSlug": "masthead",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/masthead/masthead.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Masthead",
+        "description": "Examples for the masthead component.",
+        "pathSlug": "masthead",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Masthead/examples/Masthead.md",
+        "version": "v6"
+      }
+    ],
+    "Menu": [
+      {
+        "displayName": "Menu",
+        "description": "Design Guidelines for the menu component.",
+        "pathSlug": "menu",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/menu/menu.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Menu",
+        "description": "Accessibility for the menu component.",
+        "pathSlug": "menu",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/menu/menu.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Menu",
+        "description": "Examples for the menu component.",
+        "pathSlug": "menu",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Menu/examples/Menu.md",
+        "version": "v6"
+      }
+    ],
+    "MenuToggle": [
+      {
+        "displayName": "Menu Toggle",
+        "description": "Design Guidelines for the menu toggle component.",
+        "pathSlug": "menu-toggle",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/menu-toggle/menu-toggle.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Menu Toggle",
+        "description": "Accessibility for the menu toggle component.",
+        "pathSlug": "menu-toggle",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/menu-toggle/menu-toggle.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Menu Toggle",
+        "description": "Examples for the menu toggle component.",
+        "pathSlug": "menu-toggle",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/MenuToggle/examples/MenuToggle.md",
+        "version": "v6"
+      }
+    ],
+    "Modal": [
+      {
+        "displayName": "Modal",
+        "description": "Design Guidelines for the modal component.",
+        "pathSlug": "modal",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/modal/modal.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Modal",
+        "description": "Accessibility for the modal component.",
+        "pathSlug": "modal",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/modal/modal.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Modal",
+        "description": "Examples for the modal component.",
+        "pathSlug": "modal",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Modal/examples/Modal.md",
+        "version": "v6"
+      }
+    ],
+    "Navigation": [
+      {
+        "displayName": "Navigation",
+        "description": "Design Guidelines for the navigation component.",
+        "pathSlug": "navigation",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/navigation/navigation.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Navigation",
+        "description": "Accessibility for the navigation component.",
+        "pathSlug": "navigation",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/navigation/navigation.md",
+        "version": "v6"
+      }
+    ],
+    "NotificationBadge": [
+      {
+        "displayName": "Notification Badge",
+        "description": "Design Guidelines for the notification badge component.",
+        "pathSlug": "notification-badge",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/notification-badge/notification-badge.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Notification Badge",
+        "description": "Examples for the notification badge component.",
+        "pathSlug": "notification-badge",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/NotificationBadge/examples/NotificationBadge.md",
+        "version": "v6"
+      }
+    ],
+    "NotificationDrawer": [
+      {
+        "displayName": "Notification Drawer",
+        "description": "Design Guidelines for the notification drawer component.",
+        "pathSlug": "notification-drawer",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/notification-drawer/notification-drawer.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Notification Drawer",
+        "description": "Examples for the notification drawer component.",
+        "pathSlug": "notification-drawer",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/NotificationDrawer/examples/NotificationDrawer.md",
+        "version": "v6"
+      }
+    ],
+    "NumberInput": [
+      {
+        "displayName": "Number Input",
+        "description": "Design Guidelines for the number input component.",
+        "pathSlug": "number-input",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/number%20input/number-input.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Number Input",
+        "description": "Examples for the number input component.",
+        "pathSlug": "number-input",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/NumberInput/examples/NumberInput.md",
+        "version": "v6"
+      }
+    ],
+    "OverflowMenu": [
+      {
+        "displayName": "Overflow Menu",
+        "description": "Design Guidelines for the overflow menu component.",
+        "pathSlug": "overflow-menu",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/overflow-menu/overflow-menu.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Overflow Menu",
+        "description": "Examples for the overflow menu component.",
+        "pathSlug": "overflow-menu",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/OverflowMenu/examples/OverflowMenu.md",
+        "version": "v6"
+      }
+    ],
+    "Page": [
+      {
+        "displayName": "Page",
+        "description": "Design Guidelines for the page component.",
+        "pathSlug": "page",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/page/page.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Page",
+        "description": "Accessibility for the page component.",
+        "pathSlug": "page",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/page/page.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Page",
+        "description": "Examples for the page component.",
+        "pathSlug": "page",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Page/examples/Page.md",
+        "version": "v6"
+      }
+    ],
+    "Pagination": [
+      {
+        "displayName": "Pagination",
+        "description": "Design Guidelines for the pagination component.",
+        "pathSlug": "pagination",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/pagination/pagination.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Pagination",
+        "description": "Examples for the pagination component.",
+        "pathSlug": "pagination",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Pagination/examples/Pagination.md",
+        "version": "v6"
+      }
+    ],
+    "Panel": [
+      {
+        "displayName": "Panel",
+        "description": "Design Guidelines for the panel component.",
+        "pathSlug": "panel",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/panel/panel.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Panel",
+        "description": "Examples for the panel component.",
+        "pathSlug": "panel",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Panel/examples/Panel.md",
+        "version": "v6"
+      }
+    ],
+    "Popover": [
+      {
+        "displayName": "Popover",
+        "description": "Design Guidelines for the popover component.",
+        "pathSlug": "popover",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/popover/popover.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Popover",
+        "description": "Examples for the popover component.",
+        "pathSlug": "popover",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Popover/examples/Popover.md",
+        "version": "v6"
+      }
+    ],
+    "Progress": [
+      {
+        "displayName": "Progress",
+        "description": "Design Guidelines for the progress component.",
+        "pathSlug": "progress",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/progress/progress.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Progress",
+        "description": "Accessibility for the progress component.",
+        "pathSlug": "progress",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/progress/progress.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Progress",
+        "description": "Examples for the progress component.",
+        "pathSlug": "progress",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Progress/examples/Progress.md",
+        "version": "v6"
+      }
+    ],
+    "ProgressStepper": [
+      {
+        "displayName": "Progress Stepper",
+        "description": "Design Guidelines for the progress stepper component.",
+        "pathSlug": "progress-stepper",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/progress-stepper/progress-stepper.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Progress Stepper",
+        "description": "Accessibility for the progress stepper component.",
+        "pathSlug": "progress-stepper",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/progress-stepper/progress-stepper.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Progress Stepper",
+        "description": "Examples for the progress stepper component.",
+        "pathSlug": "progress-stepper",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/ProgressStepper/examples/ProgressStepper.md",
+        "version": "v6"
+      }
+    ],
+    "Radio": [
+      {
+        "displayName": "Radio",
+        "description": "Design Guidelines for the radio component.",
+        "pathSlug": "radio",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/radio/radio.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Radio",
+        "description": "Accessibility for the radio component.",
+        "pathSlug": "radio",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/radio/radio.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Radio",
+        "description": "Examples for the radio component.",
+        "pathSlug": "radio",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Radio/examples/Radio.md",
+        "version": "v6"
+      }
+    ],
+    "SearchInput": [
+      {
+        "displayName": "Search Input",
+        "description": "Design Guidelines for the search input component.",
+        "pathSlug": "search-input",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/search-input/search-input.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Search Input",
+        "description": "Examples for the search input component.",
+        "pathSlug": "search-input",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/SearchInput/examples/SearchInput.md",
+        "version": "v6"
+      }
+    ],
+    "Select": [
+      {
+        "displayName": "Select",
+        "description": "Design Guidelines for the select component.",
+        "pathSlug": "select",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/select/select.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Select",
+        "description": "Examples for the select component.",
+        "pathSlug": "select",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Select/examples/Select.md",
+        "version": "v6"
+      }
+    ],
+    "Sidebar": [
+      {
+        "displayName": "Sidebar",
+        "description": "Design Guidelines for the sidebar component.",
+        "pathSlug": "sidebar",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/sidebar/sidebar.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Sidebar",
+        "description": "Accessibility for the sidebar component.",
+        "pathSlug": "sidebar",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/sidebar/sidebar.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Sidebar",
+        "description": "Examples for the sidebar component.",
+        "pathSlug": "sidebar",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Sidebar/examples/Sidebar.md",
+        "version": "v6"
+      }
+    ],
+    "SimpleList": [
+      {
+        "displayName": "Simple List",
+        "description": "Design Guidelines for the simple list component.",
+        "pathSlug": "simple-list",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/simple-list/simple-list.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Simple List",
+        "description": "Examples for the simple list component.",
+        "pathSlug": "simple-list",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/SimpleList/examples/SimpleList.md",
+        "version": "v6"
+      }
+    ],
+    "Skeleton": [
+      {
+        "displayName": "Skeleton",
+        "description": "Design Guidelines for the skeleton component.",
+        "pathSlug": "skeleton",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/skeleton/skeleton.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Skeleton",
+        "description": "Accessibility for the skeleton component.",
+        "pathSlug": "skeleton",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/skeleton/skeleton.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Skeleton",
+        "description": "Examples for the skeleton component.",
+        "pathSlug": "skeleton",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Skeleton/examples/Skeleton.md",
+        "version": "v6"
+      }
+    ],
+    "SkipToContent": [
+      {
+        "displayName": "Skip To Content",
+        "description": "Design Guidelines for the skip to content component.",
+        "pathSlug": "skip-to-content",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/skip-to-content/skip-to-content.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Skip To Content",
+        "description": "Accessibility for the skip to content component.",
+        "pathSlug": "skip-to-content",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/skip-to-content/skip-to-content.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Skip To Content",
+        "description": "Examples for the skip to content component.",
+        "pathSlug": "skip-to-content",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/SkipToContent/examples/SkipToContent.md",
+        "version": "v6"
+      }
+    ],
+    "Slider": [
+      {
+        "displayName": "Slider",
+        "description": "Design Guidelines for the slider component.",
+        "pathSlug": "slider",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/slider/slider.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Slider",
+        "description": "Examples for the slider component.",
+        "pathSlug": "slider",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Slider/examples/Slider.md",
+        "version": "v6"
+      }
+    ],
+    "Spinner": [
+      {
+        "displayName": "Spinner",
+        "description": "Design Guidelines for the spinner component.",
+        "pathSlug": "spinner",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/spinner/spinner.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Spinner",
+        "description": "Examples for the spinner component.",
+        "pathSlug": "spinner",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Spinner/examples/Spinner.md",
+        "version": "v6"
+      }
+    ],
+    "Switch": [
+      {
+        "displayName": "Switch",
+        "description": "Design Guidelines for the switch component.",
+        "pathSlug": "switch",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/switch/switch.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Switch",
+        "description": "Accessibility for the switch component.",
+        "pathSlug": "switch",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/switch/switch.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Switch",
+        "description": "Examples for the switch component.",
+        "pathSlug": "switch",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Switch/examples/Switch.md",
+        "version": "v6"
+      }
+    ],
+    "Table": [
+      {
+        "displayName": "Table",
+        "description": "Design Guidelines for the table component.",
+        "pathSlug": "table",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/table/table.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Table",
+        "description": "Examples for the table component.",
+        "pathSlug": "table",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-table/src/components/Table/examples/Table.md",
+        "version": "v6"
+      }
+    ],
+    "Tabs": [
+      {
+        "displayName": "Tabs",
+        "description": "Design Guidelines for the tabs component.",
+        "pathSlug": "tabs",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/tabs/tabs.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Tabs",
+        "description": "Accessibility for the tabs component.",
+        "pathSlug": "tabs",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/tabs/tabs.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Tabs",
+        "description": "Examples for the tabs component.",
+        "pathSlug": "tabs",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Tabs/examples/Tabs.md",
+        "version": "v6"
+      }
+    ],
+    "TextArea": [
+      {
+        "displayName": "Text Area",
+        "description": "Design Guidelines for the text area component.",
+        "pathSlug": "text-area",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/text-area/text-area.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Text Area",
+        "description": "Examples for the text area component.",
+        "pathSlug": "text-area",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/TextArea/examples/TextArea.md",
+        "version": "v6"
+      }
+    ],
+    "TextInput": [
+      {
+        "displayName": "Text Input",
+        "description": "Design Guidelines for the text input component.",
+        "pathSlug": "text-input",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/text-input/text-input.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Text Input",
+        "description": "Examples for the text input component.",
+        "pathSlug": "text-input",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/TextInput/examples/TextInput.md",
+        "version": "v6"
+      }
+    ],
+    "TextInputGroup": [
+      {
+        "displayName": "Text Input Group",
+        "description": "Design Guidelines for the text input group component.",
+        "pathSlug": "text-input-group",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/text-input-group/text-input-group.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Text Input Group",
+        "description": "Examples for the text input group component.",
+        "pathSlug": "text-input-group",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/TextInputGroup/examples/TextInputGroup.md",
+        "version": "v6"
+      }
+    ],
+    "TileDeprecated": [
+      {
+        "displayName": "Tile Deprecated",
+        "description": "Design Guidelines for the tile deprecated component.",
+        "pathSlug": "tile-deprecated",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/tile/tile.md",
+        "version": "v6"
+      }
+    ],
+    "TimePicker": [
+      {
+        "displayName": "Time Picker",
+        "description": "Design Guidelines for the time picker component.",
+        "pathSlug": "time-picker",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/time%20picker/time-picker.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Time Picker",
+        "description": "Examples for the time picker component.",
+        "pathSlug": "time-picker",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/TimePicker/examples/TimePicker.md",
+        "version": "v6"
+      }
+    ],
+    "Timestamp": [
+      {
+        "displayName": "Timestamp",
+        "description": "Design Guidelines for the timestamp component.",
+        "pathSlug": "timestamp",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/timestamp/timestamp.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Timestamp",
+        "description": "Examples for the timestamp component.",
+        "pathSlug": "timestamp",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Timestamp/examples/Timestamp.md",
+        "version": "v6"
+      }
+    ],
+    "Title": [
+      {
+        "displayName": "Title",
+        "description": "Design Guidelines for the title component.",
+        "pathSlug": "title",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/title/title.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Title",
+        "description": "Accessibility for the title component.",
+        "pathSlug": "title",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/title/title.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Title",
+        "description": "Examples for the title component.",
+        "pathSlug": "title",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Title/examples/Title.md",
+        "version": "v6"
+      }
+    ],
+    "ToggleGroup": [
+      {
+        "displayName": "Toggle Group",
+        "description": "Design Guidelines for the toggle group component.",
+        "pathSlug": "toggle-group",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/toggle-group/toggle-group.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Toggle Group",
+        "description": "Examples for the toggle group component.",
+        "pathSlug": "toggle-group",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/ToggleGroup/examples/ToggleGroup.md",
+        "version": "v6"
+      }
+    ],
+    "Toolbar": [
+      {
+        "displayName": "Toolbar",
+        "description": "Design Guidelines for the toolbar component.",
+        "pathSlug": "toolbar",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/toolbar/toolbar.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Toolbar",
+        "description": "Examples for the toolbar component.",
+        "pathSlug": "toolbar",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Toolbar/examples/Toolbar.md",
+        "version": "v6"
+      }
+    ],
+    "Tooltip": [
+      {
+        "displayName": "Tooltip",
+        "description": "Design Guidelines for the tooltip component.",
+        "pathSlug": "tooltip",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/tooltip/tooltip.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Tooltip",
+        "description": "Accessibility for the tooltip component.",
+        "pathSlug": "tooltip",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/tooltip/tooltip.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Tooltip",
+        "description": "Examples for the tooltip component.",
+        "pathSlug": "tooltip",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Tooltip/examples/Tooltip.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Tooltip",
+        "description": "Design Guidelines for the tooltip chart.",
+        "pathSlug": "tooltip",
+        "section": "charts",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/tooltip-chart/tooltip-chart.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Tooltip",
+        "description": "Examples for the tooltip chart.",
+        "pathSlug": "tooltip",
+        "section": "charts",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-charts/src/victory/components/ChartTooltip/examples/ChartTooltip.md",
+        "version": "v6"
+      }
+    ],
+    "TreeView": [
+      {
+        "displayName": "Tree View",
+        "description": "Design Guidelines for the tree view component.",
+        "pathSlug": "tree-view",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/tree-view/tree-view.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Tree View",
+        "description": "Accessibility for the tree view component.",
+        "pathSlug": "tree-view",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/tree-view/tree-view.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Tree View",
+        "description": "Examples for the tree view component.",
+        "pathSlug": "tree-view",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/TreeView/examples/TreeView.md",
+        "version": "v6"
+      }
+    ],
+    "Truncate": [
+      {
+        "displayName": "Truncate",
+        "description": "Design Guidelines for the truncate component.",
+        "pathSlug": "truncate",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/truncate/truncate.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Truncate",
+        "description": "Examples for the truncate component.",
+        "pathSlug": "truncate",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Truncate/examples/Truncate.md",
+        "version": "v6"
+      }
+    ],
+    "Wizard": [
+      {
+        "displayName": "Wizard",
+        "description": "Design Guidelines for the wizard component.",
+        "pathSlug": "wizard",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/wizard/wizard.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Wizard",
+        "description": "Examples for the wizard component.",
+        "pathSlug": "wizard",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Wizard/examples/Wizard.md",
+        "version": "v6"
+      }
+    ],
+    "Bullseye": [
+      {
+        "displayName": "Bullseye",
+        "description": "Design Guidelines for the bullseye layout.",
+        "pathSlug": "bullseye",
+        "section": "layouts",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/bullseye.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Bullseye",
+        "description": "Examples for the bullseye layout.",
+        "pathSlug": "bullseye",
+        "section": "layouts",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/layouts/Bullseye/examples/Bullseye.md",
+        "version": "v6"
+      }
+    ],
+    "Flex": [
+      {
+        "displayName": "Flex",
+        "description": "Design Guidelines for the flex layout.",
+        "pathSlug": "flex",
+        "section": "layouts",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/flex.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Flex",
+        "description": "Examples for the flex layout.",
+        "pathSlug": "flex",
+        "section": "layouts",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/layouts/Flex/examples/Flex.md",
+        "version": "v6"
+      }
+    ],
+    "Gallery": [
+      {
+        "displayName": "Gallery",
+        "description": "Design Guidelines for the gallery layout.",
+        "pathSlug": "gallery",
+        "section": "layouts",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/gallery.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Gallery",
+        "description": "Examples for the gallery layout.",
+        "pathSlug": "gallery",
+        "section": "layouts",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/layouts/Gallery/examples/Gallery.md",
+        "version": "v6"
+      }
+    ],
+    "Grid": [
+      {
+        "displayName": "Grid",
+        "description": "Design Guidelines for the grid layout.",
+        "pathSlug": "grid",
+        "section": "layouts",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/grid.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Grid",
+        "description": "Examples for the grid layout.",
+        "pathSlug": "grid",
+        "section": "layouts",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/layouts/Grid/examples/Grid.md",
+        "version": "v6"
+      }
+    ],
+    "Level": [
+      {
+        "displayName": "Level",
+        "description": "Design Guidelines for the level layout.",
+        "pathSlug": "level",
+        "section": "layouts",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/level.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Level",
+        "description": "Examples for the level layout.",
+        "pathSlug": "level",
+        "section": "layouts",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/layouts/Level/examples/Level.md",
+        "version": "v6"
+      }
+    ],
+    "Split": [
+      {
+        "displayName": "Split",
+        "description": "Design Guidelines for the split layout.",
+        "pathSlug": "split",
+        "section": "layouts",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/split.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Split",
+        "description": "Examples for the split layout.",
+        "pathSlug": "split",
+        "section": "layouts",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/layouts/Split/examples/Split.md",
+        "version": "v6"
+      }
+    ],
+    "Stack": [
+      {
+        "displayName": "Stack",
+        "description": "Design Guidelines for the stack layout.",
+        "pathSlug": "stack",
+        "section": "layouts",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/stack.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Stack",
+        "description": "Examples for the stack layout.",
+        "pathSlug": "stack",
+        "section": "layouts",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/layouts/Stack/examples/Stack.md",
+        "version": "v6"
+      }
+    ],
+    "ChartTheme": [
+      {
+        "displayName": "Colors for Charts",
+        "description": "Examples for the colors for charts chart.",
+        "pathSlug": "chart-theme",
+        "section": "charts",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-charts/src/victory/components/ChartTheme/examples/ChartTheme.md",
+        "version": "v6"
+      }
+    ],
+    "AreaChart": [
+      {
+        "displayName": "Area Chart",
+        "description": "Design Guidelines for the area chart chart.",
+        "pathSlug": "area-chart",
+        "section": "charts",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/area-chart/area-chart.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Area Chart",
+        "description": "Examples for the area chart chart.",
+        "pathSlug": "area-chart",
+        "section": "charts",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-charts/src/victory/components/ChartArea/examples/ChartArea.md",
+        "version": "v6"
+      }
+    ],
+    "BarChart": [
+      {
+        "displayName": "Bar Chart",
+        "description": "Design Guidelines for the bar chart chart.",
+        "pathSlug": "bar-chart",
+        "section": "charts",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/bar-chart/bar-chart.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Bar Chart",
+        "description": "Examples for the bar chart chart.",
+        "pathSlug": "bar-chart",
+        "section": "charts",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-charts/src/victory/components/ChartBar/examples/ChartBar.md",
+        "version": "v6"
+      }
+    ],
+    "BoxPlotChart": [
+      {
+        "displayName": "Box Plot Chart",
+        "description": "Examples for the box plot chart chart.",
+        "pathSlug": "box-plot-chart",
+        "section": "charts",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-charts/src/victory/components/ChartBoxPlot/examples/ChartBoxPlot.md",
+        "version": "v6"
+      }
+    ],
+    "BulletChart": [
+      {
+        "displayName": "Bullet Chart",
+        "description": "Design Guidelines for the bullet chart chart.",
+        "pathSlug": "bullet-chart",
+        "section": "charts",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/bullet-chart/bullet-chart.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Bullet Chart",
+        "description": "Examples for the bullet chart chart.",
+        "pathSlug": "bullet-chart",
+        "section": "charts",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-charts/src/victory/components/ChartBullet/examples/ChartBullet.md",
+        "version": "v6"
+      }
+    ],
+    "DonutChart": [
+      {
+        "displayName": "Donut Chart",
+        "description": "Design Guidelines for the donut chart chart.",
+        "pathSlug": "donut-chart",
+        "section": "charts",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/donut-chart/donut-chart.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Donut Chart",
+        "description": "Examples for the donut chart chart.",
+        "pathSlug": "donut-chart",
+        "section": "charts",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-charts/src/victory/components/ChartDonut/examples/ChartDonut.md",
+        "version": "v6"
+      }
+    ],
+    "DonutUtilizationChart": [
+      {
+        "displayName": "Donut Utilization Chart",
+        "description": "Design Guidelines for the donut utilization chart chart.",
+        "pathSlug": "donut-utilization-chart",
+        "section": "charts",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/donut-utilization-chart/donut-utilization-chart.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Donut Utilization Chart",
+        "description": "Examples for the donut utilization chart chart.",
+        "pathSlug": "donut-utilization-chart",
+        "section": "charts",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-charts/src/victory/components/ChartDonutUtilization/examples/ChartDonutUtilization.md",
+        "version": "v6"
+      }
+    ],
+    "LineChart": [
+      {
+        "displayName": "Line Chart",
+        "description": "Design Guidelines for the line chart chart.",
+        "pathSlug": "line-chart",
+        "section": "charts",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/line-chart/line-chart.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Line Chart",
+        "description": "Examples for the line chart chart.",
+        "pathSlug": "line-chart",
+        "section": "charts",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-charts/src/victory/components/ChartLine/examples/ChartLine.md",
+        "version": "v6"
+      }
+    ],
+    "PieChart": [
+      {
+        "displayName": "Pie Chart",
+        "description": "Design Guidelines for the pie chart chart.",
+        "pathSlug": "pie-chart",
+        "section": "charts",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/pie-chart/pie-chart.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Pie Chart",
+        "description": "Examples for the pie chart chart.",
+        "pathSlug": "pie-chart",
+        "section": "charts",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-charts/src/victory/components/ChartPie/examples/ChartPie.md",
+        "version": "v6"
+      }
+    ],
+    "ScatterChart": [
+      {
+        "displayName": "Scatter Chart",
+        "description": "Design Guidelines for the scatter chart chart.",
+        "pathSlug": "scatter-chart",
+        "section": "charts",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/scatter-chart/scatter-chart.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Scatter Chart",
+        "description": "Examples for the scatter chart chart.",
+        "pathSlug": "scatter-chart",
+        "section": "charts",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-charts/src/victory/components/ChartScatter/examples/ChartScatter.md",
+        "version": "v6"
+      }
+    ],
+    "SparklineChart": [
+      {
+        "displayName": "Sparkline Chart",
+        "description": "Design Guidelines for the sparkline chart chart.",
+        "pathSlug": "sparkline-chart",
+        "section": "charts",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/sparkline-chart/sparkline-chart.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Sparkline Chart",
+        "description": "Examples for the sparkline chart chart.",
+        "pathSlug": "sparkline-chart",
+        "section": "charts",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-charts/src/victory/components/Sparkline/examples/sparkline.md",
+        "version": "v6"
+      }
+    ],
+    "StackChart": [
+      {
+        "displayName": "Stack Chart",
+        "description": "Design Guidelines for the stack chart chart.",
+        "pathSlug": "stack-chart",
+        "section": "charts",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/stacked-chart/stacked-chart.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Stack Chart",
+        "description": "Examples for the stack chart chart.",
+        "pathSlug": "stack-chart",
+        "section": "charts",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-charts/src/victory/components/ChartStack/examples/ChartStack.md",
+        "version": "v6"
+      }
+    ],
+    "ThresholdChart": [
+      {
+        "displayName": "Threshold Chart",
+        "description": "Design Guidelines for the threshold chart chart.",
+        "pathSlug": "threshold-chart",
+        "section": "charts",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/threshold-chart/threshold-chart.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Threshold Chart",
+        "description": "Examples for the threshold chart chart.",
+        "pathSlug": "threshold-chart",
+        "section": "charts",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-charts/src/victory/components/ChartThreshold/examples/ChartThreshold.md",
+        "version": "v6"
+      }
+    ],
+    "LegendChart": [
+      {
+        "displayName": "Legend",
+        "description": "Design Guidelines for the legend chart.",
+        "pathSlug": "legend",
+        "section": "charts",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/legend-chart/legend-chart.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Legend",
+        "description": "Examples for the legend chart.",
+        "pathSlug": "legend",
+        "section": "charts",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-charts/src/victory/components/ChartLegend/examples/ChartLegend.md",
+        "version": "v6"
+      }
+    ],
+    "Charts": [
+      {
+        "displayName": "React Charts",
+        "description": "AI guidance for PatternFly React Charts.",
+        "pathSlug": "charts",
+        "section": "guidelines",
+        "category": "react",
+        "source": "local",
+        "path": "documentation:charts/README.md",
+        "version": "v6"
+      }
+    ],
+    "Chatbot": [
+      {
+        "displayName": "React Chatbot",
+        "description": "AI guidance for PatternFly React Chatbot.",
+        "pathSlug": "chatbot",
+        "section": "guidelines",
+        "category": "react",
+        "source": "local",
+        "path": "documentation:chatbot/README.md",
+        "version": "v6"
+      }
+    ],
+    "ComponentGroups": [
+      {
+        "displayName": "Component Groups",
+        "description": "AI guidance for PatternFly React Component Groups.",
+        "pathSlug": "component-groups",
+        "section": "guidelines",
+        "category": "react",
+        "source": "local",
+        "path": "documentation:component-groups/README.md",
+        "version": "v6"
+      }
+    ],
+    "React": [
+      {
+        "displayName": "React Guidelines",
+        "description": "AI guidance for PatternFly React Guidelines.",
+        "pathSlug": "guidelines",
+        "section": "guidelines",
+        "category": "react",
+        "source": "local",
+        "path": "documentation:guidelines/README.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "React Components",
+        "description": "AI guidance for PatternFly React Components.",
+        "pathSlug": "components",
+        "section": "guidelines",
+        "category": "react",
+        "source": "local",
+        "path": "documentation:components/README.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "React Resources",
+        "description": "AI guidance for PatternFly React Resources.",
+        "pathSlug": "resources",
+        "section": "guidelines",
+        "category": "react",
+        "source": "local",
+        "path": "documentation:resources/README.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "React Setup",
+        "description": "AI guidance for PatternFly React Setup.",
+        "pathSlug": "setup",
+        "section": "guidelines",
+        "category": "react",
+        "source": "local",
+        "path": "documentation:setup/README.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "React Troubleshooting",
+        "description": "AI guidance for PatternFly React Troubleshooting.",
+        "pathSlug": "troubleshooting",
+        "section": "guidelines",
+        "category": "react",
+        "source": "local",
+        "path": "documentation:troubleshooting/README.md",
+        "version": "v6"
+      }
+    ],
+    "Content design overview": [
+      {
+        "displayName": "Content design overview",
+        "description": "Overview of content design and a map of available writing resources for PatternFly.",
+        "pathSlug": "content-design",
+        "section": "content-design",
+        "category": "writing-guides",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/content-design.md",
+        "version": "v6"
+      }
+    ],
+    "Brand voice and tone": [
+      {
+        "displayName": "Brand voice and tone",
+        "description": "Defines the unique voice and tone standards that ensure consistency and humanity across PatternFly products.",
+        "pathSlug": "brand-voice-and-tone",
+        "section": "content-design",
+        "category": "writing-guides",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/brand-voice-and-tone.md",
+        "version": "v6"
+      }
+    ],
+    "Best practices": [
+      {
+        "displayName": "Best practices",
+        "description": "Foundational advice for integrating words into your design process, ensuring intuitive and human-centered experiences.",
+        "pathSlug": "best-practices",
+        "section": "content-design",
+        "category": "writing-guides",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/best-practices.md",
+        "version": "v6"
+      }
+    ],
+    "Accessibility and localization": [
+      {
+        "displayName": "Accessibility and localization",
+        "description": "Guidance on writing for inclusion, supporting screen readers, and adapting content for global audiences.",
+        "pathSlug": "accessibility-and-localization",
+        "section": "content-design",
+        "category": "grammar",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/accessibility-and-localization.md",
+        "version": "v6"
+      }
+    ],
+    "Capitalization": [
+      {
+        "displayName": "Capitalization",
+        "description": "Rules detailing which casing style to use for different UI scenarios.",
+        "pathSlug": "capitalization",
+        "section": "content-design",
+        "category": "grammar",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/capitalization.md",
+        "version": "v6"
+      }
+    ],
+    "Numerics": [
+      {
+        "displayName": "Numerics",
+        "description": "Rules for displaying and formatting dates, times, currency, and numerical values.",
+        "pathSlug": "numerics",
+        "section": "content-design",
+        "category": "grammar",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/numerics.md",
+        "version": "v6"
+      }
+    ],
+    "Punctuation": [
+      {
+        "displayName": "Punctuation",
+        "description": "Rules for using punctuation properly within UI components and long-form content.",
+        "pathSlug": "punctuation",
+        "section": "content-design",
+        "category": "grammar",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/punctuation.md",
+        "version": "v6"
+      }
+    ],
+    "Sentence structure": [
+      {
+        "displayName": "Sentence structure",
+        "description": "Guidance on point of view and sentence voice to ensure clarity and user-focused language.",
+        "pathSlug": "sentence-structure",
+        "section": "content-design",
+        "category": "grammar",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/sentence-structure.md",
+        "version": "v6"
+      }
+    ],
+    "Terminology": [
+      {
+        "displayName": "Terminology",
+        "description": "Preferred terms across different UI scenarios, including words and phrases to avoid.",
+        "pathSlug": "terminology",
+        "section": "content-design",
+        "category": "grammar",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/terminology.md",
+        "version": "v6"
+      }
+    ],
+    "Truncation": [
+      {
+        "displayName": "Truncation",
+        "description": "Guidance on replacing overflow content with ellipses to manage text when display space is limited.",
+        "pathSlug": "truncation",
+        "section": "content-design",
+        "category": "grammar",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/truncation.md",
+        "version": "v6"
+      }
+    ],
+    "Units and symbols": [
+      {
+        "displayName": "Units and symbols",
+        "description": "Rules for displaying units of measurement and shorthand symbols.",
+        "pathSlug": "units-and-symbols",
+        "section": "content-design",
+        "category": "grammar",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/units-and-symbols.md",
+        "version": "v6"
+      }
+    ],
+    "CLI guidelines": [
+      {
+        "displayName": "CLI guidelines",
+        "description": "Detailed guidance for designing and writing content for text-based command-line interfaces (CLIs).",
+        "pathSlug": "cli-guidelines",
+        "section": "content-design",
+        "category": "writing-guides",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/writing-guides/cli-guidelines.md",
+        "version": "v6"
+      }
+    ],
+    "Error messages": [
+      {
+        "displayName": "Error messages",
+        "description": "Best practices for writing effective error messages that are clear, actionable, and empathetic.",
+        "pathSlug": "error-messages",
+        "section": "content-design",
+        "category": "writing-guides",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/writing-guides/error-messages.md",
+        "version": "v6"
+      }
+    ],
+    "PatternFly design guidelines content": [
+      {
+        "displayName": "PatternFly design guidelines content",
+        "description": "Guidance on structuring and writing content specifically for PatternFly's design guidelines.",
+        "pathSlug": "patternfly-design-guidelines",
+        "section": "content-design",
+        "category": "writing-guides",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/writing-guides/patternfly-design-guidelines.md",
+        "version": "v6"
+      }
+    ],
+    "Product tours": [
+      {
+        "displayName": "Product tours",
+        "description": "Best practices and tone advice for writing content for product tours and onboarding flows.",
+        "pathSlug": "product-tours",
+        "section": "content-design",
+        "category": "writing-guides",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/writing-guides/product-tours.md",
+        "version": "v6"
+      }
+    ],
+    "Tooltips content": [
+      {
+        "displayName": "Tooltips content",
+        "description": "Guidance on writing tooltips, including specific rules for certain icons.",
+        "pathSlug": "tooltips",
+        "section": "content-design",
+        "category": "writing-guides",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/writing-guides/tooltips.md",
+        "version": "v6"
+      }
+    ]
+  }
+}

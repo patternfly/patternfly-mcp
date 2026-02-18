@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`EMBEDDED_DOCS should export the expected embedded docs structure: docs 1`] = `
+{
+  "docs": {
+    "React": [
+      {
+        "category": "react",
+        "description": "Direct source for PatternFly React component examples.",
+        "displayName": "PatternFly React Docs",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/refs/heads/main/README.md",
+        "pathSlug": "patternfly-react",
+        "section": "components",
+        "source": "github",
+        "version": "v6",
+      },
+      {
+        "category": "react",
+        "description": "AI guidance for PatternFly React development rules.",
+        "displayName": "React Development Rules",
+        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/refs/heads/main/docs/README.md",
+        "pathSlug": "react-development",
+        "section": "guidelines",
+        "source": "github",
+        "version": "v6",
+      },
+    ],
+    "patternfly": [
+      {
+        "category": "reference",
+        "description": "Official PatternFly design system website.",
+        "displayName": "PatternFly Home",
+        "path": "https://www.patternfly.org",
+        "pathSlug": "patternfly-home",
+        "section": "home",
+        "source": "website",
+        "version": "v6",
+      },
+      {
+        "category": "reference",
+        "description": "PatternFly organization on GitHub (Core & React).",
+        "displayName": "PatternFly GitHub",
+        "path": "https://github.com/patternfly",
+        "pathSlug": "patternfly-github",
+        "section": "github",
+        "source": "github",
+        "version": "v6",
+      },
+      {
+        "category": "reference",
+        "description": "Direct source for PatternFly documentation and guidelines.",
+        "displayName": "PatternFly Org",
+        "path": "https://github.com/patternfly/patternfly-org",
+        "pathSlug": "patternfly-org",
+        "section": "github",
+        "source": "github",
+        "version": "v6",
+      },
+    ],
+  },
+  "meta": {
+    "source": "patternfly-mcp-fallback",
+    "totalDocs": 5,
+    "totalEntries": 2,
+  },
+}
+`;
