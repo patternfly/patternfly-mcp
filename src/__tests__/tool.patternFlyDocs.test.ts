@@ -34,33 +34,45 @@ describe('usePatternFlyDocsTool, callback', () => {
 
   it.each([
     {
-      description: 'default',
-      value: 'components/button.md',
+      description: 'single file, mock path',
+      processedValue: {
+        path: 'components/button.md',
+        content: 'single documentation content'
+      },
       urlList: ['components/button.md']
     },
     {
-      description: 'multiple files',
-      value: 'combined docs content',
+      description: 'multiple files, mock paths',
+      processedValue: {
+        path: 'components/button.md',
+        content: 'combined documentation content'
+      },
       urlList: ['components/button.md', 'components/card.md', 'components/table.md']
     },
     {
       description: 'with invalid urlList',
-      value: 'invalid path',
+      processedValue: {
+        path: 'invalid-path',
+        content: 'Failed to load'
+      },
       urlList: ['invalid-url']
     },
     {
-      description: 'with name',
-      value: 'button content',
-      name: 'button'
+      description: 'with name and actual path',
+      processedValue: {
+        path: 'documentation:chatbot/README.md',
+        content: 'chatbot documentation content'
+      },
+      name: 'chatbot'
     }
-  ])('should parse parameters, $description', async ({ value, urlList, name }) => {
-    mockProcessDocs.mockResolvedValue([{ content: value }] as any);
+  ])('should attempt to parse parameters, $description', async ({ processedValue, urlList, name }) => {
+    mockProcessDocs.mockResolvedValue([processedValue] as any);
     const [_name, _schema, callback] = usePatternFlyDocsTool();
     const result = await callback({ urlList, name });
 
     expect(mockProcessDocs).toHaveBeenCalledTimes(1);
     expect(result.content[0].text).toBeDefined();
-    expect(result.content[0].text.startsWith('# Documentation from')).toBe(true);
+    expect(result.content[0].text.split('\n')[0]).toMatchSnapshot();
   });
 
   it.each([

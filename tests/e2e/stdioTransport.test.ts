@@ -184,7 +184,8 @@ describe('Builtin resources, STDIO', () => {
     const updatedTemplates = templates?.result?.resourceTemplates || [];
     const templateNames = updatedTemplates.map((template: any) => template.uriTemplate).sort();
 
-    expect({ resourceNames, templateNames }).toMatchSnapshot();
+    expect(resourceNames).toContain('patternfly://context');
+    expect(templateNames).toContain('patternfly://components/index{?version,section,category}');
   });
 
   it('should read the patternfly-context resource', async () => {

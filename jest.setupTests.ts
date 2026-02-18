@@ -1,4 +1,5 @@
 // Shared helpers for Jest unit tests
+import { readFile } from 'node:fs/promises';
 
 /**
  * Set NODE_ENV to 'local' for local testing.
@@ -21,6 +22,16 @@ jest.mock('pid-port', () => ({
   __esModule: true,
   portToPid: jest.fn().mockResolvedValue(undefined)
 }));
+
+/**
+ * Note: Mock node:fs/promises `readFile`
+ */
+jest.mock('node:fs/promises', () => ({
+  ...jest.requireActual('node:fs/promises'),
+  readFile: jest.fn()
+}));
+
+const mockReadFile = readFile as jest.MockedFunction<typeof readFile>;
 
 /**
  * Note: Mock @patternfly/patternfly-component-schemas/json to avoid top-level await issues in Jest
@@ -50,3 +61,15 @@ jest.mock('@patternfly/patternfly-component-schemas/json', () => ({
     throw new Error(`Component "${componentName}" not found`);
   })
 }), { virtual: true });
+
+let mockFetch: jest.SpyInstance;
+
+beforeEach(() => {
+  mockFetch = jest.spyOn(global, 'fetch');
+});
+
+afterEach(() => {
+  mockFetch.mockRestore();
+});
+
+export { mockFetch, mockReadFile };

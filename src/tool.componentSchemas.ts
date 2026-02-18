@@ -1,16 +1,13 @@
 import { z } from 'zod';
 import { ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js';
-import { getComponentSchema } from '@patternfly/patternfly-component-schemas/json';
 import { type McpTool } from './server';
-import { getOptions } from './options.context';
-import { memo } from './server.caching';
 import { fuzzySearch } from './server.search';
-import { componentNames } from './tool.searchPatternFlyDocs';
-
-/**
- * Derive the component schema type from @patternfly/patternfly-component-schemas
- */
-type ComponentSchema = Awaited<ReturnType<typeof getComponentSchema>>;
+import { getOptions } from './options.context';
+import {
+  getPatternFlyComponentSchema,
+  getPatternFlyReactComponentNames,
+  type PatternFlyComponentSchema
+} from './patternFly.getResources';
 
 /**
  * componentSchemas tool function
@@ -22,13 +19,9 @@ type ComponentSchema = Awaited<ReturnType<typeof getComponentSchema>>;
  * @returns MCP tool tuple [name, schema, callback]
  */
 const componentSchemasTool = (options = getOptions()): McpTool => {
-  const memoGetComponentSchema = memo(
-    async (componentName: string): Promise<ComponentSchema> => getComponentSchema(componentName),
-    options?.toolMemoOptions?.usePatternFlyDocs
-  );
-
   const callback = async (args: any = {}) => {
     const { componentName } = args;
+    const { componentNamesWithSchemasIndex: componentNames } = await getPatternFlyReactComponentNames.memo();
 
     if (typeof componentName !== 'string') {
       throw new McpError(
@@ -55,10 +48,14 @@ const componentSchemasTool = (options = getOptions()): McpTool => {
     const exact = results.find(result => result.matchType === 'exact');
 
     if (exact) {
-      let componentSchema: ComponentSchema;
+      let componentSchema: PatternFlyComponentSchema | undefined;
 
       try {
-        componentSchema = await memoGetComponentSchema(exact.item);
+        componentSchema = await getPatternFlyComponentSchema.memo(exact.item);
+
+        if (componentSchema === undefined) {
+          throw new Error(`Component schema for "${exact.item}" doesn't exist.`);
+        }
       } catch (error) {
         throw new McpError(
           ErrorCode.InternalError,

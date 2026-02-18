@@ -3,6 +3,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { usePatternFlyDocsTool } from './tool.patternFlyDocs';
 import { searchPatternFlyDocsTool } from './tool.searchPatternFlyDocs';
 import { componentSchemasTool } from './tool.componentSchemas';
+import { patternFlyComponentsIndexResource } from './resource.patternFlyComponentsIndex';
 import { patternFlyContextResource } from './resource.patternFlyContext';
 import { patternFlyDocsIndexResource } from './resource.patternFlyDocsIndex';
 import { patternFlyDocsTemplateResource } from './resource.patternFlyDocsTemplate';
@@ -158,6 +159,7 @@ const builtinTools: McpToolCreator[] = [
  */
 const builtinResources: McpResourceCreator[] = [
   patternFlyContextResource,
+  patternFlyComponentsIndexResource,
   patternFlyDocsIndexResource,
   patternFlyDocsTemplateResource,
   patternFlySchemasIndexResource,
@@ -241,6 +243,7 @@ const runServer = async (options: ServerOptions = getOptions(), {
         capabilities: {
           tools: {},
           resources: {},
+          completions: {},
           ...(enableProtocolLogging ? { logging: {} } : {})
         }
       }
