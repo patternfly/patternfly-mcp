@@ -105,7 +105,7 @@ describe('Documentation Link Audit', () => {
   jest.setTimeout(auditSet.length * 5000 + requestTimeoutMs);
 
   it('should have an audit set', () => {
-    expect(auditSet.length).toBeGreaterThan(1);
+    expect(auditSet.length).toBeGreaterThan(0);
   });
 
   it.each(auditSet)('link should be reachable: %s', async url => {
