@@ -47,12 +47,18 @@ export default {
     },
     {
       displayName: 'e2e',
-      roots: ['tests'],
-      testMatch: ['<rootDir>/tests/**/*.test.ts'],
-      setupFilesAfterEnv: ['<rootDir>/tests/jest.setupTests.ts'],
+      roots: ['tests/e2e'],
+      testMatch: ['<rootDir>/tests/e2e/**/*.test.ts'],
+      setupFilesAfterEnv: ['<rootDir>/tests/e2e/jest.setupTests.ts'],
       transformIgnorePatterns: [
         '<rootDir>/dist/'
       ],
+      ...baseConfig
+    },
+    {
+      displayName: 'audit',
+      roots: ['tests/audit'],
+      testMatch: ['<rootDir>/tests/audit/**/*.test.ts'],
       ...baseConfig
     }
   ]

@@ -14,5 +14,5 @@ import path from 'node:path';
  * @throws {Error} File cannot be found or read.
  */
 export const loadFixture = (relPath: string): string =>
-  fs.readFileSync(path.join(process.cwd(), 'tests', '__fixtures__', 'http', relPath), 'utf-8');
+  fs.readFileSync(path.join(process.cwd(), 'tests', 'e2e', '__fixtures__', 'http', relPath), 'utf-8');
 

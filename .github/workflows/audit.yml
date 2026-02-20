@@ -1,0 +1,30 @@
+name: Data Audit
+
+on:
+  pull_request:
+    paths:
+      - 'src/docs.json'
+      - 'tests/audit/**'
+  schedule:
+    - cron: '0 0 * * *' # Daily at midnight
+  workflow_dispatch:
+
+jobs:
+  audit-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.x
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run documentation audit
+        run: npm run test:audit
+        env:
+          # Higher limit for scheduled runs (0 = no limit), lower for PRs
+          DOCS_AUDIT_MAX_TOTAL: ${{ github.event_name == 'schedule' && '0' || '50' }}
+        # Advisories are non-blocking for PRs
+        continue-on-error: ${{ github.event_name == 'pull_request' }}

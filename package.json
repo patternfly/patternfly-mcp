@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "type": "module",
   "imports": {
+    "~docsCatalog": "./src/docs.json",
     "#toolsHost": "./dist/server.toolsHost.js"
   },
   "exports": {
@@ -32,8 +33,9 @@
     "start": "node dist/cli.js --log-stderr",
     "start:dev": "tsx watch src/cli.ts --verbose --log-stderr",
     "test": "npm run test:spell && npm run test:spell-docs && npm run test:lint && npm run test:types && jest --selectProjects unit --roots=src/",
+    "test:audit": "jest --selectProjects audit --roots=tests/audit/",
     "test:dev": "npm test -- --watchAll",
-    "test:integration": "npm run build && NODE_OPTIONS='--experimental-vm-modules' jest --selectProjects e2e --roots=tests/",
+    "test:integration": "npm run build && NODE_OPTIONS='--experimental-vm-modules' jest --selectProjects e2e --roots=tests/e2e/",
     "test:integration-dev": "npm run test:integration -- --watchAll",
     "test:lint": "eslint .",
     "test:lint-fix": "eslint . --fix",
