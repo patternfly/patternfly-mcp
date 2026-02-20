@@ -37,7 +37,7 @@ describe('Documentation Link Audit', () => {
   /**
    * Collect paths from docs.json
    */
-  const allPaths: string[] = Object.values(docs.docs)
+  const allPaths: string[] = Object.values(docs.docs || {})
     .flatMap((arr: any) => arr)
     .map((doc: any) => doc.path)
     .filter((path: any) => typeof path === 'string' && path.startsWith('http'));
@@ -54,17 +54,18 @@ describe('Documentation Link Audit', () => {
   }, {} as Record<string, string[]>);
 
   /**
-   * Shuffle an array. Updated Fisher-Yates shuffle.
+   * Shuffle an array. Updated Fisher-Yates shuffle using randomInt.
    *
    * @param arr - Array to shuffle
    */
   const shuffle = <T>(arr: T[]) => {
     const updatedArr = [...arr];
 
+    // Run from the last index to the first
     for (let index = updatedArr.length - 1; index > 0; index--) {
       const rIndex = randomInt(0, index + 1);
 
-      // @ts-expect-error
+      // @ts-expect-error JS behavior, temp arrays for swapping multiple (2) elements in the original array
       [updatedArr[index], updatedArr[rIndex]] = [updatedArr[rIndex], updatedArr[index]];
     }
 
@@ -93,9 +94,9 @@ describe('Documentation Link Audit', () => {
     return auditSet;
   };
 
-  // Apply Sampling From Workflow or apply defaults, 3 per group, max 50 total.
-  const perGroup = Number(process.env.DOCS_AUDIT_PER_GROUP ?? 3);
-  // Apply Sampling From Workflow or apply defaults, 50 total.
+  // Apply Sampling, 3 per docs group
+  const perGroup = 3;
+  // Apply Sampling From Workflow or apply defaults, 50 docs total.
   const maxTotal = Number(process.env.DOCS_AUDIT_MAX_TOTAL ?? 50);
   const requestTimeoutMs = 10_000;
 
@@ -112,5 +113,6 @@ describe('Documentation Link Audit', () => {
     const result = await checkUrl(url, { requestTimeoutMs });
 
     expect(result.status).toBeGreaterThanOrEqual(200);
+    expect(result.status).toBeLessThanOrEqual(299);
   });
 });

@@ -4,7 +4,7 @@
  * @param url - URL to check
  * @param options - Options
  * @param options.requestTimeoutMs - Timeout for the request in milliseconds. Defaults to 10 seconds.
- * @returns An object containing the URL, status code, and method used for the request.
+ * @returns An object containing the URL, status code, ok, and method used for the request.
  */
 const checkUrl = async (url: string, { requestTimeoutMs = 10_000 }: { requestTimeoutMs?: number } = {}) => {
   const ac = new AbortController();
