@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`searchPatternFly should attempt to return an array of all available results, all search: keys 1`] = `
+[
+  "isSearchWildCardAll",
+  "firstExactMatch",
+  "exactMatches",
+]
+`;
+
+exports[`searchPatternFly should attempt to return an array of all available results, empty all search: keys 1`] = `
+[
+  "isSearchWildCardAll",
+  "firstExactMatch",
+  "exactMatches",
+]
+`;
+
+exports[`searchPatternFly should attempt to return an array of all available results, wildcard search: keys 1`] = `
+[
+  "isSearchWildCardAll",
+  "firstExactMatch",
+  "exactMatches",
+]
+`;

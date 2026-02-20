@@ -32,7 +32,10 @@ export default {
           {
             ...tsConfig,
             diagnostics: {
-              ignoreCodes: [1343]
+              // See codes https://github.com/Microsoft/TypeScript/blob/main/src/compiler/diagnosticMessages.json
+              // 1324 - Dynamic imports only support a second argument when the '--module' option is...
+              // 1343 - The 'import.meta' meta-property is only allowed when the '--module' option is...
+              ignoreCodes: [1324, 1343]
             },
             astTransformers: {
               before: [
