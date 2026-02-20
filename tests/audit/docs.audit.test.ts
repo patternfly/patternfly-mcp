@@ -35,7 +35,7 @@ describe('Documentation Link Audit', () => {
   };
 
   /**
-   * Collect and all paths from docs.json
+   * Collect paths from docs.json
    */
   const allPaths: string[] = Object.values(docs.docs)
     .flatMap((arr: any) => arr)
@@ -43,7 +43,7 @@ describe('Documentation Link Audit', () => {
     .filter((path: any) => typeof path === 'string' && path.startsWith('http'));
 
   /**
-   * Group all paths from docs.json
+   * Group paths from docs.json
    */
   const groups: Record<string, string[]> = allPaths.reduce((acc, url) => {
     const key = getPrefix(url);
@@ -95,6 +95,7 @@ describe('Documentation Link Audit', () => {
 
   // Apply Sampling From Workflow or apply defaults, 3 per group, max 50 total.
   const perGroup = Number(process.env.DOCS_AUDIT_PER_GROUP ?? 3);
+  // Apply Sampling From Workflow or apply defaults, 50 total.
   const maxTotal = Number(process.env.DOCS_AUDIT_MAX_TOTAL ?? 50);
   const requestTimeoutMs = 10_000;
 
@@ -103,7 +104,11 @@ describe('Documentation Link Audit', () => {
   // Increase timeout for the whole suite as it's doing network requests
   jest.setTimeout(auditSet.length * 5000 + requestTimeoutMs);
 
-  it.each(auditSet)('Link should be reachable: %s', async url => {
+  it('should have an audit set', () => {
+    expect(auditSet).toBeGreaterThan(1);
+  });
+
+  it.each(auditSet)('link should be reachable: %s', async url => {
     const result = await checkUrl(url, { requestTimeoutMs });
 
     expect(result.status).toBeGreaterThanOrEqual(200);
