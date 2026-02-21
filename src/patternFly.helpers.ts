@@ -63,7 +63,7 @@ const getPatternFlyVersionContext = async (
   options = getOptions()
 ): Promise<PatternFlyVersionContext> => {
   const availableSemVer = options.patternflyOptions.availableResourceVersions;
-  const availableVersions = availableSemVer?.map?.(version => {
+  const availableVersions = availableSemVer.map(version => {
     const majorVersion = semver.coerce(version)?.major;
 
     return majorVersion ? `v${majorVersion}` : undefined;
