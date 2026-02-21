@@ -62,15 +62,15 @@ const getPatternFlyVersionContext = async (
   contextPathOverride: string | undefined = undefined,
   options = getOptions()
 ): Promise<PatternFlyVersionContext> => {
-  const availableSemVer = options.patternflyOptions?.availableResourceVersions || [];
+  const availableSemVer = options.patternflyOptions.availableResourceVersions;
   const availableVersions = availableSemVer?.map?.(version => {
     const majorVersion = semver.coerce(version)?.major;
 
     return majorVersion ? `v${majorVersion}` : undefined;
   }).filter(Boolean) as string[] || [];
 
-  const availableSchemasVersions = options.patternflyOptions?.availableSchemasVersions || [];
-  const enumeratedVersions = Array.from(new Set([...options.patternflyOptions?.availableSearchVersions || [], ...availableVersions]));
+  const availableSchemasVersions = options.patternflyOptions.availableSchemasVersions;
+  const enumeratedVersions = Array.from(new Set([...options.patternflyOptions.availableSearchVersions, ...availableVersions]));
 
   const latestVersion = options.patternflyOptions.default.latestVersion;
   const latestSchemasVersion = options.patternflyOptions.default.latestSchemasVersion;
