@@ -75,7 +75,6 @@ type PatternFlyMcpResourcesByVersion = {
  */
 type PatternFlyMcpResourceMetadata = {
   name: string;
-  // isSchemasAvailable: boolean;
   urls: string[];
   urlsNoGuidance: string[];
   urlsGuidance: string[];
