@@ -49,7 +49,7 @@ findClosestPatternFlyVersion.memo = memo(findClosestPatternFlyVersion);
  * @returns The PatternFly version context, including the closest version, the latest version, and the available versions.
  *   - `availableSemVer`: The list of available PatternFly SemVer versions, (e.g. "4.0.0", "5.0.0", "6.0.0")
  *   - `availableVersions`: The list of available PatternFly `tag` versions, (e.g. "v4", "v5", "v6")
- *   - `availableSchemaVersions`: The list of available PatternFly `tag` schema versions, (e.g. "v6")
+ *   - `availableSchemasVersions`: The list of available PatternFly `tag` schema versions, (e.g. "v6")
  *   - `enumeratedVersions`: The list of available PatternFly `tag` and `display` versions, (e.g. "v4", "v5", "v6", "current", "latest")
  *   - `envSemVer`: The "closest" or "detected" environment SemVer version detected in the project context.
  *   - `envVersion`: The "closest" or "detected" environment PatternFly `tag` version detected in the project context, (e.g. "v4", "v5", "v6")
@@ -145,8 +145,8 @@ normalizeEnumeratedPatternFlyVersion.memo = memo(normalizeEnumeratedPatternFlyVe
  * (e.g. "current", "v6", etc.)
  *
  * @param version - The version string to filter.
- * @returns If version is provided returns the filtered version string array, or an empty array if the version is not recognized,
- *     otherwise returns all available versions.
+ * @returns If version is provided returns the filtered version string array, or all available versions if the version
+ *     is not recognized.
  */
 const filterEnumeratedPatternFlyVersions = async (version?: string) => {
   const { enumeratedVersions } = await getPatternFlyVersionContext.memo();

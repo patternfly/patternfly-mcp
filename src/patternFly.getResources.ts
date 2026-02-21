@@ -342,7 +342,7 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
 };
 
 /**
- * Memoized version of getPatternFlyLocalDocs.
+ * Memoized version of getPatternFlyMcpResources.
  */
 getPatternFlyMcpResources.memo = memo(getPatternFlyMcpResources);
 
@@ -369,7 +369,7 @@ const getPatternFlyComponentSchema = async (componentName: string) => {
 };
 
 /**
- * Memoized version of getComponentSchema.
+ * Memoized version of getPatternFlyComponentSchema.
  */
 getPatternFlyComponentSchema.memo = memo(getPatternFlyComponentSchema, DEFAULT_OPTIONS.toolMemoOptions.usePatternFlyDocs);
 
