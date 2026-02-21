@@ -72,8 +72,8 @@ const getPatternFlyVersionContext = async (
   const availableSchemasVersions = options.patternflyOptions?.availableSchemasVersions || [];
   const enumeratedVersions = Array.from(new Set([...options.patternflyOptions?.availableSearchVersions || [], ...availableVersions]));
 
-  const latestVersion = options.patternflyOptions?.default?.latestVersion;
-  const latestSchemasVersion = options.patternflyOptions?.default?.latestSchemasVersion;
+  const latestVersion = options.patternflyOptions.default.latestVersion;
+  const latestSchemasVersion = options.patternflyOptions.default.latestSchemasVersion;
 
   const envSemVer = await findClosestPatternFlyVersion.memo(contextPathOverride);
   const majorVersion = semver.coerce(envSemVer)?.major;

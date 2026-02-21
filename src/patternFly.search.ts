@@ -83,7 +83,7 @@ const searchPatternFly = async (searchQuery: string, {
 };
 
 /**
- * Memoized version of searchComponents.
+ * Memoized version of searchPatternFly.
  */
 searchPatternFly.memo = memo(searchPatternFly, DEFAULT_OPTIONS.toolMemoOptions.searchPatternFlyDocs);
 
