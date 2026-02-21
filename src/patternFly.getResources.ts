@@ -299,8 +299,8 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
         byUri[uriSchemas]?.push(extendedEntry);
       }
 
-      byVersion[entry.version] ??= [];
-      byVersion[entry.version]?.push(extendedEntry);
+      byVersion[version] ??= [];
+      byVersion[version]?.push(extendedEntry);
 
       resource.urls.push(path);
       resource.versions[version].urls.push(path);
@@ -363,7 +363,9 @@ const getPatternFlyComponentSchema = async (componentName: string) => {
     }
 
     return await getComponentSchema(updatedComponentName);
-  } catch {}
+  } catch (error) {
+    log.debug(`Failed to get component schemas for "${componentName}": ${formatUnknownError(error)}`);
+  }
 
   return undefined;
 };

@@ -176,7 +176,6 @@ interface ModeOptions {
  */
 interface PatternFlyOptions {
   availableResourceVersions: ('6.0.0')[];
-  // availableSearchVersions: ('current' | 'detected' | 'latest' | 'v3' | 'v4' | 'v5' | 'v6')[];
   availableSearchVersions: ('current' | 'detected' | 'latest' | 'v6')[];
   availableSchemasVersions: ('v6')[];
   default: {

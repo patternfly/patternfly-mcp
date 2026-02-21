@@ -32,7 +32,7 @@ const findClosestPatternFlyVersion = async (
   _contextPathOverride: string | undefined = undefined,
   options = getOptions()
 ): Promise<string> =>
-  options.patternflyOptions?.default?.latestSemVer;
+  options.patternflyOptions.default.latestSemVer;
 
 /**
  * Memoized version of findClosestPatternFlyVersion.
@@ -62,7 +62,7 @@ const getPatternFlyVersionContext = async (
   contextPathOverride: string | undefined = undefined,
   options = getOptions()
 ): Promise<PatternFlyVersionContext> => {
-  const availableSemVer = options.patternflyOptions?.availableResourceVersions;
+  const availableSemVer = options.patternflyOptions?.availableResourceVersions || [];
   const availableVersions = availableSemVer?.map?.(version => {
     const majorVersion = semver.coerce(version)?.major;
 

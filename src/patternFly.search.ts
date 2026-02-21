@@ -77,7 +77,7 @@ const searchPatternFly = async (searchQuery: string, {
   return {
     isSearchWildCardAll,
     firstExactMatch: exactMatches[0],
-    exactMatches: exactMatches,
+    exactMatches,
     searchResults: updatedSearchResults
   };
 };
