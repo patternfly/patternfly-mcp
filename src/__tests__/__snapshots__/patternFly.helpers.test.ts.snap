@@ -1,0 +1,100 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`filterEnumeratedPatternFlyVersions should attempt to refine a PatternFly versions based on available enumerations, current 1`] = `
+[
+  "v6",
+]
+`;
+
+exports[`filterEnumeratedPatternFlyVersions should attempt to refine a PatternFly versions based on available enumerations, detected 1`] = `
+[
+  "v6",
+]
+`;
+
+exports[`filterEnumeratedPatternFlyVersions should attempt to refine a PatternFly versions based on available enumerations, empty 1`] = `
+[
+  "current",
+  "latest",
+  "v6",
+]
+`;
+
+exports[`filterEnumeratedPatternFlyVersions should attempt to refine a PatternFly versions based on available enumerations, exact semver 1`] = `
+[
+  "v6",
+]
+`;
+
+exports[`filterEnumeratedPatternFlyVersions should attempt to refine a PatternFly versions based on available enumerations, latest 1`] = `
+[
+  "v6",
+]
+`;
+
+exports[`filterEnumeratedPatternFlyVersions should attempt to refine a PatternFly versions based on available enumerations, null 1`] = `
+[
+  "current",
+  "latest",
+  "v6",
+]
+`;
+
+exports[`filterEnumeratedPatternFlyVersions should attempt to refine a PatternFly versions based on available enumerations, semver 1`] = `
+[
+  "v6",
+]
+`;
+
+exports[`filterEnumeratedPatternFlyVersions should attempt to refine a PatternFly versions based on available enumerations, tag 1`] = `
+[
+  "v6",
+]
+`;
+
+exports[`filterEnumeratedPatternFlyVersions should attempt to refine a PatternFly versions based on available enumerations, unavailable exact semver 1`] = `
+[
+  "current",
+  "latest",
+  "v6",
+]
+`;
+
+exports[`filterEnumeratedPatternFlyVersions should attempt to refine a PatternFly versions based on available enumerations, unavailable semver 1`] = `
+[
+  "current",
+  "latest",
+  "v6",
+]
+`;
+
+exports[`filterEnumeratedPatternFlyVersions should attempt to refine a PatternFly versions based on available enumerations, unavailable tag 1`] = `
+[
+  "current",
+  "latest",
+  "v6",
+]
+`;
+
+exports[`filterEnumeratedPatternFlyVersions should attempt to refine a PatternFly versions based on available enumerations, undefined 1`] = `
+[
+  "current",
+  "latest",
+  "v6",
+]
+`;
+
+exports[`getPatternFlyVersionContext should temporarily return option.defaults and latest versions with specific properties: keys 1`] = `
+[
+  "availableSemVer",
+  "availableVersions",
+  "availableSchemasVersions",
+  "enumeratedVersions",
+  "envSemVer",
+  "envVersion",
+  "latestVersion",
+  "latestSchemasVersion",
+  "isEnvTheLatestVersion",
+  "isEnvTheLatestSchemasVersion",
+]
+`;

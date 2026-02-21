@@ -34,8 +34,18 @@ exports[`options defaults should return specific properties: defaults 1`] = `
     "availableResourceVersions": [
       "6.0.0",
     ],
+    "availableSchemasVersions": [
+      "v6",
+    ],
+    "availableSearchVersions": [
+      "current",
+      "latest",
+      "v6",
+    ],
     "default": {
-      "defaultVersion": "6.0.0",
+      "latestSchemasVersion": "v6",
+      "latestSemVer": "6.0.0",
+      "latestVersion": "v6",
       "versionStrategy": "highest",
       "versionWhitelist": [
         "@patternfly/react-core",

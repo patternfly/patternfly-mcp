@@ -20,6 +20,9 @@ import { type ToolModule } from './server.toolsUser';
  * @property maxSearchLength - Maximum length for search strings.
  * @property recommendedMaxDocsToLoad - Recommended maximum number of docs to load.
  * @property {typeof MODE_LEVELS} mode - Specifies the mode of operation.
+ *    - `cli`: Command-line interface mode.
+ *    - `programmatic`: Programmatic interaction mode where the application is used as a library or API.
+ *    - `test`: Testing or debugging mode.
  * @property {ModeOptions} modeOptions - Mode-specific options.
  * @property name - Name of the package.
  * @property nodeVersion - Node.js major version.
@@ -159,18 +162,26 @@ interface ModeOptions {
 /**
  * PatternFly-specific options.
  *
- * @property availableResourceVersions List of intended available PatternFly resource versions to the MCP server.
+ * @property availableResourceVersions List of available PatternFly resource versions to the MCP server.
+ * @property availableSearchVersions List of available PatternFly search versions to the MCP server.
+ * @property availableSchemasVersions List of available PatternFly schema versions to the MCP server.
  * @property default Default specific options.
- * @property default.defaultVersion Default PatternFly version.
+ * @property default.latestSemVer Default PatternFly `SemVer` major version (e.g., '6.0.0').
+ * @property default.latestVersion Default PatternFly `tag` major version, used for display and file paths (e.g., 'v6').
+ * @property default.latestSchemasVersion Default PatternFly `tag` major version, used for schemas.
  * @property default.versionWhitelist List of mostly reliable dependencies to scan for when detecting the PatternFly version.
  * @property default.versionStrategy Strategy to use when multiple PatternFly versions are detected.
  *    - 'highest': Use the highest major version found.
  *    - 'lowest': Use the lowest major version found.
  */
 interface PatternFlyOptions {
-  availableResourceVersions: string[];
+  availableResourceVersions: ('6.0.0')[];
+  availableSearchVersions: ('current' | 'detected' | 'latest' | 'v6')[];
+  availableSchemasVersions: ('v6')[];
   default: {
-    defaultVersion: string;
+    latestSemVer: '6.0.0';
+    latestVersion: 'v6';
+    latestSchemasVersion: 'v6';
     versionWhitelist: string[];
     versionStrategy: 'highest' | 'lowest';
   }
@@ -349,8 +360,12 @@ const LOG_BASENAME = 'pf-mcp:log';
  */
 const PATTERNFLY_OPTIONS: PatternFlyOptions = {
   availableResourceVersions: ['6.0.0'],
+  availableSearchVersions: ['current', 'latest', 'v6'],
+  availableSchemasVersions: ['v6'],
   default: {
-    defaultVersion: '6.0.0',
+    latestSemVer: '6.0.0',
+    latestVersion: 'v6',
+    latestSchemasVersion: 'v6',
     versionWhitelist: [
       '@patternfly/react-core',
       '@patternfly/patternfly'
@@ -366,11 +381,6 @@ const URL_REGEX = /^(https?:)\/\//i;
 
 /**
  * Available operational modes for the MCP server.
- *
- * Each mode represents an operational domain:
- * - `cli`: Command-line interface mode.
- * - `programmatic`: Programmatic interaction mode where the application is used as a library or API.
- * - `test`: Testing or debugging mode.
  */
 const MODE_LEVELS: DefaultOptions['mode'][] = ['cli', 'programmatic', 'test'];
 
