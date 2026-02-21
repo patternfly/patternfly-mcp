@@ -3,6 +3,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { runServer } from '../server';
 import { log } from '../logger';
 import { startHttpTransport, type HttpServerHandle } from '../server.http';
+import { DEFAULT_OPTIONS } from '../options.defaults';
 
 // Mock dependencies
 jest.mock('@modelcontextprotocol/sdk/server/mcp.js');
@@ -143,12 +144,15 @@ describe('runServer', () => {
     }
   ])('should attempt to run server, $description', async ({ options, tools, enableSigint, transportMethod }) => {
     const settings = {
-      ...(tools && { tools }),
-      ...(enableSigint !== undefined && { enableSigint }),
+      ...tools && { tools },
+      ...enableSigint !== undefined && { enableSigint },
       allowProcessExit: false // Prevent process.exit in tests
     };
 
-    const serverInstance = await runServer(options as any, Object.keys(settings).length > 0 ? settings : { allowProcessExit: false });
+    const serverInstance = await runServer(
+      { patternflyOptions: DEFAULT_OPTIONS.patternflyOptions, ...options } as any,
+      Object.keys(settings).length > 0 ? settings : { allowProcessExit: false }
+    );
 
     expect(transportMethod).toHaveBeenCalled();
     expect(serverInstance.isRunning()).toBe(true);
@@ -174,7 +178,10 @@ describe('runServer', () => {
       options: { isHttp: true }
     }
   ])('should allow server to be stopped, $description', async ({ options }) => {
-    const serverInstance = await runServer({ ...options, name: 'test-server' } as any, { allowProcessExit: false });
+    const serverInstance = await runServer(
+      { patternflyOptions: DEFAULT_OPTIONS.patternflyOptions, ...options, name: 'test-server' } as any,
+      { allowProcessExit: false }
+    );
 
     expect(serverInstance.isRunning()).toBe(true);
 

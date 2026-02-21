@@ -1,10 +1,5 @@
-import { patternFlySchemasIndexResource } from '../resource.patternFlySchemasIndex';
+import { patternFlySchemasIndexResource, listResources } from '../resource.patternFlySchemasIndex';
 import { isPlainObject } from '../server.helpers';
-
-// Mock dependencies
-jest.mock('../tool.searchPatternFlyDocs', () => ({
-  componentNames: ['Button', 'Card', 'Table']
-}));
 
 describe('patternFlySchemasIndexResource', () => {
   beforeEach(() => {
@@ -20,6 +15,23 @@ describe('patternFlySchemasIndexResource', () => {
       config: isPlainObject(resource[2]),
       handler: resource[3]
     }).toMatchSnapshot('structure');
+  });
+});
+
+describe('listResources', () => {
+  it('should return a list of resources', async () => {
+    const resources = await listResources();
+
+    expect(resources.resources).toBeDefined();
+
+    const everyResourceSameProperties = resources.resources.every((obj: any) =>
+      Boolean(obj.uri) &&
+      /^patternfly:\/\/schemas\//.test(obj.uri) &&
+      Boolean(obj.name) &&
+      Boolean(obj.mimeType) &&
+      Boolean(obj.description));
+
+    expect(everyResourceSameProperties).toBe(true);
   });
 });
 
@@ -39,6 +51,6 @@ describe('patternFlySchemasIndexResource, callback', () => {
 
     expect(result.contents).toBeDefined();
     expect(Object.keys(result.contents[0])).toEqual(['uri', 'mimeType', 'text']);
-    expect(result.contents[0].text).toContain('# PatternFly Component Names Index');
+    expect(result.contents[0].text).toContain('# PatternFly Component JSON Schemas Index');
   });
 });

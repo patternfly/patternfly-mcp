@@ -5,6 +5,31 @@ exports[`patternFlyDocsIndexResource should have a consistent return structure: 
   "config": true,
   "handler": [Function],
   "name": "patternfly-docs-index",
-  "uri": "patternfly://docs/index",
+  "uri": ResourceTemplate {
+    "_callbacks": {
+      "complete": {
+        "category": [Function],
+        "section": [Function],
+        "version": [Function],
+      },
+      "list": [Function],
+    },
+    "_uriTemplate": UriTemplate {
+      "parts": [
+        "patternfly://docs/index",
+        {
+          "exploded": false,
+          "name": "version",
+          "names": [
+            "version",
+            "section",
+            "category",
+          ],
+          "operator": "?",
+        },
+      ],
+      "template": "patternfly://docs/index{?version,section,category}",
+    },
+  },
 }
 `;

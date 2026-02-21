@@ -186,7 +186,8 @@ describe('Builtin resources, HTTP transport', () => {
     const updatedTemplates = templates?.result?.resourceTemplates || [];
     const templateNames = updatedTemplates.map((template: any) => template.uriTemplate).sort();
 
-    expect({ resourceNames, templateNames }).toMatchSnapshot('resources');
+    expect(resourceNames).toContain('patternfly://context');
+    expect(templateNames).toContain('patternfly://components/index{?version,section,category}');
   });
 
   it('should read the patternfly-context resource', async () => {

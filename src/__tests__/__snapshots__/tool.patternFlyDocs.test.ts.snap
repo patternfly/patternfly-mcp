@@ -7,3 +7,11 @@ exports[`usePatternFlyDocsTool should have a consistent return structure: struct
   "schema": true,
 }
 `;
+
+exports[`usePatternFlyDocsTool, callback should attempt to parse parameters, multiple files, mock paths 1`] = `"# Content for components/button.md"`;
+
+exports[`usePatternFlyDocsTool, callback should attempt to parse parameters, single file, mock path 1`] = `"# Content for components/button.md"`;
+
+exports[`usePatternFlyDocsTool, callback should attempt to parse parameters, with invalid urlList 1`] = `"# Content for invalid-path"`;
+
+exports[`usePatternFlyDocsTool, callback should attempt to parse parameters, with name and actual path 1`] = `"# Documentation for React Chatbot [AI Guidance]"`;
