@@ -92,343 +92,459 @@ exports[`findClosest should attempt to find a closest match, undefined items 1`]
 `;
 
 exports[`fuzzySearch should fuzzy match, contains match multiple 1`] = `
-[
-  {
-    "distance": 1,
-    "item": "AlertGroup",
-    "matchType": "suffix",
-  },
-  {
-    "distance": 1,
-    "item": "BadgeGroup",
-    "matchType": "suffix",
-  },
-  {
-    "distance": 1,
-    "item": "ButtonGroup",
-    "matchType": "suffix",
-  },
-]
+{
+  "results": [
+    {
+      "distance": 1,
+      "item": "AlertGroup",
+      "matchType": "suffix",
+    },
+    {
+      "distance": 1,
+      "item": "BadgeGroup",
+      "matchType": "suffix",
+    },
+    {
+      "distance": 1,
+      "item": "ButtonGroup",
+      "matchType": "suffix",
+    },
+  ],
+  "totalResults": 3,
+  "totalResultsReturned": 3,
+}
 `;
 
 exports[`fuzzySearch should fuzzy match, deduplicate by normalized value 1`] = `
-[
-  {
-    "distance": 0,
-    "item": "Button",
-    "matchType": "exact",
-  },
-]
+{
+  "results": [
+    {
+      "distance": 0,
+      "item": "Button",
+      "matchType": "exact",
+    },
+  ],
+  "totalResults": 1,
+  "totalResultsReturned": 1,
+}
 `;
 
 exports[`fuzzySearch should fuzzy match, duplicate items 1`] = `
-[
-  {
-    "distance": 0,
-    "item": "Button",
-    "matchType": "exact",
-  },
-]
+{
+  "results": [
+    {
+      "distance": 0,
+      "item": "Button",
+      "matchType": "exact",
+    },
+  ],
+  "totalResults": 1,
+  "totalResultsReturned": 1,
+}
 `;
 
-exports[`fuzzySearch should fuzzy match, empty items 1`] = `[]`;
+exports[`fuzzySearch should fuzzy match, empty items 1`] = `
+{
+  "results": [],
+  "totalResults": 0,
+  "totalResultsReturned": 0,
+}
+`;
 
-exports[`fuzzySearch should fuzzy match, empty query 1`] = `[]`;
+exports[`fuzzySearch should fuzzy match, empty query 1`] = `
+{
+  "results": [],
+  "totalResults": 0,
+  "totalResultsReturned": 0,
+}
+`;
 
 exports[`fuzzySearch should fuzzy match, empty query against maxDistance 1`] = `
-[
-  {
-    "distance": 1,
-    "item": "A",
-    "matchType": "fuzzy",
-  },
-  {
-    "distance": 2,
-    "item": "AB",
-    "matchType": "fuzzy",
-  },
-]
+{
+  "results": [
+    {
+      "distance": 1,
+      "item": "A",
+      "matchType": "fuzzy",
+    },
+    {
+      "distance": 2,
+      "item": "AB",
+      "matchType": "fuzzy",
+    },
+  ],
+  "totalResults": 2,
+  "totalResultsReturned": 2,
+}
 `;
 
 exports[`fuzzySearch should fuzzy match, empty query extended distance 1`] = `
-[
-  {
-    "distance": 4,
-    "item": "Card",
-    "matchType": "fuzzy",
-  },
-  {
-    "distance": 5,
-    "item": "Alert",
-    "matchType": "fuzzy",
-  },
-  {
-    "distance": 5,
-    "item": "Badge",
-    "matchType": "fuzzy",
-  },
-  {
-    "distance": 6,
-    "item": "Button",
-    "matchType": "fuzzy",
-  },
-  {
-    "distance": 10,
-    "item": "AlertGroup",
-    "matchType": "fuzzy",
-  },
-  {
-    "distance": 10,
-    "item": "BadgeGroup",
-    "matchType": "fuzzy",
-  },
-  {
-    "distance": 10,
-    "item": "CardHeader",
-    "matchType": "fuzzy",
-  },
-  {
-    "distance": 11,
-    "item": "ButtonGroup",
-    "matchType": "fuzzy",
-  },
-]
+{
+  "results": [
+    {
+      "distance": 4,
+      "item": "Card",
+      "matchType": "fuzzy",
+    },
+    {
+      "distance": 5,
+      "item": "Alert",
+      "matchType": "fuzzy",
+    },
+    {
+      "distance": 5,
+      "item": "Badge",
+      "matchType": "fuzzy",
+    },
+    {
+      "distance": 6,
+      "item": "Button",
+      "matchType": "fuzzy",
+    },
+    {
+      "distance": 10,
+      "item": "AlertGroup",
+      "matchType": "fuzzy",
+    },
+    {
+      "distance": 10,
+      "item": "BadgeGroup",
+      "matchType": "fuzzy",
+    },
+    {
+      "distance": 10,
+      "item": "CardHeader",
+      "matchType": "fuzzy",
+    },
+    {
+      "distance": 11,
+      "item": "ButtonGroup",
+      "matchType": "fuzzy",
+    },
+  ],
+  "totalResults": 8,
+  "totalResultsReturned": 8,
+}
 `;
 
 exports[`fuzzySearch should fuzzy match, exact match 1`] = `
-[
-  {
-    "distance": 0,
-    "item": "Button",
-    "matchType": "exact",
-  },
-  {
-    "distance": 1,
-    "item": "ButtonGroup",
-    "matchType": "prefix",
-  },
-]
+{
+  "results": [
+    {
+      "distance": 0,
+      "item": "Button",
+      "matchType": "exact",
+    },
+    {
+      "distance": 1,
+      "item": "ButtonGroup",
+      "matchType": "prefix",
+    },
+  ],
+  "totalResults": 2,
+  "totalResultsReturned": 2,
+}
 `;
 
 exports[`fuzzySearch should fuzzy match, exact match case-insensitive 1`] = `
-[
-  {
-    "distance": 0,
-    "item": "Button",
-    "matchType": "exact",
-  },
-  {
-    "distance": 1,
-    "item": "ButtonGroup",
-    "matchType": "prefix",
-  },
-]
+{
+  "results": [
+    {
+      "distance": 0,
+      "item": "Button",
+      "matchType": "exact",
+    },
+    {
+      "distance": 1,
+      "item": "ButtonGroup",
+      "matchType": "prefix",
+    },
+  ],
+  "totalResults": 2,
+  "totalResultsReturned": 2,
+}
 `;
 
 exports[`fuzzySearch should fuzzy match, fuzzy match within distance 1`] = `
-[
-  {
-    "distance": 5,
-    "item": "Badge",
-    "matchType": "fuzzy",
-  },
-  {
-    "distance": 6,
-    "item": "Alert",
-    "matchType": "fuzzy",
-  },
-  {
-    "distance": 6,
-    "item": "Card",
-    "matchType": "fuzzy",
-  },
-  {
-    "distance": 8,
-    "item": "AlertGroup",
-    "matchType": "fuzzy",
-  },
-  {
-    "distance": 8,
-    "item": "BadgeGroup",
-    "matchType": "fuzzy",
-  },
-  {
-    "distance": 10,
-    "item": "CardHeader",
-    "matchType": "fuzzy",
-  },
-]
+{
+  "results": [
+    {
+      "distance": 5,
+      "item": "Badge",
+      "matchType": "fuzzy",
+    },
+    {
+      "distance": 6,
+      "item": "Alert",
+      "matchType": "fuzzy",
+    },
+    {
+      "distance": 6,
+      "item": "Card",
+      "matchType": "fuzzy",
+    },
+    {
+      "distance": 8,
+      "item": "AlertGroup",
+      "matchType": "fuzzy",
+    },
+    {
+      "distance": 8,
+      "item": "BadgeGroup",
+      "matchType": "fuzzy",
+    },
+    {
+      "distance": 10,
+      "item": "CardHeader",
+      "matchType": "fuzzy",
+    },
+  ],
+  "totalResults": 6,
+  "totalResultsReturned": 6,
+}
 `;
 
-exports[`fuzzySearch should fuzzy match, length-delta precheck for maxDistance 1`] = `[]`;
+exports[`fuzzySearch should fuzzy match, length-delta precheck for maxDistance 1`] = `
+{
+  "results": [],
+  "totalResults": 0,
+  "totalResultsReturned": 0,
+}
+`;
 
 exports[`fuzzySearch should fuzzy match, match within max results 1`] = `
-[
-  {
-    "distance": 1,
-    "item": "Alert",
-    "matchType": "prefix",
-  },
-  {
-    "distance": 1,
-    "item": "AlertGroup",
-    "matchType": "prefix",
-  },
-]
+{
+  "results": [
+    {
+      "distance": 1,
+      "item": "Alert",
+      "matchType": "prefix",
+    },
+    {
+      "distance": 1,
+      "item": "AlertGroup",
+      "matchType": "prefix",
+    },
+  ],
+  "totalResults": 7,
+  "totalResultsReturned": 2,
+}
 `;
 
 exports[`fuzzySearch should fuzzy match, match within restricted distance 1`] = `
-[
-  {
-    "distance": 0,
-    "item": "Button",
-    "matchType": "exact",
-  },
-  {
-    "distance": 1,
-    "item": "ButtonGroup",
-    "matchType": "prefix",
-  },
-]
+{
+  "results": [
+    {
+      "distance": 0,
+      "item": "Button",
+      "matchType": "exact",
+    },
+    {
+      "distance": 1,
+      "item": "ButtonGroup",
+      "matchType": "prefix",
+    },
+  ],
+  "totalResults": 2,
+  "totalResultsReturned": 2,
+}
 `;
 
 exports[`fuzzySearch should fuzzy match, matches are alphabetized 1`] = `
-[
-  {
-    "distance": 1,
-    "item": "Button",
-    "matchType": "prefix",
-  },
-  {
-    "distance": 1,
-    "item": "ButtonGroup",
-    "matchType": "prefix",
-  },
-]
+{
+  "results": [
+    {
+      "distance": 1,
+      "item": "Button",
+      "matchType": "prefix",
+    },
+    {
+      "distance": 1,
+      "item": "ButtonGroup",
+      "matchType": "prefix",
+    },
+  ],
+  "totalResults": 2,
+  "totalResultsReturned": 2,
+}
 `;
 
 exports[`fuzzySearch should fuzzy match, matches are normalized 1`] = `
-[
-  {
-    "distance": 0,
-    "item": "resume",
-    "matchType": "exact",
-  },
-  {
-    "distance": 0,
-    "item": "RESUME",
-    "matchType": "exact",
-  },
-  {
-    "distance": 0,
-    "item": "Résumé",
-    "matchType": "exact",
-  },
-]
+{
+  "results": [
+    {
+      "distance": 0,
+      "item": "resume",
+      "matchType": "exact",
+    },
+    {
+      "distance": 0,
+      "item": "RESUME",
+      "matchType": "exact",
+    },
+    {
+      "distance": 0,
+      "item": "Résumé",
+      "matchType": "exact",
+    },
+  ],
+  "totalResults": 3,
+  "totalResultsReturned": 3,
+}
 `;
 
 exports[`fuzzySearch should fuzzy match, mixed types by maxDistance 1`] = `
-[
-  {
-    "distance": 1,
-    "item": "Button",
-    "matchType": "prefix",
-  },
-  {
-    "distance": 1,
-    "item": "ButtonGroup",
-    "matchType": "prefix",
-  },
-]
+{
+  "results": [
+    {
+      "distance": 1,
+      "item": "Button",
+      "matchType": "prefix",
+    },
+    {
+      "distance": 1,
+      "item": "ButtonGroup",
+      "matchType": "prefix",
+    },
+  ],
+  "totalResults": 2,
+  "totalResultsReturned": 2,
+}
 `;
 
 exports[`fuzzySearch should fuzzy match, multiple words 1`] = `
-[
-  {
-    "distance": 1,
-    "item": "BadgeGroup",
-    "matchType": "fuzzy",
-  },
-]
+{
+  "results": [
+    {
+      "distance": 1,
+      "item": "BadgeGroup",
+      "matchType": "fuzzy",
+    },
+  ],
+  "totalResults": 1,
+  "totalResultsReturned": 1,
+}
 `;
 
 exports[`fuzzySearch should fuzzy match, multiple words maxDistance 1`] = `
-[
-  {
-    "distance": 2,
-    "item": "Lorem Ipsum Dolor Sit",
-    "matchType": "contains",
-  },
-]
+{
+  "results": [
+    {
+      "distance": 2,
+      "item": "Lorem Ipsum Dolor Sit",
+      "matchType": "contains",
+    },
+  ],
+  "totalResults": 1,
+  "totalResultsReturned": 1,
+}
 `;
 
-exports[`fuzzySearch should fuzzy match, negative maxDistance 1`] = `[]`;
+exports[`fuzzySearch should fuzzy match, negative maxDistance 1`] = `
+{
+  "results": [],
+  "totalResults": 0,
+  "totalResultsReturned": 0,
+}
+`;
 
-exports[`fuzzySearch should fuzzy match, null items 1`] = `[]`;
+exports[`fuzzySearch should fuzzy match, null items 1`] = `
+{
+  "results": [],
+  "totalResults": 0,
+  "totalResultsReturned": 0,
+}
+`;
 
 exports[`fuzzySearch should fuzzy match, prefix match 1`] = `
-[
-  {
-    "distance": 1,
-    "item": "Button",
-    "matchType": "prefix",
-  },
-  {
-    "distance": 1,
-    "item": "ButtonGroup",
-    "matchType": "prefix",
-  },
-]
+{
+  "results": [
+    {
+      "distance": 1,
+      "item": "Button",
+      "matchType": "prefix",
+    },
+    {
+      "distance": 1,
+      "item": "ButtonGroup",
+      "matchType": "prefix",
+    },
+  ],
+  "totalResults": 2,
+  "totalResultsReturned": 2,
+}
 `;
 
 exports[`fuzzySearch should fuzzy match, prefix match multiple 1`] = `
-[
-  {
-    "distance": 1,
-    "item": "Button",
-    "matchType": "prefix",
-  },
-  {
-    "distance": 1,
-    "item": "ButtonGroup",
-    "matchType": "prefix",
-  },
-]
+{
+  "results": [
+    {
+      "distance": 1,
+      "item": "Button",
+      "matchType": "prefix",
+    },
+    {
+      "distance": 1,
+      "item": "ButtonGroup",
+      "matchType": "prefix",
+    },
+  ],
+  "totalResults": 2,
+  "totalResultsReturned": 2,
+}
 `;
 
 exports[`fuzzySearch should fuzzy match, single item 1`] = `
-[
-  {
-    "distance": 0,
-    "item": "BUTTON",
-    "matchType": "exact",
-  },
-]
+{
+  "results": [
+    {
+      "distance": 0,
+      "item": "BUTTON",
+      "matchType": "exact",
+    },
+  ],
+  "totalResults": 1,
+  "totalResultsReturned": 1,
+}
 `;
 
 exports[`fuzzySearch should fuzzy match, suffix match 1`] = `
-[
-  {
-    "distance": 1,
-    "item": "CardHeader",
-    "matchType": "suffix",
-  },
-]
+{
+  "results": [
+    {
+      "distance": 1,
+      "item": "CardHeader",
+      "matchType": "suffix",
+    },
+  ],
+  "totalResults": 1,
+  "totalResultsReturned": 1,
+}
 `;
 
 exports[`fuzzySearch should fuzzy match, trimmed query 1`] = `
-[
-  {
-    "distance": 0,
-    "item": "Button",
-    "matchType": "exact",
-  },
-  {
-    "distance": 1,
-    "item": "ButtonGroup",
-    "matchType": "prefix",
-  },
-]
+{
+  "results": [
+    {
+      "distance": 0,
+      "item": "Button",
+      "matchType": "exact",
+    },
+    {
+      "distance": 1,
+      "item": "ButtonGroup",
+      "matchType": "prefix",
+    },
+  ],
+  "totalResults": 2,
+  "totalResultsReturned": 2,
+}
 `;
 
-exports[`fuzzySearch should fuzzy match, undefined items 1`] = `[]`;
+exports[`fuzzySearch should fuzzy match, undefined items 1`] = `
+{
+  "results": [],
+  "totalResults": 0,
+  "totalResultsReturned": 0,
+}
+`;

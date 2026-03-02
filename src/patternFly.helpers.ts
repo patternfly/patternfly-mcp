@@ -99,7 +99,11 @@ const getPatternFlyVersionContext = async (
 getPatternFlyVersionContext.memo = memo(getPatternFlyVersionContext);
 
 /**
- * Normalize the version string to a valid PatternFly `tag` display version, (e.g. "v4", "v5", "v6")
+ * Normalize the version string to an available and valid PatternFly `tag` display version,
+ * (e.g. "v4", "v5", "v6").
+ *
+ * @note Only MCP server available versions are considered. Attempting to normalize a version that
+ * is not available will result in `undefined`.
  *
  * @param version - The version string to normalize.
  * @returns The normalized version string, or `undefined` if the version is not recognized.
@@ -139,22 +143,6 @@ const normalizeEnumeratedPatternFlyVersion = async (version?: string) => {
  * Memoized version of normalizeEnumeratedPatternFlyVersion.
  */
 normalizeEnumeratedPatternFlyVersion.memo = memo(normalizeEnumeratedPatternFlyVersion);
-
-/**
- * Get all available PatternFly enumerations OR filter a version string to a valid PatternFly `tag` OR `display` version,
- * (e.g. "current", "v6", etc.)
- *
- * @param version - The version string to filter.
- * @returns If version is provided returns the filtered version string array, or all available versions if the version
- *     is not recognized.
- */
-const filterEnumeratedPatternFlyVersions = async (version?: string) => {
-  const { enumeratedVersions } = await getPatternFlyVersionContext.memo();
-  const normalizedVersion = await normalizeEnumeratedPatternFlyVersion.memo(version);
-
-  return enumeratedVersions
-    .filter(version => version.toLowerCase().startsWith(normalizedVersion || ''));
-};
 
 /**
  * Find the closest PatternFly version used within the project context.
@@ -206,7 +194,7 @@ const disabled_findClosestPatternFlyVersion = async (
         isFuzzyMatch: true
       });
 
-      for (const match of matches) {
+      for (const match of matches.results) {
         const versionMatch = matchPackageVersion(allDeps[match.item], availableVersions);
 
         if (versionMatch) {
@@ -236,7 +224,6 @@ const disabled_findClosestPatternFlyVersion = async (
 
 export {
   findClosestPatternFlyVersion,
-  filterEnumeratedPatternFlyVersions,
   disabled_findClosestPatternFlyVersion,
   getPatternFlyVersionContext,
   normalizeEnumeratedPatternFlyVersion,

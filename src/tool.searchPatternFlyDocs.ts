@@ -89,7 +89,7 @@ const setComponentToDocsMap = () => {
       if (urls.includes(value)) {
         return key;
       } else {
-        const results = fuzzySearch(value, urls, {
+        const { results } = fuzzySearch(value, urls, {
           deduplicateByNormalized: true
         });
 
@@ -146,12 +146,14 @@ const searchComponents = (searchQuery: string, { names = componentNames, allowWi
   if (isSearchWildCardAll) {
     searchResults = componentNames.map(name => ({ matchType: 'all', distance: 0, item: name } as FuzzySearchResult));
   } else {
-    searchResults = fuzzySearch(searchQuery, names, {
+    const search = fuzzySearch(searchQuery, names, {
       maxDistance: 3,
       maxResults: 10,
       isFuzzyMatch: true,
       deduplicateByNormalized: true
     });
+
+    searchResults = search.results;
   }
 
   const extendResults = (results: FuzzySearchResult[] = []) => results.map(result => {

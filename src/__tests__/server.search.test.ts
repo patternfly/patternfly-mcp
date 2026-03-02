@@ -191,6 +191,7 @@ describe('fuzzySearch', () => {
       query: '',
       items: components,
       options: {
+        allowEmptyQuery: true,
         maxDistance: 20,
         isFuzzyMatch: true
       }
@@ -243,6 +244,7 @@ describe('fuzzySearch', () => {
       query: '',
       items: ['A', 'AB', 'ABCDE', 'ABCDEFG'],
       options: {
+        allowEmptyQuery: true,
         maxDistance: 3,
         isFuzzyMatch: true
       }

@@ -15,14 +15,33 @@ import {
   type PatternFlyMcpDocsCatalogEntry,
   type PatternFlyMcpDocsCatalogDoc
 } from './docs.embedded';
+import { INDEX_BLOCKLIST_WORDS, INDEX_NOISE_WORDS } from './docs.filterWords';
 
 /**
  * Derive the component schema type from @patternfly/patternfly-component-schemas
  */
 type PatternFlyComponentSchema = Awaited<ReturnType<typeof getPatternFlyComponentSchema>>;
 
+type PatternFlyMcpComponentNamesByVersion = {
+  [name: string]: {
+    isSchemasAvailable: boolean;
+    displayName: string;
+  }
+};
+
+interface PatternFlyMcpComponentNames {
+  componentNamesIndex: string[];
+  componentNamesIndexMap: Map<string, string>;
+  byVersion: Map<string, PatternFlyMcpComponentNamesByVersion>;
+}
+
 /**
  * PatternFly JSON extended documentation metadata
+ *
+ * @property name - The name of component entry.
+ * @property displayCategory - The display category of component entry.
+ * @property uri - The parent resource URI of component entry.
+ * @property uriSchemas - The parent resource URI of component schemas. **DO NOT EXPECT THIS PROPERTY TO EXIST**. **Contextual based on search and filtering.**
  */
 type PatternFlyMcpDocsMeta = {
   name: string;
@@ -61,35 +80,29 @@ type PatternFlyMcpResourcesByVersion = {
 };
 
 /**
+ * PatternFly resource keywords by resource name then by version.
+ */
+type PatternFlyMcpKeywordsMap = Map<string, Map<string, string[]>>;
+
+/**
  * PatternFly resource metadata.
  *
  * @note This might need to be called resource metadata. `docs.json` doesn't just contain component metadata.
  *
  * @property name - The name of component entry.
- * @property urls - All entry URLs for component documentation.
- * @property urlsNoGuidance - All entry URLs for component documentation without AI guidance.
- * @property urlsGuidance - All entry URLs for component documentation with AI guidance.
- * @property entriesGuidance - All entry PatternFly documentation entries with AI guidance.
- * @property entriesNoGuidance - All entry PatternFly documentation entries without AI guidance.
- * @property versions - Entry segmented by versions.
+ * @property isSchemasAvailable - Whether schemas are available for this component **DO NOT EXPECT THIS PROPERTY TO EXIST**. **Contextual based on search and filtering.**
+ * @property uri - The URI of component entry. **DO NOT EXPECT THIS PROPERTY TO EXIST**. **Contextual based on search and filtering.**
+ * @property uriSchemas - The URI of component schemas. **DO NOT EXPECT THIS PROPERTY TO EXIST**. **Contextual based on search and filtering.**
+ * @property entries - All entry PatternFly documentation entries.
+ * @property versions - Entry segmented by versions. Contains all the same properties.
  */
 type PatternFlyMcpResourceMetadata = {
   name: string;
-  urls: string[];
-  urlsNoGuidance: string[];
-  urlsGuidance: string[];
-  entriesGuidance: (PatternFlyMcpDocsCatalogDoc & PatternFlyMcpDocsMeta)[];
-  entriesNoGuidance: (PatternFlyMcpDocsCatalogDoc & PatternFlyMcpDocsMeta)[];
-  versions: Record<string, {
-    isSchemasAvailable: boolean;
-    uri: string;
-    uriSchemas: string | undefined;
-    urls: string[];
-    urlsGuidance: string[];
-    urlsNoGuidance: string[];
-    entriesGuidance: (PatternFlyMcpDocsCatalogDoc & PatternFlyMcpDocsMeta)[];
-    entriesNoGuidance: (PatternFlyMcpDocsCatalogDoc & PatternFlyMcpDocsMeta)[];
-  }>;
+  isSchemasAvailable: boolean | undefined;
+  uri: string | undefined;
+  uriSchemas: string | undefined;
+  entries: (PatternFlyMcpDocsCatalogDoc & PatternFlyMcpDocsMeta)[];
+  versions: Record<string, Omit<PatternFlyMcpResourceMetadata, 'name' | 'versions'>>;
 };
 
 /**
@@ -105,6 +118,7 @@ type PatternFlyMcpResourceMetadata = {
  * @property docsIndex - Patternfly available documentation index.
  * @property componentsIndex - Patternfly available components index.
  * @property keywordsIndex - Patternfly available keywords index.
+ * @property keywordsMap - Patternfly available keywords by resource name then by version.
  * @property isFallbackDocumentation - Whether the fallback documentation is used.
  * @property pathIndex - Patternfly documentation path index.
  * @property byPath - Patternfly documentation by path with entries
@@ -117,14 +131,13 @@ interface PatternFlyMcpAvailableResources extends PatternFlyVersionContext {
   docsIndex: string[];
   componentsIndex: string[];
   keywordsIndex: string[];
+  keywordsMap: PatternFlyMcpKeywordsMap;
   isFallbackDocumentation: boolean;
   pathIndex: string[];
   byPath: PatternFlyMcpResourcesByPath;
   byUri: PatternFlyMcpResourcesByUri;
   byVersion: PatternFlyMcpResourcesByVersion;
-  byVersionComponentNames: {
-    [version: string]: string[];
-  };
+  byVersionComponentNames: PatternFlyMcpComponentNames['byVersion'];
 }
 
 /**
@@ -137,7 +150,11 @@ const getPatternFlyDocsCatalog = async (): Promise<PatternFlyMcpDocsCatalog & { 
   let isFallback = false;
 
   try {
-    docsCatalog = (await import('#docsCatalog', { with: { type: 'json' } })).default;
+    if (process.env.NODE_ENV === 'local') {
+      docsCatalog = (await import('./docs.json', { with: { type: 'json' } })).default;
+    } else {
+      docsCatalog = (await import('#docsCatalog', { with: { type: 'json' } })).default;
+    }
   } catch (error) {
     isFallback = true;
     log.debug(`Failed to import docs catalog '#docsCatalog': ${formatUnknownError(error)}`, 'Using fallback docs catalog.');
@@ -193,40 +210,137 @@ const setCategoryDisplayLabel = (entry?: PatternFlyMcpDocsCatalogDoc) => {
 /**
  * A multifaceted list of all PatternFly React component names.
  *
+ * @note Consider iterating over the components by version using the "availableVersions" array
+ * from getPatternFlyVersionContext.
+ *
  * @note The "table" component is manually added to the `componentNamesIndex` list because it's not currently included
- * in the component schemas package.
+ * in the component schemas v6 package.
  *
  * @note To avoid lookup issues we normalize all keys and indexes to lowercase. Component names are lowercased.
  *
  * @param contextPathOverride - Context path for updating the returned PatternFly versions.
  * @returns A multifaceted React component breakdown.  Use the "memoized" property for performance.
- * - `byVersion`: Map of lowercase PatternFly versions to lowercase component names.
- * - `componentNamesIndex`: Latest PF version, lowercase component names sorted alphabetically.
- * - `componentNamesWithSchemasIndex`: Latest PF version, lowercase component names sorted alphabetically.
- * - `componentNamesWithSchemasMap`: Latest PF version, Map of lowercase component names to original case component names.
+ * - `componentNamesIndex`: ALL component names across ALL versions,
+ * - `componentNamesIndexMap`: Map of lowercase ALL component names to original case component names,
+ * - `byVersion`: Map of lowercase PatternFly versions to Map of lowercase component names to { isSchemasAvailable: boolean, displayName: string }
  */
-const getPatternFlyReactComponentNames = async (contextPathOverride?: string) => {
-  const { latestSchemasVersion, isEnvTheLatestSchemasVersion } = await getPatternFlyVersionContext.memo(contextPathOverride);
-  const byVersion = new Map<string, string[]>();
+const getPatternFlyComponentNames = async (contextPathOverride?: string): Promise<PatternFlyMcpComponentNames> => {
+  const { latestSchemasVersion } = await getPatternFlyVersionContext.memo(contextPathOverride);
 
   const latestNamesIndex = [...Array.from(new Set([...pfComponentNames, 'Table'])).map(name => name.toLowerCase()).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))];
-  const latestNamesWithSchemaIndex = [...pfComponentNames.map(name => name.toLowerCase()).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))];
-  const latestNamesWithSchemasMap = new Map(pfComponentNames.map(name => [name.toLowerCase(), name]));
+  const latestNamesIndexMap = new Map(Array.from(new Set([...pfComponentNames, 'Table'])).map(name => [name.toLowerCase(), name]));
+  const latestByNameMap = new Map<string, { isSchemasAvailable: boolean, displayName: string }>();
 
-  byVersion.set(latestSchemasVersion, latestNamesIndex);
+  pfComponentNames.forEach(name => {
+    latestByNameMap.set(name.toLowerCase(), { isSchemasAvailable: true, displayName: name });
+  });
+
+  const byVersion: PatternFlyMcpComponentNames['byVersion'] = new Map();
+
+  latestByNameMap.set('table', { isSchemasAvailable: false, displayName: 'Table' });
+  const convert = Object.fromEntries(latestByNameMap);
+
+  byVersion.set(
+    latestSchemasVersion,
+    convert
+  );
 
   return {
-    byVersion: Object.fromEntries(byVersion),
-    componentNamesIndex: isEnvTheLatestSchemasVersion ? latestNamesIndex : [],
-    componentNamesWithSchemasIndex: isEnvTheLatestSchemasVersion ? latestNamesWithSchemaIndex : [],
-    componentNamesWithSchemasMap: isEnvTheLatestSchemasVersion ? Object.fromEntries(latestNamesWithSchemasMap) : {}
+    componentNamesIndex: latestNamesIndex,
+    componentNamesIndexMap: latestNamesIndexMap,
+    byVersion
   };
 };
 
 /**
  * Memoized version of getPatternFlyReactComponentNames.
  */
-getPatternFlyReactComponentNames.memo = memo(getPatternFlyReactComponentNames);
+getPatternFlyComponentNames.memo = memo(getPatternFlyComponentNames);
+
+/**
+ * Filter keywords by removing noise words.
+ *
+ * @param keywordsMap - Available keywords by resource name.
+ * @param settings - Settings object
+ * @param settings.filterList - List of words to filter out from keywords.
+ */
+const filterKeywords = (keywordsMap: PatternFlyMcpKeywordsMap, { filterList = INDEX_NOISE_WORDS } = {}) => {
+  const filteredKeywords: PatternFlyMcpKeywordsMap = new Map();
+
+  for (const [keyword, versionMap] of keywordsMap) {
+    const updatedKeyword = keyword.toLowerCase().trim();
+    const isVariant = filterList.some(word => {
+      const updatedWord = word.toLowerCase().trim();
+
+      return updatedKeyword === updatedWord ||
+        // Loose distance check
+        (updatedKeyword.startsWith(updatedWord) && updatedKeyword.replace(updatedWord, '').length < 4) ||
+        // Loose distance check
+        (updatedKeyword.endsWith(updatedWord) && updatedKeyword.replace(updatedWord, '').length < 4);
+    });
+
+    if (!isVariant) {
+      filteredKeywords.set(keyword, versionMap);
+    }
+  }
+
+  return filteredKeywords;
+};
+
+/**
+ * Update the keywords map with the given keyword.
+ *
+ * @param keywordsMap - Available keywords by resource name.
+ * @param params - Params object
+ * @param params.keyword - Keyword to add to the map.
+ * @param params.name - Name of the resource associated with the keyword.
+ * @param params.version - Version of the resource associated with the keyword.
+ * @param settings - Settings object
+ * @param settings.blockList - List of words to block from indexing.
+ */
+const mutateKeyWordsMap = (
+  keywordsMap: PatternFlyMcpKeywordsMap,
+  { keyword, name, version }: { keyword: string, name: string, version: string },
+  { blockList = INDEX_BLOCKLIST_WORDS } = {}
+) => {
+  const normalizedKeyword = keyword.toLowerCase().trim();
+  const initialSplit = normalizedKeyword.split(' ').filter(Boolean);
+  const isMultipleWords = initialSplit.length > 1;
+
+  const mutateMap = (word: string) => {
+    if (!keywordsMap.has(word)) {
+      keywordsMap.set(word, new Map());
+    }
+
+    const versionMap = keywordsMap.get(word);
+
+    if (!versionMap?.has(version)) {
+      versionMap?.set(version, []);
+    }
+
+    const mapped = versionMap?.get(version);
+
+    if (!mapped?.includes(name)) {
+      mapped?.push(name);
+    }
+  };
+
+  // Break phrase apart
+  if (isMultipleWords) {
+    const splitKeywords = initialSplit.map(word => word.trim().replace(/[()|"'<>@#!,.;:]/g, ''));
+
+    for (const word of splitKeywords) {
+      if (word.length <= 3 || blockList.find(blockedWord => blockedWord === word.toLowerCase())) {
+        continue;
+      }
+
+      mutateMap(word);
+    }
+  }
+
+  // But also apply entire phrases
+  mutateMap(normalizedKeyword);
+};
 
 /**
  * Get a multifaceted resources breakdown from PatternFly.
@@ -236,8 +350,8 @@ getPatternFlyReactComponentNames.memo = memo(getPatternFlyReactComponentNames);
  */
 const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<PatternFlyMcpAvailableResources> => {
   const versionContext = await getPatternFlyVersionContext.memo(contextPathOverride);
-  const componentNames = await getPatternFlyReactComponentNames.memo(contextPathOverride);
-  const { byVersion: componentNamesByVersion, componentNamesIndex, componentNamesWithSchemasIndex: schemaNames } = componentNames;
+  const componentNames = await getPatternFlyComponentNames.memo(contextPathOverride);
+  const { componentNamesIndex, byVersion: componentNamesByVersion, byVersion: byVersionSchemaNames } = componentNames;
 
   const originalDocs = await getPatternFlyDocsCatalog.memo();
   const resources = new Map<string, PatternFlyMcpResourceMetadata>();
@@ -245,22 +359,22 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
   const byUri: PatternFlyMcpResourcesByUri = {};
   const byVersion: PatternFlyMcpResourcesByVersion = {};
   const pathIndex = new Set<string>();
+  const rawKeywordsMap: PatternFlyMcpKeywordsMap = new Map();
 
   Object.entries(originalDocs.docs).forEach(([docsName, entries]) => {
     const name = docsName.toLowerCase();
     const resource: PatternFlyMcpResourceMetadata = {
       name,
-      urls: [],
-      urlsNoGuidance: [],
-      urlsGuidance: [],
-      entriesGuidance: [],
-      entriesNoGuidance: [],
+      isSchemasAvailable: undefined,
+      uri: undefined,
+      uriSchemas: undefined,
+      entries: [],
       versions: {}
     };
 
     entries.forEach(entry => {
       const version = (entry.version || 'unknown').toLowerCase();
-      const isSchemasAvailable = versionContext.latestSchemasVersion === version && schemaNames.includes(name);
+      const isSchemasAvailable = versionContext.latestSchemasVersion === version && byVersionSchemaNames.get(version)?.[name]?.isSchemasAvailable;
       const path = entry.path;
       const uri = `patternfly://docs/${version}/${name}`;
 
@@ -270,11 +384,7 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
         isSchemasAvailable,
         uri,
         uriSchemas: undefined,
-        urls: [],
-        urlsGuidance: [],
-        urlsNoGuidance: [],
-        entriesGuidance: [],
-        entriesNoGuidance: []
+        entries: []
       };
 
       const displayCategory = setCategoryDisplayLabel(entry);
@@ -301,20 +411,22 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
       byVersion[version] ??= [];
       byVersion[version]?.push(extendedEntry);
 
-      resource.urls.push(path);
-      resource.versions[version].urls.push(path);
+      mutateKeyWordsMap(rawKeywordsMap, { keyword: name, name, version });
 
-      if (extendedEntry.section === 'guidelines') {
-        resource.urlsGuidance.push(path);
-        resource.entriesGuidance.push(extendedEntry);
-        resource.versions[version].urlsGuidance.push(path);
-        resource.versions[version].entriesGuidance.push(extendedEntry);
-      } else {
-        resource.urlsNoGuidance.push(path);
-        resource.entriesNoGuidance.push(extendedEntry);
-        resource.versions[version].urlsNoGuidance.push(path);
-        resource.versions[version].entriesNoGuidance.push(extendedEntry);
+      if (entry.category) {
+        mutateKeyWordsMap(rawKeywordsMap, { keyword: entry.category, name, version });
       }
+
+      if (entry.section) {
+        mutateKeyWordsMap(rawKeywordsMap, { keyword: entry.section, name, version });
+      }
+
+      if (entry.description) {
+        mutateKeyWordsMap(rawKeywordsMap, { keyword: entry.description, name, version });
+      }
+
+      resource.entries.push(extendedEntry);
+      resource.versions[version].entries.push(extendedEntry);
     });
 
     resources.set(name, resource);
@@ -324,14 +436,19 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
     entries.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
   });
 
+  const filteredKeywords = filterKeywords(rawKeywordsMap);
+
   return {
     ...versionContext,
     resources,
     docsIndex: Array.from(resources.keys()).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })),
     componentsIndex: componentNamesIndex,
-    keywordsIndex: Array.from(new Set([...Array.from(resources.keys()), ...componentNamesIndex]))
-      .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })),
     isFallbackDocumentation: originalDocs.isFallback,
+    keywordsIndex: Array.from(new Set([
+      ...componentNamesIndex,
+      ...Array.from(filteredKeywords.keys())
+    ])).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })),
+    keywordsMap: filteredKeywords,
     pathIndex: Array.from(pathIndex).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })),
     byPath,
     byUri,
@@ -352,10 +469,10 @@ getPatternFlyMcpResources.memo = memo(getPatternFlyMcpResources);
  * @returns The component schema, or `undefined` if the component name is not found.
  */
 const getPatternFlyComponentSchema = async (componentName: string) => {
-  const { componentNamesWithSchemasMap } = await getPatternFlyReactComponentNames.memo();
+  const { latestVersion, byVersionComponentNames } = await getPatternFlyMcpResources.memo();
 
   try {
-    const updatedComponentName = componentNamesWithSchemasMap[componentName.toLowerCase()];
+    const updatedComponentName = byVersionComponentNames.get(latestVersion)?.[componentName.toLowerCase()]?.displayName;
 
     if (!updatedComponentName) {
       return undefined;
@@ -377,8 +494,10 @@ getPatternFlyComponentSchema.memo = memo(getPatternFlyComponentSchema, DEFAULT_O
 export {
   getPatternFlyComponentSchema,
   getPatternFlyMcpResources,
-  getPatternFlyReactComponentNames,
+  getPatternFlyComponentNames,
   setCategoryDisplayLabel,
+  type PatternFlyMcpComponentNames,
+  type PatternFlyMcpComponentNamesByVersion,
   type PatternFlyComponentSchema,
   type PatternFlyMcpAvailableResources,
   type PatternFlyMcpResourceMetadata,

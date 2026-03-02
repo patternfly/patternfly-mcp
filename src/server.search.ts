@@ -17,12 +17,36 @@ interface ClosestSearchOptions {
 }
 
 /**
- * Fuzzy search result using fastest-levenshtein
+ * Fuzzy search result match types.
  */
-interface FuzzySearchResult {
+type FuzzySearchResultMatchType = 'exact' | 'prefix' | 'suffix' | 'contains' | 'partial' | 'fuzzy' | 'all';
+
+/**
+ * Fuzzy search result using fastest-levenshtein
+ *
+ * @property item - The matched string item from the search.
+ * @property distance - The numerical representation of similarity between the search query and the item.
+ * @property {FuzzySearchResultMatchType} matchType - The categorization of the match, indicating the nature of the similarity.
+ */
+type FuzzySearchResult = {
   item: string;
   distance: number;
-  matchType: 'exact' | 'prefix' | 'suffix' | 'contains' | 'partial' | 'fuzzy' | 'all';
+  matchType: FuzzySearchResultMatchType;
+};
+
+/**
+ * Fuzzy search result using fastest-levenshtein
+ *
+ * @interface FuzzySearchResult
+ *
+ * @property {FuzzySearchResult[]} results - Array of search results
+ * @property totalResults - Total number of results actually found.
+ * @property totalResultsReturned - Total number of results returned based on settings.
+ */
+interface FuzzySearch {
+  results: FuzzySearchResult[],
+  totalResults: number;
+  totalResultsReturned: number;
 }
 
 /**
@@ -41,6 +65,7 @@ interface FuzzySearchResult {
  * - `deduplicateByNormalized` - If true, deduplicate results by normalized value instead of original string (default: false)
  */
 interface FuzzySearchOptions {
+  allowEmptyQuery?: boolean;
   maxDistance?: number;
   maxResults?: number;
   normalizeFn?: (str: string) => string;
@@ -127,17 +152,21 @@ const findClosest = (
  * @param query - Search query string
  * @param items - Array of strings to search
  * @param {FuzzySearchOptions} options - Search configuration options
- * @param {number} options.maxDistance - Maximum edit distance for a match. Distance is defined as
- * @param {number} options.maxResults - Maximum number of results to return
+ * @param options.allowEmptyQuery - Allow empty queries to match items with length <= maxDistance (default: `false`)
+ * @param options.maxDistance - Maximum edit distance for a match. Distance is defined as
+ * @param options.maxResults - Maximum number of results to return
  * @param {NormalizeString} options.normalizeFn - Function to normalize strings. Should always return a string or empty string (default: `normalizeString`)
- * @param {boolean} options.isExactMatch - Include exact matches in results (default: `true`)
- * @param {boolean} options.isPrefixMatch - Include prefix matches in results (default: `true`)
- * @param {boolean} options.isSuffixMatch - Include suffix matches in results (default: `true`)
- * @param {boolean} options.isContainsMatch - Include contains matches in results (default: `true`)
- * @param {boolean} options.isPartialMatch - Include partial matches in results (default: `true`)
- * @param {boolean} options.isFuzzyMatch - Allow fuzzy matches even when `maxDistance` is negative or zero.
- * @param {boolean} options.deduplicateByNormalized - If `true`, deduplicate results by normalized value instead of original string.
- * @returns {FuzzySearchResult[]} Array of matching strings with distance and match type
+ * @param options.isExactMatch - Include exact matches in results (default: `true`)
+ * @param options.isPrefixMatch - Include prefix matches in results (default: `true`)
+ * @param options.isSuffixMatch - Include suffix matches in results (default: `true`)
+ * @param options.isContainsMatch - Include contains matches in results (default: `true`)
+ * @param options.isPartialMatch - Include partial matches in results (default: `true`)
+ * @param options.isFuzzyMatch - Allow fuzzy matches even when `maxDistance` is negative or zero.
+ * @param options.deduplicateByNormalized - If `true`, deduplicate results by normalized value instead of original string.
+ * @returns {FuzzySearch} An object containing search results with distance and match type
+ * - `results`: Array of matching strings with distance and match type.
+ * - `totalResults`: Total number of results found.
+ * - `totalReturnedResults`: Total number of results returned (after applying maxResults limit).
  *
  * @example
  * ```typescript
@@ -145,13 +174,14 @@ const findClosest = (
  *   maxDistance: 3,
  *   maxResults: 5
  * });
- * // Returns: [{ item: 'Button', distance: 0, matchType: 'exact' }, ...]
+ * // Returns: { results: [{ item: 'Button', distance: 0, matchType: 'exact' }, ...], totalResults: 15, totalReturnedResults: 5 }
  * ```
  */
 const fuzzySearch = (
   query: string,
   items: string[] = [],
   {
+    allowEmptyQuery = false,
     maxDistance = 3,
     maxResults = 10,
     normalizeFn = normalizeString.memo,
@@ -163,7 +193,7 @@ const fuzzySearch = (
     isFuzzyMatch = false,
     deduplicateByNormalized = false
   }: FuzzySearchOptions = {}
-): FuzzySearchResult[] => {
+): FuzzySearch => {
   const normalizedQuery = normalizeFn(query);
   const seenItem = new Set<string>();
   const results: FuzzySearchResult[] = [];
@@ -178,7 +208,7 @@ const fuzzySearch = (
 
     seenItem.add(deduplicationKey);
     let editDistance = 0;
-    let matchType: FuzzySearchResult['matchType'] | undefined;
+    let matchType: FuzzySearchResultMatchType | undefined;
 
     if (normalizedItem === normalizedQuery) {
       matchType = 'exact';
@@ -194,9 +224,13 @@ const fuzzySearch = (
     } else if (normalizedQuery !== '' && normalizedItem !== '' && normalizedQuery.includes(normalizedItem)) {
       matchType = 'partial';
       editDistance = 2;
-    } else if (isFuzzyMatch && Math.abs(normalizedItem.length - normalizedQuery.length) <= maxDistance) {
-      matchType = 'fuzzy';
-      editDistance = distance(normalizedQuery, normalizedItem);
+    } else if (isFuzzyMatch && (allowEmptyQuery || (normalizedQuery !== '' && normalizedItem !== ''))) {
+      const checkDistance = distance(normalizedItem, normalizedQuery);
+
+      if (checkDistance <= maxDistance) {
+        matchType = 'fuzzy';
+        editDistance = checkDistance;
+      }
     }
 
     if (matchType === undefined) {
@@ -228,7 +262,11 @@ const fuzzySearch = (
     return a.item.localeCompare(b.item);
   });
 
-  return results.slice(0, maxResults);
+  return {
+    results: results.slice(0, maxResults),
+    totalResults: results.length,
+    totalResultsReturned: results.slice(0, maxResults).length
+  };
 };
 
 export {
@@ -237,6 +275,8 @@ export {
   findClosest,
   type NormalizeString,
   type ClosestSearchOptions,
+  type FuzzySearch,
   type FuzzySearchResult,
+  type FuzzySearchResultMatchType,
   type FuzzySearchOptions
 };
