@@ -91,6 +91,16 @@ exports[`findClosest should attempt to find a closest match, undefined items 1`]
 }
 `;
 
+exports[`findClosest should handle numbers in addition to strings, float against float query 1`] = `123.44`;
+
+exports[`findClosest should handle numbers in addition to strings, float number query 1`] = `123`;
+
+exports[`findClosest should handle numbers in addition to strings, number query 1`] = `123`;
+
+exports[`findClosest should handle numbers in addition to strings, number query with float 1`] = `123.45`;
+
+exports[`findClosest should handle numbers in addition to strings, string query 1`] = `"Button"`;
+
 exports[`fuzzySearch should fuzzy match, contains match multiple 1`] = `
 {
   "results": [
@@ -549,7 +559,7 @@ exports[`fuzzySearch should fuzzy match, undefined items 1`] = `
 }
 `;
 
-exports[`fuzzySearch should handle numbers in addition to strings, exact number query with strings 1`] = `
+exports[`fuzzySearch should handle numbers in addition to strings, exact number query 1`] = `
 {
   "results": [
     {
@@ -591,7 +601,7 @@ exports[`fuzzySearch should handle numbers in addition to strings, prefix number
 }
 `;
 
-exports[`fuzzySearch should handle numbers in addition to strings, string query with numbers 1`] = `
+exports[`fuzzySearch should handle numbers in addition to strings, string query 1`] = `
 {
   "results": [
     {

@@ -88,7 +88,7 @@ interface FuzzySearchOptions {
  * @param str
  * @returns Normalized or empty string
  */
-const normalizeString: NormalizeString = (str: string | number) => String(str || '')
+const normalizeString: NormalizeString = (str: string | number) => String(str ?? '')
   .trim()
   .toLowerCase()
   .normalize('NFKD')
@@ -121,7 +121,7 @@ normalizeString.memo = memo(normalizeString, { cacheLimit: 50 });
  * ```
  */
 const findClosest = (
-  query: string,
+  query: string | number,
   items: (string | number)[] = [],
   {
     normalizeFn = normalizeString.memo
@@ -133,7 +133,7 @@ const findClosest = (
     return null;
   }
 
-  const normalizedItems = items.map(item => normalizeFn(item)).filter(Boolean);
+  const normalizedItems = items.map(item => normalizeFn(item));
   const closestMatch = closest(normalizedQuery, normalizedItems);
 
   return items[normalizedItems.indexOf(closestMatch)] || null;
