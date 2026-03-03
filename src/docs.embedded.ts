@@ -63,7 +63,7 @@ const EMBEDDED_DOCS: PatternFlyMcpDocsCatalog = {
       },
       {
         displayName: 'PatternFly GitHub',
-        description: 'PatternFly organization on GitHub (Core & React).',
+        description: 'PatternFly organization on GitHub.',
         pathSlug: 'patternfly-github',
         section: 'github',
         category: 'reference',

@@ -16,4 +16,23 @@ describe('EMBEDDED_DOCS', () => {
 
     expect(allDocs.length).toBeGreaterThanOrEqual(5);
   });
+
+  it('should have metadata reflective of its JSON content', () => {
+    const { docs, meta } = EMBEDDED_DOCS;
+
+    expect(meta.totalEntries).toBeDefined();
+    expect(Object.entries(docs).length).toBe(meta.totalEntries);
+
+    expect(meta.totalDocs).toBeDefined();
+
+    let totalDocs = 0;
+
+    Object.values(docs).forEach(entries => {
+      if (Array.isArray(entries)) {
+        totalDocs += entries.length;
+      }
+    });
+
+    expect(totalDocs).toBe(meta.totalDocs);
+  });
 });

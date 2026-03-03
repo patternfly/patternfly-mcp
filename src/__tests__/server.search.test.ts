@@ -78,11 +78,26 @@ describe('findClosest', () => {
       description: 'all empty string items',
       query: 'test',
       items: ['', '', '']
+    },
+    {
+      description: 'undefined match',
+      query: undefined,
+      items: ['Button', 'Badge', undefined, null]
+    },
+    {
+      description: 'null match',
+      query: null,
+      items: ['Button', 'Badge', undefined, null]
+    },
+    {
+      description: 'NaN match',
+      query: NaN,
+      items: ['Button', 'Badge', NaN, null]
     }
   ])('should attempt to find a closest match, $description', ({ query, items }) => {
     expect({
       query,
-      match: findClosest(query, items as string[])
+      match: findClosest(query, items as any)
     }).toMatchSnapshot();
   });
 
@@ -94,6 +109,36 @@ describe('findClosest', () => {
     expect(() => {
       findClosest('button', ['Button', 'Badge'], { normalizeFn: throwingNormalizeFn });
     }).toThrow('Normalization failed');
+  });
+
+  it.each([
+    {
+      description: 'string query',
+      query: 'button',
+      items: ['Button', 123, 'Badge']
+    },
+    {
+      description: 'number query',
+      query: 123,
+      items: ['Button', 123, 'Badge']
+    },
+    {
+      description: 'number query with float',
+      query: 123,
+      items: ['Button', 123.45, 'Badge']
+    },
+    {
+      description: 'float number query',
+      query: 123.45,
+      items: ['Button', 123, 'Badge']
+    },
+    {
+      description: 'float against float query',
+      query: 123.45,
+      items: ['Button', 123, undefined, 123.44, 'Badge', null]
+    }
+  ])('should handle numbers in addition to strings, $description', ({ query, items }) => {
+    expect(findClosest(query, items as any)).toMatchSnapshot();
   });
 });
 
@@ -191,6 +236,7 @@ describe('fuzzySearch', () => {
       query: '',
       items: components,
       options: {
+        allowEmptyQuery: true,
         maxDistance: 20,
         isFuzzyMatch: true
       }
@@ -243,6 +289,7 @@ describe('fuzzySearch', () => {
       query: '',
       items: ['A', 'AB', 'ABCDE', 'ABCDEFG'],
       options: {
+        allowEmptyQuery: true,
         maxDistance: 3,
         isFuzzyMatch: true
       }
@@ -310,7 +357,7 @@ describe('fuzzySearch', () => {
       }
     }
   ])('should fuzzy match, $description', ({ query, items, options }) => {
-    expect(fuzzySearch(query, items as string[], options)).toMatchSnapshot();
+    expect(fuzzySearch(query, items as any, options)).toMatchSnapshot();
   });
 
   it('should handle normalizeFn errors in fuzzySearch', () => {
@@ -321,5 +368,30 @@ describe('fuzzySearch', () => {
     expect(() => {
       fuzzySearch('button', ['Button', 'Badge'], { normalizeFn: throwingNormalizeFn });
     }).toThrow('Normalization failed');
+  });
+
+  it.each([
+    {
+      description: 'string query',
+      query: 'button',
+      items: ['Button', 123, 'Badge']
+    },
+    {
+      description: 'exact number query',
+      query: 123,
+      items: ['Button', 123, 'Badge']
+    },
+    {
+      description: 'prefix number query with float',
+      query: 123,
+      items: ['Button', 123.45, 'Badge']
+    },
+    {
+      description: 'partial float number query',
+      query: 123.45,
+      items: ['Button', 123, 'Badge']
+    }
+  ])('should handle numbers in addition to strings, $description', ({ query, items }) => {
+    expect(fuzzySearch(query, items, { deduplicateByNormalized: true })).toMatchSnapshot();
   });
 });

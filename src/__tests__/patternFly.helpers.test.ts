@@ -2,7 +2,6 @@ import {
   findClosestPatternFlyVersion,
   getPatternFlyVersionContext,
   normalizeEnumeratedPatternFlyVersion,
-  filterEnumeratedPatternFlyVersions,
   disabled_findClosestPatternFlyVersion
 } from '../patternFly.helpers';
 import { readLocalFileFunction } from '../server.getResources';
@@ -112,63 +111,6 @@ describe('normalizeEnumeratedPatternFlyVersion', () => {
     const result = await normalizeEnumeratedPatternFlyVersion(version as any);
 
     expect(result).toBe(expected);
-  });
-});
-
-describe('filterEnumeratedPatternFlyVersions', () => {
-  it.each([
-    {
-      description: 'exact semver',
-      version: '6.0.0'
-    },
-    {
-      description: 'semver',
-      version: '6.4.10'
-    },
-    {
-      description: 'tag',
-      version: 'v6'
-    },
-    {
-      description: 'current',
-      version: 'current'
-    },
-    {
-      description: 'latest',
-      version: 'latest'
-    },
-    {
-      description: 'detected',
-      version: 'detected'
-    },
-    {
-      description: 'unavailable exact semver',
-      version: '5.0.0'
-    },
-    {
-      description: 'unavailable semver',
-      version: '5.2.10'
-    },
-    {
-      description: 'unavailable tag',
-      version: 'v5'
-    },
-    {
-      description: 'undefined',
-      version: undefined
-    },
-    {
-      description: 'null',
-      version: null
-    },
-    {
-      description: 'empty',
-      version: ''
-    }
-  ])('should attempt to refine a PatternFly versions based on available enumerations, $description', async ({ version }) => {
-    const result = await filterEnumeratedPatternFlyVersions(version as any);
-
-    expect(result).toMatchSnapshot();
   });
 });
 

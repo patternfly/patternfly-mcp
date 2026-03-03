@@ -45,7 +45,7 @@ const componentSchemasTool = (options = getOptions()): McpTool => {
     }
 
     // Use fuzzySearch with `isFuzzyMatch` to handle exact and intentional suggestions in one pass
-    const results = fuzzySearch(componentName, componentNames, {
+    const { results } = fuzzySearch(componentName, componentNames, {
       maxDistance: 3,
       maxResults: 5,
       isFuzzyMatch: true,

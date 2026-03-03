@@ -2,7 +2,7 @@
   "version": "1",
   "generated": "2026-02-18T00:00:00.000Z",
   "meta": {
-    "totalEntries": 126,
+    "totalEntries": 115,
     "totalDocs": 267,
     "source": "patternfly-mcp-internal"
   },
@@ -2129,6 +2129,16 @@
         "source": "github",
         "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-charts/src/victory/components/ChartTooltip/examples/ChartTooltip.md",
         "version": "v6"
+      },
+      {
+        "displayName": "Tooltip content",
+        "description": "Guidance on writing tooltips, including specific rules for certain icons.",
+        "pathSlug": "tooltip",
+        "section": "content-design",
+        "category": "writing-guides",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/writing-guides/tooltips.md",
+        "version": "v6"
       }
     ],
     "TreeView": [
@@ -2737,135 +2747,15 @@
         "version": "v6"
       }
     ],
-    "Content design overview": [
+    "Product tours": [
       {
-        "displayName": "Content design overview",
-        "description": "Overview of content design and a map of available writing resources for PatternFly.",
-        "pathSlug": "content-design",
+        "displayName": "Product tours",
+        "description": "Best practices and tone advice for writing content for product tours and onboarding flows.",
+        "pathSlug": "product-tours",
         "section": "content-design",
         "category": "writing-guides",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/content-design.md",
-        "version": "v6"
-      }
-    ],
-    "Brand voice and tone": [
-      {
-        "displayName": "Brand voice and tone",
-        "description": "Defines the unique voice and tone standards that ensure consistency and humanity across PatternFly products.",
-        "pathSlug": "brand-voice-and-tone",
-        "section": "content-design",
-        "category": "writing-guides",
-        "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/brand-voice-and-tone.md",
-        "version": "v6"
-      }
-    ],
-    "Best practices": [
-      {
-        "displayName": "Best practices",
-        "description": "Foundational advice for integrating words into your design process, ensuring intuitive and human-centered experiences.",
-        "pathSlug": "best-practices",
-        "section": "content-design",
-        "category": "writing-guides",
-        "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/best-practices.md",
-        "version": "v6"
-      }
-    ],
-    "Accessibility and localization": [
-      {
-        "displayName": "Accessibility and localization",
-        "description": "Guidance on writing for inclusion, supporting screen readers, and adapting content for global audiences.",
-        "pathSlug": "accessibility-and-localization",
-        "section": "content-design",
-        "category": "grammar",
-        "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/accessibility-and-localization.md",
-        "version": "v6"
-      }
-    ],
-    "Capitalization": [
-      {
-        "displayName": "Capitalization",
-        "description": "Rules detailing which casing style to use for different UI scenarios.",
-        "pathSlug": "capitalization",
-        "section": "content-design",
-        "category": "grammar",
-        "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/capitalization.md",
-        "version": "v6"
-      }
-    ],
-    "Numerics": [
-      {
-        "displayName": "Numerics",
-        "description": "Rules for displaying and formatting dates, times, currency, and numerical values.",
-        "pathSlug": "numerics",
-        "section": "content-design",
-        "category": "grammar",
-        "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/numerics.md",
-        "version": "v6"
-      }
-    ],
-    "Punctuation": [
-      {
-        "displayName": "Punctuation",
-        "description": "Rules for using punctuation properly within UI components and long-form content.",
-        "pathSlug": "punctuation",
-        "section": "content-design",
-        "category": "grammar",
-        "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/punctuation.md",
-        "version": "v6"
-      }
-    ],
-    "Sentence structure": [
-      {
-        "displayName": "Sentence structure",
-        "description": "Guidance on point of view and sentence voice to ensure clarity and user-focused language.",
-        "pathSlug": "sentence-structure",
-        "section": "content-design",
-        "category": "grammar",
-        "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/sentence-structure.md",
-        "version": "v6"
-      }
-    ],
-    "Terminology": [
-      {
-        "displayName": "Terminology",
-        "description": "Preferred terms across different UI scenarios, including words and phrases to avoid.",
-        "pathSlug": "terminology",
-        "section": "content-design",
-        "category": "grammar",
-        "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/terminology.md",
-        "version": "v6"
-      }
-    ],
-    "Truncation": [
-      {
-        "displayName": "Truncation",
-        "description": "Guidance on replacing overflow content with ellipses to manage text when display space is limited.",
-        "pathSlug": "truncation",
-        "section": "content-design",
-        "category": "grammar",
-        "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/truncation.md",
-        "version": "v6"
-      }
-    ],
-    "Units and symbols": [
-      {
-        "displayName": "Units and symbols",
-        "description": "Rules for displaying units of measurement and shorthand symbols.",
-        "pathSlug": "units-and-symbols",
-        "section": "content-design",
-        "category": "grammar",
-        "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/units-and-symbols.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/writing-guides/product-tours.md",
         "version": "v6"
       }
     ],
@@ -2893,11 +2783,51 @@
         "version": "v6"
       }
     ],
-    "PatternFly design guidelines content": [
+    "Writing": [
+      {
+        "displayName": "Content design overview",
+        "description": "Overview of content design and a map of available writing resources for PatternFly.",
+        "pathSlug": "content-design",
+        "section": "content-design",
+        "category": "writing-guides",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/content-design.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Brand voice and tone",
+        "description": "Defines the unique voice and tone standards that ensure consistency and humanity across PatternFly products.",
+        "pathSlug": "brand-voice-and-tone",
+        "section": "content-design",
+        "category": "writing-guides",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/brand-voice-and-tone.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Best practices",
+        "description": "Foundational advice for integrating words into your design process, ensuring intuitive and human-centered experiences.",
+        "pathSlug": "writing-best-practices",
+        "section": "content-design",
+        "category": "writing-guides",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/best-practices.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Accessibility and localization",
+        "description": "Guidance on writing for inclusion, supporting screen readers, and adapting content for global audiences.",
+        "pathSlug": "accessibility-and-localization",
+        "section": "content-design",
+        "category": "grammar",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/accessibility-and-localization.md",
+        "version": "v6"
+      },
       {
         "displayName": "PatternFly design guidelines content",
         "description": "Guidance on structuring and writing content specifically for PatternFly's design guidelines.",
-        "pathSlug": "patternfly-design-guidelines",
+        "pathSlug": "patternfly-writing-in-design",
         "section": "content-design",
         "category": "writing-guides",
         "source": "github",
@@ -2905,27 +2835,75 @@
         "version": "v6"
       }
     ],
-    "Product tours": [
+    "Grammar": [
       {
-        "displayName": "Product tours",
-        "description": "Best practices and tone advice for writing content for product tours and onboarding flows.",
-        "pathSlug": "product-tours",
+        "displayName": "Capitalization",
+        "description": "Rules detailing which casing style to use for different UI scenarios.",
+        "pathSlug": "capitalization",
         "section": "content-design",
-        "category": "writing-guides",
+        "category": "grammar",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/writing-guides/product-tours.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/capitalization.md",
         "version": "v6"
-      }
-    ],
-    "Tooltips content": [
+      },
       {
-        "displayName": "Tooltips content",
-        "description": "Guidance on writing tooltips, including specific rules for certain icons.",
-        "pathSlug": "tooltips",
+        "displayName": "Numerics",
+        "description": "Rules for displaying and formatting dates, times, currency, and numerical values.",
+        "pathSlug": "numerics",
         "section": "content-design",
-        "category": "writing-guides",
+        "category": "grammar",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/writing-guides/tooltips.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/numerics.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Punctuation",
+        "description": "Rules for using punctuation properly within UI components and long-form content.",
+        "pathSlug": "punctuation",
+        "section": "content-design",
+        "category": "grammar",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/punctuation.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Sentence structure",
+        "description": "Guidance on point of view and sentence voice to ensure clarity and user-focused language.",
+        "pathSlug": "sentence-structure",
+        "section": "content-design",
+        "category": "grammar",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/sentence-structure.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Terminology",
+        "description": "Preferred terms across different UI scenarios, including words and phrases to avoid.",
+        "pathSlug": "terminology",
+        "section": "content-design",
+        "category": "grammar",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/terminology.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Truncation",
+        "description": "Guidance on replacing overflow content with ellipses to manage text when display space is limited.",
+        "pathSlug": "truncation",
+        "section": "content-design",
+        "category": "grammar",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/truncation.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Units and symbols",
+        "description": "Rules for displaying units of measurement and shorthand symbols.",
+        "pathSlug": "units-and-symbols",
+        "section": "content-design",
+        "category": "grammar",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/units-and-symbols.md",
         "version": "v6"
       }
     ]

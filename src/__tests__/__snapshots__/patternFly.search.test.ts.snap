@@ -5,6 +5,9 @@ exports[`searchPatternFly should attempt to return an array of all available res
   "isSearchWildCardAll",
   "firstExactMatch",
   "exactMatches",
+  "remainingMatches",
+  "totalResults",
+  "totalPotentialMatches",
 ]
 `;
 
@@ -13,6 +16,9 @@ exports[`searchPatternFly should attempt to return an array of all available res
   "isSearchWildCardAll",
   "firstExactMatch",
   "exactMatches",
+  "remainingMatches",
+  "totalResults",
+  "totalPotentialMatches",
 ]
 `;
 
@@ -21,5 +27,8 @@ exports[`searchPatternFly should attempt to return an array of all available res
   "isSearchWildCardAll",
   "firstExactMatch",
   "exactMatches",
+  "remainingMatches",
+  "totalResults",
+  "totalPotentialMatches",
 ]
 `;

@@ -1,7 +1,7 @@
 import {
   setCategoryDisplayLabel,
   getPatternFlyComponentSchema,
-  getPatternFlyReactComponentNames,
+  getPatternFlyComponentNames,
   getPatternFlyMcpResources
 } from '../patternFly.getResources';
 
@@ -84,15 +84,15 @@ describe('getPatternFlyComponentSchema', () => {
   });
 });
 
-describe('getPatternFlyReactComponentNames', () => {
+describe('getPatternFlyComponentNames', () => {
   it('should return multiple organized facets', async () => {
-    const result = await getPatternFlyReactComponentNames();
+    const result = await getPatternFlyComponentNames();
 
     expect(Object.keys(result)).toMatchSnapshot('properties');
   });
 
   it('should have a memoized property', () => {
-    expect(getPatternFlyReactComponentNames).toHaveProperty('memo');
+    expect(getPatternFlyComponentNames).toHaveProperty('memo');
   });
 });
 

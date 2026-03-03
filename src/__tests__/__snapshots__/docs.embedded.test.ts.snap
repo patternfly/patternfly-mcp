@@ -38,7 +38,7 @@ exports[`EMBEDDED_DOCS should export the expected embedded docs structure: docs 
       },
       {
         "category": "reference",
-        "description": "PatternFly organization on GitHub (Core & React).",
+        "description": "PatternFly organization on GitHub.",
         "displayName": "PatternFly GitHub",
         "path": "https://github.com/patternfly",
         "pathSlug": "patternfly-github",
