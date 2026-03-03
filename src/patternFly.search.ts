@@ -115,16 +115,17 @@ interface SearchPatternFlyOptions {
  * proper handling of non-string values.
  *
  * @param {FilterPatternFlyFilters} filters - Available filters for PatternFly data.
- * @param mcpResources - A map of available PatternFly documentation entries to search. Defaults to `getPatternFlyMcpResources.resources`
+ * @param [mcpResources] - An optional map of available PatternFly documentation entries to search.
+ *     Internally, defaults to `getPatternFlyMcpResources.resources`
  * @returns {Promise<FilterPatternFlyResults>} - Filtered PatternFly results.
  * - `byEntry`: Array of filtered documentation entries.
  * - `byResource`: Map of filtered resources by resource name.
  */
 const filterPatternFly = async (
   filters: FilterPatternFlyFilters | undefined,
-  mcpResources: Promise<PatternFlyMcpAvailableResources> | Map<string, PatternFlyMcpResourceFilteredMetadata> = getPatternFlyMcpResources.memo()
+  mcpResources?: Map<string, PatternFlyMcpResourceFilteredMetadata>
 ): Promise<FilterPatternFlyResults> => {
-  const getResources = await mcpResources;
+  const getResources = await (mcpResources || getPatternFlyMcpResources.memo());
   const resources = (getResources as PatternFlyMcpAvailableResources)?.resources ||
     (getResources as Map<string, PatternFlyMcpResourceFilteredMetadata>);
 
@@ -134,7 +135,7 @@ const filterPatternFly = async (
   if (filters) {
     updatedFilters = Object.fromEntries(
       Object.entries(filters)
-        .filter(([_key, value]) => value !== undefined && typeof value === 'string' && value.trim().length > 0)
+        .filter(([_key, value]) => value !== undefined && value !== null)
         .map(([key, value]) => [key, value?.trim()?.toLowerCase()])
     );
   }
@@ -142,10 +143,18 @@ const filterPatternFly = async (
   // Filter matching for resources and entries
   const byResource = new Map<string, PatternFlyMcpResourceFilteredMetadata>();
   const byEntry: (PatternFlyMcpDocsCatalogDoc & PatternFlyMcpDocsMeta)[] = [];
-  const filterMatch = (propertyValue: string, filterValue: string) =>
-    propertyValue.toLowerCase() === filterValue ||
-    propertyValue.toLowerCase().startsWith(filterValue) ||
-    propertyValue.toLowerCase().endsWith(filterValue);
+  const filterMatch = (propertyValue: string | undefined, filterValue: string) => {
+    const normalizePropertyValue = propertyValue?.trim()?.toLowerCase();
+
+    // Make an allowance for undefined and null values
+    if (normalizePropertyValue === undefined || normalizePropertyValue === null) {
+      return false;
+    }
+
+    return normalizePropertyValue === filterValue ||
+      normalizePropertyValue.startsWith(filterValue) ||
+      normalizePropertyValue.endsWith(filterValue);
+  };
 
   for (const [name, resource] of resources) {
     const matchedEntries = resource.entries.filter(entry => {
@@ -198,15 +207,15 @@ filterPatternFly.memo = memo(filterPatternFly, DEFAULT_OPTIONS.resourceMemoOptio
  *
  * @param searchQuery - Search query string
  * @param {FilterPatternFlyFilters} filters - Available filters for PatternFly data.
- * @param settings - Optional settings object
- * @param settings.mcpResources - Object of multifaceted documentation entries to search.
- *    Applied as a dependency to help with testing.
+ * @param [settings] - Optional settings object
+ * @param [settings.mcpResources] - Optional function object of multifaceted documentation entries to search.
+ *    Applied as a dependency to help with testing. Defaults to `getPatternFlyMcpResources`
  *     - `keywordsIndex`: Index of normalized keywords for fuzzy search
  *     - `keywordsMap`: Map of normalized keywords against versioned entries
  *     - `resources`: Map of names against entries
- * @param settings.allowWildCardAll - Allow a search query to match all resources. Defaults to `false`.
- * @param settings.maxDistance - Maximum edit distance for fuzzy search. Defaults to `3`.
- * @param settings.maxResults - Maximum number of results to return. Defaults to `10`.
+ * @param [settings.allowWildCardAll] - Allow a search query to match all resources. Defaults to `false`.
+ * @param [settings.maxDistance] - Maximum edit distance for fuzzy search. Defaults to `3`.
+ * @param [settings.maxResults] - Maximum number of results to return. Defaults to `10`.
  * @returns Object containing search results and matched URLs
  *   - `isSearchWildCardAll`: Whether the search query matched all resources
  *   - `firstExactMatch`: First exact match within search results
@@ -217,12 +226,12 @@ filterPatternFly.memo = memo(filterPatternFly, DEFAULT_OPTIONS.resourceMemoOptio
  *   - `totalResults`: Total number of actual resources that meet all criteria.
  */
 const searchPatternFly = async (searchQuery: string, filters?: FilterPatternFlyFilters | undefined, {
-  mcpResources = getPatternFlyMcpResources.memo(),
+  mcpResources,
   allowWildCardAll = false,
   maxDistance = 3,
   maxResults = 10
 }: SearchPatternFlyOptions = {}): Promise<SearchPatternFlyResults> => {
-  const updatedResources = await mcpResources;
+  const updatedResources = await (mcpResources || getPatternFlyMcpResources.memo());
   const updatedFilters = filters || {};
   const isWildCardAll = searchQuery.trim() === '*' || searchQuery.trim().toLowerCase() === 'all' || searchQuery.trim() === '';
   const isSearchWildCardAll = allowWildCardAll && isWildCardAll;

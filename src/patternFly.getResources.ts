@@ -273,9 +273,9 @@ const filterKeywords = (keywordsMap: PatternFlyMcpKeywordsMap, { filterList = IN
       const updatedWord = word.toLowerCase().trim();
 
       return updatedKeyword === updatedWord ||
-        // Loose distance check
+        // Prefix check. Is filterList word related? Loose distance check, 3 and below.
         (updatedKeyword.startsWith(updatedWord) && updatedKeyword.replace(updatedWord, '').length < 4) ||
-        // Loose distance check
+        // Suffix check. Is filterList word related? Loose distance check, 3 and below.
         (updatedKeyword.endsWith(updatedWord) && updatedKeyword.replace(updatedWord, '').length < 4);
     });
 
