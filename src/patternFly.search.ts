@@ -106,7 +106,7 @@ interface SearchPatternFlyOptions {
 /**
  * Apply sequenced priority filters for predictable filtering, filter PatternFly data.
  *
- * @note This is a predictable filter, not a search. Use searchPatternFly for fuzzy search.`
+ * @note This is a predictable filter, not a search. Use searchPatternFly for fuzzy search.
  * - Has case-insensitive filtering for all fields
  * - Exact "version" filtering only
  * - Has `prefix`, `suffix` filtering for any non-"version" field.
@@ -256,7 +256,7 @@ const searchPatternFly = async (searchQuery: unknown, filters?: FilterPatternFly
     searchResults = search.results;
   }
 
-  // Store refined results in a map for easy "did we already find this?" checks"
+  // Store refined results in a map for easy "did we already find this?" checks
   const searchResultsMap = new Map<string, SearchPatternFlyResult>();
   const searchResultsFilterMap = new Map<string, PatternFlyMcpResourceFilteredMetadata>();
   const fuzzyResultsMap = new Map<string, FuzzySearchResult>();

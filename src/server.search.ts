@@ -168,7 +168,7 @@ const findClosest = (
  * @returns {FuzzySearch} An object containing search results with distance and match type
  * - `results`: Array of matching strings with distance and match type.
  * - `totalResults`: Total number of results found.
- * - `totalReturnedResults`: Total number of results returned (after applying maxResults limit).
+ * - `totalResultsReturned`: Total number of results returned (after applying maxResults limit).
  *
  * @example
  * ```typescript
@@ -176,7 +176,7 @@ const findClosest = (
  *   maxDistance: 3,
  *   maxResults: 5
  * });
- * // Returns: { results: [{ item: 'Button', distance: 0, matchType: 'exact' }, ...], totalResults: 15, totalReturnedResults: 5 }
+ * // Returns: { results: [{ item: 'Button', distance: 0, matchType: 'exact' }, ...], totalResults: 15, totalResultsReturned: 5 }
  * ```
  */
 const fuzzySearch = (
