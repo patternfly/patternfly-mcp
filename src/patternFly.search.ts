@@ -228,15 +228,16 @@ filterPatternFly.memo = memo(filterPatternFly, DEFAULT_OPTIONS.resourceMemoOptio
  *   - `totalPotentialMatches`: Total number of available PatternFly keywords to match on, what was possible before narrowing.
  *   - `totalResults`: Total number of actual resources that meet all criteria.
  */
-const searchPatternFly = async (searchQuery: string, filters?: FilterPatternFlyFilters | undefined, {
+const searchPatternFly = async (searchQuery: string | number, filters?: FilterPatternFlyFilters | undefined, {
   mcpResources,
   allowWildCardAll = false,
   maxDistance = 3,
   maxResults = 10
 }: SearchPatternFlyOptions = {}): Promise<SearchPatternFlyResults> => {
+  const coercedSearchQuery = String(searchQuery).trim();
   const updatedResources = await (mcpResources || getPatternFlyMcpResources.memo());
   const updatedFilters = filters || {};
-  const isWildCardAll = searchQuery.trim() === '*' || searchQuery.trim().toLowerCase() === 'all' || searchQuery.trim() === '';
+  const isWildCardAll = coercedSearchQuery === '*' || coercedSearchQuery.toLowerCase() === 'all' || coercedSearchQuery === '';
   const isSearchWildCardAll = allowWildCardAll && isWildCardAll;
   let search: FuzzySearch | undefined;
   let searchResults: FuzzySearchResult[] = [];
@@ -245,6 +246,7 @@ const searchPatternFly = async (searchQuery: string, filters?: FilterPatternFlyF
   if (isSearchWildCardAll) {
     searchResults = updatedResources.keywordsIndex.map(name => ({ matchType: 'all', distance: 0, item: name } as FuzzySearchResult));
   } else {
+    // Pass the original searchQuery, fuzzySearch has its own normalization.
     search = fuzzySearch(searchQuery, updatedResources.keywordsIndex, {
       maxDistance,
       maxResults,
@@ -299,7 +301,7 @@ const searchPatternFly = async (searchQuery: string, filters?: FilterPatternFlyF
             ...result,
             ...byResource.get(name),
             ...versionContextualProperties,
-            query: searchQuery
+            query: coercedSearchQuery
           } as SearchPatternFlyResult);
         }
       }

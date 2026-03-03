@@ -109,10 +109,10 @@ normalizeString.memo = memo(normalizeString, { cacheLimit: 50 });
  * - For multiple matches, use `fuzzySearch` instead.
  * - Null/undefined items are normalized to empty strings to prevent runtime errors.
  *
- * @param query - Search query string
- * @param items - Array of strings to search
+ * @param query - Search query string or number
+ * @param items - Array of strings and/or numbers to search
  * @param {ClosestSearchOptions} options - Search configuration options
- * @returns {string | null} Closest matching string or null
+ * @returns Closest matching string or number or null
  *
  * @example
  * ```typescript
@@ -149,7 +149,7 @@ const findClosest = (
  * - Negative `maxDistance` values intentionally filter out all results, including exact matches.
  * - Empty-query fallback is allowed when `isFuzzyMatch` is true (items with length <= maxDistance can match).
  *
- * @param query - Search query string
+ * @param query - Search query string or number
  * @param items - Array of strings and/or numbers to search
  * @param {FuzzySearchOptions} options - Search configuration options
  * @param options.allowEmptyQuery - Allow empty queries to match items with length <= maxDistance (default: `false`)
