@@ -1,4 +1,5 @@
 import { type McpResource } from './server';
+import { stringJoin } from './server.helpers';
 
 /**
  * Name of the resource.
@@ -21,6 +22,16 @@ const CONFIG = {
 
 /**
  * Resource creator for context.
+ *
+ * @note Consider adding an environment snapshot here once contextual MCP tooling is available.
+ *   ```
+ *   const environmentSnapshot = stringJoin.newline(
+ *     `### Environment Snapshot`,
+ *     `**PatternFly Version:** ${detectedVersion}`,
+ *     `**Detected PatternFly SemVer:** ${detectedSemverVersion}`,
+ *     `**Context Path**: ${detectedProjectPath}`
+ *   );
+ *  ```
  *
  * @returns {McpResource} The resource definition tuple
  */
@@ -48,7 +59,7 @@ This MCP server provides tools to access PatternFly documentation, component sch
         {
           uri: 'patternfly://context',
           mimeType: 'text/markdown',
-          text: context
+          text: stringJoin.basic(context)
         }
       ]
     };

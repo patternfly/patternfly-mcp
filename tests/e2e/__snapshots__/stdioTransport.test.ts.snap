@@ -3,6 +3,7 @@
 exports[`Builtin resources, STDIO should expose expected resources and templates 1`] = `
 {
   "resourceNames": [
+    "patternfly://components/index",
     "patternfly://context",
     "patternfly://docs/index",
     "patternfly://schemas/index",
@@ -15,7 +16,8 @@ exports[`Builtin resources, STDIO should expose expected resources and templates
 `;
 
 exports[`Builtin tools, STDIO should concatenate headers and separator with two local files 1`] = `
-"# Documentation from documentation/guidelines/README.md
+"# Documentation for React Components (v6) [AI Guidance]
+Source: documentation:components/README.md
 
 # PatternFly Development Rules
             This is a generated offline fixture used by the MCP external URLs test.
@@ -31,7 +33,8 @@ exports[`Builtin tools, STDIO should concatenate headers and separator with two 
 
 ---
 
-# Documentation from documentation:components/README.md
+# Content for documentation/guidelines/README.md
+Source: documentation/guidelines/README.md
 
 # PatternFly Development Rules
             This is a generated offline fixture used by the MCP external URLs test.
@@ -47,7 +50,17 @@ exports[`Builtin tools, STDIO should concatenate headers and separator with two 
 `;
 
 exports[`Builtin tools, STDIO should concatenate headers and separator with two remote files 1`] = `
-"# Documentation from http://127.0.0.1:5010/notARealPath/README.md
+"# Content for http://127.0.0.1:5010/notARealPath/AboutModal.md
+Source: http://127.0.0.1:5010/notARealPath/AboutModal.md
+
+# Test Document
+
+This is a test document for mocking remote HTTP requests.
+
+---
+
+# Content for http://127.0.0.1:5010/notARealPath/README.md
+Source: http://127.0.0.1:5010/notARealPath/README.md
 
 # PatternFly Development Rules
             This is a generated offline fixture used by the MCP external URLs test.
@@ -59,15 +72,7 @@ exports[`Builtin tools, STDIO should concatenate headers and separator with two 
             ### 🚀 Setup & Environment
             - **Setup Rules** - Project initialization requirements
             - **Quick Start** - Essential setup steps
-            - **Environment Rules** - Development configuration
-
----
-
-# Documentation from http://127.0.0.1:5010/notARealPath/AboutModal.md
-
-# Test Document
-
-This is a test document for mocking remote HTTP requests."
+            - **Environment Rules** - Development configuration"
 `;
 
 exports[`Builtin tools, STDIO should expose expected tools and stable shape 1`] = `
@@ -93,6 +98,8 @@ exports[`Logging should allow setting logging options, stderr 1`] = `
   "[INFO]: No external tools loaded.
 ",
   "[INFO]: Registered resource: patternfly-context
+",
+  "[INFO]: Registered resource: patternfly-components-index
 ",
   "[INFO]: Registered resource: patternfly-docs-index
 ",

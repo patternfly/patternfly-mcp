@@ -1,21 +1,6 @@
 import { McpError } from '@modelcontextprotocol/sdk/types.js';
-import { getComponentSchema } from '../tool.patternFlyDocs';
-import { patternFlySchemasTemplateResource } from '../resource.patternFlySchemasTemplate';
-import { searchComponents } from '../tool.searchPatternFlyDocs';
+import { patternFlySchemasTemplateResource, resourceCallback } from '../resource.patternFlySchemasTemplate';
 import { isPlainObject } from '../server.helpers';
-
-// Mock dependencies
-jest.mock('../tool.searchPatternFlyDocs');
-jest.mock('../tool.patternFlyDocs');
-jest.mock('../server.caching', () => ({
-  memo: jest.fn(fn => fn)
-}));
-jest.mock('../options.context', () => ({
-  getOptions: jest.fn(() => ({}))
-}));
-
-const mockGetComponentSchema = getComponentSchema as jest.MockedFunction<typeof getComponentSchema>;
-const mockSearchComponents = searchComponents as jest.MockedFunction<typeof searchComponents>;
 
 describe('patternFlySchemasTemplateResource', () => {
   beforeEach(() => {
@@ -34,71 +19,93 @@ describe('patternFlySchemasTemplateResource', () => {
   });
 });
 
-describe('patternFlySchemasTemplateResource, callback', () => {
+describe('resourceCallback', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it.each([
+    { description: 'no version', variables: { name: 'Button' } },
+    {
+      description: 'default',
+      variables: {
+        name: 'Button',
+        version: 'v6'
+      }
+    },
+    {
+      description: 'with lowercased name',
+      variables: {
+        name: 'button',
+        version: 'v6'
+      }
+    }
+  ])('should attempt to return resource content, $description', async ({ variables }) => {
+    const mockContent = '$schema';
+
+    const result = await resourceCallback(
+      { href: `patternfly://schemas/v6/${variables.name}` } as any,
+      variables
+    );
+
+    expect(result.contents).toBeDefined();
+    expect(Object.keys(result.contents[0] as any)).toEqual(['uri', 'mimeType', 'text']);
+    expect(result.contents[0]?.text).toContain(mockContent);
+  });
+
+  it.each([
+    {
+      description: 'invalid version',
+      error: 'Invalid PatternFly version',
+      variables: {
+        name: 'Button',
+        version: 'v5'
+      }
+    },
     {
       description: 'with missing or undefined name',
-      error: 'Missing required parameter: name must be a string',
+      error: 'must be a string',
       variables: {}
     },
     {
       description: 'with null name',
-      error: 'Missing required parameter: name must be a string',
-      variables: { name: null }
+      error: 'must be a string',
+      variables: {
+        name: null
+      }
     },
     {
       description: 'with empty name',
-      error: 'Missing required parameter: name must be a string',
-      variables: { name: '' }
+      error: 'must be a string',
+      variables: {
+        name: ''
+      }
     },
     {
       description: 'with non-string name',
-      error: 'Missing required parameter: name must be a string',
-      variables: { name: 123 }
+      error: 'must be a string',
+      variables: {
+        name: 123
+      }
+    },
+    {
+      description: 'non-existent name',
+      error: 'No component JSON schemas found',
+      variables: {
+        name: 'loremIpsum',
+        version: 'v6'
+      }
+    },
+    {
+      description: 'found but no schema',
+      error: 'No component JSON schemas found',
+      variables: {
+        name: 'table',
+        version: 'v6'
+      }
     }
   ])('should handle variable errors, $description', async ({ error, variables }) => {
-    const [_name, _uri, _config, callback] = patternFlySchemasTemplateResource();
-    const uri = new URL('patternfly://schemas/test');
-
-    await expect(callback(uri, variables)).rejects.toThrow(McpError);
-    await expect(callback(uri, variables)).rejects.toThrow(error);
-  });
-
-  it('should handle missing exact match and missing schema errors', async () => {
-    mockSearchComponents.mockReturnValue({
-      isSearchWildCardAll: false,
-      firstExactMatch: undefined,
-      exactMatches: [],
-      searchResults: []
-    });
-    mockGetComponentSchema.mockReturnValue(undefined as any);
-
-    const [_name, _uri, _config, handler] = patternFlySchemasTemplateResource();
-    const uri = new URL('patternfly://schemas/DolorSitAmet');
-    const variables = { name: 'DolorSitAmet' };
-
-    await expect(handler(uri, variables)).rejects.toThrow(McpError);
-    await expect(handler(uri, variables)).rejects.toThrow('Component "DolorSitAmet" not found');
-  });
-
-  it('should handle exact match but missing schema errors', async () => {
-    mockSearchComponents.mockReturnValue({
-      isSearchWildCardAll: false,
-      firstExactMatch: undefined,
-      exactMatches: [{ item: 'Button', urls: [] } as any],
-      searchResults: []
-    });
-    mockGetComponentSchema.mockReturnValue(undefined as any);
-
-    const [_name, _uri, _config, handler] = patternFlySchemasTemplateResource();
-    const uri = new URL('patternfly://schemas/DolorSitAmet');
-    const variables = { name: 'Button' };
-
-    await expect(handler(uri, variables)).rejects.toThrow(McpError);
-    await expect(handler(uri, variables)).rejects.toThrow('Component "Button" found');
+    await expect(resourceCallback(undefined as any, variables as any)).rejects.toThrow(McpError);
+    await expect(resourceCallback(undefined as any, variables as any)).rejects.toThrow(error);
   });
 });

@@ -290,7 +290,7 @@ const processDocsFunction = async (
   const uniqueInputs = new Map(
     inputs.map(input => [normalizeString.memo(input), input.trim()])
   );
-  const list = Array.from(uniqueInputs.values()).slice(0, options.maxDocsToLoad).filter(Boolean);
+  const list = Array.from(uniqueInputs.values()).slice(0, options.minMax.docsToLoad.max).filter(Boolean);
 
   const settled = await promiseQueue(list);
   const docs: { content: string, path: string | undefined, resolvedPath: string | undefined, isSuccess: boolean }[] = [];

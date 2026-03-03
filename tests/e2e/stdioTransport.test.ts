@@ -95,7 +95,7 @@ describe('Builtin tools, STDIO', () => {
     const response = await CLIENT.send(req);
     const text = response?.result?.content?.[0]?.text || '';
 
-    expect(text.startsWith('# Documentation')).toBe(true);
+    expect(text.includes('This is a generated offline fixture')).toBe(true);
     expect(text).toMatchSnapshot();
   });
 
@@ -119,7 +119,7 @@ describe('Builtin tools, STDIO', () => {
     const response = await CLIENT.send(req, { timeoutMs: 10000 });
     const text = response?.result?.content?.[0]?.text || '';
 
-    expect(text.startsWith('# Documentation')).toBe(true);
+    expect(text.includes('This is a generated offline fixture')).toBe(true);
     expect(text).toMatchSnapshot();
   });
 });
@@ -228,7 +228,7 @@ describe('Builtin resources, STDIO', () => {
     const content = response?.result.contents[0];
 
     expect(content.uri).toBe('patternfly://schemas/index');
-    expect(content.text).toContain('PatternFly Component Names Index');
+    expect(content.text).toContain('PatternFly Component JSON Schemas Index');
   });
 });
 

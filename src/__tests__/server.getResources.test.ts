@@ -355,11 +355,7 @@ describe('processDocsFunction', () => {
         'local-file.md',
         'https://example.com/remote.md'
       ],
-      options: {
-        isHttp: false,
-        urlRegex: /^(https?:)\/\//i,
-        separator: '\n\n---\n\n'
-      },
+      options: {},
       fileMemoHits: 1,
       fetchMemoHits: 1
     },
@@ -372,11 +368,7 @@ describe('processDocsFunction', () => {
         'https://example.com/remote.md',
         'https://example.com/remote.md'
       ],
-      options: {
-        isHttp: false,
-        urlRegex: /^(https?:)\/\//i,
-        separator: '\n\n---\n\n'
-      },
+      options: {},
       fileMemoHits: 1,
       fetchMemoHits: 1
     },
@@ -388,15 +380,22 @@ describe('processDocsFunction', () => {
         '   ',
         'file2.md'
       ],
-      options: {
-        isHttp: false,
-        urlRegex: /^(https?:)\/\//i,
-        separator: '\n\n---\n\n'
-      },
+      options: {},
       fileMemoHits: 2
     }
   ])('should process local and remote inputs, $description', async ({ inputs, options, fileMemoHits = 0, fetchMemoHits = 0 }) => {
-    const result = await processDocsFunction(inputs, options as GlobalOptions);
+    const result = await processDocsFunction(inputs, {
+      isHttp: false,
+      minMax: {
+        docsToLoad: {
+          min: 1,
+          max: 10
+        }
+      },
+      separator: '\n\n---\n\n',
+      urlRegex: /^(https?:)\/\//i,
+      ...options
+    } as GlobalOptions);
 
     expect(result).toMatchSnapshot();
     expect(readLocalFileFunction.memo).toHaveBeenCalledTimes(fileMemoHits);
@@ -406,8 +405,14 @@ describe('processDocsFunction', () => {
   it('should handle errors gracefully', async () => {
     const mockOptions = {
       isHttp: false,
-      urlRegex: /^(https?:)\/\//i,
-      separator: '\n\n---\n\n'
+      minMax: {
+        docsToLoad: {
+          min: 1,
+          max: 10
+        }
+      },
+      separator: '\n\n---\n\n',
+      urlRegex: /^(https?:)\/\//i
     };
 
     // Mock one success and one failure
