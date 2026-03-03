@@ -49,7 +49,7 @@ describe('assertInputString', () => {
       input: null
     }
   ])('should throw an error for validation, $description', ({ input }) => {
-    const errorMessage = '"Input" must be a string';
+    const errorMessage = '"Input" must be a non-empty string';
 
     expect(() => assertInputString(
       input
@@ -101,11 +101,11 @@ describe('assertInputStringLength', () => {
       options: { min: 1, max: 10, message: 'dolor sit amet, consectetur adipiscing elit.' }
     }
   ])('should throw an error for validation, $description', ({ input, options }) => {
-    const errorMessage = options?.message || `"${options?.inputDisplayName || 'Input'}" must be a string`;
+    const errorMessage = options?.message || `"${options?.inputDisplayName || 'Input'}" must be a string from`;
 
     expect(() => assertInputStringLength(
       input,
-      { min: 1, max: 100, ...options } as any
+      { min: 1, max: 100, ...options }
     )).toThrow(errorMessage);
   });
 });
@@ -157,8 +157,8 @@ describe('assertInputStringArrayEntryLength', () => {
     const errorMessage = options?.message || `"${options?.inputDisplayName || 'Input'}" array must contain strings`;
 
     expect(() => assertInputStringArrayEntryLength(
-      input as any,
-      { min: 1, max: 100, ...options } as any
+      input,
+      { min: 1, max: 100, ...options }
     )).toThrow(errorMessage);
   });
 });
@@ -206,9 +206,9 @@ describe('assertInputStringNumberEnumLike', () => {
     const errorMessage = options?.message || `"${options?.inputDisplayName || 'Input'}" must be one of the following values`;
 
     expect(() => assertInputStringNumberEnumLike(
-      input as any,
-      compare as any,
-      { ...options } as any
+      input,
+      compare,
+      { ...options }
     )).toThrow(errorMessage);
   });
 

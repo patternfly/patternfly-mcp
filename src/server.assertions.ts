@@ -41,7 +41,7 @@ function assertInput(
 }
 
 /**
- * Assert/validate if the input is a string.
+ * Assert/validate if the input is a non-empty string.
  *
  * @param input - Input value
  * @param [options] - Validation options
@@ -56,11 +56,11 @@ function assertInputString(
 ): asserts input is string {
   const isValid = typeof input === 'string' && input.trim().length > 0;
 
-  mcpAssert(isValid, message || `"${inputDisplayName || 'Input'}" must be a string`);
+  mcpAssert(isValid, message || `"${inputDisplayName || 'Input'}" must be a non-empty string`);
 }
 
 /**
- * Assert/validate if the input is a string and meets length requirements.
+ * Assert/validate if the input is a string, non-empty, and meets min and max length requirements.
  *
  * @param input - Input string
  * @param options - Validation options
@@ -75,13 +75,13 @@ function assertInputStringLength(
   input: unknown,
   { max, min, inputDisplayName, message }: { max: number, min: number, inputDisplayName?: string, message?: string }
 ): asserts input is string {
-  const isValid = typeof input === 'string' && input.length <= max && input.length >= min;
+  const isValid = typeof input === 'string' && input.trim().length <= max && input.trim().length >= min;
 
-  mcpAssert(isValid, message || `"${inputDisplayName || 'Input'}" must be a string from "${min}" to "${max}" characters`);
+  mcpAssert(isValid, message || `"${inputDisplayName || 'Input'}" must be a string from ${min} to ${max} characters`);
 }
 
 /**
- * Assert/validate if input array entries are strings and have length.
+ * Assert/validate if input array entries are strings and have min and max length.
  *
  * @param input - Array of strings
  * @param options - Validation options
@@ -93,12 +93,12 @@ function assertInputStringLength(
  * @throws McpError If input is not an array of strings OR does not meet length requirements
  */
 function assertInputStringArrayEntryLength(
-  input: unknown[],
+  input: unknown,
   { max, min, inputDisplayName, message }: { max: number, min: number, inputDisplayName?: string, message?: string }
 ): asserts input is string[] {
-  const isValid = Array.isArray(input) && input.every(entry => typeof entry === 'string' && entry.length <= max && entry.length >= min);
+  const isValid = Array.isArray(input) && input.every(entry => typeof entry === 'string' && entry.trim().length <= max && entry.trim().length >= min);
 
-  mcpAssert(isValid, message || `"${inputDisplayName || 'Input'}" array must contain strings from "${min}" to "${max}" characters`);
+  mcpAssert(isValid, message || `"${inputDisplayName || 'Input'}" array must contain strings from ${min} to ${max} characters`);
 }
 
 /**
@@ -114,7 +114,7 @@ function assertInputStringArrayEntryLength(
  */
 function assertInputStringNumberEnumLike(
   input: unknown,
-  values: unknown[],
+  values: unknown,
   { inputDisplayName, message }: { inputDisplayName?: string, message?: string } = {}
 ): asserts input is string | number {
   const hasArrayWithLength = Array.isArray(values) && values.length > 0;
@@ -129,7 +129,7 @@ function assertInputStringNumberEnumLike(
     updatedDescription = `Unable to confirm "${inputDisplayName || 'input'}." List of allowed values is empty or undefined.`;
   }
 
-  const isStringOrNumber = (typeof input === 'string' && input.trim().length > 0) || typeof input === 'number';
+  const isStringOrNumber = typeof input === 'string' || typeof input === 'number';
   const isValid = isStringOrNumber && hasArrayWithLength && values.includes(input);
 
   mcpAssert(isValid, updatedDescription, errorCode);
