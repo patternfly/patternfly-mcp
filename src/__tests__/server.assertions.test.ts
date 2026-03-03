@@ -10,21 +10,18 @@ describe('assertInput', () => {
   it.each([
     {
       description: 'basic string validation',
-      param: '',
-      condition: (value: any) => typeof value === 'string' && value.trim().length > 0
+      condition: '  '.trim().length > 0
     },
     {
-      description: 'pattern in string validation',
-      param: 'patternfly://lorem-ipsum',
-      condition: (value: any) => new RegExp('patternfly://', 'i').test(value)
+      description: 'pattern in string validation with callback format',
+      condition: () => new RegExp('patternfly://', 'i').test('fly://lorem-ipsum')
     },
     {
       description: 'array entry length validation',
-      param: ['lorem', 'ipsum'],
-      condition: (value: any) => Array.isArray(value) && value.length > 2
+      condition: Array.isArray(['lorem']) && ['lorem'].length > 2
     }
-  ])('should throw an error for validation, $description', ({ param, condition }) => {
-    const errorMessage = `Lorem ipsum error message for ${param} validation.`;
+  ])('should throw an error for validation, $description', ({ condition }) => {
+    const errorMessage = `Lorem ipsum error message for validation.`;
 
     expect(() => assertInput(
       condition,
@@ -37,25 +34,25 @@ describe('assertInputString', () => {
   it.each([
     {
       description: 'empty string',
-      param: ''
+      input: ''
     },
     {
       description: 'undefined',
-      param: undefined
+      input: undefined
     },
     {
       description: 'number',
-      param: 1
+      input: 1
     },
     {
       description: 'null',
-      param: null
+      input: null
     }
-  ])('should throw an error for validation, $description', ({ param }) => {
+  ])('should throw an error for validation, $description', ({ input }) => {
     const errorMessage = '"Input" must be a string';
 
     expect(() => assertInputString(
-      param
+      input
     )).toThrow(errorMessage);
   });
 });
@@ -64,50 +61,50 @@ describe('assertInputStringLength', () => {
   it.each([
     {
       description: 'empty string',
-      param: ''
+      input: ''
     },
     {
       description: 'undefined',
-      param: undefined
+      input: undefined
     },
     {
       description: 'number',
-      param: 1
+      input: 1
     },
     {
       description: 'null',
-      param: null
+      input: null
     },
     {
       description: 'max',
-      param: 'lorem ipsum',
+      input: 'lorem ipsum',
       options: { max: 5 }
     },
     {
       description: 'min',
-      param: 'lorem ipsum',
+      input: 'lorem ipsum',
       options: { min: 15 }
     },
     {
       description: 'max and min',
-      param: 'lorem ipsum',
+      input: 'lorem ipsum',
       options: { min: 1, max: 10 }
     },
     {
       description: 'max and min and display name',
-      param: 'lorem ipsum',
+      input: 'lorem ipsum',
       options: { min: 1, max: 10, inputDisplayName: 'lorem ipsum' }
     },
     {
       description: 'max and min and description',
-      param: 'lorem ipsum',
+      input: 'lorem ipsum',
       options: { min: 1, max: 10, message: 'dolor sit amet, consectetur adipiscing elit.' }
     }
-  ])('should throw an error for validation, $description', ({ param, options }) => {
+  ])('should throw an error for validation, $description', ({ input, options }) => {
     const errorMessage = options?.message || `"${options?.inputDisplayName || 'Input'}" must be a string`;
 
     expect(() => assertInputStringLength(
-      param,
+      input,
       { min: 1, max: 100, ...options } as any
     )).toThrow(errorMessage);
   });
@@ -117,50 +114,50 @@ describe('assertInputStringArrayEntryLength', () => {
   it.each([
     {
       description: 'empty string',
-      param: ''
+      input: ''
     },
     {
       description: 'undefined',
-      param: undefined
+      input: undefined
     },
     {
       description: 'number',
-      param: 1
+      input: 1
     },
     {
       description: 'null',
-      param: null
+      input: null
     },
     {
       description: 'max',
-      param: ['lorem ipsum'],
+      input: ['lorem ipsum'],
       options: { max: 5 }
     },
     {
       description: 'min',
-      param: ['lorem ipsum'],
+      input: ['lorem ipsum'],
       options: { min: 15 }
     },
     {
       description: 'max and min',
-      param: ['lorem ipsum'],
+      input: ['lorem ipsum'],
       options: { min: 1, max: 10 }
     },
     {
       description: 'max and min and display name',
-      param: ['lorem ipsum'],
+      input: ['lorem ipsum'],
       options: { min: 1, max: 10, inputDisplayName: 'lorem ipsum' }
     },
     {
       description: 'max and min and description',
-      param: ['lorem ipsum'],
+      input: ['lorem ipsum'],
       options: { min: 1, max: 10, message: 'dolor sit amet, consectetur adipiscing elit.' }
     }
-  ])('should throw an error for validation, $description', ({ param, options }) => {
+  ])('should throw an error for validation, $description', ({ input, options }) => {
     const errorMessage = options?.message || `"${options?.inputDisplayName || 'Input'}" array must contain strings`;
 
     expect(() => assertInputStringArrayEntryLength(
-      param as any,
+      input as any,
       { min: 1, max: 100, ...options } as any
     )).toThrow(errorMessage);
   });
@@ -170,46 +167,46 @@ describe('assertInputStringNumberEnumLike', () => {
   it.each([
     {
       description: 'empty string',
-      param: '',
+      input: '',
       compare: [2, 3]
     },
     {
       description: 'undefined',
-      param: undefined,
+      input: undefined,
       compare: [2, 3]
     },
     {
       description: 'null',
-      param: null,
+      input: null,
       compare: [2, 3]
     },
     {
       description: 'number',
-      param: 1,
+      input: 1,
       compare: [2, 3]
     },
     {
       description: 'string',
-      param: 'lorem ipsum',
+      input: 'lorem ipsum',
       compare: ['amet', 'dolor sit']
     },
     {
       description: 'string and display name',
-      param: 'lorem ipsum',
+      input: 'lorem ipsum',
       compare: ['amet', 'dolor sit'],
       options: { inputDisplayName: 'lorem ipsum' }
     },
     {
       description: 'string and description',
-      param: 'lorem ipsum',
+      input: 'lorem ipsum',
       compare: [1, 2],
       options: { message: 'dolor sit amet, consectetur adipiscing elit.' }
     }
-  ])('should throw an error for validation, $description', ({ param, compare, options }) => {
+  ])('should throw an error for validation, $description', ({ input, compare, options }) => {
     const errorMessage = options?.message || `"${options?.inputDisplayName || 'Input'}" must be one of the following values`;
 
     expect(() => assertInputStringNumberEnumLike(
-      param as any,
+      input as any,
       compare as any,
       { ...options } as any
     )).toThrow(errorMessage);
