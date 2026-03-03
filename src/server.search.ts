@@ -143,8 +143,13 @@ const findClosest = (
 
   const normalizedItems = items.map(item => normalizeFn(item));
   const closestMatch = closest(normalizedQuery, normalizedItems);
+  const itemIndex = normalizedItems.indexOf(closestMatch);
 
-  return items[normalizedItems.indexOf(closestMatch)];
+  if (itemIndex < 0) {
+    return missingReturnValue;
+  }
+
+  return items[itemIndex];
 };
 
 /**
