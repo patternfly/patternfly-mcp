@@ -324,4 +324,29 @@ describe('fuzzySearch', () => {
       fuzzySearch('button', ['Button', 'Badge'], { normalizeFn: throwingNormalizeFn });
     }).toThrow('Normalization failed');
   });
+
+  it.each([
+    {
+      description: 'string query with numbers',
+      query: 'button',
+      items: ['Button', 123, 'Badge']
+    },
+    {
+      description: 'exact number query with strings',
+      query: 123,
+      items: ['Button', 123, 'Badge']
+    },
+    {
+      description: 'prefix number query with float',
+      query: 123,
+      items: ['Button', 123.45, 'Badge']
+    },
+    {
+      description: 'partial float number query',
+      query: 123.45,
+      items: ['Button', 123, 'Badge']
+    }
+  ])('should handle numbers in addition to strings, $description', ({ query, items }) => {
+    expect(fuzzySearch(query, items, { deduplicateByNormalized: true })).toMatchSnapshot();
+  });
 });

@@ -548,3 +548,59 @@ exports[`fuzzySearch should fuzzy match, undefined items 1`] = `
   "totalResultsReturned": 0,
 }
 `;
+
+exports[`fuzzySearch should handle numbers in addition to strings, exact number query with strings 1`] = `
+{
+  "results": [
+    {
+      "distance": 0,
+      "item": "123",
+      "matchType": "exact",
+    },
+  ],
+  "totalResults": 1,
+  "totalResultsReturned": 1,
+}
+`;
+
+exports[`fuzzySearch should handle numbers in addition to strings, partial float number query 1`] = `
+{
+  "results": [
+    {
+      "distance": 2,
+      "item": "123",
+      "matchType": "partial",
+    },
+  ],
+  "totalResults": 1,
+  "totalResultsReturned": 1,
+}
+`;
+
+exports[`fuzzySearch should handle numbers in addition to strings, prefix number query with float 1`] = `
+{
+  "results": [
+    {
+      "distance": 1,
+      "item": "123.45",
+      "matchType": "prefix",
+    },
+  ],
+  "totalResults": 1,
+  "totalResultsReturned": 1,
+}
+`;
+
+exports[`fuzzySearch should handle numbers in addition to strings, string query with numbers 1`] = `
+{
+  "results": [
+    {
+      "distance": 0,
+      "item": "Button",
+      "matchType": "exact",
+    },
+  ],
+  "totalResults": 1,
+  "totalResultsReturned": 1,
+}
+`;

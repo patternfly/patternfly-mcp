@@ -5,15 +5,15 @@ import { memo } from './server.caching';
  * normalizeString function interface
  */
 interface NormalizeString {
-  (str: string): string;
-  memo: (str: string) => string;
+  (str: string | number): string;
+  memo: (str: string | number) => string;
 }
 
 /**
  * Options for closest search
  */
 interface ClosestSearchOptions {
-  normalizeFn?: (str: string) => string;
+  normalizeFn?: (str: string | number) => string;
 }
 
 /**
@@ -68,7 +68,7 @@ interface FuzzySearchOptions {
   allowEmptyQuery?: boolean;
   maxDistance?: number;
   maxResults?: number;
-  normalizeFn?: (str: string) => string;
+  normalizeFn?: (str: string | number) => string;
   isExactMatch?: boolean;
   isPrefixMatch?: boolean;
   isSuffixMatch?: boolean;
@@ -88,7 +88,7 @@ interface FuzzySearchOptions {
  * @param str
  * @returns Normalized or empty string
  */
-const normalizeString: NormalizeString = (str: string) => String(str || '')
+const normalizeString: NormalizeString = (str: string | number) => String(str || '')
   .trim()
   .toLowerCase()
   .normalize('NFKD')
@@ -122,7 +122,7 @@ normalizeString.memo = memo(normalizeString, { cacheLimit: 50 });
  */
 const findClosest = (
   query: string,
-  items: string[] = [],
+  items: (string | number)[] = [],
   {
     normalizeFn = normalizeString.memo
   }: ClosestSearchOptions = {}
@@ -133,7 +133,7 @@ const findClosest = (
     return null;
   }
 
-  const normalizedItems = items.map(item => (item ? normalizeFn(item) : ''));
+  const normalizedItems = items.map(item => normalizeFn(item)).filter(Boolean);
   const closestMatch = closest(normalizedQuery, normalizedItems);
 
   return items[normalizedItems.indexOf(closestMatch)] || null;
@@ -150,7 +150,7 @@ const findClosest = (
  * - Empty-query fallback is allowed when `isFuzzyMatch` is true (items with length <= maxDistance can match).
  *
  * @param query - Search query string
- * @param items - Array of strings to search
+ * @param items - Array of strings and/or numbers to search
  * @param {FuzzySearchOptions} options - Search configuration options
  * @param options.allowEmptyQuery - Allow empty queries to match items with length <= maxDistance (default: `false`)
  * @param options.maxDistance - Maximum edit distance for a match. Distance is defined as
@@ -178,8 +178,8 @@ const findClosest = (
  * ```
  */
 const fuzzySearch = (
-  query: string,
-  items: string[] = [],
+  query: string | number,
+  items: (string | number)[] = [],
   {
     allowEmptyQuery = false,
     maxDistance = 3,
@@ -200,7 +200,7 @@ const fuzzySearch = (
 
   items?.forEach(item => {
     const normalizedItem = normalizeFn(item);
-    const deduplicationKey = deduplicateByNormalized ? normalizedItem : item;
+    const deduplicationKey = deduplicateByNormalized ? normalizedItem : String(item);
 
     if (seenItem.has(deduplicationKey)) {
       return;
@@ -246,7 +246,7 @@ const fuzzySearch = (
 
     if (editDistance <= maxDistance && isIncluded) {
       results.push({
-        item,
+        item: String(item),
         distance: editDistance,
         matchType
       });

@@ -123,7 +123,7 @@ interface SearchPatternFlyOptions {
  */
 const filterPatternFly = async (
   filters: FilterPatternFlyFilters | undefined,
-  mcpResources?: Map<string, PatternFlyMcpResourceFilteredMetadata>
+  mcpResources?: Promise<PatternFlyMcpAvailableResources> | Map<string, PatternFlyMcpResourceFilteredMetadata>
 ): Promise<FilterPatternFlyResults> => {
   const getResources = await (mcpResources || getPatternFlyMcpResources.memo());
   const resources = (getResources as PatternFlyMcpAvailableResources)?.resources ||
@@ -133,23 +133,24 @@ const filterPatternFly = async (
   let updatedFilters: FilterPatternFlyFilters = {};
 
   if (filters) {
+    // Allow strings and coerced numbers as strings
     updatedFilters = Object.fromEntries(
       Object.entries(filters)
-        .filter(([_key, value]) => value !== undefined && value !== null)
-        .map(([key, value]) => [key, value?.trim()?.toLowerCase()])
+        .filter(([_key, value]) => (typeof value === 'string' || typeof value === 'number') && String(value).trim().length > 0)
+        .map(([key, value]) => [key, String(value).trim().toLowerCase()])
     );
   }
 
   // Filter matching for resources and entries
   const byResource = new Map<string, PatternFlyMcpResourceFilteredMetadata>();
   const byEntry: (PatternFlyMcpDocsCatalogDoc & PatternFlyMcpDocsMeta)[] = [];
-  const filterMatch = (propertyValue: string | undefined, filterValue: string) => {
-    const normalizePropertyValue = propertyValue?.trim()?.toLowerCase();
-
-    // Make an allowance for undefined and null values
-    if (normalizePropertyValue === undefined || normalizePropertyValue === null) {
+  const filterMatch = (propertyValue: string | number | undefined, filterValue: string) => {
+    if (typeof propertyValue !== 'string' && typeof propertyValue !== 'number') {
       return false;
     }
+
+    // Coerce potential numbers to strings
+    const normalizePropertyValue = String(propertyValue).trim().toLowerCase();
 
     return normalizePropertyValue === filterValue ||
       normalizePropertyValue.startsWith(filterValue) ||
@@ -203,7 +204,9 @@ filterPatternFly.memo = memo(filterPatternFly, DEFAULT_OPTIONS.resourceMemoOptio
 /**
  * Search for PatternFly component documentation URLs using fuzzy search.
  *
- * @note Uses `filterPatternFly` for additional filtering.
+ * @note Uses `filterPatternFly` for additional filtering. Future updates should
+ * consider moving the await outside the loop to improve performance, possibly a
+ * second iteration.
  *
  * @param searchQuery - Search query string
  * @param {FilterPatternFlyFilters} filters - Available filters for PatternFly data.

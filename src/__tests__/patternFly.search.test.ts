@@ -28,6 +28,16 @@ describe('filterPatternFly', () => {
     expect(result.byEntry.length).toBeGreaterThanOrEqual(0);
     expect(Array.from(result.byResource).length).toBeGreaterThanOrEqual(0);
   });
+
+  it('should attempt to filter number results', async () => {
+    const result = await filterPatternFly(
+      { section: 1 } as any,
+      new Map([['loremIpsum', { entries: [{ section: 1 }, { section: 'dolor' }] }]]) as any
+    );
+
+    expect(result.byEntry).toEqual(expect.arrayContaining([{ section: 1 }]));
+    expect(Array.from(result.byResource).length).toBeGreaterThanOrEqual(0);
+  });
 });
 
 describe('searchPatternFly', () => {
