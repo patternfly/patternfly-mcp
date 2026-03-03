@@ -205,9 +205,7 @@ filterPatternFly.memo = memo(filterPatternFly, DEFAULT_OPTIONS.resourceMemoOptio
 /**
  * Search for PatternFly component documentation URLs using fuzzy search.
  *
- * @note Uses `filterPatternFly` for additional filtering. Future updates should
- * consider moving the await outside the loop to improve performance, possibly a
- * second iteration.
+ * @note Uses `filterPatternFly` for additional filtering.
  *
  * @param searchQuery - Search query. Values are coerced to string for fuzzy search.
  * @param {FilterPatternFlyFilters} filters - Available filters for PatternFly data.
@@ -260,13 +258,17 @@ const searchPatternFly = async (searchQuery: unknown, filters?: FilterPatternFly
 
   // Store refined results in a map for easy "did we already find this?" checks"
   const searchResultsMap = new Map<string, SearchPatternFlyResult>();
+  const searchResultsFilterMap = new Map<string, PatternFlyMcpResourceFilteredMetadata>();
+  const fuzzyResultsMap = new Map<string, FuzzySearchResult>();
 
-  // Refine search results with version filtering and mapping
+  // Refine search results with versioning for filtering and remapping
   for (const result of searchResults) {
     const versionMap = updatedResources.keywordsMap.get(result.item);
 
     if (versionMap) {
-      const versionResults = updatedFilters.version ? versionMap.get(updatedFilters.version) : Array.from(versionMap.values()).flat();
+      const versionResults = updatedFilters.version
+        ? versionMap.get(updatedFilters.version)
+        : Array.from(versionMap.values()).flat();
 
       if (versionResults) {
         for (const name of versionResults) {
@@ -276,37 +278,30 @@ const searchPatternFly = async (searchQuery: unknown, filters?: FilterPatternFly
             continue;
           }
 
-          // Omit versions from the result
-          const { versions, ...filteredResource } = namedResource;
+          if (!fuzzyResultsMap.has(name)) {
+            // Set results for filtering.
+            searchResultsFilterMap.set(name, namedResource);
 
-          // Apply contextual filtering and flattening
-          const { byResource } = await filterPatternFly(updatedFilters, new Map([[name, { ...filteredResource }]]));
-
-          if (!byResource.has(name)) {
-            continue;
+            // Set fuzzy results so we can map back the searchResultsFilterMap filtered output.
+            fuzzyResultsMap.set(name, result);
           }
-
-          let versionContextualProperties;
-
-          // Apply version contextual properties, typically URIs
-          if (updatedFilters.version && versions[updatedFilters.version]) {
-            versionContextualProperties = {
-              isSchemasAvailable: versions[updatedFilters.version]?.isSchemasAvailable,
-              uri: versions[updatedFilters.version]?.uri,
-              uriSchemas: versions[updatedFilters.version]?.uriSchemas
-            };
-          }
-
-          // Apply property filters
-          searchResultsMap.set(name, {
-            ...result,
-            ...byResource.get(name),
-            ...versionContextualProperties,
-            query: coercedSearchQuery
-          } as SearchPatternFlyResult);
         }
       }
     }
+  }
+
+  // Apply filtering
+  const { byResource } = await filterPatternFly(updatedFilters, searchResultsFilterMap);
+
+  // Loop filtered results, update search results.
+  for (const [name, filteredData] of byResource) {
+    const fuzzyMatch = fuzzyResultsMap.get(name);
+
+    searchResultsMap.set(name, {
+      ...fuzzyMatch,
+      ...filteredData,
+      query: coercedSearchQuery
+    } as SearchPatternFlyResult);
   }
 
   // Minor breakdown of search results
