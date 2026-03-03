@@ -2,9 +2,37 @@ import { McpError } from '@modelcontextprotocol/sdk/types.js';
 import { searchPatternFlyDocsTool } from '../tool.searchPatternFlyDocs';
 import { isPlainObject } from '../server.helpers';
 
-// Mock dependencies
 jest.mock('../server.caching', () => ({
   memo: jest.fn(fn => fn)
+}));
+
+jest.mock('../api.client', () => ({
+  getComponentList: Object.assign(
+    jest.fn(async () => ['Alert', 'Button', 'Card', 'Table']),
+    { memo: jest.fn(async () => ['Alert', 'Button', 'Card', 'Table']) }
+  ),
+  getComponentInfo: Object.assign(
+    jest.fn(async (name: string) => ({
+      name,
+      section: 'components',
+      page: name.toLowerCase(),
+      tabs: ['react'],
+      hasProps: true,
+      hasCss: false,
+      exampleCount: 2
+    })),
+    {
+      memo: jest.fn(async (name: string) => ({
+        name,
+        section: 'components',
+        page: name.toLowerCase(),
+        tabs: ['react'],
+        hasProps: true,
+        hasCss: false,
+        exampleCount: 2
+      }))
+    }
+  )
 }));
 
 describe('searchPatternFlyDocsTool', () => {

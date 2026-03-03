@@ -1,11 +1,22 @@
 import { McpError } from '@modelcontextprotocol/sdk/types.js';
 import { componentSchemasTool } from '../tool.componentSchemas';
+import { fetchComponentData } from '../api.fetcher';
 import { isPlainObject } from '../server.helpers';
 
-// Mock dependencies
 jest.mock('../server.caching', () => ({
   memo: jest.fn(fn => fn)
 }));
+
+jest.mock('../api.client', () => ({
+  getComponentList: Object.assign(
+    jest.fn(async () => ['Alert', 'Button', 'Card', 'Table']),
+    { memo: jest.fn(async () => ['Alert', 'Button', 'Card', 'Table']) }
+  )
+}));
+
+jest.mock('../api.fetcher');
+
+const mockFetchComponentData = fetchComponentData as jest.MockedFunction<typeof fetchComponentData>;
 
 describe('componentSchemasTool', () => {
   beforeEach(() => {
@@ -46,6 +57,12 @@ describe('componentSchemasTool, callback', () => {
       componentName: 'BUTTON'
     }
   ])('should parse parameters, $description', async ({ componentName }) => {
+    mockFetchComponentData.mockResolvedValue({
+      name: 'Button',
+      info: {} as any,
+      props: '| Prop | Type |\n|---|---|'
+    });
+
     const [_name, _schema, callback] = componentSchemasTool();
     const result = await callback({ componentName });
 

@@ -1,32 +1,21 @@
 import { z } from 'zod';
 import { ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js';
-import { getComponentSchema } from '@patternfly/patternfly-component-schemas/json';
 import { type McpTool } from './server';
 import { getOptions } from './options.context';
-import { memo } from './server.caching';
+import { getComponentList } from './api.client';
+import { fetchComponentData } from './api.fetcher';
 import { fuzzySearch } from './server.search';
-import { componentNames } from './tool.searchPatternFlyDocs';
-
-/**
- * Derive the component schema type from @patternfly/patternfly-component-schemas
- */
-type ComponentSchema = Awaited<ReturnType<typeof getComponentSchema>>;
 
 /**
  * componentSchemas tool function
  *
- * Creates an MCP tool that retrieves JSON Schema for PatternFly React components.
+ * Creates an MCP tool that retrieves prop schemas for PatternFly React components.
  * Uses fuzzy search to handle typos and case variations, with related fallback suggestions.
  *
  * @param options - Optional configuration options (defaults to OPTIONS)
  * @returns MCP tool tuple [name, schema, callback]
  */
 const componentSchemasTool = (options = getOptions()): McpTool => {
-  const memoGetComponentSchema = memo(
-    async (componentName: string): Promise<ComponentSchema> => getComponentSchema(componentName),
-    options?.toolMemoOptions?.usePatternFlyDocs
-  );
-
   const callback = async (args: any = {}) => {
     const { componentName } = args;
 
@@ -44,7 +33,8 @@ const componentSchemasTool = (options = getOptions()): McpTool => {
       );
     }
 
-    // Use fuzzySearch with `isFuzzyMatch` to handle exact and intentional suggestions in one pass
+    const componentNames = await getComponentList.memo(options);
+
     const { results } = fuzzySearch(componentName, componentNames, {
       maxDistance: 3,
       maxResults: 5,
@@ -55,14 +45,12 @@ const componentSchemasTool = (options = getOptions()): McpTool => {
     const exact = results.find(result => result.matchType === 'exact');
 
     if (exact) {
-      let componentSchema: ComponentSchema;
+      const data = await fetchComponentData.memo(exact.item, ['props'], options);
 
-      try {
-        componentSchema = await memoGetComponentSchema(exact.item);
-      } catch (error) {
+      if (!data?.props) {
         throw new McpError(
           ErrorCode.InternalError,
-          `Failed to fetch component schema: ${error}`
+          `Component "${exact.item}" found but prop schema is not available.`
         );
       }
 
@@ -70,7 +58,7 @@ const componentSchemasTool = (options = getOptions()): McpTool => {
         content: [
           {
             type: 'text',
-            text: JSON.stringify(componentSchema, null, 2)
+            text: data.props
           }
         ]
       };
@@ -92,7 +80,7 @@ const componentSchemasTool = (options = getOptions()): McpTool => {
     {
       description: `[Deprecated: Use "usePatternFlyDocs" to retrieve component schemas from PatternFly documentation URLs.]
 
-      Get JSON Schema for a PatternFly React component.
+      Get prop schema for a PatternFly React component.
 
       Returns prop definitions, types, and validation rules. Use this for structured component metadata, not documentation.`,
       inputSchema: {

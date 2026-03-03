@@ -1,11 +1,10 @@
 import { McpError } from '@modelcontextprotocol/sdk/types.js';
 import { patternFlyDocsTemplateResource } from '../resource.patternFlyDocsTemplate';
-import { processDocsFunction } from '../server.getResources';
+import { fetchComponentData } from '../api.fetcher';
 import { searchComponents } from '../tool.searchPatternFlyDocs';
 import { isPlainObject } from '../server.helpers';
 
-// Mock dependencies
-jest.mock('../server.getResources');
+jest.mock('../api.fetcher');
 jest.mock('../tool.searchPatternFlyDocs');
 jest.mock('../server.caching', () => ({
   memo: jest.fn(fn => fn)
@@ -14,7 +13,7 @@ jest.mock('../options.context', () => ({
   getOptions: jest.fn(() => ({}))
 }));
 
-const mockProcessDocs = processDocsFunction as jest.MockedFunction<typeof processDocsFunction>;
+const mockFetchComponentData = fetchComponentData as jest.MockedFunction<typeof fetchComponentData>;
 const mockSearchComponents = searchComponents as jest.MockedFunction<typeof searchComponents>;
 
 describe('patternFlyDocsTemplateResource', () => {
@@ -43,47 +42,29 @@ describe('patternFlyDocsTemplateResource, callback', () => {
     {
       description: 'default',
       name: 'Button',
-      urls: ['components/button.md'],
-      result: 'Button documentation content'
-    },
-    {
-      description: 'with multiple matched URLs',
-      name: 'Card',
-      urls: ['components/card.md', 'components/card-examples.md'],
-      result: 'Card documentation content'
+      docs: '# Button documentation content'
     },
     {
       description: 'with trimmed name',
       name: '  Table  ',
-      urls: ['components/table.md'],
-      result: 'Table documentation content'
+      docs: '# Table documentation content'
     },
     {
       description: 'with lower case name',
       name: 'button',
-      urls: ['components/button.md'],
-      result: 'Button documentation content'
+      docs: '# Button documentation content'
     }
-  ])('should parse parameters and return documentation, $description', async ({ name, urls, result: mockResult }) => {
-    mockSearchComponents.mockReturnValue({
-      isSearchWildCardAll: false,
-      firstExactMatch: undefined,
-      exactMatches: [{ urls } as any],
-      searchResults: []
-    });
-    mockProcessDocs.mockResolvedValue([{ content: mockResult }] as any);
+  ])('should parse parameters and return documentation, $description', async ({ name, docs }) => {
+    mockFetchComponentData.mockResolvedValue({ name: name.trim(), info: {} as any, docs });
 
     const [_name, _uri, _config, callback] = patternFlyDocsTemplateResource();
     const uri = new URL('patternfly://docs/Button');
     const variables = { name };
     const result = await callback(uri, variables);
 
-    expect(mockSearchComponents).toHaveBeenCalledWith(name);
-    expect(mockProcessDocs).toHaveBeenCalledWith(urls);
-
     expect(result.contents).toBeDefined();
     expect(Object.keys(result.contents[0])).toEqual(['uri', 'mimeType', 'text']);
-    expect(result.contents[0].text).toContain(mockResult);
+    expect(result.contents[0].text).toContain(docs);
   });
 
   it.each([
@@ -115,14 +96,14 @@ describe('patternFlyDocsTemplateResource, callback', () => {
     await expect(callback(uri, variables)).rejects.toThrow(error);
   });
 
-  it('should handle documentation loading errors', async () => {
-    mockSearchComponents.mockReturnValue({
+  it('should handle documentation not found errors', async () => {
+    mockFetchComponentData.mockResolvedValue(undefined);
+    mockSearchComponents.mockResolvedValue({
       isSearchWildCardAll: false,
       firstExactMatch: undefined,
       exactMatches: [],
       searchResults: []
     });
-    mockProcessDocs.mockRejectedValue(new Error('File not found'));
 
     const [_name, _uri, _config, handler] = patternFlyDocsTemplateResource();
     const uri = new URL('patternfly://docs/Button');

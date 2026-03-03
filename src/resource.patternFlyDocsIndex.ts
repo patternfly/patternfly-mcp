@@ -1,8 +1,7 @@
-import { COMPONENT_DOCS } from './docs.component';
-import { LAYOUT_DOCS } from './docs.layout';
-import { CHART_DOCS } from './docs.chart';
+import { getComponentList, getComponentInfo } from './api.client';
 import { getLocalDocs } from './docs.local';
 import { type McpResource } from './server';
+import { getOptions } from './options.context';
 import { stringJoin } from './server.helpers';
 
 /**
@@ -27,27 +26,49 @@ const CONFIG = {
 /**
  * Resource creator for the documentation index.
  *
+ * @param options - Global options
  * @returns {McpResource} The resource definition tuple
  */
-const patternFlyDocsIndexResource = (): McpResource => [
+const patternFlyDocsIndexResource = (options = getOptions()): McpResource => [
   NAME,
   URI_TEMPLATE,
   CONFIG,
   async () => {
+    const componentNames = await getComponentList.memo(options);
+
+    // Group components by section
+    const sections = new Map<string, string[]>();
+
+    for (const name of componentNames) {
+      const info = await getComponentInfo.memo(name, options);
+      const section = info?.section || 'other';
+
+      if (!sections.has(section)) {
+        sections.set(section, []);
+      }
+
+      sections.get(section)!.push(name);
+    }
+
+    const sectionBlocks: string[] = [];
+
+    for (const [section, names] of sections) {
+      sectionBlocks.push(
+        '',
+        `## ${section.charAt(0).toUpperCase() + section.slice(1)}`,
+        ...names.map(name => `- ${name}`)
+      );
+    }
+
+    const localDocs = getLocalDocs();
+    const localBlock = localDocs.length > 0
+      ? ['', '## Local Documentation', ...localDocs]
+      : [];
+
     const allDocs = stringJoin.newline(
       '# PatternFly Documentation Index',
-      '',
-      '## Components',
-      ...COMPONENT_DOCS,
-      '',
-      '## Layouts',
-      ...LAYOUT_DOCS,
-      '',
-      '## Charts',
-      ...CHART_DOCS,
-      '',
-      '## Local Documentation',
-      ...getLocalDocs()
+      ...sectionBlocks,
+      ...localBlock
     );
 
     return {

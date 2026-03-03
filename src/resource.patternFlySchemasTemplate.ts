@@ -1,15 +1,10 @@
 import { ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js';
-import { componentNames as pfComponentNames } from '@patternfly/patternfly-component-schemas/json';
 import { type McpResource } from './server';
 import { getOptions } from './options.context';
-import { getComponentSchema } from './tool.patternFlyDocs';
+import { fetchComponentData } from './api.fetcher';
 import { searchComponents } from './tool.searchPatternFlyDocs';
-
-/**
- * Derive the component schema type from @patternfly/patternfly-component-schemas
- */
-type ComponentSchema = Awaited<ReturnType<typeof getComponentSchema>>;
+import { stringJoin } from './server.helpers';
 
 /**
  * Name of the resource template.
@@ -26,8 +21,8 @@ const URI_TEMPLATE = new ResourceTemplate('patternfly://schemas/{name}', { list:
  */
 const CONFIG = {
   title: 'PatternFly Component Schema',
-  description: 'Retrieve the JSON Schema for a specific PatternFly component by name',
-  mimeType: 'application/json'
+  description: 'Retrieve the prop schema for a specific PatternFly component by name',
+  mimeType: 'text/markdown'
 };
 
 /**
@@ -57,26 +52,15 @@ const patternFlySchemasTemplateResource = (options = getOptions()): McpResource 
       );
     }
 
-    const { exactMatches, searchResults } = searchComponents.memo(name, { names: pfComponentNames });
-    let result: ComponentSchema | undefined = undefined;
+    const data = await fetchComponentData.memo(name, ['props'], options);
 
-    if (exactMatches.length > 0) {
-      for (const match of exactMatches) {
-        const schema = await getComponentSchema.memo(match.item);
-
-        if (schema) {
-          result = schema;
-          break;
-        }
-      }
-    }
-
-    if (result === undefined) {
-      const suggestions = searchResults.map(searchResult => searchResult.item).slice(0, 3);
+    if (!data || !data.props) {
+      const { searchResults } = await searchComponents.memo(name, {}, options);
+      const suggestions = searchResults.map(result => result.item).slice(0, 3);
       const suggestionMessage = suggestions.length
         ? `Did you mean ${suggestions.map(suggestion => `"${suggestion}"`).join(', ')}?`
         : 'No similar components found.';
-      const foundNotFound = exactMatches.length ? 'found but JSON schema not available.' : 'not found.';
+      const foundNotFound = data ? 'found but prop schema not available.' : 'not found.';
 
       throw new McpError(
         ErrorCode.InvalidParams,
@@ -88,8 +72,12 @@ const patternFlySchemasTemplateResource = (options = getOptions()): McpResource 
       contents: [
         {
           uri: uri.href,
-          mimeType: 'application/json',
-          text: JSON.stringify(result, null, 2)
+          mimeType: 'text/markdown',
+          text: stringJoin.newline(
+            `# Props for ${data.name}`,
+            '',
+            data.props
+          )
         }
       ]
     };
