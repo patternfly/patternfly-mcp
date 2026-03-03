@@ -112,7 +112,8 @@ interface SearchPatternFlyOptions {
  * - Has `prefix`, `suffix` filtering for any non-"version" field.
  *
  * @note Filter formats are generally assumed to be string values. If expanding to other types, ensure
- * proper handling of non-string values.
+ * proper handling of non-string values. Future updates should align with the string coercion used
+ * in other code base searches.
  *
  * @param {FilterPatternFlyFilters} filters - Available filters for PatternFly data.
  * @param [mcpResources] - An optional map of available PatternFly documentation entries to search.
@@ -208,7 +209,7 @@ filterPatternFly.memo = memo(filterPatternFly, DEFAULT_OPTIONS.resourceMemoOptio
  * consider moving the await outside the loop to improve performance, possibly a
  * second iteration.
  *
- * @param searchQuery - Search query string
+ * @param searchQuery - Search query. Values are coerced to string for fuzzy search.
  * @param {FilterPatternFlyFilters} filters - Available filters for PatternFly data.
  * @param [settings] - Optional settings object
  * @param [settings.mcpResources] - Optional function object of multifaceted documentation entries to search.
@@ -228,7 +229,7 @@ filterPatternFly.memo = memo(filterPatternFly, DEFAULT_OPTIONS.resourceMemoOptio
  *   - `totalPotentialMatches`: Total number of available PatternFly keywords to match on, what was possible before narrowing.
  *   - `totalResults`: Total number of actual resources that meet all criteria.
  */
-const searchPatternFly = async (searchQuery: string | number, filters?: FilterPatternFlyFilters | undefined, {
+const searchPatternFly = async (searchQuery: unknown, filters?: FilterPatternFlyFilters | undefined, {
   mcpResources,
   allowWildCardAll = false,
   maxDistance = 3,
