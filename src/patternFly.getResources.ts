@@ -272,11 +272,17 @@ const filterKeywords = (keywordsMap: PatternFlyMcpKeywordsMap, { filterList = IN
     const isVariant = filterList.some(word => {
       const updatedWord = word.toLowerCase().trim();
 
-      return updatedKeyword === updatedWord ||
-        // Prefix check. Is filterList word related? Loose distance check, 3 and below.
-        (updatedKeyword.startsWith(updatedWord) && updatedKeyword.replace(updatedWord, '').length < 4) ||
-        // Suffix check. Is filterList word related? Loose distance check, 3 and below.
-        (updatedKeyword.endsWith(updatedWord) && updatedKeyword.replace(updatedWord, '').length < 4);
+      // Exact match
+      if (updatedKeyword === updatedWord) {
+        return true;
+      }
+
+      // Related match, is filterList word related?
+      if (Math.abs(updatedKeyword.length - updatedWord.length) <= 3) {
+        return updatedKeyword.startsWith(updatedWord) || updatedKeyword.endsWith(updatedWord);
+      }
+
+      return false;
     });
 
     if (!isVariant) {

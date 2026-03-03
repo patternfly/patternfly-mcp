@@ -145,12 +145,7 @@ const filterPatternFly = async (
   // Filter matching for resources and entries
   const byResource = new Map<string, PatternFlyMcpResourceFilteredMetadata>();
   const byEntry: (PatternFlyMcpDocsCatalogDoc & PatternFlyMcpDocsMeta)[] = [];
-  const filterMatch = (propertyValue: string | number | undefined, filterValue: string) => {
-    if (typeof propertyValue !== 'string' && typeof propertyValue !== 'number') {
-      return false;
-    }
-
-    // Coerce potential numbers to strings
+  const filterMatch = (propertyValue: unknown, filterValue: string) => {
     const normalizePropertyValue = String(propertyValue).trim().toLowerCase();
 
     return normalizePropertyValue === filterValue ||
@@ -160,7 +155,7 @@ const filterPatternFly = async (
 
   for (const [name, resource] of resources) {
     const matchedEntries = resource.entries.filter(entry => {
-      const matchesVersion = !updatedFilters.version || entry.version.toLowerCase() === updatedFilters.version;
+      const matchesVersion = !updatedFilters.version || String(entry.version).toLowerCase() === updatedFilters.version;
       const matchesCategory = !updatedFilters.category || filterMatch(entry.category, updatedFilters.category);
       const matchesSection = !updatedFilters.section || filterMatch(entry.section, updatedFilters.section);
       const matchesName = !updatedFilters.name || filterMatch(entry.name, updatedFilters.name);
@@ -293,9 +288,13 @@ const searchPatternFly = async (searchQuery: unknown, filters?: FilterPatternFly
   // Apply filtering
   const { byResource } = await filterPatternFly(updatedFilters, searchResultsFilterMap);
 
-  // Loop filtered results, update search results.
-  for (const [name, filteredData] of byResource) {
-    const fuzzyMatch = fuzzyResultsMap.get(name);
+  // Loop fuzzy results, apply and update search results with resources.
+  for (const [name, fuzzyMatch] of fuzzyResultsMap) {
+    const filteredData = byResource.get(name);
+
+    if (!filteredData) {
+      continue;
+    }
 
     searchResultsMap.set(name, {
       ...fuzzyMatch,
