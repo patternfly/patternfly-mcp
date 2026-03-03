@@ -48,7 +48,7 @@ function assertInput(
  * @param [options.inputDisplayName] - Display name for the input. Used in the default error message. Defaults to 'Input'.
  * @param [options.message] - Custom error message. A default error message with optional `inputDisplayName` is generated if not provided.
  *
- * @throws McpError If input is not a string OR is empty
+ * @throws McpError If input is not a non-empty string.
  */
 function assertInputString(
   input: unknown,
@@ -69,7 +69,7 @@ function assertInputString(
  * @param [options.inputDisplayName] - Display name for the input. Used in the default error message. Defaults to 'Input'.
  * @param [options.message] - Error description. A default error message with optional `inputDisplayName` is generated if not provided.
  *
- * @throws McpError If input is not a string OR does not meet length requirements
+ * @throws McpError If input is not a string, and does not meet length requirements.
  */
 function assertInputStringLength(
   input: unknown,
@@ -90,7 +90,7 @@ function assertInputStringLength(
  * @param [options.inputDisplayName] - Display name for the input. Used in the default error messages. Defaults to 'Input'.
  * @param [options.message] - Error description. A default error message with optional `inputDisplayName` is generated if not provided.
  *
- * @throws McpError If input is not an array of strings OR does not meet length requirements
+ * @throws McpError If input is not an array of strings, and array entries do not meet length requirements.
  */
 function assertInputStringArrayEntryLength(
   input: unknown,
@@ -102,7 +102,7 @@ function assertInputStringArrayEntryLength(
 }
 
 /**
- * Assert/validate if input is a string or number AND is one of the allowed values.
+ * Assert/validate if input is a string or number and is one of the allowed values.
  *
  * @param input - The input value
  * @param values - List of allowed values
@@ -110,7 +110,7 @@ function assertInputStringArrayEntryLength(
  * @param [options.inputDisplayName] - Display name for the input. Used in the default error messages. Defaults to 'Input'.
  * @param [options.message] - Error description. A default error message with optional `inputDisplayName` is generated if not provided.
  *
- * @throws McpError If input is not a string or number OR is not one of the allowed values
+ * @throws McpError If input is not a string or number, and is not one of the allowed values.
  */
 function assertInputStringNumberEnumLike(
   input: unknown,

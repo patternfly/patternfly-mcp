@@ -28,6 +28,10 @@ describe('assertInput', () => {
       errorMessage
     )).toThrow(errorMessage);
   });
+
+  it('should pass for a valid input', () => {
+    expect(() => assertInput('dolor'.length > 1, 'Lorem Ipsum')).not.toThrow();
+  });
 });
 
 describe('assertInputString', () => {
@@ -54,6 +58,10 @@ describe('assertInputString', () => {
     expect(() => assertInputString(
       input
     )).toThrow(errorMessage);
+  });
+
+  it('should pass for a valid string', () => {
+    expect(() => assertInputString('dolor')).not.toThrow();
   });
 });
 
@@ -108,6 +116,10 @@ describe('assertInputStringLength', () => {
       { min: 1, max: 100, ...options }
     )).toThrow(errorMessage);
   });
+
+  it('should pass for a valid string within range', () => {
+    expect(() => assertInputStringLength('dolor', { min: 1, max: 10 })).not.toThrow();
+  });
 });
 
 describe('assertInputStringArrayEntryLength', () => {
@@ -160,6 +172,10 @@ describe('assertInputStringArrayEntryLength', () => {
       input,
       { min: 1, max: 100, ...options }
     )).toThrow(errorMessage);
+  });
+
+  it('should pass for a valid array of strings', () => {
+    expect(() => assertInputStringArrayEntryLength(['dolor'], { min: 1, max: 10 })).not.toThrow();
   });
 });
 
@@ -219,5 +235,9 @@ describe('assertInputStringNumberEnumLike', () => {
       1,
       []
     )).toThrow(errorMessage);
+  });
+
+  it('should pass for a valid value in enum-like array', () => {
+    expect(() => assertInputStringNumberEnumLike('dolor', ['dolor'])).not.toThrow();
   });
 });
