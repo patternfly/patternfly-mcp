@@ -1,8 +1,15 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
+exports[`findClosest should attempt to find a closest match, NaN match 1`] = `
+{
+  "match": NaN,
+  "query": NaN,
+}
+`;
+
 exports[`findClosest should attempt to find a closest match, all empty string items 1`] = `
 {
-  "match": null,
+  "match": "",
   "query": "test",
 }
 `;
@@ -70,6 +77,13 @@ exports[`findClosest should attempt to find a closest match, null items 1`] = `
 }
 `;
 
+exports[`findClosest should attempt to find a closest match, null match 1`] = `
+{
+  "match": null,
+  "query": null,
+}
+`;
+
 exports[`findClosest should attempt to find a closest match, partial query 1`] = `
 {
   "match": "Button",
@@ -88,6 +102,13 @@ exports[`findClosest should attempt to find a closest match, undefined items 1`]
 {
   "match": null,
   "query": "Button",
+}
+`;
+
+exports[`findClosest should attempt to find a closest match, undefined match 1`] = `
+{
+  "match": undefined,
+  "query": undefined,
 }
 `;
 

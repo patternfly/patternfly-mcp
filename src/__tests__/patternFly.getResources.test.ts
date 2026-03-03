@@ -84,7 +84,7 @@ describe('getPatternFlyComponentSchema', () => {
   });
 });
 
-describe('getPatternFlyReactComponentNames', () => {
+describe('getPatternFlyComponentNames', () => {
   it('should return multiple organized facets', async () => {
     const result = await getPatternFlyComponentNames();
 

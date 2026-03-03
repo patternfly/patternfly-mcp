@@ -78,6 +78,21 @@ describe('findClosest', () => {
       description: 'all empty string items',
       query: 'test',
       items: ['', '', '']
+    },
+    {
+      description: 'undefined match',
+      query: undefined,
+      items: ['Button', 'Badge', undefined, null]
+    },
+    {
+      description: 'null match',
+      query: null,
+      items: ['Button', 'Badge', undefined, null]
+    },
+    {
+      description: 'NaN match',
+      query: NaN,
+      items: ['Button', 'Badge', NaN, null]
     }
   ])('should attempt to find a closest match, $description', ({ query, items }) => {
     expect({

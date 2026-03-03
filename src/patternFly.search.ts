@@ -94,7 +94,7 @@ interface SearchPatternFlyResults {
  * @property {Promise<PatternFlyMcpAvailableResources>} [mcpResources] - Object of multifaceted documentation entries to search.
  * @property [allowWildCardAll] - Allow a search query to match all components.
  * @property [maxDistance] - Maximum edit distance for fuzzy search.
- * @property [maxResults] - Maximum number of results to return.lts.
+ * @property [maxResults] - Maximum number of results to return.
  */
 interface SearchPatternFlyOptions {
   mcpResources?: Promise<PatternFlyMcpAvailableResources>;

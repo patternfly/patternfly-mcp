@@ -5,15 +5,16 @@ import { memo } from './server.caching';
  * normalizeString function interface
  */
 interface NormalizeString {
-  (str: string | number): string;
-  memo: (str: string | number) => string;
+  (str: unknown): string;
+  memo: (str: unknown) => string;
 }
 
 /**
  * Options for closest search
  */
 interface ClosestSearchOptions {
-  normalizeFn?: (str: string | number) => string;
+  missingReturnValue?: unknown;
+  normalizeFn?: (str: unknown) => string;
 }
 
 /**
@@ -60,7 +61,7 @@ interface FuzzySearch {
  *   - partial = 2
  *   - fuzzy = Levenshtein edit distance
  * - `maxResults` - Maximum number of results to return
- * - `normalizeFn` - Function to normalize strings (default: `normalizeString`)
+ * - `normalizeFn` - Function to normalize values (default: `normalizeString`)
  * - `isExactMatch` | `isPrefixMatch` | `isSuffixMatch` | `isContainsMatch` | `isFuzzyMatch` - Enable specific match modes
  * - `deduplicateByNormalized` - If true, deduplicate results by normalized value instead of original string (default: false)
  */
@@ -68,7 +69,7 @@ interface FuzzySearchOptions {
   allowEmptyQuery?: boolean;
   maxDistance?: number;
   maxResults?: number;
-  normalizeFn?: (str: string | number) => string;
+  normalizeFn?: (str: unknown) => string;
   isExactMatch?: boolean;
   isPrefixMatch?: boolean;
   isSuffixMatch?: boolean;
@@ -85,10 +86,10 @@ interface FuzzySearchOptions {
  * - Can be overridden in the `findClosest` and `fuzzySearch` related options for custom normalization.
  * - Function has a `memo` property to allow use as a memoized function.
  *
- * @param str
+ * @param str - String or number to normalize.
  * @returns Normalized or empty string
  */
-const normalizeString: NormalizeString = (str: string | number) => String(str ?? '')
+const normalizeString: NormalizeString = (str: unknown) => String(str)
   .trim()
   .toLowerCase()
   .normalize('NFKD')
@@ -112,7 +113,7 @@ normalizeString.memo = memo(normalizeString, { cacheLimit: 50 });
  * @param query - Search query string or number
  * @param items - Array of strings and/or numbers to search
  * @param {ClosestSearchOptions} options - Search configuration options
- * @returns Closest matching string or number or null
+ * @returns Closest matching item from items.
  *
  * @example
  * ```typescript
@@ -121,22 +122,23 @@ normalizeString.memo = memo(normalizeString, { cacheLimit: 50 });
  * ```
  */
 const findClosest = (
-  query: string | number,
-  items: (string | number)[] = [],
+  query: unknown,
+  items: unknown[] = [],
   {
+    missingReturnValue = null,
     normalizeFn = normalizeString.memo
   }: ClosestSearchOptions = {}
 ) => {
   const normalizedQuery = normalizeFn(query);
 
-  if (!normalizedQuery || !Array.isArray(items) || items.length === 0) {
-    return null;
+  if (normalizedQuery === '' || !Array.isArray(items) || items.length === 0) {
+    return missingReturnValue;
   }
 
   const normalizedItems = items.map(item => normalizeFn(item));
   const closestMatch = closest(normalizedQuery, normalizedItems);
 
-  return items[normalizedItems.indexOf(closestMatch)] || null;
+  return items[normalizedItems.indexOf(closestMatch)];
 };
 
 /**
@@ -178,8 +180,8 @@ const findClosest = (
  * ```
  */
 const fuzzySearch = (
-  query: string | number,
-  items: (string | number)[] = [],
+  query: unknown,
+  items: unknown[] = [],
   {
     allowEmptyQuery = false,
     maxDistance = 3,

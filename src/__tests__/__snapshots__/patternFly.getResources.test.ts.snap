@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
+exports[`getPatternFlyComponentNames should return multiple organized facets: properties 1`] = `
+[
+  "componentNamesIndex",
+  "componentNamesIndexMap",
+  "byVersion",
+]
+`;
+
 exports[`getPatternFlyMcpResources should return multiple organized facets: properties 1`] = `
 [
   "availableSemVer",
@@ -23,14 +31,6 @@ exports[`getPatternFlyMcpResources should return multiple organized facets: prop
   "byUri",
   "byVersion",
   "byVersionComponentNames",
-]
-`;
-
-exports[`getPatternFlyReactComponentNames should return multiple organized facets: properties 1`] = `
-[
-  "componentNamesIndex",
-  "componentNamesIndexMap",
-  "byVersion",
 ]
 `;
 
