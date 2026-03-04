@@ -49,9 +49,8 @@ const searchPatternFlyDocsTool = (options = getOptions()): McpTool => {
     assertInput(
       !isSearchWildCardAll || (isSearchWildCardAll && searchResults.length > 0),
       stringJoin.newline(
-        `Unexpected result. Server failed to return resources matching "${searchQuery} ${isSearchWildCardAll} ${searchResults.length} ${isSearchWildCardAll === true && searchResults.length > 0}"`,
-        'Try again with a more specific search query.',
-        `If this error persists, please open an issue on the [${options.repoName} GitHub repository](${options.repoResources.bugs})`
+        `Internal Search Error: The server failed to retrieve PatternFly resources for query "${searchQuery}"`,
+        'Ensure documentation resources are loaded or restart the server.'
       ),
       ErrorCode.InternalError
     );

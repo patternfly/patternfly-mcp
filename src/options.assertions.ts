@@ -2,17 +2,30 @@ import { z } from 'zod';
 import { mcpAssert } from './server.assertions';
 
 /**
- * Validates that each URL in the provided list adheres to at least one of the specified protocols.
+ * Validates that each URL in the provided list uses one of the allowed schemes.
  *
  * @param urls - The list of URLs to be validated.
- * @param protocols - The list of allowed protocols that each URL must start with (e.g., ['http://', 'https://']).
+ * @param protocols - Allowed scheme names (e.g. `['http', 'https']`). Each URL’s scheme is compared
+ *   after normalizing to include a trailing colon (e.g. `http` matches `http:`).
  *
- * @throws {Error} Throws an error if any URL does not start with one of the specified protocols.
+ * @throws {Error} Throws an error if any URL does not use one of the specified protocols.
  */
 const assertProtocol = (urls: string[], protocols: string[]) => {
   const validate = z.array(
     z.string().url().refine(
-      url => protocols.some(protocol => url.startsWith(protocol)),
+      url => {
+        try {
+          const urlScheme = new URL(url).protocol;
+
+          return protocols.some(protocol => {
+            const expected = protocol.endsWith(':') ? protocol : `${protocol}:`;
+
+            return urlScheme === expected.toLowerCase();
+          });
+        } catch {
+          return false;
+        }
+      },
       {
         message: `Protocol entries must use allowed protocols: ${protocols.join(', ')}`
       }

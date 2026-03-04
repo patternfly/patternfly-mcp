@@ -35,8 +35,8 @@ describe('assertProtocol', () => {
 
   it('should pass for valid inputs', () => {
     expect(() => assertProtocol(
-      ['https://patternfly.org', 'http://localhost'],
-      ['http', 'https']
+      ['https://patternfly.org', 'http://localhost', 'HTTP://127.0.0.1'],
+      ['HTTP', 'https']
     )).not.toThrow();
   });
 

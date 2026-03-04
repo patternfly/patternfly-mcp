@@ -192,7 +192,7 @@ type WhitelistUrl = `${'http' | 'https'}://${string}`;
  */
 interface PatternFlyOptions {
   availableResourceVersions: ('6.0.0')[];
-  availableSearchVersions: ('current' | 'detected' | 'latest' | 'v6')[];
+  availableSearchVersions: ('current' | 'latest' | 'v6')[];
   availableSchemasVersions: ('v6')[];
   default: {
     latestSemVer: '6.0.0';
