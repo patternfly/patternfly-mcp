@@ -1,9 +1,9 @@
 {
   "version": "1",
-  "generated": "2026-02-18T00:00:00.000Z",
+  "generated": "2026-03-05T00:00:00.000Z",
   "meta": {
-    "totalEntries": 115,
-    "totalDocs": 267,
+    "totalEntries": 128,
+    "totalDocs": 305,
     "source": "patternfly-mcp-internal"
   },
   "docs": {
@@ -15,7 +15,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/about-modal/about-modal.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/about-modal/about-modal.md",
         "version": "v6"
       },
       {
@@ -25,7 +25,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/about-modal/about-modal.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/about-modal/about-modal.md",
         "version": "v6"
       },
       {
@@ -57,7 +57,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/accordion/accordion.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accordion/accordion.md",
         "version": "v6"
       },
       {
@@ -67,7 +67,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/accordion/accordion.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/accordion/accordion.md",
         "version": "v6"
       },
       {
@@ -89,7 +89,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/action-list/action-list.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/action-list/action-list.md",
         "version": "v6"
       },
       {
@@ -99,7 +99,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/action-list/action-list.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/action-list/action-list.md",
         "version": "v6"
       },
       {
@@ -121,7 +121,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/alert/alert.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/alert/alert.md",
         "version": "v6"
       },
       {
@@ -131,7 +131,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/alert/alert.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/alert/alert.md",
         "version": "v6"
       },
       {
@@ -153,7 +153,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/application-launcher/application-launcher.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/application-launcher/application-launcher.md",
         "version": "v6"
       },
       {
@@ -163,7 +163,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/application-launcher/application-launcher.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/application-launcher/application-launcher.md",
         "version": "v6"
       }
     ],
@@ -175,7 +175,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/avatar/avatar.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/avatar/avatar.md",
         "version": "v6"
       },
       {
@@ -185,7 +185,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/avatar/avatar.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/avatar/avatar.md",
         "version": "v6"
       },
       {
@@ -207,7 +207,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/back-to-top/back-to-top.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/back-to-top/back-to-top.md",
         "version": "v6"
       },
       {
@@ -229,7 +229,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/backdrop/backdrop.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/backdrop/backdrop.md",
         "version": "v6"
       },
       {
@@ -239,7 +239,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/backdrop/backdrop.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/backdrop/backdrop.md",
         "version": "v6"
       },
       {
@@ -261,7 +261,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/background-image/background-image.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/background-image/background-image.md",
         "version": "v6"
       },
       {
@@ -271,7 +271,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/background-image/background-image.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/background-image/background-image.md",
         "version": "v6"
       },
       {
@@ -293,7 +293,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/badge/badge.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/badge/badge.md",
         "version": "v6"
       },
       {
@@ -303,7 +303,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/badge/badge.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/badge/badge.md",
         "version": "v6"
       },
       {
@@ -325,7 +325,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/banner/banner.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/banner/banner.md",
         "version": "v6"
       },
       {
@@ -335,7 +335,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/banner/banner.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/banner/banner.md",
         "version": "v6"
       },
       {
@@ -357,7 +357,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/brand/brand.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/brand/brand.md",
         "version": "v6"
       },
       {
@@ -367,7 +367,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/brand/brand.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/brand/brand.md",
         "version": "v6"
       },
       {
@@ -389,7 +389,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/breadcrumb/breadcrumb.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/breadcrumb/breadcrumb.md",
         "version": "v6"
       },
       {
@@ -399,7 +399,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/breadcrumb/breadcrumb.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/breadcrumb/breadcrumb.md",
         "version": "v6"
       },
       {
@@ -421,7 +421,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/button/button.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/button/button.md",
         "version": "v6"
       },
       {
@@ -431,7 +431,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/button/button.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/button/button.md",
         "version": "v6"
       },
       {
@@ -453,7 +453,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/calendar-month/calendar-month.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/calendar-month/calendar-month.md",
         "version": "v6"
       },
       {
@@ -463,7 +463,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/calendar-month/calendar-month.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/calendar-month/calendar-month.md",
         "version": "v6"
       },
       {
@@ -485,7 +485,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/card/card.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/card/card.md",
         "version": "v6"
       },
       {
@@ -495,7 +495,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/card/card.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/card/card.md",
         "version": "v6"
       },
       {
@@ -517,7 +517,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/checkbox/checkbox.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/checkbox/checkbox.md",
         "version": "v6"
       },
       {
@@ -527,7 +527,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/checkbox/checkbox.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/checkbox/checkbox.md",
         "version": "v6"
       },
       {
@@ -549,7 +549,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/chip/chip.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/chip/chip.md",
         "version": "v6"
       },
       {
@@ -559,7 +559,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/chip/chip.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/chip/chip.md",
         "version": "v6"
       }
     ],
@@ -571,7 +571,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/clipboard-copy/clipboard-copy.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/clipboard-copy/clipboard-copy.md",
         "version": "v6"
       },
       {
@@ -581,7 +581,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/clipboard-copy/clipboard-copy.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/clipboard-copy/clipboard-copy.md",
         "version": "v6"
       },
       {
@@ -603,7 +603,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/code-block/code-block.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/code-block/code-block.md",
         "version": "v6"
       },
       {
@@ -625,7 +625,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/code-editor/code-editor.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/code-editor/code-editor.md",
         "version": "v6"
       },
       {
@@ -635,7 +635,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/code-editor/code-editor.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/code-editor/code-editor.md",
         "version": "v6"
       }
     ],
@@ -647,7 +647,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/content/content.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/content/content.md",
         "version": "v6"
       },
       {
@@ -669,7 +669,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/data-list/data-list.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/data-list/data-list.md",
         "version": "v6"
       },
       {
@@ -691,7 +691,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/date-picker/date-picker.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/date-picker/date-picker.md",
         "version": "v6"
       },
       {
@@ -713,7 +713,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/description-list/description-list.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/description-list/description-list.md",
         "version": "v6"
       },
       {
@@ -735,7 +735,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/divider/divider.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/divider/divider.md",
         "version": "v6"
       },
       {
@@ -757,7 +757,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/drag-and-drop/drag.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/drag-and-drop/drag.md",
         "version": "v6"
       }
     ],
@@ -769,7 +769,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/drawer/drawer.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/drawer/drawer.md",
         "version": "v6"
       },
       {
@@ -791,7 +791,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/dropdown/dropdown.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/dropdown/dropdown.md",
         "version": "v6"
       },
       {
@@ -813,7 +813,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/dual-list-selector/dual-list-selector.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/dual-list-selector/dual-list-selector.md",
         "version": "v6"
       },
       {
@@ -835,7 +835,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/empty-state/empty-state.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/empty-state/empty-state.md",
         "version": "v6"
       },
       {
@@ -857,7 +857,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/expandable-section/expandable-section.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/expandable-section/expandable-section.md",
         "version": "v6"
       },
       {
@@ -867,7 +867,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/expandable-section/expandable-section.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/expandable-section/expandable-section.md",
         "version": "v6"
       },
       {
@@ -889,7 +889,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/file-upload/file-upload.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/file-upload/file-upload.md",
         "version": "v6"
       },
       {
@@ -911,7 +911,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/form/forms.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/form/forms.md",
         "version": "v6"
       },
       {
@@ -933,7 +933,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/form-control/form-control.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/form-control/form-control.md",
         "version": "v6"
       }
     ],
@@ -945,7 +945,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/form-select/form-select.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/form-select/form-select.md",
         "version": "v6"
       },
       {
@@ -967,7 +967,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/helper-text/helper-text.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/helper-text/helper-text.md",
         "version": "v6"
       },
       {
@@ -977,7 +977,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/helper-text/helper-text.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/helper-text/helper-text.md",
         "version": "v6"
       },
       {
@@ -999,7 +999,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/hint/hint.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/hint/hint.md",
         "version": "v6"
       },
       {
@@ -1033,7 +1033,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/inline-edit/inline-edit.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/inline-edit/inline-edit.md",
         "version": "v6"
       }
     ],
@@ -1045,7 +1045,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/input-group/input-group.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/input-group/input-group.md",
         "version": "v6"
       },
       {
@@ -1067,7 +1067,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/jump-link/jump-link.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/jump-link/jump-link.md",
         "version": "v6"
       },
       {
@@ -1077,7 +1077,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/jump-links/jump-links.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/jump-links/jump-links.md",
         "version": "v6"
       },
       {
@@ -1099,7 +1099,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/label/label.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/label/label.md",
         "version": "v6"
       },
       {
@@ -1109,7 +1109,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/label/label.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/label/label.md",
         "version": "v6"
       },
       {
@@ -1131,7 +1131,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/list/list.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/list/list.md",
         "version": "v6"
       },
       {
@@ -1153,7 +1153,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/login-page/login-page.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/login-page/login-page.md",
         "version": "v6"
       },
       {
@@ -1175,7 +1175,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/masthead/masthead.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/masthead/masthead.md",
         "version": "v6"
       },
       {
@@ -1197,7 +1197,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/menu/menu.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/menu/menu.md",
         "version": "v6"
       },
       {
@@ -1207,7 +1207,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/menu/menu.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/menu/menu.md",
         "version": "v6"
       },
       {
@@ -1229,7 +1229,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/menu-toggle/menu-toggle.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/menu-toggle/menu-toggle.md",
         "version": "v6"
       },
       {
@@ -1239,7 +1239,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/menu-toggle/menu-toggle.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/menu-toggle/menu-toggle.md",
         "version": "v6"
       },
       {
@@ -1261,7 +1261,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/modal/modal.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/modal/modal.md",
         "version": "v6"
       },
       {
@@ -1271,7 +1271,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/modal/modal.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/modal/modal.md",
         "version": "v6"
       },
       {
@@ -1293,7 +1293,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/navigation/navigation.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/navigation/navigation.md",
         "version": "v6"
       },
       {
@@ -1303,7 +1303,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/navigation/navigation.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/navigation/navigation.md",
         "version": "v6"
       }
     ],
@@ -1315,7 +1315,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/notification-badge/notification-badge.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/notification-badge/notification-badge.md",
         "version": "v6"
       },
       {
@@ -1337,7 +1337,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/notification-drawer/notification-drawer.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/notification-drawer/notification-drawer.md",
         "version": "v6"
       },
       {
@@ -1359,7 +1359,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/number%20input/number-input.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/number%20input/number-input.md",
         "version": "v6"
       },
       {
@@ -1381,7 +1381,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/overflow-menu/overflow-menu.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/overflow-menu/overflow-menu.md",
         "version": "v6"
       },
       {
@@ -1403,7 +1403,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/page/page.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/page/page.md",
         "version": "v6"
       },
       {
@@ -1413,7 +1413,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/page/page.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/page/page.md",
         "version": "v6"
       },
       {
@@ -1435,7 +1435,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/pagination/pagination.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/pagination/pagination.md",
         "version": "v6"
       },
       {
@@ -1457,7 +1457,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/panel/panel.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/panel/panel.md",
         "version": "v6"
       },
       {
@@ -1479,7 +1479,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/popover/popover.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/popover/popover.md",
         "version": "v6"
       },
       {
@@ -1501,7 +1501,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/progress/progress.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/progress/progress.md",
         "version": "v6"
       },
       {
@@ -1511,7 +1511,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/progress/progress.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/progress/progress.md",
         "version": "v6"
       },
       {
@@ -1533,7 +1533,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/progress-stepper/progress-stepper.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/progress-stepper/progress-stepper.md",
         "version": "v6"
       },
       {
@@ -1543,7 +1543,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/progress-stepper/progress-stepper.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/progress-stepper/progress-stepper.md",
         "version": "v6"
       },
       {
@@ -1565,7 +1565,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/radio/radio.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/radio/radio.md",
         "version": "v6"
       },
       {
@@ -1575,7 +1575,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/radio/radio.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/radio/radio.md",
         "version": "v6"
       },
       {
@@ -1597,7 +1597,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/search-input/search-input.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/search-input/search-input.md",
         "version": "v6"
       },
       {
@@ -1619,7 +1619,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/select/select.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/select/select.md",
         "version": "v6"
       },
       {
@@ -1641,7 +1641,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/sidebar/sidebar.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/sidebar/sidebar.md",
         "version": "v6"
       },
       {
@@ -1651,7 +1651,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/sidebar/sidebar.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/sidebar/sidebar.md",
         "version": "v6"
       },
       {
@@ -1673,7 +1673,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/simple-list/simple-list.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/simple-list/simple-list.md",
         "version": "v6"
       },
       {
@@ -1695,7 +1695,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/skeleton/skeleton.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/skeleton/skeleton.md",
         "version": "v6"
       },
       {
@@ -1705,7 +1705,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/skeleton/skeleton.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/skeleton/skeleton.md",
         "version": "v6"
       },
       {
@@ -1727,7 +1727,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/skip-to-content/skip-to-content.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/skip-to-content/skip-to-content.md",
         "version": "v6"
       },
       {
@@ -1737,7 +1737,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/skip-to-content/skip-to-content.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/skip-to-content/skip-to-content.md",
         "version": "v6"
       },
       {
@@ -1759,7 +1759,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/slider/slider.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/slider/slider.md",
         "version": "v6"
       },
       {
@@ -1781,7 +1781,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/spinner/spinner.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/spinner/spinner.md",
         "version": "v6"
       },
       {
@@ -1803,7 +1803,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/switch/switch.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/switch/switch.md",
         "version": "v6"
       },
       {
@@ -1813,7 +1813,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/switch/switch.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/switch/switch.md",
         "version": "v6"
       },
       {
@@ -1835,7 +1835,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/table/table.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/table/table.md",
         "version": "v6"
       },
       {
@@ -1857,7 +1857,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/tabs/tabs.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/tabs/tabs.md",
         "version": "v6"
       },
       {
@@ -1867,7 +1867,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/tabs/tabs.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/tabs/tabs.md",
         "version": "v6"
       },
       {
@@ -1889,7 +1889,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/text-area/text-area.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/text-area/text-area.md",
         "version": "v6"
       },
       {
@@ -1911,7 +1911,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/text-input/text-input.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/text-input/text-input.md",
         "version": "v6"
       },
       {
@@ -1933,7 +1933,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/text-input-group/text-input-group.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/text-input-group/text-input-group.md",
         "version": "v6"
       },
       {
@@ -1955,7 +1955,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/tile/tile.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/tile/tile.md",
         "version": "v6"
       }
     ],
@@ -1967,7 +1967,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/time%20picker/time-picker.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/time%20picker/time-picker.md",
         "version": "v6"
       },
       {
@@ -1989,7 +1989,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/timestamp/timestamp.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/timestamp/timestamp.md",
         "version": "v6"
       },
       {
@@ -2011,7 +2011,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/title/title.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/title/title.md",
         "version": "v6"
       },
       {
@@ -2021,7 +2021,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/title/title.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/title/title.md",
         "version": "v6"
       },
       {
@@ -2043,7 +2043,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/toggle-group/toggle-group.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/toggle-group/toggle-group.md",
         "version": "v6"
       },
       {
@@ -2065,7 +2065,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/toolbar/toolbar.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/toolbar/toolbar.md",
         "version": "v6"
       },
       {
@@ -2087,7 +2087,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/tooltip/tooltip.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/tooltip/tooltip.md",
         "version": "v6"
       },
       {
@@ -2097,7 +2097,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/tooltip/tooltip.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/tooltip/tooltip.md",
         "version": "v6"
       },
       {
@@ -2117,7 +2117,7 @@
         "section": "charts",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/tooltip-chart/tooltip-chart.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/charts/tooltip-chart/tooltip-chart.md",
         "version": "v6"
       },
       {
@@ -2137,7 +2137,7 @@
         "section": "content-design",
         "category": "writing-guides",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/writing-guides/tooltips.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/content-design/writing-guides/tooltips.md",
         "version": "v6"
       }
     ],
@@ -2149,7 +2149,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/tree-view/tree-view.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/tree-view/tree-view.md",
         "version": "v6"
       },
       {
@@ -2159,7 +2159,7 @@
         "section": "components",
         "category": "accessibility",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/accessibility/tree-view/tree-view.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/tree-view/tree-view.md",
         "version": "v6"
       },
       {
@@ -2181,7 +2181,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/truncate/truncate.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/truncate/truncate.md",
         "version": "v6"
       },
       {
@@ -2203,7 +2203,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/components/wizard/wizard.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/wizard/wizard.md",
         "version": "v6"
       },
       {
@@ -2225,7 +2225,7 @@
         "section": "layouts",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/bullseye.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/foundations-and-styles/layouts/bullseye.md",
         "version": "v6"
       },
       {
@@ -2247,7 +2247,7 @@
         "section": "layouts",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/flex.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/foundations-and-styles/layouts/flex.md",
         "version": "v6"
       },
       {
@@ -2269,7 +2269,7 @@
         "section": "layouts",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/gallery.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/foundations-and-styles/layouts/gallery.md",
         "version": "v6"
       },
       {
@@ -2291,7 +2291,7 @@
         "section": "layouts",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/grid.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/foundations-and-styles/layouts/grid.md",
         "version": "v6"
       },
       {
@@ -2313,7 +2313,7 @@
         "section": "layouts",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/level.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/foundations-and-styles/layouts/level.md",
         "version": "v6"
       },
       {
@@ -2335,7 +2335,7 @@
         "section": "layouts",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/split.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/foundations-and-styles/layouts/split.md",
         "version": "v6"
       },
       {
@@ -2357,7 +2357,7 @@
         "section": "layouts",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/layouts/stack.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/foundations-and-styles/layouts/stack.md",
         "version": "v6"
       },
       {
@@ -2391,7 +2391,7 @@
         "section": "charts",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/area-chart/area-chart.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/charts/area-chart/area-chart.md",
         "version": "v6"
       },
       {
@@ -2413,7 +2413,7 @@
         "section": "charts",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/bar-chart/bar-chart.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/charts/bar-chart/bar-chart.md",
         "version": "v6"
       },
       {
@@ -2447,7 +2447,7 @@
         "section": "charts",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/bullet-chart/bullet-chart.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/charts/bullet-chart/bullet-chart.md",
         "version": "v6"
       },
       {
@@ -2469,7 +2469,7 @@
         "section": "charts",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/donut-chart/donut-chart.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/charts/donut-chart/donut-chart.md",
         "version": "v6"
       },
       {
@@ -2491,7 +2491,7 @@
         "section": "charts",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/donut-utilization-chart/donut-utilization-chart.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/charts/donut-utilization-chart/donut-utilization-chart.md",
         "version": "v6"
       },
       {
@@ -2513,7 +2513,7 @@
         "section": "charts",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/line-chart/line-chart.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/charts/line-chart/line-chart.md",
         "version": "v6"
       },
       {
@@ -2535,7 +2535,7 @@
         "section": "charts",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/pie-chart/pie-chart.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/charts/pie-chart/pie-chart.md",
         "version": "v6"
       },
       {
@@ -2557,7 +2557,7 @@
         "section": "charts",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/scatter-chart/scatter-chart.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/charts/scatter-chart/scatter-chart.md",
         "version": "v6"
       },
       {
@@ -2579,7 +2579,7 @@
         "section": "charts",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/sparkline-chart/sparkline-chart.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/charts/sparkline-chart/sparkline-chart.md",
         "version": "v6"
       },
       {
@@ -2601,7 +2601,7 @@
         "section": "charts",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/stacked-chart/stacked-chart.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/charts/stacked-chart/stacked-chart.md",
         "version": "v6"
       },
       {
@@ -2623,7 +2623,7 @@
         "section": "charts",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/threshold-chart/threshold-chart.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/charts/threshold-chart/threshold-chart.md",
         "version": "v6"
       },
       {
@@ -2645,7 +2645,7 @@
         "section": "charts",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/fb05713aba75998b5ecf5299ee3c1a259119bd74/packages/documentation-site/patternfly-docs/content/design-guidelines/charts/legend-chart/legend-chart.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/charts/legend-chart/legend-chart.md",
         "version": "v6"
       },
       {
@@ -2755,7 +2755,7 @@
         "section": "content-design",
         "category": "writing-guides",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/writing-guides/product-tours.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/content-design/writing-guides/product-tours.md",
         "version": "v6"
       }
     ],
@@ -2767,7 +2767,7 @@
         "section": "content-design",
         "category": "writing-guides",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/writing-guides/cli-guidelines.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/content-design/writing-guides/cli-guidelines.md",
         "version": "v6"
       }
     ],
@@ -2779,7 +2779,7 @@
         "section": "content-design",
         "category": "writing-guides",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/writing-guides/error-messages.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/content-design/writing-guides/error-messages.md",
         "version": "v6"
       }
     ],
@@ -2791,7 +2791,7 @@
         "section": "content-design",
         "category": "writing-guides",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/content-design.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/content-design/content-design.md",
         "version": "v6"
       },
       {
@@ -2801,7 +2801,7 @@
         "section": "content-design",
         "category": "writing-guides",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/brand-voice-and-tone.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/content-design/brand-voice-and-tone.md",
         "version": "v6"
       },
       {
@@ -2811,7 +2811,7 @@
         "section": "content-design",
         "category": "writing-guides",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/best-practices.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/content-design/best-practices.md",
         "version": "v6"
       },
       {
@@ -2821,7 +2821,7 @@
         "section": "content-design",
         "category": "grammar",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/accessibility-and-localization.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/content-design/accessibility-and-localization.md",
         "version": "v6"
       },
       {
@@ -2831,7 +2831,7 @@
         "section": "content-design",
         "category": "writing-guides",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/writing-guides/patternfly-design-guidelines.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/content-design/writing-guides/patternfly-design-guidelines.md",
         "version": "v6"
       }
     ],
@@ -2843,7 +2843,7 @@
         "section": "content-design",
         "category": "grammar",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/capitalization.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/content-design/grammar/capitalization.md",
         "version": "v6"
       },
       {
@@ -2853,7 +2853,7 @@
         "section": "content-design",
         "category": "grammar",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/numerics.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/content-design/grammar/numerics.md",
         "version": "v6"
       },
       {
@@ -2863,7 +2863,7 @@
         "section": "content-design",
         "category": "grammar",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/punctuation.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/content-design/grammar/punctuation.md",
         "version": "v6"
       },
       {
@@ -2873,7 +2873,7 @@
         "section": "content-design",
         "category": "grammar",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/sentence-structure.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/content-design/grammar/sentence-structure.md",
         "version": "v6"
       },
       {
@@ -2883,7 +2883,7 @@
         "section": "content-design",
         "category": "grammar",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/terminology.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/content-design/grammar/terminology.md",
         "version": "v6"
       },
       {
@@ -2893,7 +2893,7 @@
         "section": "content-design",
         "category": "grammar",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/truncation.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/content-design/grammar/truncation.md",
         "version": "v6"
       },
       {
@@ -2903,7 +2903,413 @@
         "section": "content-design",
         "category": "grammar",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/3f5653a2742910515279c5c32cde9f2f6a87ca79/packages/documentation-site/patternfly-docs/content/content-design/grammar/units-and-symbols.md",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/content-design/grammar/units-and-symbols.md",
+        "version": "v6"
+      }
+    ],
+    "DesignTokens": [
+      {
+        "displayName": "Design tokens",
+        "description": "Design tokens overview.",
+        "pathSlug": "design-tokens-overview",
+        "section": "foundations-and-styles",
+        "category": "design-tokens",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/foundations-and-styles/design-tokens/tokens.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Design Tokens for design",
+        "description": "Design guidance for using design tokens with Figma and PatternFly.",
+        "pathSlug": "design-tokens-design",
+        "section": "foundations-and-styles",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/foundations-and-styles/design-tokens/design.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Design tokens for development",
+        "description": "Development guidance for using design tokens.",
+        "pathSlug": "design-tokens-development",
+        "section": "foundations-and-styles",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/foundations-and-styles/design-tokens/develop.md",
+        "version": "v6"
+      }
+    ],
+    "Colors": [
+      {
+        "displayName": "Color palettes",
+        "description": "Color guidelines for brand and PatternFly.",
+        "pathSlug": "colors",
+        "section": "foundations-and-styles",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/foundations-and-styles/styles/colors/colors.md",
+        "version": "v6"
+      }
+    ],
+    "Iconography": [
+      {
+        "displayName": "Iconography",
+        "description": "Icon guidelines overview.",
+        "pathSlug": "iconography",
+        "section": "foundations-and-styles",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/foundations-and-styles/styles/iconography/iconography.md",
+        "version": "v6"
+      }
+    ],
+    "Motion": [
+      {
+        "displayName": "Motion guidelines",
+        "description": "Motion guidelines overview.",
+        "pathSlug": "motion",
+        "section": "foundations-and-styles",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/foundations-and-styles/styles/motion/motion.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Motion for development",
+        "description": "Development guidelines for animations (motion).",
+        "pathSlug": "motion-development",
+        "section": "foundations-and-styles",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/foundations-and-styles/styles/motion/motion-development.md",
+        "version": "v6"
+      }
+    ],
+    "Spacers": [
+      {
+        "displayName": "Spacers",
+        "description": "Spacer guidelines and dimension tokens.",
+        "pathSlug": "spacers",
+        "section": "foundations-and-styles",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/foundations-and-styles/styles/spacers/spacers.md",
+        "version": "v6"
+      }
+    ],
+    "Theming": [
+      {
+        "displayName": "Theming",
+        "description": "Theming overview.",
+        "pathSlug": "theming",
+        "section": "foundations-and-styles",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/foundations-and-styles/styles/theming/theming.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Dark theme",
+        "description": "Dark theme mode developer handbook.",
+        "pathSlug": "dark-theme-development",
+        "section": "foundations-and-styles",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/foundations-and-styles/styles/theming/dark-theme-handbook.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "High contrast",
+        "description": "High contrast mode, improving component contrast through visual accessibility, developers handbook.",
+        "pathSlug": "high-contrast-development",
+        "section": "foundations-and-styles",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/foundations-and-styles/styles/theming/high-contrast-handbook.md",
+        "version": "v6"
+      }
+    ],
+    "Typography": [
+      {
+        "displayName": "Typography",
+        "description": "Typography principles and standards, including token values and usage information.",
+        "pathSlug": "typography",
+        "section": "foundations-and-styles",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/foundations-and-styles/styles/typography/typography.md",
+        "version": "v6"
+      }
+    ],
+    "Accessibility": [
+      {
+        "displayName": "Accessibility",
+        "description": "Accessibility standards in components and design.",
+        "pathSlug": "accessibility",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/accessibility/accessibility.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Accessibility for designers",
+        "description": "Accessibility standards in visual design.",
+        "pathSlug": "accessibility-design",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/accessibility/design.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Accessibility for developers",
+        "description": "Accessibility standards in development.",
+        "pathSlug": "accessibility-development",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/accessibility/develop.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Accessibility testing",
+        "description": "Accessibility testing for products.",
+        "pathSlug": "accessibility-testing",
+        "section": "components",
+        "category": "accessibility",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/accessibility/test-your-product.md",
+        "version": "v6"
+      }
+    ],
+    "RightToLeft": [
+      {
+        "displayName": "Right-to-left (RTL) and left-to-right (LTR)",
+        "description": "Internationalization for products.",
+        "pathSlug": "rtl-ltr",
+        "section": "content-design",
+        "category": "writing-guides",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/developer-guides/rtl-handbook.md",
+        "version": "v6"
+      }
+    ],
+    "Patterns": [
+      {
+        "displayName": "Actions",
+        "description": "The best practices for designing processes that a user can trigger by clicking or selecting a UI element, such as a button or link.",
+        "pathSlug": "actions",
+        "section": "patterns",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/patterns/actions/actions.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Bulk selection",
+        "description": "A defined method for users to select or deselect multiple items within complex content views or data tables.",
+        "pathSlug": "bulk-selection",
+        "section": "patterns",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/patterns/bulk-selection/bulk-selection.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Card view",
+        "description": "A structured layout designed to display a grid of cards in a gallery, optimizing for browsing and interaction.",
+        "pathSlug": "card-view",
+        "section": "patterns",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/patterns/card-view/card-view.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Component usage and behavior",
+        "description": "Guidance on how to choose between similar components and use them appropriately based on specific user contexts and use cases.",
+        "pathSlug": "component-usage-behavior",
+        "section": "patterns",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/patterns/usage-and-behavior.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Dashboard",
+        "description": "A highly customizable layout that serves as a high-level overview of key metrics or performance indicators.",
+        "pathSlug": "dashboard",
+        "section": "patterns",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/patterns/dashboard/dashboard.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Filters",
+        "description": "The design rules for implementing filtering mechanisms that allow users to narrow down content from large datasets or complex views.",
+        "pathSlug": "filters",
+        "section": "patterns",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/patterns/filters/filters.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Primary-detail",
+        "description": "A two-pane layout that shows a list of items and corresponding details for the currently selected item.",
+        "pathSlug": "primary-detail",
+        "section": "patterns",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/patterns/primary-detail/primary-detail.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Status and severity",
+        "description": "Guidance on the consistent and accessible use of color and iconography to communicate status and severity across the UI.",
+        "pathSlug": "status-severity",
+        "section": "patterns",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/patterns/status-and-severity/status-and-severity.md",
+        "version": "v6"
+      }
+    ],
+    "AI": [
+      {
+        "displayName": "AI overview",
+        "description": "Ethical design principles and best practices for using AI with PatternFly, focusing on accountability, explainability, transparency, fairness, and human-centeredness.",
+        "pathSlug": "ai",
+        "section": "ai",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/AI/ai.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Rapid prototyping",
+        "description": "A workflow for rapidly prototyping PatternFly UIs directly in code using AI-powered development tools.",
+        "pathSlug": "rapid-prototyping",
+        "section": "ai",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/AI/rapid-prototyping/rapid-prototyping.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Starting a new prototype",
+        "description": "How to get started with new AI-assisted PatternFly prototypes using the React seed app.",
+        "pathSlug": "new-prototypes",
+        "section": "ai",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/AI/rapid-prototyping/new-prototypes.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Enhancing existing projects",
+        "description": "Guidelines for integrating AI tools into existing PatternFly projects for rapid development.",
+        "pathSlug": "enhancing-existing-projects",
+        "section": "ai",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/AI/rapid-prototyping/enhancing-existing-projects.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "AI-assisted code migration",
+        "description": "A guide for using AI to accelerate migrating legacy code to PatternFly React components.",
+        "pathSlug": "ai-assisted-code-migration",
+        "section": "ai",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/AI/rapid-prototyping/migrating-to-patternfly.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Conversation design",
+        "description": "Principles and best practices for human-centered conversational interfaces like chatbots and voicebots.",
+        "pathSlug": "conversation-design",
+        "section": "ai",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/AI/conversation-design/conversation-design.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Generative UIs overview",
+        "description": "Overview of Generative UI (GenUI) approach, dynamically adapting UI elements based on AI context.",
+        "pathSlug": "generative-uis",
+        "section": "ai",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/AI/generative-uis/about-generative-ui.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Compass",
+        "description": "PatternFly's Generative UI exploration for dynamic and personalized user experiences.",
+        "pathSlug": "compass",
+        "section": "ai",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/AI/generative-uis/compass/Compass.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Compass handbook",
+        "description": "Developer handbook for building generative UI layouts using Compass components.",
+        "pathSlug": "compass-handbook",
+        "section": "ai",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/AI/Compass/CompassHandbook.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "React Flow",
+        "description": "Integrating React Flow for node-based generative UI exploration in Compass.",
+        "pathSlug": "react-flow",
+        "section": "ai",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/AI/generative-uis/compass/ReactFlow.md",
+        "version": "v6"
+      }
+    ],
+    "Extensions": [
+      {
+        "displayName": "Extensions overview",
+        "description": "Holistic solutions addressing specific, cross-project use cases by utilizing multiple PatternFly components.",
+        "pathSlug": "extensions",
+        "section": "extensions",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/extensions/extensions.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Log viewer",
+        "description": "A specialized interface for visualizing and monitoring project logs in real time.",
+        "pathSlug": "log-viewer",
+        "section": "extensions",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/extensions/log-viewer/log-viewer.md",
+        "version": "v6"
+      }
+    ],
+    "OpenUIAutomation": [
+      {
+        "displayName": "Open UI Automation",
+        "description": "Open UI Automation (OUIA) is a specification for standardizing how UIs expose attributes for automated testing.",
+        "pathSlug": "openui-automation",
+        "section": "components",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/helpers/OUIA/OUIA.md",
         "version": "v6"
       }
     ]
