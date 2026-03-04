@@ -1,21 +1,17 @@
+import { readFile } from 'node:fs/promises';
 import { McpError } from '@modelcontextprotocol/sdk/types.js';
-import { patternFlyDocsTemplateResource } from '../resource.patternFlyDocsTemplate';
-import { processDocsFunction } from '../server.getResources';
-import { searchComponents } from '../tool.searchPatternFlyDocs';
+import {
+  patternFlyDocsTemplateResource,
+  resourceCallback
+} from '../resource.patternFlyDocsTemplate';
 import { isPlainObject } from '../server.helpers';
 
-// Mock dependencies
-jest.mock('../server.getResources');
-jest.mock('../tool.searchPatternFlyDocs');
-jest.mock('../server.caching', () => ({
-  memo: jest.fn(fn => fn)
-}));
-jest.mock('../options.context', () => ({
-  getOptions: jest.fn(() => ({}))
+jest.mock('node:fs/promises', () => ({
+  ...jest.requireActual('node:fs/promises'),
+  readFile: jest.fn()
 }));
 
-const mockProcessDocs = processDocsFunction as jest.MockedFunction<typeof processDocsFunction>;
-const mockSearchComponents = searchComponents as jest.MockedFunction<typeof searchComponents>;
+const mockReadFile = readFile as jest.MockedFunction<typeof readFile>;
 
 describe('patternFlyDocsTemplateResource', () => {
   beforeEach(() => {
@@ -34,101 +30,117 @@ describe('patternFlyDocsTemplateResource', () => {
   });
 });
 
-describe('patternFlyDocsTemplateResource, callback', () => {
+describe('resourceCallback', () => {
+  let mockFetch: jest.SpyInstance;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    mockFetch = jest.spyOn(global, 'fetch');
+  });
+
+  afterEach(() => {
+    mockFetch.mockRestore();
   });
 
   it.each([
+    {
+      description: 'no version',
+      variables: {
+        name: 'Button'
+      }
+    },
     {
       description: 'default',
-      name: 'Button',
-      urls: ['components/button.md'],
-      result: 'Button documentation content'
+      variables: {
+        name: 'Button',
+        version: 'v6'
+      }
     },
     {
-      description: 'with multiple matched URLs',
-      name: 'Card',
-      urls: ['components/card.md', 'components/card-examples.md'],
-      result: 'Card documentation content'
+      description: 'with lowercased name',
+      variables: {
+        name: 'button',
+        version: 'v6'
+      }
     },
     {
-      description: 'with trimmed name',
-      name: '  Table  ',
-      urls: ['components/table.md'],
-      result: 'Table documentation content'
-    },
-    {
-      description: 'with lower case name',
-      name: 'button',
-      urls: ['components/button.md'],
-      result: 'Button documentation content'
+      description: 'with local documentation',
+      variables: {
+        name: 'chatbot',
+        version: 'v6'
+      }
     }
-  ])('should parse parameters and return documentation, $description', async ({ name, urls, result: mockResult }) => {
-    mockSearchComponents.mockReturnValue({
-      isSearchWildCardAll: false,
-      firstExactMatch: undefined,
-      exactMatches: [{ urls } as any],
-      searchResults: []
-    });
-    mockProcessDocs.mockResolvedValue([{ content: mockResult }] as any);
+  ])('should attempt to return resource content, $description', async ({ variables }) => {
+    const mockContent = `Mock content for ${variables.name}`;
 
-    const [_name, _uri, _config, callback] = patternFlyDocsTemplateResource();
-    const uri = new URL('patternfly://docs/Button');
-    const variables = { name };
-    const result = await callback(uri, variables);
+    mockReadFile.mockResolvedValue(mockContent);
+    mockFetch.mockResolvedValue({
+      ok: true,
+      text: () => mockContent
+    } as any);
 
-    expect(mockSearchComponents).toHaveBeenCalledWith(name);
-    expect(mockProcessDocs).toHaveBeenCalledWith(urls);
+    const result = await resourceCallback(
+      { href: `patternfly://docs/${variables.version}/${variables.name}` } as any,
+      variables
+    );
 
     expect(result.contents).toBeDefined();
-    expect(Object.keys(result.contents[0])).toEqual(['uri', 'mimeType', 'text']);
-    expect(result.contents[0].text).toContain(mockResult);
+    expect(Object.keys(result.contents[0] as any)).toEqual(['uri', 'mimeType', 'text']);
+    expect(result.contents[0]?.text).toMatch(new RegExp(mockContent, 'i'));
   });
 
   it.each([
     {
+      description: 'invalid version',
+      error: 'Invalid PatternFly version',
+      variables: {
+        name: 'Button',
+        version: 'v5'
+      }
+    },
+    {
       description: 'with missing or undefined name',
-      error: 'Missing required parameter: name must be a string',
-      variables: {}
+      error: 'must be a string',
+      variables: {
+        version: 'v6'
+      }
     },
     {
       description: 'with null name',
-      error: 'Missing required parameter: name must be a string',
-      variables: { name: null }
+      error: 'must be a string',
+      variables: {
+        name: null,
+        version: 'v6'
+      }
     },
     {
       description: 'with empty name',
-      error: 'Missing required parameter: name must be a string',
-      variables: { name: '' }
+      error: 'must be a string',
+      variables: {
+        name: '',
+        version: 'v6'
+      }
     },
     {
       description: 'with non-string name',
-      error: 'Missing required parameter: name must be a string',
-      variables: { name: 123 }
+      error: 'must be a string',
+      variables: {
+        name: 123,
+        version: 'v6'
+      }
     }
   ])('should handle variable errors, $description', async ({ error, variables }) => {
-    const [_name, _uri, _config, callback] = patternFlyDocsTemplateResource();
+    const mockContent = `Mock content for ${variables.name}`;
+
+    mockReadFile.mockResolvedValue(mockContent);
+    mockFetch.mockResolvedValue({
+      ok: true,
+      text: () => mockContent
+    } as any);
+
     const uri = new URL('patternfly://docs/test');
 
-    await expect(callback(uri, variables)).rejects.toThrow(McpError);
-    await expect(callback(uri, variables)).rejects.toThrow(error);
-  });
-
-  it('should handle documentation loading errors', async () => {
-    mockSearchComponents.mockReturnValue({
-      isSearchWildCardAll: false,
-      firstExactMatch: undefined,
-      exactMatches: [],
-      searchResults: []
-    });
-    mockProcessDocs.mockRejectedValue(new Error('File not found'));
-
-    const [_name, _uri, _config, handler] = patternFlyDocsTemplateResource();
-    const uri = new URL('patternfly://docs/Button');
-    const variables = { name: 'Button' };
-
-    await expect(handler(uri, variables)).rejects.toThrow(McpError);
-    await expect(handler(uri, variables)).rejects.toThrow('No documentation found');
+    await expect(resourceCallback(uri, variables as any)).rejects.toThrow(McpError);
+    await expect(resourceCallback(uri, variables as any)).rejects.toThrow(error);
   });
 });

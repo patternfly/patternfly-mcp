@@ -1,19 +1,18 @@
 import { z } from 'zod';
 import { ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js';
-import { getComponentSchema } from '@patternfly/patternfly-component-schemas/json';
 import { type McpTool } from './server';
 import { getOptions } from './options.context';
-import { memo } from './server.caching';
-import { fuzzySearch } from './server.search';
-import { componentNames } from './tool.searchPatternFlyDocs';
-
-/**
- * Derive the component schema type from @patternfly/patternfly-component-schemas
- */
-type ComponentSchema = Awaited<ReturnType<typeof getComponentSchema>>;
+import {
+  getPatternFlyComponentSchema,
+  getPatternFlyMcpResources,
+  type PatternFlyComponentSchema
+} from './patternFly.getResources';
+import { searchPatternFly } from './patternFly.search';
 
 /**
  * componentSchemas tool function
+ *
+ * @deprecated
  *
  * Creates an MCP tool that retrieves JSON Schema for PatternFly React components.
  * Uses fuzzy search to handle typos and case variations, with related fallback suggestions.
@@ -22,11 +21,6 @@ type ComponentSchema = Awaited<ReturnType<typeof getComponentSchema>>;
  * @returns MCP tool tuple [name, schema, callback]
  */
 const componentSchemasTool = (options = getOptions()): McpTool => {
-  const memoGetComponentSchema = memo(
-    async (componentName: string): Promise<ComponentSchema> => getComponentSchema(componentName),
-    options?.toolMemoOptions?.usePatternFlyDocs
-  );
-
   const callback = async (args: any = {}) => {
     const { componentName } = args;
 
@@ -37,28 +31,31 @@ const componentSchemasTool = (options = getOptions()): McpTool => {
       );
     }
 
-    if (componentName.length > options.maxSearchLength) {
+    if (componentName.length > options.minMax.inputStrings.max) {
       throw new McpError(
         ErrorCode.InvalidParams,
-        `Component name exceeds maximum length of ${options.maxSearchLength} characters.`
+        `Component name exceeds maximum length of ${options.minMax.inputStrings.max} characters.`
       );
     }
 
-    // Use fuzzySearch with `isFuzzyMatch` to handle exact and intentional suggestions in one pass
-    const { results } = fuzzySearch(componentName, componentNames, {
-      maxDistance: 3,
-      maxResults: 5,
-      isFuzzyMatch: true,
-      deduplicateByNormalized: true
-    });
+    const { latestVersion } = await getPatternFlyMcpResources.memo();
+    const { exactMatches, remainingMatches } = await searchPatternFly.memo(
+      componentName,
+      { version: latestVersion, section: 'components' },
+      { maxDistance: 3, maxResults: 5 }
+    );
 
-    const exact = results.find(result => result.matchType === 'exact');
+    const exact = exactMatches.find(match => match.isSchemasAvailable === true);
 
     if (exact) {
-      let componentSchema: ComponentSchema;
+      let componentSchema: PatternFlyComponentSchema | undefined;
 
       try {
-        componentSchema = await memoGetComponentSchema(exact.item);
+        componentSchema = await getPatternFlyComponentSchema.memo(exact.item);
+
+        if (componentSchema === undefined) {
+          throw new Error(`Component schema for "${exact.item}" doesn't exist.`);
+        }
       } catch (error) {
         throw new McpError(
           ErrorCode.InternalError,
@@ -76,7 +73,7 @@ const componentSchemasTool = (options = getOptions()): McpTool => {
       };
     }
 
-    const suggestions = results.map(result => result.item).slice(0, 3);
+    const suggestions = remainingMatches.map(result => result.item).slice(0, 3);
     const suggestionMessage = suggestions.length
       ? `Did you mean ${suggestions.map(suggestion => `"${suggestion}"`).join(', ')}?`
       : 'No similar components found.';
@@ -96,7 +93,7 @@ const componentSchemasTool = (options = getOptions()): McpTool => {
 
       Returns prop definitions, types, and validation rules. Use this for structured component metadata, not documentation.`,
       inputSchema: {
-        componentName: z.string().max(options.maxSearchLength).describe('Name of the PatternFly component (e.g., "Button", "Table")')
+        componentName: z.string().max(options.minMax.inputStrings.max).describe('Name of the PatternFly component (e.g., "Button", "Table")')
       }
     },
     callback

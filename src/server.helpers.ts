@@ -1,5 +1,36 @@
 import { createHash, type BinaryToTextEncoding } from 'node:crypto';
 import { extname, sep } from 'node:path';
+import { type WhitelistUrl } from './options.defaults';
+
+/**
+ * Construct a search/query string from an object of key-value pairs, optionally filtering out
+ * specific values and adding a `?` prefix.
+ *
+ * @param values - An object containing key-value pairs to be converted into a query string.
+ * @param [options] - Configuration options for constructing the query string.
+ * @param [options.filter=[undefined, null]] - Array of values to filter out from the key-value pairs.
+ * @param [options.prefix=false] - Determines whether to prepend a "?" to the query string.
+ * @returns The constructed query string, optionally prefixed with "?", or `undefined` if no valid key-value pairs remain.
+ */
+const buildSearchString = (
+  values: Record<string, unknown>,
+  { filter = [undefined, null], prefix = false }: { filter?: unknown[], prefix?: boolean } = {}
+) => {
+  let entries = Object.entries(values);
+
+  if (filter) {
+    entries = entries.filter(([_key, value]) => !filter.includes(value));
+  }
+
+  if (!entries.length) {
+    return undefined;
+  }
+
+  const entriesToString = entries.sort(([aKey], [bKey]) => aKey.localeCompare(bKey)).map(([key, value]) => [key, `${value}`]);
+  const searchParams = new URLSearchParams(Object.fromEntries(entriesToString));
+
+  return prefix ? `?${searchParams.toString()}` : searchParams.toString();
+};
 
 /**
  * Check if a value is a valid port number.
@@ -387,6 +418,50 @@ const generateHash = (anyValue: unknown): string => {
 };
 
 /**
+ * Check if a string URL matches a whitelist entry
+ *
+ * @param url - string URL to check
+ * @param {WhitelistUrl[]} whitelist - List of whitelist entries
+ * @param options - Options for URL validation
+ * @param options.allowedProtocols - List of allowed protocols for URL validation
+ *
+ * @returns `true` if the URL matches any whitelist entry
+ */
+const isWhitelistedUrl = (url: string, whitelist: WhitelistUrl[], { allowedProtocols = ['http', 'https'] } = {}) => {
+  if (typeof url !== 'string' || !isUrl(url, { allowedProtocols })) {
+    return false;
+  }
+
+  try {
+    const { host, pathname, protocol } = new URL(url);
+    const updatedProtocol = protocol.toLowerCase();
+    const updatedHost = host.toLowerCase();
+    const updatedPath = pathname.toLowerCase();
+
+    return whitelist.some(entry => {
+      const listUrl = new URL(entry);
+      const listProtocol = listUrl.protocol.toLowerCase();
+      const listHost = listUrl.host.toLowerCase();
+      const listPath = listUrl.pathname.toLowerCase();
+
+      const protocolMatch = updatedProtocol === listProtocol;
+      const hostMatch = updatedHost === listHost || updatedHost.endsWith(`.${listHost}`);
+      let pathMatch = listPath === '/' || updatedPath === listPath;
+
+      if (!pathMatch) {
+        const checkDir = (listPath.endsWith('/') && listPath) || `${listPath}/`;
+
+        pathMatch = updatedPath.startsWith(checkDir);
+      }
+
+      return protocolMatch && hostMatch && pathMatch;
+    });
+  } catch {
+    return false;
+  }
+};
+
+/**
  * Join an array of values with a separator, optionally filtering out falsy values.
  *
  * - `stringJoin.basic` Join argument values with a single space separator
@@ -463,6 +538,7 @@ const timeoutFunction = async <TReturn>(
 };
 
 export {
+  buildSearchString,
   freezeObject,
   generateHash,
   hashCode,
@@ -474,6 +550,7 @@ export {
   isPromise,
   isReferenceLike,
   isUrl,
+  isWhitelistedUrl,
   mergeObjects,
   portValid,
   stringJoin,

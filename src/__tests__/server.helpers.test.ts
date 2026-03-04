@@ -1,4 +1,5 @@
 import {
+  buildSearchString,
   freezeObject,
   generateHash,
   hashCode,
@@ -8,11 +9,56 @@ import {
   isReferenceLike,
   isUrl,
   isPath,
+  isWhitelistedUrl,
   mergeObjects,
   portValid,
   stringJoin,
   timeoutFunction
 } from '../server.helpers';
+
+describe('buildSearchString', () => {
+  it.each([
+    {
+      description: 'basic',
+      values: {
+        lorem: 'ipsum'
+      },
+      expected: 'lorem=ipsum'
+    },
+    {
+      description: 'with prefix',
+      values: {
+        lorem: 'ipsum'
+      },
+      options: {
+        prefix: true
+      },
+      expected: '?lorem=ipsum'
+    },
+    {
+      description: 'null, undefined, and with prefix',
+      values: {
+        lorem: 'ipsum',
+        dolor: undefined,
+        ipsum: null,
+        amet: 'dolor'
+      },
+      options: {
+        prefix: true
+      },
+      expected: '?amet=dolor&lorem=ipsum'
+    },
+    {
+      description: 'basic encoding',
+      values: {
+        lorem: 'ipsum dolor'
+      },
+      expected: 'lorem=ipsum+dolor'
+    }
+  ])('should build a search string, $description', ({ values, options, expected }) => {
+    expect(buildSearchString(values, options || {})).toBe(expected);
+  });
+});
 
 describe('freezeObject', () => {
   it.each([
@@ -601,6 +647,109 @@ describe('isPath', () => {
     { description: 'Windows separator file extension', file: 'C:\\path\\to\\another\\file.txt', options: { sep: '\\' }, expected: true }
   ])('should validate $description', ({ file, options, expected }) => {
     expect(isPath(file, { sep: '/', ...options } as any)).toBe(expected);
+  });
+});
+
+describe('isWhitelistedUrl', () => {
+  it.each([
+    {
+      description: 'exact host match, root path',
+      url: 'https://patternfly.org',
+      expected: true
+    },
+    {
+      description: 'exact host match, sub path',
+      url: 'https://patternfly.org/v6/components/button',
+      expected: true
+    },
+    {
+      description: 'subdomain match',
+      url: 'https://www.patternfly.org',
+      expected: true
+    },
+    {
+      description: 'deeper subdomain match',
+      url: 'https://v6.docs.patternfly.org',
+      expected: true
+    },
+    {
+      description: 'host match, exact allowed path prefix',
+      url: 'https://github.com/patternfly',
+      expected: true
+    },
+    {
+      description: 'host match, sub path of allowed prefix',
+      url: 'https://github.com/patternfly/patternfly-react',
+      expected: true
+    },
+    {
+      description: 'host match, deeper allowed path',
+      url: 'https://raw.githubusercontent.com/patternfly/patternfly-mcp/main/README.md',
+      expected: true
+    },
+    {
+      description: 'host mismatch',
+      url: 'https://example.com',
+      expected: false
+    },
+    {
+      description: 'host mismatch, whitelisted host in path',
+      url: 'https://example.com/patternfly.org',
+      expected: false
+    },
+    {
+      description: 'host match, path mismatch (not a prefix)',
+      url: 'https://github.com/other-org/patternfly',
+      expected: false
+    },
+    {
+      description: 'host match, path mismatch (different repo)',
+      url: 'https://raw.githubusercontent.com/patternfly/other-repo',
+      expected: false
+    },
+    {
+      description: 'protocol mismatch (not in allowedProtocols)',
+      url: 'http://patternfly.org',
+      expected: false
+    },
+    {
+      description: 'case-insensitive host match',
+      url: 'https://PATTERNFLY.ORG',
+      expected: true
+    },
+    {
+      description: 'case-insensitive path match',
+      url: 'https://github.com/PATTERNFLY/README.md',
+      expected: true
+    },
+    {
+      description: 'invalid URL string',
+      url: 'not-a-url',
+      expected: false
+    }
+  ])('should confirm if a URL is whitelisted, $description', ({ url, expected }) => {
+    const whitelist = [
+      'https://patternfly.org',
+      'https://github.com/patternfly',
+      'https://raw.githubusercontent.com/patternfly/patternfly-mcp'
+    ] as any[];
+
+    expect(isWhitelistedUrl(url, whitelist)).toBe(expected);
+  });
+
+  it('should support custom allowed protocols', () => {
+    const customWhitelist = ['ftp://files.patternfly.org'] as any;
+    const result = isWhitelistedUrl(
+      'ftp://files.patternfly.org/file.txt',
+      customWhitelist,
+      { allowedProtocols: ['ftp'] }
+    );
+
+    expect(result).toBe(true);
+  });
+
+  it('should return false for empty whitelist', () => {
+    expect(isWhitelistedUrl('https://patternfly.org', [])).toBe(false);
   });
 });
 

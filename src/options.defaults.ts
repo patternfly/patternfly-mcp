@@ -16,9 +16,7 @@ import { type ToolModule } from './server.toolsUser';
  * @property isHttp - Flag indicating whether the server is running in HTTP mode.
  * @property {HttpOptions} http - HTTP server options.
  * @property {LoggingOptions} logging - Logging options.
- * @property maxDocsToLoad - Maximum number of docs to load.
- * @property maxSearchLength - Maximum length for search strings.
- * @property recommendedMaxDocsToLoad - Recommended maximum number of docs to load.
+ * @property {MinMax} minMax - Minimum and maximum ranges for various options.
  * @property {typeof MODE_LEVELS} mode - Specifies the mode of operation.
  *    - `cli`: Command-line interface mode.
  *    - `programmatic`: Programmatic interaction mode where the application is used as a library or API.
@@ -27,18 +25,10 @@ import { type ToolModule } from './server.toolsUser';
  * @property name - Name of the package.
  * @property nodeVersion - Node.js major version.
  * @property {PatternFlyOptions} patternflyOptions - PatternFly-specific options.
- * @property pfExternal - PatternFly external docs URL.
- * @property pfExternalDesignComponents - PatternFly design guidelines' components' URL.
- * @property pfExternalExamplesComponents - PatternFly examples' core components' URL.
- * @property pfExternalExamplesLayouts - PatternFly examples' core layouts' URL.
- * @property pfExternalExamplesCharts - PatternFly examples' charts' components' URL.
- * @property pfExternalExamplesTable - PatternFly examples' table components' URL.
- * @property pfExternalChartsDesign - PatternFly charts' design guidelines URL.
- * @property pfExternalDesignLayouts - PatternFly design guidelines' layouts' URL.
- * @property pfExternalAccessibility - PatternFly accessibility URL.
  * @property pluginIsolation - Isolation preset for external plugins.
  * @property {PluginHostOptions} pluginHost - Plugin host options.
  * @property repoName - Name of the repository.
+ * @property {RepoResources} repoResources - Repository resources.
  * @property {typeof RESOURCE_MEMO_OPTIONS} resourceMemoOptions - Resource-level memoization options.
  * @property separator - Default string delimiter.
  * @property {StatsOptions} stats - Stats options.
@@ -57,9 +47,7 @@ interface DefaultOptions<TLogOptions = LoggingOptions> {
   http: HttpOptions;
   isHttp: boolean;
   logging: TLogOptions;
-  maxDocsToLoad: number;
-  maxSearchLength: number;
-  recommendedMaxDocsToLoad: number;
+  minMax: MinMax;
   mode: 'cli' | 'programmatic' | 'test';
   modeOptions: ModeOptions;
   name: string;
@@ -67,16 +55,8 @@ interface DefaultOptions<TLogOptions = LoggingOptions> {
   patternflyOptions: PatternFlyOptions;
   pluginIsolation: 'none' | 'strict';
   pluginHost: PluginHostOptions;
-  pfExternal: string;
-  pfExternalDesignComponents: string;
-  pfExternalExamplesComponents: string;
-  pfExternalExamplesLayouts: string;
-  pfExternalExamplesCharts: string;
-  pfExternalExamplesTable: string;
-  pfExternalChartsDesign: string;
-  pfExternalDesignLayouts: string;
-  pfExternalAccessibility: string;
   repoName: string | undefined;
+  repoResources: RepoResources;
   resourceMemoOptions: Partial<typeof RESOURCE_MEMO_OPTIONS>;
   resourceModules: unknown | unknown[];
   separator: string;
@@ -145,6 +125,35 @@ interface LoggingOptions {
 }
 
 /**
+ * Minimum and maximum ranges for various options.
+ *
+ * @interface MinMax
+ *
+ * @property urlString Minimum and maximum length for URL strings.
+ * @property toolSearches Minimum and maximum number of tool searches.
+ * @property inputStrings Minimum and maximum length for input strings.
+ * @property docsToLoad Minimum and maximum number of docs to load.
+ */
+interface MinMax {
+  urlString: {
+    min: number;
+    max: number;
+  }
+  toolSearches: {
+    min: number;
+    max: number;
+  }
+  inputStrings: {
+    min: number;
+    max: number;
+  }
+  docsToLoad: {
+    min: number;
+    max: number;
+  }
+}
+
+/**
  * Mode-specific options.
  *
  * @interface ModeOptions
@@ -160,6 +169,11 @@ interface ModeOptions {
 }
 
 /**
+ * A string that must start with a valid protocol.
+ */
+type WhitelistUrl = `${'http' | 'https'}://${string}`;
+
+/**
  * PatternFly-specific options.
  *
  * @property availableResourceVersions List of available PatternFly resource versions to the MCP server.
@@ -173,10 +187,12 @@ interface ModeOptions {
  * @property default.versionStrategy Strategy to use when multiple PatternFly versions are detected.
  *    - 'highest': Use the highest major version found.
  *    - 'lowest': Use the lowest major version found.
+ * @property {WhitelistUrl[]} urlWhitelist List of allowed URLs to fetch PatternFly resources from.
+ * @property urlWhitelistProtocols List of allowed URL protocols to validate against when fetching PatternFly resources.
  */
 interface PatternFlyOptions {
   availableResourceVersions: ('6.0.0')[];
-  availableSearchVersions: ('current' | 'detected' | 'latest' | 'v6')[];
+  availableSearchVersions: ('current' | 'latest' | 'v6')[];
   availableSchemasVersions: ('v6')[];
   default: {
     latestSemVer: '6.0.0';
@@ -184,7 +200,9 @@ interface PatternFlyOptions {
     latestSchemasVersion: 'v6';
     versionWhitelist: string[];
     versionStrategy: 'highest' | 'lowest';
-  }
+  },
+  urlWhitelist: WhitelistUrl[];
+  urlWhitelistProtocols: string[];
 }
 
 /**
@@ -198,6 +216,19 @@ interface PluginHostOptions {
   loadTimeoutMs: number;
   invokeTimeoutMs: number;
   gracePeriodMs: number;
+}
+
+/**
+ * Repo resources.
+ *
+ * @property bugs URL for bug reports.
+ * @property git URL for the repository.
+ * @property homepage URL for the project homepage.
+ */
+interface RepoResources {
+  bugs: string;
+  git: string;
+  homepage: string;
 }
 
 /**
@@ -276,6 +307,28 @@ const HTTP_OPTIONS: HttpOptions = {
 };
 
 /**
+ * Minimum and maximum ranges for various options.
+ */
+const MIN_MAX: MinMax = {
+  urlString: {
+    min: 11,
+    max: 1500
+  },
+  toolSearches: {
+    min: 0,
+    max: 10
+  },
+  inputStrings: {
+    min: 1,
+    max: 256
+  },
+  docsToLoad: {
+    min: 0,
+    max: 15
+  }
+};
+
+/**
  * Mode-specific options.
  */
 const MODE_OPTIONS: ModeOptions = {
@@ -291,6 +344,15 @@ const PLUGIN_HOST_OPTIONS: PluginHostOptions = {
   loadTimeoutMs: 5000,
   invokeTimeoutMs: 10_000,
   gracePeriodMs: 2000
+};
+
+/**
+ * Default repo resources.
+ */
+const REPO_RESOURCES: RepoResources = {
+  bugs: packageJson.bugs?.url || '',
+  git: packageJson.repository?.url || '',
+  homepage: packageJson.homepage || ''
 };
 
 /**
@@ -371,7 +433,13 @@ const PATTERNFLY_OPTIONS: PatternFlyOptions = {
       '@patternfly/patternfly'
     ],
     versionStrategy: 'highest'
-  }
+  },
+  urlWhitelist: [
+    'https://patternfly.org',
+    'https://github.com/patternfly',
+    'https://raw.githubusercontent.com/patternfly'
+  ],
+  urlWhitelistProtocols: ['http', 'https']
 };
 
 /**
@@ -383,68 +451,6 @@ const URL_REGEX = /^(https?:)\/\//i;
  * Available operational modes for the MCP server.
  */
 const MODE_LEVELS: DefaultOptions['mode'][] = ['cli', 'programmatic', 'test'];
-
-const PF_EXTERNAL_EXAMPLES_VERSION = 'v6.4.0';
-
-/**
- * PatternFly examples URL
- */
-const PF_EXTERNAL_EXAMPLES = `https://raw.githubusercontent.com/patternfly/patternfly-react/refs/tags/${PF_EXTERNAL_EXAMPLES_VERSION}/packages`;
-
-/**
- * PatternFly examples' core components' URL.
- */
-const PF_EXTERNAL_EXAMPLES_REACT_CORE = `${PF_EXTERNAL_EXAMPLES}/react-core/src/components`;
-
-/**
- * PatternFly examples' core layouts' URL.
- */
-const PF_EXTERNAL_EXAMPLES_LAYOUTS = `${PF_EXTERNAL_EXAMPLES}/react-core/src/layouts`;
-
-/**
- * PatternFly examples' table components' URL.
- */
-const PF_EXTERNAL_EXAMPLES_TABLE = `${PF_EXTERNAL_EXAMPLES}/react-table/src/components`;
-
-/**
- * PatternFly charts' components' URL
- */
-const PF_EXTERNAL_EXAMPLES_CHARTS = `${PF_EXTERNAL_EXAMPLES}/react-charts/src/victory/components`;
-
-/**
- * PatternFly docs version to use, commit hash. Tags don't exist, but branches for older versions do.
- *
- * @see @patternfly/documentation-framework@6.30.0
- */
-const PF_EXTERNAL_VERSION = 'fb05713aba75998b5ecf5299ee3c1a259119bd74';
-
-/**
- * PatternFly docs root URL
- */
-const PF_EXTERNAL = `https://raw.githubusercontent.com/patternfly/patternfly-org/${PF_EXTERNAL_VERSION}/packages/documentation-site/patternfly-docs/content`;
-
-/**
- * PatternFly design guidelines' components' URL
- * Updated 2025-11-24: Moved from design-guidelines/components to components
- */
-const PF_EXTERNAL_DESIGN_COMPONENTS = `${PF_EXTERNAL}/design-guidelines/components`;
-
-/**
- * PatternFly design guidelines' layouts' URL
- * Updated 2025-11-24: Moved from design-guidelines/layouts to foundations-and-styles/layouts
- */
-const PF_EXTERNAL_DESIGN_LAYOUTS = `${PF_EXTERNAL}/design-guidelines/layouts`;
-
-/**
- * PatternFly accessibility URL
- * Updated 2025-11-24: Moved from accessibility to components/accessibility
- */
-const PF_EXTERNAL_ACCESSIBILITY = `${PF_EXTERNAL}/accessibility`;
-
-/**
- * PatternFly charts' design guidelines URL
- */
-const PF_EXTERNAL_CHARTS_DESIGN = `${PF_EXTERNAL}/design-guidelines/charts`;
 
 /**
  * Get the current Node.js major version.
@@ -479,27 +485,17 @@ const DEFAULT_OPTIONS: DefaultOptions = {
   isHttp: false,
   http: HTTP_OPTIONS,
   logging: LOGGING_OPTIONS,
-  maxDocsToLoad: 500,
-  maxSearchLength: 256,
-  recommendedMaxDocsToLoad: 15,
+  minMax: MIN_MAX,
   mode: 'programmatic',
   modeOptions: MODE_OPTIONS,
   name: packageJson.name,
   nodeVersion: (process.env.NODE_ENV === 'local' && 22) || getNodeMajorVersion(),
   patternflyOptions: PATTERNFLY_OPTIONS,
-  pfExternal: PF_EXTERNAL,
-  pfExternalDesignComponents: PF_EXTERNAL_DESIGN_COMPONENTS,
-  pfExternalExamplesComponents: PF_EXTERNAL_EXAMPLES_REACT_CORE,
-  pfExternalExamplesLayouts: PF_EXTERNAL_EXAMPLES_LAYOUTS,
-  pfExternalExamplesCharts: PF_EXTERNAL_EXAMPLES_CHARTS,
-  pfExternalExamplesTable: PF_EXTERNAL_EXAMPLES_TABLE,
-  pfExternalChartsDesign: PF_EXTERNAL_CHARTS_DESIGN,
-  pfExternalDesignLayouts: PF_EXTERNAL_DESIGN_LAYOUTS,
-  pfExternalAccessibility: PF_EXTERNAL_ACCESSIBILITY,
   pluginIsolation: 'strict',
   pluginHost: PLUGIN_HOST_OPTIONS,
-  resourceMemoOptions: RESOURCE_MEMO_OPTIONS,
   repoName: basename(process.cwd() || '').trim(),
+  repoResources: REPO_RESOURCES,
+  resourceMemoOptions: RESOURCE_MEMO_OPTIONS,
   stats: STATS_OPTIONS,
   resourceModules: [],
   toolMemoOptions: TOOL_MEMO_OPTIONS,
@@ -514,18 +510,6 @@ export {
   LOG_BASENAME,
   DEFAULT_OPTIONS,
   MODE_LEVELS,
-  PF_EXTERNAL,
-  PF_EXTERNAL_VERSION,
-  PF_EXTERNAL_EXAMPLES,
-  PF_EXTERNAL_EXAMPLES_CHARTS,
-  PF_EXTERNAL_EXAMPLES_REACT_CORE,
-  PF_EXTERNAL_EXAMPLES_LAYOUTS,
-  PF_EXTERNAL_EXAMPLES_TABLE,
-  PF_EXTERNAL_EXAMPLES_VERSION,
-  PF_EXTERNAL_CHARTS_DESIGN,
-  PF_EXTERNAL_DESIGN_COMPONENTS,
-  PF_EXTERNAL_DESIGN_LAYOUTS,
-  PF_EXTERNAL_ACCESSIBILITY,
   getNodeMajorVersion,
   type DefaultOptions,
   type DefaultOptionsOverrides,
@@ -536,5 +520,6 @@ export {
   type PatternFlyOptions,
   type PluginHostOptions,
   type StatsSession,
+  type WhitelistUrl,
   type XhrFetchOptions
 };

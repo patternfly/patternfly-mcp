@@ -46,6 +46,11 @@ describe('searchPatternFlyDocsTool, callback', () => {
       searchQuery: 'BUTTON'
     },
     {
+      description: 'with explicit valid version',
+      searchQuery: 'Button',
+      version: 'v6'
+    },
+    {
       description: 'with partial componentName',
       searchQuery: 'ton'
     },
@@ -64,10 +69,6 @@ describe('searchPatternFlyDocsTool, callback', () => {
     {
       description: 'with "all" searchQuery all',
       searchQuery: 'ALL'
-    },
-    {
-      description: 'with empty searchQuery all',
-      searchQuery: ''
     }
   ])('should parse parameters, $description', async ({ searchQuery }) => {
     const [_name, _schema, callback] = searchPatternFlyDocsTool();
@@ -78,18 +79,23 @@ describe('searchPatternFlyDocsTool, callback', () => {
 
   it.each([
     {
+      description: 'with empty searchQuery',
+      error: '"searchQuery" must be a string from',
+      searchQuery: ''
+    },
+    {
       description: 'with missing or undefined searchQuery',
-      error: 'Missing required parameter: searchQuery',
+      error: '"searchQuery" must be a string from',
       searchQuery: undefined
     },
     {
       description: 'with null searchQuery',
-      error: 'Missing required parameter: searchQuery',
+      error: '"searchQuery" must be a string from',
       searchQuery: null
     },
     {
       description: 'with non-string searchQuery',
-      error: 'Missing required parameter: searchQuery',
+      error: '"searchQuery" must be a string from',
       searchQuery: 123
     }
   ])('should handle errors, $description', async ({ error, searchQuery }) => {

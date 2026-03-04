@@ -1,17 +1,13 @@
 import { McpError } from '@modelcontextprotocol/sdk/types.js';
 import {
-  patternFlySchemasIndexResource,
+  patternFlyComponentsIndexResource,
   resourceCallback
-} from '../resource.patternFlySchemasIndex';
+} from '../resource.patternFlyComponentsIndex';
 import { isPlainObject } from '../server.helpers';
 
-describe('patternFlySchemasIndexResource', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
+describe('patternFlyComponentsIndexResource', () => {
   it('should have a consistent return structure', () => {
-    const resource = patternFlySchemasIndexResource();
+    const resource = patternFlyComponentsIndexResource();
 
     expect({
       name: resource[0],
@@ -23,24 +19,27 @@ describe('patternFlySchemasIndexResource', () => {
 });
 
 describe('resourceCallback', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   it.each([
     {
       description: 'default',
       variables: {},
-      expected: '# PatternFly Component JSON Schemas Index for "v6"'
+      expected: '# PatternFly Component Names Index for "v6"'
     },
     {
       description: 'explicit valid version',
       variables: {
         version: 'v6'
       },
-      expected: '# PatternFly Component JSON Schemas Index for "v6"'
+      expected: '# PatternFly Component Names Index for "v6"'
+    },
+    {
+      description: 'category',
+      variables: {
+        category: 'accessibility'
+      },
+      expected: '?category=accessibility'
     }
-  ])('should return component schemas index, $description', async ({ variables, expected }) => {
+  ])('should return context content, $description', async ({ variables, expected }) => {
     const result = await resourceCallback(undefined as any, variables);
 
     expect(result.contents).toBeDefined();
@@ -50,7 +49,7 @@ describe('resourceCallback', () => {
 
   it.each([
     {
-      description: 'version',
+      description: 'available version',
       variables: {
         version: 'v5'
       },
