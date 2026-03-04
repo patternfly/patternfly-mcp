@@ -1,15 +1,17 @@
 import { McpError } from '@modelcontextprotocol/sdk/types.js';
 import { usePatternFlyDocsTool } from '../tool.patternFlyDocs';
-import { processDocsFunction } from '../server.getResources';
+import { fetchComponentData } from '../api.fetcher';
+import { searchComponents } from '../tool.searchPatternFlyDocs';
 import { isPlainObject } from '../server.helpers';
 
-// Mock dependencies
-jest.mock('../server.getResources');
+jest.mock('../api.fetcher');
+jest.mock('../tool.searchPatternFlyDocs');
 jest.mock('../server.caching', () => ({
   memo: jest.fn(fn => fn)
 }));
 
-const mockProcessDocs = processDocsFunction as jest.MockedFunction<typeof processDocsFunction>;
+const mockFetchComponentData = fetchComponentData as jest.MockedFunction<typeof fetchComponentData>;
+const mockSearchComponents = searchComponents as jest.MockedFunction<typeof searchComponents>;
 
 describe('usePatternFlyDocsTool', () => {
   beforeEach(() => {
@@ -34,84 +36,89 @@ describe('usePatternFlyDocsTool, callback', () => {
 
   it.each([
     {
-      description: 'default',
-      value: 'components/button.md',
-      urlList: ['components/button.md']
+      description: 'with docs only',
+      name: 'Button',
+      data: { name: 'Button', info: {} as any, docs: '# Button docs' }
     },
     {
-      description: 'multiple files',
-      value: 'combined docs content',
-      urlList: ['components/button.md', 'components/card.md', 'components/table.md']
+      description: 'with docs and props',
+      name: 'Alert',
+      data: { name: 'Alert', info: {} as any, docs: '# Alert docs', props: '| Prop | Type |\n|---|---|' }
     },
     {
-      description: 'with invalid urlList',
-      value: 'invalid path',
-      urlList: ['invalid-url']
+      description: 'with docs, props, and examples',
+      name: 'Card',
+      data: { name: 'Card', info: {} as any, docs: '# Card docs', props: '| Prop | Type |', examples: ['### Example: Basic\n\n```tsx\ncode\n```'] }
     },
     {
-      description: 'with name',
-      value: 'button content',
-      name: 'button'
+      description: 'with all data types',
+      name: 'Table',
+      data: { name: 'Table', info: {} as any, docs: '# Table docs', props: '| Prop | Type |', examples: ['example'], css: '| Variable | Value |' }
     }
-  ])('should parse parameters, $description', async ({ value, urlList, name }) => {
-    mockProcessDocs.mockResolvedValue([{ content: value }] as any);
+  ])('should return documentation, $description', async ({ name, data }) => {
+    mockFetchComponentData.mockResolvedValue(data);
     const [_name, _schema, callback] = usePatternFlyDocsTool();
-    const result = await callback({ urlList, name });
+    const result = await callback({ name });
 
-    expect(mockProcessDocs).toHaveBeenCalledTimes(1);
     expect(result.content[0].text).toBeDefined();
-    expect(result.content[0].text.startsWith('# Documentation from')).toBe(true);
+    expect(result.content[0].text).toContain(name);
+  });
+
+  it('should suggest alternatives when component not found', async () => {
+    mockFetchComponentData.mockResolvedValue(undefined);
+    mockSearchComponents.mockResolvedValue({
+      isSearchWildCardAll: false,
+      firstExactMatch: undefined,
+      exactMatches: [],
+      searchResults: [{ item: 'Button', matchType: 'fuzzy', distance: 2 } as any]
+    });
+
+    const [_name, _schema, callback] = usePatternFlyDocsTool();
+
+    await expect(callback({ name: 'Buttn' })).rejects.toThrow(McpError);
+    await expect(callback({ name: 'Buttn' })).rejects.toThrow('Component "Buttn" not found');
   });
 
   it.each([
     {
-      description: 'with missing or undefined urlList',
-      error: 'Provide either a string',
-      urlList: undefined
+      description: 'with missing or undefined name',
+      error: 'Provide a string "name"',
+      name: undefined
     },
     {
-      description: 'with null urlList',
-      error: 'Provide either a string',
-      urlList: null
+      description: 'with null name',
+      error: 'Provide a string "name"',
+      name: null
     },
     {
-      description: 'when urlList is not an array',
-      error: 'Provide either a string',
-      urlList: 'not-an-array'
+      description: 'with empty name',
+      error: 'Provide a string "name"',
+      name: '   '
     },
     {
-      description: 'with empty files',
-      error: 'Provide either a string',
-      urlList: ['components/button.md', '', '   ', 'components/card.md', 'components/table.md']
-    },
-    {
-      description: 'with empty urlList',
-      error: 'Provide either a string',
-      urlList: []
-    },
-    {
-      description: 'with empty strings in a urlList',
-      error: 'Provide either a string',
-      urlList: ['', ' ']
-    },
-    {
-      description: 'with both urlList and name',
-      error: 'Provide either a string',
-      urlList: ['components/button.md'],
-      name: 'lorem ipsum'
+      description: 'with non-string name',
+      error: 'Provide a string "name"',
+      name: 123
     }
-  ])('should handle errors, $description', async ({ error, urlList, name }) => {
+  ])('should handle errors, $description', async ({ error, name }) => {
     const [_name, _schema, callback] = usePatternFlyDocsTool();
 
-    await expect(callback({ urlList, name })).rejects.toThrow(McpError);
-    await expect(callback({ urlList, name })).rejects.toThrow(error);
+    await expect(callback({ name })).rejects.toThrow(McpError);
+    await expect(callback({ name })).rejects.toThrow(error);
   });
 
-  it('should handle processing errors', async () => {
-    mockProcessDocs.mockRejectedValue(new Error('File not found'));
+  it('should handle patternfly:// URI input', async () => {
     const [_name, _schema, callback] = usePatternFlyDocsTool();
 
-    await expect(callback({ urlList: ['missing.md'] })).rejects.toThrow(McpError);
-    await expect(callback({ urlList: ['missing.md'] })).rejects.toThrow('Failed to fetch documentation');
+    await expect(callback({ name: 'patternfly://docs/Button' })).rejects.toThrow(McpError);
+    await expect(callback({ name: 'patternfly://docs/Button' })).rejects.toThrow('Direct "patternfly://" URIs are not supported');
+  });
+
+  it('should return message when component found but no content available', async () => {
+    mockFetchComponentData.mockResolvedValue({ name: 'Empty', info: {} as any });
+    const [_name, _schema, callback] = usePatternFlyDocsTool();
+    const result = await callback({ name: 'Empty' });
+
+    expect(result.content[0].text).toContain('no documentation content is available');
   });
 });

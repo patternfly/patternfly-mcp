@@ -2,6 +2,7 @@
 
 exports[`options defaults should return specific properties: defaults 1`] = `
 {
+  "apiBaseUrl": "https://staging.patternfly.org",
   "contextPath": "/",
   "contextUrl": "file:///",
   "docsPath": "/documentation",

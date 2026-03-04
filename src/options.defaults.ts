@@ -9,6 +9,7 @@ import { type ToolModule } from './server.toolsUser';
  * @interface DefaultOptions
  *
  * @template TLogOptions The logging options type, defaulting to LoggingOptions.
+ * @property apiBaseUrl - Base URL for the PatternFly doc-core API.
  * @property contextPath - Current working directory.
  * @property contextUrl - Current working directory URL.
  * @property docsPath - Path to the documentation directory.
@@ -50,6 +51,7 @@ import { type ToolModule } from './server.toolsUser';
  * @property xhrFetch - XHR and Fetch options.
  */
 interface DefaultOptions<TLogOptions = LoggingOptions> {
+  apiBaseUrl: string;
   contextPath: string;
   contextUrl: string;
   docsPath: string;
@@ -375,6 +377,12 @@ const PATTERNFLY_OPTIONS: PatternFlyOptions = {
 };
 
 /**
+ * Base URL for the PatternFly doc-core API.
+ * Used to fetch the MCP index and component data at runtime.
+ */
+const API_BASE_URL = 'https://staging.patternfly.org';
+
+/**
  * URL regex pattern for detecting external URLs
  */
 const URL_REGEX = /^(https?:)\/\//i;
@@ -472,6 +480,7 @@ const getNodeMajorVersion = (nodeVersion = process.versions.node) => {
  * @type {DefaultOptions} Default options object.
  */
 const DEFAULT_OPTIONS: DefaultOptions = {
+  apiBaseUrl: process.env.API_BASE_URL || API_BASE_URL,
   contextPath: (process.env.NODE_ENV === 'local' && '/') || resolve(process.cwd()),
   contextUrl: pathToFileURL((process.env.NODE_ENV === 'local' && '/') || resolve(process.cwd())).href,
   docsPath: (process.env.NODE_ENV === 'local' && '/documentation') || join(resolve(process.cwd()), 'documentation'),
@@ -511,6 +520,7 @@ const DEFAULT_OPTIONS: DefaultOptions = {
 };
 
 export {
+  API_BASE_URL,
   LOG_BASENAME,
   DEFAULT_OPTIONS,
   MODE_LEVELS,
