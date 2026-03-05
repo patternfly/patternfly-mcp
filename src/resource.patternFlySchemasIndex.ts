@@ -1,10 +1,17 @@
+import {
+  ResourceTemplate,
+  type CompleteResourceTemplateCallback
+} from '@modelcontextprotocol/sdk/server/mcp.js';
 import { type McpResource } from './server';
+import { memo } from './server.caching';
 import { stringJoin } from './server.helpers';
+import { assertInput, assertInputStringLength } from './server.assertions';
 import { getOptions, runWithOptions } from './options.context';
 import { getPatternFlyMcpResources } from './patternFly.getResources';
+import { type PatternFlyListResourceResult } from './resource.patternFlyDocsIndex';
 import { normalizeEnumeratedPatternFlyVersion } from './patternFly.helpers';
 import { filterPatternFly } from './patternFly.search';
-import { assertInput, assertInputStringLength } from './server.assertions';
+import { uriCategoryComplete, uriVersionComplete } from './resource.patternFlyComponentsIndex';
 
 /**
  * Name of the resource.
@@ -14,16 +21,60 @@ const NAME = 'patternfly-schemas-index';
 /**
  * URI template for the resource.
  */
-const URI_TEMPLATE = 'patternfly://schemas/index';
+const URI_TEMPLATE = 'patternfly://schemas/index{?version,category}';
+
+/**
+ * URI description for the resource.
+ */
+const URI_DESCRIPTION = `Filter by PatternFly version, and category, ${URI_TEMPLATE}`;
 
 /**
  * Resource configuration.
  */
 const CONFIG = {
   title: 'PatternFly Component Schemas Index',
-  description: 'A list of all PatternFly component names available for JSON Schema retrieval',
+  description: `A list of all PatternFly component names available for JSON Schema retrieval. ${URI_DESCRIPTION}`,
   mimeType: 'text/markdown'
 };
+
+/**
+ * List resources callback for the URI template.
+ *
+ * @returns {Promise<PatterFlyListResourceResult>} The list of available resources.
+ */
+const listResources = async () => {
+  const { availableSchemasVersions, byVersionComponentNames } = await getPatternFlyMcpResources.memo();
+  const resources: PatternFlyListResourceResult[] = [];
+
+  Array.from(byVersionComponentNames)
+    .filter(([version]) => availableSchemasVersions.includes(version))
+    .sort(([a], [b]) => b.localeCompare(a))
+    .forEach(([version]) => {
+      resources.push({
+        uri: `patternfly://schemas/index?version=${encodeURIComponent(version)}`,
+        mimeType: 'application/json',
+        name: `JSON Component Schemas Index (${version})`,
+        description: `JSON component schemas for PatternFly version ${version}. ${URI_DESCRIPTION}`
+      });
+    });
+
+  return {
+    resources: [
+      {
+        uri: 'patternfly://schemas/index',
+        mimeType: 'text/markdown',
+        name: 'JSON Component Schemas Index (Latest)',
+        description: `JSON component schemas entry point for the latest PatternFly version. This is the recommended starting point. ${URI_DESCRIPTION}`
+      },
+      ...resources.sort((a, b) => a.name.localeCompare(b.name))
+    ]
+  };
+};
+
+/**
+ * Memoized version of listResources.
+ */
+listResources.memo = memo(listResources);
 
 /**
  * Resource callback for the documentation index.
@@ -33,7 +84,7 @@ const CONFIG = {
  * @param options - Options for the resource callback.
  * @returns The resource contents.
  */
-const resourceCallback = async (passedUri: URL, variables: Record<string, string>, options = getOptions()) => {
+const resourceCallback = async (passedUri: URL, variables: Record<string, string | string[]>, options = getOptions()) => {
   const { version } = variables || {};
 
   if (version) {
@@ -109,17 +160,37 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
  * @param options - Global options
  * @returns {McpResource} The resource definition tuple
  */
-const patternFlySchemasIndexResource = (options = getOptions()): McpResource => [
-  NAME,
-  URI_TEMPLATE,
-  CONFIG,
-  async (uri, variables) => runWithOptions(options, async () => resourceCallback(uri, variables, options))
-];
+const patternFlySchemasIndexResource = (options = getOptions()): McpResource => {
+  const list = async () => runWithOptions(options, async () => listResources.memo());
+
+  const complete: { [callback: string]: CompleteResourceTemplateCallback } = {
+    category: async (...args) => runWithOptions(options, async () => uriCategoryComplete.memo(...args)),
+    version: async (...args) => runWithOptions(options, async () => uriVersionComplete.memo(...args))
+  };
+
+  const callback: McpResource[3] = async (uri, variables) =>
+    runWithOptions(options, async () => resourceCallback(uri, variables, options));
+
+  return [
+    NAME,
+    new ResourceTemplate(URI_TEMPLATE, {
+      list,
+      complete
+    }),
+    CONFIG,
+    callback,
+    {
+      complete
+    }
+  ];
+};
 
 export {
   patternFlySchemasIndexResource,
+  listResources,
   resourceCallback,
   NAME,
   URI_TEMPLATE,
+  URI_DESCRIPTION,
   CONFIG
 };

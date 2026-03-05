@@ -1,6 +1,7 @@
 import { McpError } from '@modelcontextprotocol/sdk/types.js';
 import {
   patternFlyComponentsIndexResource,
+  listResources,
   resourceCallback
 } from '../resource.patternFlyComponentsIndex';
 import { isPlainObject } from '../server.helpers';
@@ -18,19 +19,36 @@ describe('patternFlyComponentsIndexResource', () => {
   });
 });
 
+describe('listResources', () => {
+  it('should return a list of resources', async () => {
+    const resources = await listResources();
+
+    expect(resources.resources).toBeDefined();
+
+    const everyResourceSameProperties = resources.resources.every((obj: any) =>
+      Boolean(obj.uri) &&
+      /^patternfly:\/\/components\//.test(obj.uri) &&
+      Boolean(obj.name) &&
+      Boolean(obj.mimeType) &&
+      Boolean(obj.description));
+
+    expect(everyResourceSameProperties).toBe(true);
+  });
+});
+
 describe('resourceCallback', () => {
   it.each([
     {
       description: 'default',
       variables: {},
-      expected: '# PatternFly Component Names Index for "v6"'
+      expected: '# PatternFly Components Index for "v6"'
     },
     {
       description: 'explicit valid version',
       variables: {
         version: 'v6'
       },
-      expected: '# PatternFly Component Names Index for "v6"'
+      expected: '# PatternFly Components Index for "v6"'
     },
     {
       description: 'category',

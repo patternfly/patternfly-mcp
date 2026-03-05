@@ -16,7 +16,7 @@ const URI_TEMPLATE = 'patternfly://context';
  */
 const CONFIG = {
   title: 'PatternFly Design System Context',
-  description: 'Information about PatternFly design system and how to use this MCP server',
+  description: 'Information about the PatternFly design system and how to use this MCP server.',
   mimeType: 'text/markdown'
 };
 
@@ -33,31 +33,35 @@ const CONFIG = {
  *   );
  *  ```
  *
+ * @param passedUri - URI of the resource.
  * @returns {McpResource} The resource definition tuple
  */
 const patternFlyContextResource = (): McpResource => [
   NAME,
   URI_TEMPLATE,
   CONFIG,
-  async () => {
+  async (passedUri: URL) => {
     const context = `PatternFly is an open-source design system for building consistent, accessible user interfaces.
 
 **What is PatternFly?**
-PatternFly provides React components, design guidelines, and development tools for creating enterprise applications. It is used by Red Hat and other organizations to build consistent UIs with reusable components.
+PatternFly provides React components, design guidelines, and development tools for creating enterprise applications. It is used by Red Hat and other organizations to build consistent UIs with reusable components and design principles.
 
 **Key Features:**
 - React component library with TypeScript support
 - Design guidelines and accessibility standards
 - JSON Schema validation for component props
-- Comprehensive documentation and examples
+- Comprehensive documentation, examples, and AI guidance
 
 **PatternFly MCP Server:**
-This MCP server provides tools to access PatternFly documentation, component schemas, and design guidelines. Use the available tools to fetch documentation, search for component information, and retrieve component prop definitions.`;
+This MCP server provides tools and resources to access all PatternFly documentation resources ranging from design to development.
+- **MCP tools:** Can be used to search, fetch and display available documentation resources.
+- **MCP resources:** Can be used to list, filter and display available documentation resources.
+`;
 
     return {
       contents: [
         {
-          uri: 'patternfly://context',
+          uri: passedUri?.toString(),
           mimeType: 'text/markdown',
           text: stringJoin.basic(context)
         }
