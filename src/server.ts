@@ -1,5 +1,11 @@
-import { McpServer, type ResourceTemplate, type ResourceMetadata } from '@modelcontextprotocol/sdk/server/mcp.js';
+import {
+  McpServer,
+  type CompleteResourceTemplateCallback,
+  type ResourceTemplate,
+  type ResourceMetadata
+} from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { registerResource } from './mcpSdk';
 import { usePatternFlyDocsTool } from './tool.patternFlyDocs';
 import { searchPatternFlyDocsTool } from './tool.searchPatternFlyDocs';
 import { componentSchemasTool } from './tool.componentSchemas';
@@ -52,12 +58,28 @@ type McpToolCreator = ((options?: GlobalOptions) => McpTool) & { toolName?: stri
 
 /**
  * A resource registered with the MCP server.
+ *
+ * 0. `name`: Registered name of the resource.
+ * 1. `uriOrTemplate`: URI string or template.
+ * 2. `config`: Resource configuration metadata.
+ * 3. `handler`: Resource handler function.
+ * 4. `metadata`: Optional **internal metadata** object. NOT used by the standard MCP SDK
+ *     resource registry.
+ *    - `metadata.complete`: Callback functions for resource read operations completion
+ *    - `metadata.registerAllSearchCombinations`: Whether to register all search parameter permutations or not.
  */
 type McpResource = [
   name: string,
   uriOrTemplate: string | ResourceTemplate,
   config: ResourceMetadata,
-  handler: (...args: any[]) => any | Promise<any>
+  handler: (...args: any[]) => any | Promise<any>,
+  metadata?: {
+    registerAllSearchCombinations?: boolean | undefined;
+    complete: {
+      [key: string]: CompleteResourceTemplateCallback;
+    } | undefined;
+    [key: string]: unknown;
+  } | undefined
 ];
 
 /**
@@ -244,6 +266,7 @@ const runServer = async (options: ServerOptions = getOptions(), {
         capabilities: {
           tools: {},
           resources: {},
+          completions: {},
           ...(enableProtocolLogging ? { logging: {} } : {})
         },
         ...(serverInstructions ? { instructions: serverInstructions } : {})
@@ -292,26 +315,27 @@ const runServer = async (options: ServerOptions = getOptions(), {
     }
 
     updatedResources.forEach(resourceCreator => {
-      const [name, uri, config, callback] = resourceCreator(options);
+      const [name, uri, config, callback, metadata] = resourceCreator(options);
 
       log.info(`Registered resource: ${name}`);
 
-      // Note: uri is being cast as any to bypass a type mismatch introduced at the MCP SDK level. Rereview when SDK is updated.
-      server?.registerResource(name, uri as any, config, (...args: unknown[]) =>
-        runWithSession(session, async () =>
-          runWithOptions(options, async () => {
-            log.debug(
-              `Running resource "${name}"`,
-              `isArgs = ${args?.length > 0}`
-            );
+      if (server) {
+        registerResource(server, name, uri, config, (...args: unknown[]) =>
+          runWithSession(session, async () =>
+            runWithOptions(options, async () => {
+              log.debug(
+                `Running resource "${name}"`,
+                `isArgs = ${args?.length > 0}`
+              );
 
-            const timedReport = stat.traffic();
-            const resourceResult = await callback(...args);
+              const timedReport = stat.traffic();
+              const resourceResult = await callback(...args);
 
-            timedReport({ resource: name });
+              timedReport({ resource: name });
 
-            return resourceResult;
-          })));
+              return resourceResult;
+            })), metadata);
+      }
     });
 
     updatedTools.forEach(toolCreator => {

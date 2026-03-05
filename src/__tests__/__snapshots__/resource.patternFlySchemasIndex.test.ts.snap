@@ -5,6 +5,29 @@ exports[`patternFlySchemasIndexResource should have a consistent return structur
   "config": true,
   "handler": [Function],
   "name": "patternfly-schemas-index",
-  "uri": "patternfly://schemas/index",
+  "uri": ResourceTemplate {
+    "_callbacks": {
+      "complete": {
+        "category": [Function],
+        "version": [Function],
+      },
+      "list": [Function],
+    },
+    "_uriTemplate": UriTemplate {
+      "parts": [
+        "patternfly://schemas/index",
+        {
+          "exploded": false,
+          "name": "version",
+          "names": [
+            "version",
+            "category",
+          ],
+          "operator": "?",
+        },
+      ],
+      "template": "patternfly://schemas/index{?version,category}",
+    },
+  },
 }
 `;

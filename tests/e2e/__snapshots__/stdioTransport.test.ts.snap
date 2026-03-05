@@ -1,20 +1,5 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`Builtin resources, STDIO should expose expected resources and templates 1`] = `
-{
-  "resourceNames": [
-    "patternfly://components/index",
-    "patternfly://context",
-    "patternfly://docs/index",
-    "patternfly://schemas/index",
-  ],
-  "templateNames": [
-    "patternfly://docs/{name}",
-    "patternfly://schemas/{name}",
-  ],
-}
-`;
-
 exports[`Builtin tools, STDIO should concatenate headers and separator with two remote files 1`] = `
 "# Content for http://127.0.0.1:5010/notARealPath/AboutModal.md
 Source: http://127.0.0.1:5010/notARealPath/AboutModal.md
