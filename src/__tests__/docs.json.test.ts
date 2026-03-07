@@ -13,10 +13,8 @@ describe('docs.json', () => {
 
       if (entry.path.includes('documentation:')) {
         baseHashes.add('documentation:');
-      } else if (entry.path.includes('/patternfly/patternfly-org/')) {
-        baseHashes.add(entry.path.split('/patternfly/patternfly-org/')[1]?.split('/')[0]);
-      } else if (entry.path.includes('/patternfly/patternfly-react/')) {
-        baseHashes.add(entry.path.split('/patternfly/patternfly-react/')[1]?.split('/')[0]);
+      } else if (/^https:\/\/raw\.githubusercontent\.com\/patternfly\/p[a-zA-Z0-9-]+\//.test(entry.path)) {
+        baseHashes.add(entry.path.split(/\/patternfly\/p[a-zA-Z0-9-]+\//)[1]?.split('/')[0]);
       } else {
         baseHashes.add(`new-resource-${entry.path}`);
       }
@@ -31,7 +29,7 @@ describe('docs.json', () => {
      * If this increases, hashes need to be realigned. Do not randomly change this value.
      * 1 (v6 org) + 1 (v6 react) + 1 (v5 org) + 1 (local)
      */
-    expect(baseHashes.size).toBe(4);
+    expect(baseHashes.size).toBe(5);
 
     /**
      * Confirm total docs count matches metadata

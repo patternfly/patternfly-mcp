@@ -2,8 +2,8 @@
   "version": "1",
   "generated": "2026-03-05T00:00:00.000Z",
   "meta": {
-    "totalEntries": 128,
-    "totalDocs": 305,
+    "totalEntries": 130,
+    "totalDocs": 311,
     "source": "patternfly-mcp-internal"
   },
   "docs": {
@@ -3306,10 +3306,74 @@
         "displayName": "Open UI Automation",
         "description": "Open UI Automation (OUIA) is a specification for standardizing how UIs expose attributes for automated testing.",
         "pathSlug": "openui-automation",
-        "section": "components",
+        "section": "upgrade",
         "category": "react",
         "source": "github",
         "path": "https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/helpers/OUIA/OUIA.md",
+        "version": "v6"
+      }
+    ],
+    "UpgradeGuide": [
+      {
+        "displayName": "PatternFly 6 upgrade guide",
+        "description": "PatternFly 6 introduces exciting new features and functionality. Before you upgrade, familiarize yourself with these significant changes.",
+        "pathSlug": "upgrade-guide-pf6",
+        "section": "upgrade",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/site/src/content/get-started/upgrade.mdx",
+        "version": "v6"
+      },
+      {
+        "displayName": "Codemods PatternFly 3 to PatternFly 4",
+        "description": "pf-codemods is an eslint wrapper to update @patternfly/react-core@3.x.x code to 4.x.x.",
+        "pathSlug": "codemods-pf4",
+        "section": "upgrade",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/pf-codemods/63df51df5cc6af2f3d83de4c0991c9e65625675f/packages/pf-codemods/v4-README.md",
+        "version": "v4"
+      },
+      {
+        "displayName": "Codemods PatternFly 4 to PatternFly 5",
+        "description": "pf-codemods is an eslint wrapper to update @patternfly/react-core@4.x.x code to 5.x.x.",
+        "pathSlug": "codemods-pf5",
+        "section": "upgrade",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/pf-codemods/63df51df5cc6af2f3d83de4c0991c9e65625675f/packages/pf-codemods/v5-README.md",
+        "version": "v5"
+      },
+      {
+        "displayName": "Codemods PatternFly 5 to PatternFly 6",
+        "description": "pf-codemods is an eslint wrapper to update @patternfly/react-core@5.x.x code to 6.x.x.",
+        "pathSlug": "codemods-pf6",
+        "section": "upgrade",
+        "category": "react",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/pf-codemods/63df51df5cc6af2f3d83de4c0991c9e65625675f/packages/pf-codemods/README.md",
+        "version": "v6"
+      }
+    ],
+    "GettingStarted": [
+      {
+        "displayName": "Design with PatternFly 6",
+        "description": "To start designing with PatternFly 6 you will need to install our PatternFly 6 design kit.",
+        "pathSlug": "design-with-patternfly",
+        "section": "getting-started",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/get-started/design.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Develop with PatternFly 6",
+        "description": "To start developing with PatternFly 6 learn about our design system and tokens.",
+        "pathSlug": "develop-with-patternfly",
+        "section": "getting-started",
+        "category": "development-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/get-started/develop.md",
         "version": "v6"
       }
     ]
