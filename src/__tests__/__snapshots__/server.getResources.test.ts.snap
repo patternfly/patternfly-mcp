@@ -93,7 +93,7 @@ exports[`promiseQueue should execute promises in order: allSettled 1`] = `
 
 exports[`resolveLocalPathFunction should return a consistent path, basic 1`] = `"/app/project/lorem-ipsum.md"`;
 
-exports[`resolveLocalPathFunction should return a consistent path, documentation slug 1`] = `"/documentation/guidelines/README.md"`;
+exports[`resolveLocalPathFunction should return a consistent path, documentation slug 1`] = `"/app/project/documentation/guidelines/README.md"`;
 
 exports[`resolveLocalPathFunction should return a consistent path, relative path with valid navigation 1`] = `"/app/project/file.md"`;
 

@@ -14,4 +14,4 @@ exports[`usePatternFlyDocsTool, callback should attempt to parse parameters, sin
 
 exports[`usePatternFlyDocsTool, callback should attempt to parse parameters, with invalid urlList 1`] = `"# Content for invalid-path"`;
 
-exports[`usePatternFlyDocsTool, callback should attempt to parse parameters, with name and actual path 1`] = `"# Documentation for React Chatbot (v6) [AI Guidance]"`;
+exports[`usePatternFlyDocsTool, callback should attempt to parse parameters, with name and actual path 1`] = `"# Content for documentation:chatbot/README.md"`;

@@ -171,10 +171,19 @@ const resolveLocalPathFunction = (path: string, { sep: separator = sep } = {}, o
   };
 
   if (path.startsWith(documentationPrefix)) {
-    const base = options.docsPath;
-    const resolved = resolve(base, path.slice(documentationPrefix.length));
+    const subPath = path.slice(documentationPrefix.length);
+    const failedBasePaths = [];
 
-    return confirmThenReturnResolvedBase(base, resolved);
+    for (const base of options.docsPaths) {
+      const resolved = resolve(base, subPath);
+
+      try {
+        return confirmThenReturnResolvedBase(base, resolved);
+      } catch {
+        failedBasePaths.push(base);
+      }
+    }
+    throw new Error(`Access denied: path ${path} does not match any allowed documentation directories ${failedBasePaths.join(', ')}`);
   }
 
   if (isUrl(path)) {

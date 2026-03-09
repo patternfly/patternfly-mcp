@@ -21,7 +21,6 @@
   },
   "files": [
     "dist/**/*",
-    "documentation/**/*",
     "README.md",
     "mcp-config-example.json"
   ],
