@@ -1,4 +1,4 @@
-import { basename, join, resolve } from 'node:path';
+import { basename, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import packageJson from '../package.json';
 import { type ToolModule } from './server.toolsUser';
@@ -11,7 +11,7 @@ import { type ToolModule } from './server.toolsUser';
  * @template TLogOptions The logging options type, defaulting to LoggingOptions.
  * @property contextPath - Current working directory.
  * @property contextUrl - Current working directory URL.
- * @property docsPath - Path to the documentation directory.
+ * @property docsPaths - List of allowed local documentation directories handled by `docsPathSlug`
  * @property docsPathSlug - Local docs slug. Used for resolving local stored documentation.
  * @property isHttp - Flag indicating whether the server is running in HTTP mode.
  * @property {HttpOptions} http - HTTP server options.
@@ -30,6 +30,8 @@ import { type ToolModule } from './server.toolsUser';
  * @property repoName - Name of the repository.
  * @property {RepoResources} repoResources - Repository resources.
  * @property {typeof RESOURCE_MEMO_OPTIONS} resourceMemoOptions - Resource-level memoization options.
+ * @property resourceModules - Array for programmatic registration of resource provider modules, similar to `toolModules` but
+ *     for MCP resources and currently only internal.
  * @property separator - Default string delimiter.
  * @property {StatsOptions} stats - Stats options.
  * @property {typeof TOOL_MEMO_OPTIONS} toolMemoOptions - Tool-specific memoization options.
@@ -42,7 +44,7 @@ import { type ToolModule } from './server.toolsUser';
 interface DefaultOptions<TLogOptions = LoggingOptions> {
   contextPath: string;
   contextUrl: string;
-  docsPath: string;
+  docsPaths: string[];
   docsPathSlug: string;
   http: HttpOptions;
   isHttp: boolean;
@@ -480,7 +482,7 @@ const getNodeMajorVersion = (nodeVersion = process.versions.node) => {
 const DEFAULT_OPTIONS: DefaultOptions = {
   contextPath: (process.env.NODE_ENV === 'local' && '/') || resolve(process.cwd()),
   contextUrl: pathToFileURL((process.env.NODE_ENV === 'local' && '/') || resolve(process.cwd())).href,
-  docsPath: (process.env.NODE_ENV === 'local' && '/documentation') || join(resolve(process.cwd()), 'documentation'),
+  docsPaths: [],
   docsPathSlug: 'documentation:',
   isHttp: false,
   http: HTTP_OPTIONS,

@@ -76,7 +76,7 @@ describe('Builtin tools, STDIO', () => {
     expect({ toolNames }).toMatchSnapshot();
   });
 
-  it('should concatenate headers and separator with two local files', async () => {
+  it('should concatenate headers and separator with two fixture server routes', async () => {
     const req = {
       jsonrpc: '2.0',
       id: 1,
@@ -85,8 +85,9 @@ describe('Builtin tools, STDIO', () => {
         name: 'usePatternFlyDocs',
         arguments: {
           urlList: [
-            'documentation/guidelines/README.md',
-            'documentation:components/README.md'
+            // README.md matches /README\.md/ route in fetchMock
+            `${URL_MOCK}README.md`,
+            `${URL_MOCK}AboutModal.md`
           ]
         }
       }
@@ -95,8 +96,10 @@ describe('Builtin tools, STDIO', () => {
     const response = await CLIENT.send(req);
     const text = response?.result?.content?.[0]?.text || '';
 
+    expect(text.includes('AboutModal.md')).toBe(true);
+    expect(text.includes('This is a test document for mocking remote HTTP requests')).toBe(true);
+    expect(text.includes('README.md')).toBe(true);
     expect(text.includes('This is a generated offline fixture')).toBe(true);
-    expect(text).toMatchSnapshot();
   });
 
   it('should concatenate headers and separator with two remote files', async () => {

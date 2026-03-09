@@ -10,6 +10,7 @@ import {
   loadFileFetch,
   resolveLocalPathFunction
 } from '../server.getResources';
+import { runWithOptions } from '../options.context';
 import { type GlobalOptions } from '../options';
 import { DEFAULT_OPTIONS } from '../options.defaults';
 
@@ -254,7 +255,7 @@ describe('resolveLocalPathFunction', () => {
       path: './subdir/../file.md'
     }
   ])('should return a consistent path, $description', ({ path }) => {
-    const result = resolveLocalPathFunction(path, undefined, { ...DEFAULT_OPTIONS, contextPath: '/app/project' });
+    const result = resolveLocalPathFunction(path, undefined, { ...DEFAULT_OPTIONS, contextPath: '/app/project', docsPaths: ['/app/project/documentation'] });
 
     expect(result).toMatchSnapshot();
   });
@@ -281,7 +282,7 @@ describe('resolveLocalPathFunction', () => {
       shouldThrow: 'Access denied'
     }
   ])('should return a consistent path or throw, $description', ({ path, shouldThrow }) => {
-    expect(() => resolveLocalPathFunction(path, undefined, { ...DEFAULT_OPTIONS, contextPath: '/app/project' })).toThrow(shouldThrow);
+    expect(() => resolveLocalPathFunction(path, undefined, { ...DEFAULT_OPTIONS, contextPath: '/app/project', docsPaths: ['/app/project/documentation'] })).toThrow(shouldThrow);
   });
 });
 
@@ -313,7 +314,7 @@ describe('loadFileFetch', () => {
     readLocalFileFunction.memo = mockReadCall;
     fetchUrlFunction.memo = mockFetchCall;
 
-    const result = await loadFileFetch(pathUrl);
+    const result = await runWithOptions({ ...DEFAULT_OPTIONS, docsPaths: ['/app/project/documentation'], contextPath: '/app/project' }, () => loadFileFetch(pathUrl));
 
     expect(mockFetchCall).toHaveBeenCalledTimes(expectedIsFetch ? 1 : 0);
     expect(mockReadCall).toHaveBeenCalledTimes(expectedIsFetch ? 0 : 1);

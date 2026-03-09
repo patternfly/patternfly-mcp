@@ -313,6 +313,8 @@ export const setupFetchMock = async (options: FetchMockSetup = {}): Promise<Fetc
         // If url is a direct path (starts with '/'), use it directly
         if (typeof matchedRoute.url === 'string' && matchedRoute.url.startsWith('/')) {
           fixturePath = matchedRoute.url;
+        } else if (isDocSlug) {
+          fixturePath = `/${url.replace(/:/g, '_')}`;
         } else {
           // For regex/pattern matches, extract the pathname from the matched URL
           try {
