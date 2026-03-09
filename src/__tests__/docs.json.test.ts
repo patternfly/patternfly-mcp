@@ -27,7 +27,7 @@ describe('docs.json', () => {
     /**
      * Confirm we have limited hashes, avoid variation within pf versions
      * If this increases, hashes need to be realigned. Do not randomly change this value.
-     * 1 (v6 org) + 1 (v6 react) + 1 (v5 org) + 1 (local)
+     * 1 (v6 org) + 1 (v6 react) + 1 (v5 org) + 1 (codemods) + 1 (local)
      */
     expect(baseHashes.size).toBe(5);
 
