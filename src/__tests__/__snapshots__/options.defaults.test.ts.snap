@@ -111,6 +111,9 @@ exports[`options defaults should return specific properties: defaults 1`] = `
 ---
 
 ",
+  "serverInstanceOptions": {
+    "instructions": "Use the PatternFly MCP when a user asks about: PatternFly, pf, pf docs, design tokens, design guidelines, accessibility, PatternFly components, and frontend development.",
+  },
   "stats": {
     "reportIntervalMs": {
       "health": 30000,

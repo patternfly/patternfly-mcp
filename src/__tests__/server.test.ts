@@ -150,7 +150,12 @@ describe('runServer', () => {
     };
 
     const serverInstance = await runServer(
-      { minMax: DEFAULT_OPTIONS.minMax, patternflyOptions: DEFAULT_OPTIONS.patternflyOptions, ...options } as any,
+      {
+        minMax: DEFAULT_OPTIONS.minMax,
+        patternflyOptions: DEFAULT_OPTIONS.patternflyOptions,
+        serverInstanceOptions: DEFAULT_OPTIONS.serverInstanceOptions,
+        ...options
+      } as any,
       Object.keys(settings).length > 0 ? settings : { allowProcessExit: false }
     );
 
@@ -179,7 +184,13 @@ describe('runServer', () => {
     }
   ])('should allow server to be stopped, $description', async ({ options }) => {
     const serverInstance = await runServer(
-      { minMax: DEFAULT_OPTIONS.minMax, patternflyOptions: DEFAULT_OPTIONS.patternflyOptions, ...options, name: 'test-server' } as any,
+      {
+        minMax: DEFAULT_OPTIONS.minMax,
+        patternflyOptions: DEFAULT_OPTIONS.patternflyOptions,
+        // Check serverInstanceOptions behavior, don't include it
+        ...options,
+        name: 'test-server'
+      } as any,
       { allowProcessExit: false }
     );
 
