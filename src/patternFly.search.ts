@@ -106,6 +106,10 @@ interface SearchPatternFlyOptions {
 /**
  * Apply sequenced priority filters for predictable filtering, filter PatternFly data.
  *
+ * @note It is tempting to apply a default version to this function. Do not. Architecture
+ * dictates that this function remains purely data-driven, apply default versions in the caller.
+ * See both MCP resources and tools for examples.
+ *
  * @note This is a predictable filter, not a search. Use searchPatternFly for fuzzy search.
  * - Has case-insensitive filtering for all fields
  * - Exact "version" filtering only
@@ -199,6 +203,10 @@ filterPatternFly.memo = memo(filterPatternFly, DEFAULT_OPTIONS.resourceMemoOptio
 
 /**
  * Search for PatternFly component documentation URLs using fuzzy search.
+ *
+ * @note It is tempting to apply a default version to this function. Do not. Architecture
+ * dictates that this function remains purely data-driven, apply default versions in the caller.
+ * See both MCP resources and tools for examples.
  *
  * @note Uses `filterPatternFly` for additional filtering.
  *

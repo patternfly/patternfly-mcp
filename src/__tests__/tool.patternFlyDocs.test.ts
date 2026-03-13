@@ -126,4 +126,22 @@ describe('usePatternFlyDocsTool, callback', () => {
     await expect(callback({ urlList: ['https://www.patternfly.org//missing.md'] })).rejects.toThrow(McpError);
     await expect(callback({ urlList: ['https://www.patternfly.org/missing.md'] })).rejects.toThrow('Failed to fetch documentation');
   });
+
+  it('should have a specific markdown format', async () => {
+    mockProcessDocs.mockResolvedValue([
+      {
+        path: 'components/loremButton.md',
+        content: 'lorem documentation content'
+      },
+      {
+        path: 'components/ipsumButton.md',
+        content: 'ipsum documentation content'
+      }
+    ] as any);
+
+    const [_name, _schema, callback] = usePatternFlyDocsTool();
+    const result = await callback({ name: 'button' });
+
+    expect(result.content).toMatchSnapshot('Button');
+  });
 });
