@@ -15,3 +15,22 @@ exports[`usePatternFlyDocsTool, callback should attempt to parse parameters, sin
 exports[`usePatternFlyDocsTool, callback should attempt to parse parameters, with invalid urlList 1`] = `"# Content for invalid-path"`;
 
 exports[`usePatternFlyDocsTool, callback should attempt to parse parameters, with name and actual path 1`] = `"# Content for documentation:chatbot/README.md"`;
+
+exports[`usePatternFlyDocsTool, callback should have a specific markdown format: Button 1`] = `
+[
+  {
+    "text": "# Content for components/ipsumButton.md
+Source: components/ipsumButton.md
+
+ipsum documentation content
+
+---
+
+# Content for components/loremButton.md
+Source: components/loremButton.md
+
+lorem documentation content",
+    "type": "text",
+  },
+]
+`;

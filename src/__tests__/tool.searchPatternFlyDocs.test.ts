@@ -104,4 +104,11 @@ describe('searchPatternFlyDocsTool, callback', () => {
     await expect(callback({ searchQuery })).rejects.toThrow(McpError);
     await expect(callback({ searchQuery })).rejects.toThrow(error);
   });
+
+  it('should have a specific markdown format', async () => {
+    const [_name, _schema, callback] = searchPatternFlyDocsTool();
+    const result = await callback({ searchQuery: 'button' });
+
+    expect(result.content).toMatchSnapshot('tooltip');
+  });
 });

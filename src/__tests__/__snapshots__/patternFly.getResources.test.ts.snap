@@ -5,6 +5,7 @@ exports[`getPatternFlyComponentNames should return multiple organized facets: pr
   "componentNamesIndex",
   "componentNamesIndexMap",
   "byVersion",
+  "byDocs",
 ]
 `;
 
