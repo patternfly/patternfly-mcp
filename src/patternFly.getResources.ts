@@ -22,6 +22,13 @@ import { INDEX_BLOCKLIST_WORDS, INDEX_NOISE_WORDS } from './docs.filterWords';
  */
 type PatternFlyComponentSchema = Awaited<ReturnType<typeof getPatternFlyComponentSchema>>;
 
+/**
+ * Map of PatternFly component names to their versioned metadata.
+ *
+ * Properties for each component include:
+ * - `isSchemasAvailable`: Boolean indicating whether schemas are available for the component.
+ * - `displayName`: String that defines the human-readable name of the component.
+ */
 type PatternFlyMcpComponentNamesByVersion = {
   [name: string]: {
     isSchemasAvailable: boolean;
@@ -29,10 +36,31 @@ type PatternFlyMcpComponentNamesByVersion = {
   }
 };
 
+/**
+ * Documentation structure for PatternFly MCP component names. Intended to help
+ * merge with existing documents catalog.
+ *
+ * Unique Properties:
+ * - `path`: Non-existent, omitted from the base catalog documentation type.
+ * - `isSchemasAvailable`: A boolean flag that indicates whether schemas are available for the component.
+ */
+type PatternFlyMcpComponentNamesDoc = Omit<PatternFlyMcpDocsCatalogDoc, 'path'> & { path?: never; isSchemasAvailable: boolean };
+
+/**
+ * Component names metadata.
+ *
+ * @interface PatternFlyMcpComponentNames
+ *
+ * @property componentNamesIndex - Component names index.
+ * @property componentNamesIndexMap - Component names index map.
+ * @property byVersion - Component names by version map.
+ * @property byDocs - Component names by docs map.
+ */
 interface PatternFlyMcpComponentNames {
   componentNamesIndex: string[];
   componentNamesIndexMap: Map<string, string>;
   byVersion: Map<string, PatternFlyMcpComponentNamesByVersion>;
+  byDocs: Map<string, PatternFlyMcpComponentNamesDoc[]>;
 }
 
 /**
@@ -230,14 +258,27 @@ const getPatternFlyComponentNames = async (contextPathOverride?: string): Promis
   const latestNamesIndex = [...Array.from(new Set([...pfComponentNames, 'Table'])).map(name => name.toLowerCase()).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))];
   const latestNamesIndexMap = new Map(Array.from(new Set([...pfComponentNames, 'Table'])).map(name => [name.toLowerCase(), name]));
   const latestByNameMap = new Map<string, { isSchemasAvailable: boolean, displayName: string }>();
+  const latestByDocsFormat = new Map<string, PatternFlyMcpComponentNamesDoc[]>();
+  const createDocEntry = (name: string, isSchemasAvailable: boolean) => ({
+    displayName: name,
+    description: `PatternFly React component: ${name}`,
+    pathSlug: `schemas-${name}`.toLowerCase(),
+    category: 'react',
+    section: 'components',
+    source: 'schemas',
+    version: latestSchemasVersion,
+    isSchemasAvailable
+  });
 
   pfComponentNames.forEach(name => {
     latestByNameMap.set(name.toLowerCase(), { isSchemasAvailable: true, displayName: name });
+    latestByDocsFormat.set(name.toLowerCase(), [createDocEntry(name, true)]);
   });
 
   const byVersion: PatternFlyMcpComponentNames['byVersion'] = new Map();
 
   latestByNameMap.set('table', { isSchemasAvailable: false, displayName: 'Table' });
+  latestByDocsFormat.set('table', [createDocEntry('Table', false)]);
   const convert = Object.fromEntries(latestByNameMap);
 
   byVersion.set(
@@ -248,7 +289,8 @@ const getPatternFlyComponentNames = async (contextPathOverride?: string): Promis
   return {
     componentNamesIndex: latestNamesIndex,
     componentNamesIndexMap: latestNamesIndexMap,
-    byVersion
+    byVersion,
+    byDocs: latestByDocsFormat
   };
 };
 
@@ -357,7 +399,7 @@ const mutateKeyWordsMap = (
 const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<PatternFlyMcpAvailableResources> => {
   const versionContext = await getPatternFlyVersionContext.memo(contextPathOverride);
   const componentNames = await getPatternFlyComponentNames.memo(contextPathOverride);
-  const { componentNamesIndex, byVersion: componentNamesByVersion, byVersion: byVersionSchemaNames } = componentNames;
+  const { componentNamesIndex, byVersion: componentNamesByVersion, byDocs: componentNamesByDocs } = componentNames;
 
   const originalDocs = await getPatternFlyDocsCatalog.memo();
   const resources = new Map<string, PatternFlyMcpResourceMetadata>();
@@ -367,24 +409,35 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
   const pathIndex = new Set<string>();
   const rawKeywordsMap: PatternFlyMcpKeywordsMap = new Map();
 
-  Object.entries(originalDocs.docs).forEach(([docsName, entries]) => {
-    const name = docsName.toLowerCase();
-    const resource: PatternFlyMcpResourceMetadata = {
-      name,
-      isSchemasAvailable: undefined,
-      uri: undefined,
-      uriSchemas: undefined,
-      entries: [],
-      versions: {}
-    };
+  const catalog = [...Object.entries(originalDocs.docs), ...Array.from(componentNamesByDocs)];
+
+  catalog.forEach(([unifiedName, entries]) => {
+    const name = unifiedName.toLowerCase();
+
+    if (!resources.has(name)) {
+      // isSchemasAvailable, uri, and uriSchemas are contextually populated from the patternFly.search
+      // functions, search and filter. They are intended to be undefined here.
+      resources.set(name, {
+        name,
+        isSchemasAvailable: undefined,
+        uri: undefined,
+        uriSchemas: undefined,
+        entries: [],
+        versions: {}
+      });
+    }
+
+    const resource = resources.get(name) as PatternFlyMcpResourceMetadata;
 
     entries.forEach(entry => {
       const version = (entry.version || 'unknown').toLowerCase();
-      const isSchemasAvailable = versionContext.latestSchemasVersion === version && byVersionSchemaNames.get(version)?.[name]?.isSchemasAvailable;
+      const isSchemasAvailable = versionContext.latestSchemasVersion === version && componentNamesByVersion.get(version)?.[name]?.isSchemasAvailable;
       const path = entry.path;
-      const uri = `patternfly://docs/${version}/${name}`;
+      const uri = `patternfly://docs/${name}?version=${version}`;
 
-      pathIndex.add(path);
+      if (path) {
+        pathIndex.add(path);
+      }
 
       resource.versions[version] ??= {
         isSchemasAvailable,
@@ -393,18 +446,28 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
         entries: []
       };
 
-      const displayCategory = setCategoryDisplayLabel(entry);
+      const displayName = entry.displayName || name;
+      const displayCategory = setCategoryDisplayLabel(entry as PatternFlyMcpDocsCatalogDoc);
       let uriSchemas;
 
       if (isSchemasAvailable) {
-        uriSchemas = `patternfly://schemas/${version}/${name}`;
+        uriSchemas = `patternfly://schemas/${name}?version=${version}`;
 
         resource.versions[version].uriSchemas = uriSchemas;
       }
 
-      const extendedEntry = { ...entry, name: docsName, displayCategory, uri, uriSchemas };
+      const extendedEntry = {
+        ...entry,
+        name,
+        displayName,
+        displayCategory,
+        uri,
+        uriSchemas
+      } as (PatternFlyMcpDocsCatalogDoc & PatternFlyMcpDocsMeta);
 
-      byPath[path] = extendedEntry;
+      if (path) {
+        byPath[path] = extendedEntry;
+      }
 
       byUri[uri] ??= [];
       byUri[uri]?.push(extendedEntry);
@@ -434,8 +497,6 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
       resource.entries.push(extendedEntry);
       resource.versions[version].entries.push(extendedEntry);
     });
-
-    resources.set(name, resource);
   });
 
   Object.entries(byVersion).forEach(([_version, entries]) => {
@@ -504,6 +565,7 @@ export {
   setCategoryDisplayLabel,
   type PatternFlyMcpComponentNames,
   type PatternFlyMcpComponentNamesByVersion,
+  type PatternFlyMcpComponentNamesDoc,
   type PatternFlyComponentSchema,
   type PatternFlyMcpAvailableResources,
   type PatternFlyMcpResourceMetadata,

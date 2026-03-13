@@ -8,22 +8,65 @@ exports[`searchPatternFlyDocsTool should have a consistent return structure: str
 }
 `;
 
-exports[`searchPatternFlyDocsTool, callback should parse parameters, default: search 1`] = `"# Search results for "Button". Showing 2 exact matches."`;
+exports[`searchPatternFlyDocsTool, callback should have a specific markdown format: tooltip 1`] = `
+[
+  {
+    "text": "# Search results for PatternFly version "v6" and "button". Showing 2 exact matches.
+1. **button**:
+  "usePatternFlyDocs" resource parameter "name" and "URLs"
+    - **Name**: button
+    - **URLs**:
+      - [Button - (v6) - Design Guidelines for the button component.](https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/button/button.md)
+      - [Button - (v6) - Accessibility for the button component.](https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/accessibility/button/button.md)
+      - [Button - (v6) - Examples for the button component.](https://raw.githubusercontent.com/patternfly/patternfly-react/476782a298df81cb78de7f3cd804f3ff8f33993c/packages/react-core/src/components/Button/examples/Button.md)
+    - **Resources**:
+      - **URI**: patternfly://docs/button?version=v6
+      - **JSON Schemas**: patternfly://schemas/button?version=v6
 
-exports[`searchPatternFlyDocsTool, callback should parse parameters, with "*" searchQuery all: search 1`] = `"# Search results for "all" resources. Only showing the first 10 results. There are 798 potential match variations. Try searching with a more specific query."`;
+2. **patterns**:
+  "usePatternFlyDocs" resource parameter "name" and "URLs"
+    - **Name**: patterns
+    - **URLs**:
+      - [Actions - (v6) - The best practices for designing processes that a user can trigger by clicking or selecting a UI element, such as a button or link.](https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/patterns/actions/actions.md)
+      - [Bulk selection - (v6) - A defined method for users to select or deselect multiple items within complex content views or data tables.](https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/patterns/bulk-selection/bulk-selection.md)
+      - [Card view - (v6) - A structured layout designed to display a grid of cards in a gallery, optimizing for browsing and interaction.](https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/patterns/card-view/card-view.md)
+      - [Component usage and behavior - (v6) - Guidance on how to choose between similar components and use them appropriately based on specific user contexts and use cases.](https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/patterns/usage-and-behavior.md)
+      - [Dashboard - (v6) - A highly customizable layout that serves as a high-level overview of key metrics or performance indicators.](https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/patterns/dashboard/dashboard.md)
+      - [Filters - (v6) - The design rules for implementing filtering mechanisms that allow users to narrow down content from large datasets or complex views.](https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/patterns/filters/filters.md)
+      - [Primary-detail - (v6) - A two-pane layout that shows a list of items and corresponding details for the currently selected item.](https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/patterns/primary-detail/primary-detail.md)
+      - [Status and severity - (v6) - Guidance on the consistent and accessible use of color and iconography to communicate status and severity across the UI.](https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/patterns/status-and-severity/status-and-severity.md)
+    - **Resources**:
+      - **URI**: patternfly://docs/patterns?version=v6
 
-exports[`searchPatternFlyDocsTool, callback should parse parameters, with "all" searchQuery all: search 1`] = `"# Search results for "all" resources. Only showing the first 10 results. There are 798 potential match variations. Try searching with a more specific query."`;
 
-exports[`searchPatternFlyDocsTool, callback should parse parameters, with explicit valid version: search 1`] = `"# Search results for "Button". Showing 2 exact matches."`;
 
-exports[`searchPatternFlyDocsTool, callback should parse parameters, with lower case componentName: search 1`] = `"# Search results for "button". Showing 2 exact matches."`;
+---
+
+
+**Important**:
+  - Use the "usePatternFlyDocs" tool with the above names and URLs to fetch resource content.
+  - Use a search all ("*") to find all available resources.",
+    "type": "text",
+  },
+]
+`;
+
+exports[`searchPatternFlyDocsTool, callback should parse parameters, default: search 1`] = `"# Search results for PatternFly version "v6" and "Button". Showing 2 exact matches."`;
+
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with "*" searchQuery all: search 1`] = `"# Search results for PatternFly version "v6" and "all" resources. Only showing the first 10 results. There are 806 potential match variations. Try searching with a more specific query."`;
+
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with "all" searchQuery all: search 1`] = `"# Search results for PatternFly version "v6" and "all" resources. Only showing the first 10 results. There are 806 potential match variations. Try searching with a more specific query."`;
+
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with explicit valid version: search 1`] = `"# Search results for PatternFly version "v6" and "Button". Showing 2 exact matches."`;
+
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with lower case componentName: search 1`] = `"# Search results for PatternFly version "v6" and "button". Showing 2 exact matches."`;
 
 exports[`searchPatternFlyDocsTool, callback should parse parameters, with made up componentName: search 1`] = `"No PatternFly resources found matching "lorem ipsum dolor sit amet""`;
 
-exports[`searchPatternFlyDocsTool, callback should parse parameters, with multiple words: search 1`] = `"# Search results for "Button Card Table". Showing 4 related matches."`;
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with multiple words: search 1`] = `"# Search results for PatternFly version "v6" and "Button Card Table". Showing 4 related matches."`;
 
-exports[`searchPatternFlyDocsTool, callback should parse parameters, with partial componentName: search 1`] = `"# Search results for "ton". Showing 5 related matches."`;
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with partial componentName: search 1`] = `"# Search results for PatternFly version "v6" and "ton". Showing 5 related matches."`;
 
-exports[`searchPatternFlyDocsTool, callback should parse parameters, with trimmed componentName: search 1`] = `"# Search results for " Button  ". Showing 2 exact matches."`;
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with trimmed componentName: search 1`] = `"# Search results for PatternFly version "v6" and " Button  ". Showing 2 exact matches."`;
 
-exports[`searchPatternFlyDocsTool, callback should parse parameters, with upper case componentName: search 1`] = `"# Search results for "BUTTON". Showing 2 exact matches."`;
+exports[`searchPatternFlyDocsTool, callback should parse parameters, with upper case componentName: search 1`] = `"# Search results for PatternFly version "v6" and "BUTTON". Showing 2 exact matches."`;

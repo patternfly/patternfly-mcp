@@ -3,10 +3,6 @@ import { ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js';
 import { type McpTool } from './server';
 import { processDocsFunction, type ProcessedDoc } from './server.getResources';
 import { stringJoin } from './server.helpers';
-import { getOptions } from './options.context';
-import { searchPatternFly } from './patternFly.search';
-import { getPatternFlyMcpResources, getPatternFlyComponentSchema, setCategoryDisplayLabel } from './patternFly.getResources';
-import { normalizeEnumeratedPatternFlyVersion } from './patternFly.helpers';
 import {
   assertInput,
   assertInputStringLength,
@@ -14,6 +10,10 @@ import {
   assertInputStringNumberEnumLike,
   assertInputUrlWhiteListed
 } from './server.assertions';
+import { getOptions } from './options.context';
+import { searchPatternFly } from './patternFly.search';
+import { getPatternFlyMcpResources, getPatternFlyComponentSchema, setCategoryDisplayLabel } from './patternFly.getResources';
+import { normalizeEnumeratedPatternFlyVersion } from './patternFly.helpers';
 
 /**
  * usePatternFlyDocs tool function
@@ -40,7 +40,7 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
       });
 
       assertInput(
-        !(new RegExp('patternfly://', 'i').test(name)),
+        !new RegExp('patternfly://', 'i').test(name),
         stringJoin.basic(
           'Direct "patternfly://" URIs are not currently supported as tool inputs, and are intended to be used with MCP resources directly.',
           'Use a component or resource "name" or provide a "urlList" of raw documentation URLs.'
@@ -89,12 +89,13 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
     }
 
     const updatedUrlList: string[] = isUrlList ? urlList.slice(0, options.minMax.docsToLoad.max) : [];
-    const { latestSchemasVersion, byPath } = await getPatternFlyMcpResources.memo();
-    const normalizedVersion = (await normalizeEnumeratedPatternFlyVersion(version));
+    const { latestVersion, latestSchemasVersion, byPath } = await getPatternFlyMcpResources.memo();
+    const normalizedVersion = await normalizeEnumeratedPatternFlyVersion(version);
+    const updatedVersion = normalizedVersion || latestVersion;
     const updatedName = name?.trim();
 
     if (updatedName) {
-      const { searchResults, exactMatches } = await searchPatternFly.memo(updatedName, { version: normalizedVersion });
+      const { searchResults, exactMatches } = await searchPatternFly.memo(updatedName, { version: updatedVersion });
 
       assertInput(
         exactMatches.length > 0 && exactMatches.every(match => match.entries.some(entry => Boolean(entry.path))),
@@ -127,7 +128,7 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
         const docEntry = (doc.path && byPath[doc.path]) || undefined;
 
         if (docEntry) {
-          if (!normalizedVersion || docEntry.version === normalizedVersion) {
+          if (!updatedVersion || docEntry.version === updatedVersion) {
             primaryDocs.push(doc);
           } else {
             secondaryDocs.push(doc);
@@ -153,7 +154,7 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
 
     if (docs.length === 0) {
       const nameFilter = `**Name**: ${updatedName || '*'}`;
-      const versionFilter = `**PatternFly Version**: ${normalizedVersion || '*'}`;
+      const versionFilter = `**PatternFly Version**: ${updatedVersion || '*'}`;
       const urlListBlock = updatedUrlList.map((url: string, index: number) => `  ${index + 1}. ${url}`).join('\n');
       const urlListFilter = stringJoin.newline(
         `**URL List**:`,

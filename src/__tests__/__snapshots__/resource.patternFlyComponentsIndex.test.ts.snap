@@ -5,6 +5,29 @@ exports[`patternFlyComponentsIndexResource should have a consistent return struc
   "config": true,
   "handler": [Function],
   "name": "patternfly-components-index",
-  "uri": "patternfly://components/index",
+  "uri": ResourceTemplate {
+    "_callbacks": {
+      "complete": {
+        "category": [Function],
+        "version": [Function],
+      },
+      "list": [Function],
+    },
+    "_uriTemplate": UriTemplate {
+      "parts": [
+        "patternfly://components/index",
+        {
+          "exploded": false,
+          "name": "version",
+          "names": [
+            "version",
+            "category",
+          ],
+          "operator": "?",
+        },
+      ],
+      "template": "patternfly://components/index{?version,category}",
+    },
+  },
 }
 `;
