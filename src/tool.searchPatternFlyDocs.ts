@@ -84,7 +84,9 @@ const searchPatternFlyDocsTool = (options = getOptions()): McpTool => {
       parseResults = searchResults.filter(result => result.distance === 1);
     }
 
-    const searchTitlePatternFly = `Search results for ${updatedVersion ? `PatternFly version "${updatedVersion}" and` : ''}`;
+    const searchTitlePatternFly = updatedVersion
+      ? `Search results for PatternFly version "${updatedVersion}" and`
+      : `Search results for`;
 
     let searchTitle = stringJoin.basic(
       `# ${searchTitlePatternFly} "${searchQuery}".`,
