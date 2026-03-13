@@ -233,6 +233,7 @@ const runServer = async (options: ServerOptions = getOptions(), {
 
   try {
     const enableProtocolLogging = options?.logging?.protocol;
+    const serverInstructions = options?.serverInstanceOptions?.instructions;
 
     server = new McpServer(
       {
@@ -244,7 +245,8 @@ const runServer = async (options: ServerOptions = getOptions(), {
           tools: {},
           resources: {},
           ...(enableProtocolLogging ? { logging: {} } : {})
-        }
+        },
+        ...(serverInstructions ? { instructions: serverInstructions } : {})
       }
     );
 
