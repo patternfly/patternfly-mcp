@@ -2,10 +2,11 @@ import { ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
 import { type McpTool } from './server';
 import { stringJoin } from './server.helpers';
+import { assertInput, assertInputStringLength, assertInputStringNumberEnumLike } from './server.assertions';
 import { getOptions } from './options.context';
 import { searchPatternFly } from './patternFly.search';
+import { getPatternFlyMcpResources } from './patternFly.getResources';
 import { normalizeEnumeratedPatternFlyVersion } from './patternFly.helpers';
-import { assertInput, assertInputStringLength, assertInputStringNumberEnumLike } from './server.assertions';
 
 /**
  * searchPatternFlyDocs tool function
@@ -38,11 +39,13 @@ const searchPatternFlyDocsTool = (options = getOptions()): McpTool => {
       });
     }
 
+    const { latestVersion } = await getPatternFlyMcpResources.memo();
     const normalizedVersion = await normalizeEnumeratedPatternFlyVersion(version);
+    const updatedVersion = normalizedVersion || latestVersion;
 
     const { isSearchWildCardAll, exactMatches, remainingMatches, searchResults, totalPotentialMatches } = await searchPatternFly.memo(
       searchQuery,
-      { version: normalizedVersion },
+      { version: updatedVersion },
       { allowWildCardAll: true, maxResults: options.minMax.toolSearches.max }
     );
 
@@ -81,33 +84,37 @@ const searchPatternFlyDocsTool = (options = getOptions()): McpTool => {
       parseResults = searchResults.filter(result => result.distance === 1);
     }
 
-    const searchTitlePatternFly = normalizedVersion ? `PatternFly version "${normalizedVersion}" and ` : '';
+    const searchTitlePatternFly = updatedVersion
+      ? `Search results for PatternFly version "${updatedVersion}" and`
+      : `Search results for`;
 
     let searchTitle = stringJoin.basic(
-      `# Search results for ${searchTitlePatternFly}"${searchQuery}".`,
+      `# ${searchTitlePatternFly} "${searchQuery}".`,
       `Showing ${parseResults.length} related ${parseResults.length === 1 ? 'match' : 'matches'}.`
     );
 
     if (isSearchWildCardAll) {
       searchTitle = stringJoin.basic(
-        `# Search results for ${searchTitlePatternFly}"all" resources.`,
+        `# ${searchTitlePatternFly} "all" resources.`,
         `Only showing the first ${parseResults.length} results. There are ${totalPotentialMatches} potential match variations.`,
         `Try searching with a more specific query.`
       );
     } else if (exactMatches.length > 0) {
       searchTitle = stringJoin.basic(
-        `# Search results for ${searchTitlePatternFly}"${searchQuery}".`,
+        `# ${searchTitlePatternFly} "${searchQuery}".`,
         `Showing ${parseResults.length} exact ${parseResults.length === 1 ? 'match' : 'matches'}.`
       );
     }
 
     const results = parseResults.map((result, index) => {
       const availableVersions = new Set<string>();
-      const urlList = result.entries.map(entry => {
-        availableVersions.add(entry.version);
+      const urlList = result.entries
+        .filter(entry => entry.path)
+        .map(entry => {
+          availableVersions.add(entry.version);
 
-        return `      - [${entry.displayName} - (${entry.version}) - ${entry.description}](${entry.path})`;
-      });
+          return `      - [${entry.displayName} - (${entry.version}) - ${entry.description}](${entry.path})`;
+        });
 
       const uri = result.uri;
       const uriSchemas = result.uriSchemas;
@@ -118,9 +125,9 @@ const searchPatternFlyDocsTool = (options = getOptions()): McpTool => {
         `    - **Name**: ${result.name}`,
         urlList.length ? `    - **URLs**:` : undefined,
         urlList.length ? urlList.join('\n') : undefined,
-        uri || uriSchemas ? `  **Resources**:` : undefined,
-        uri ? `    - **URI**: ${uri}` : undefined,
-        uriSchemas ? `    - **JSON Schemas**: ${uriSchemas}` : undefined
+        uri || uriSchemas ? `    - **Resources**:` : undefined,
+        uri ? `      - **URI**: ${uri}` : undefined,
+        uriSchemas ? `      - **JSON Schemas**: ${uriSchemas}` : undefined
       ) + '\n';
     });
 
