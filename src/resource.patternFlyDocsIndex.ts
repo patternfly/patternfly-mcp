@@ -50,7 +50,7 @@ const URI_TEMPLATE = 'patternfly://docs/index{?version,category,section}';
 /**
  * URI description for the resource.
  */
-const URI_DESCRIPTION = `Filter by PatternFly version, category, and section, ${URI_TEMPLATE}`;
+const URI_DESCRIPTION = `Filter by PatternFly version, category, and section. ${URI_TEMPLATE}`;
 
 /**
  * Resource configuration.
@@ -291,7 +291,10 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
 };
 
 /**
- * Resource creator for the documentation index.
+ * Resource creator for the documentation index and metadata resources.
+ *
+ * @note The `metaConfig` determines if a metadata resource is generated. Remove
+ * the config to disable it.
  *
  * @param options - Global options
  * @returns {McpResource} The resource definition tuple
@@ -318,7 +321,12 @@ const patternFlyDocsIndexResource = (options = getOptions()): McpResource => {
     callback,
     {
       complete,
-      registerAllSearchCombinations: true
+      registerAllSearchCombinations: true,
+      metaConfig: {
+        uri: 'patternfly://docs/meta{?version}',
+        title: `${CONFIG.title} Metadata`,
+        description: 'Use these parameters to filter the PatternFly documentation index.'
+      }
     }
   ];
 };

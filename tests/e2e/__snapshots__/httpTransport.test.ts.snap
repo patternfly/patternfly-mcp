@@ -1,5 +1,32 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
+exports[`Builtin resources, HTTP transport should read the patternfly-docs-meta: meta output 1`] = `
+{
+  "mimeType": "text/markdown",
+  "text": "# PatternFly Documentation Index Metadata
+Use these parameters to filter the PatternFly documentation index.
+
+## Available Parameters
+
+| Parameter | Valid Values | Description |
+| :--- | :--- | :--- |
+| \`category\` | \`accessibility\`, \`design-guidelines\`, \`design-tokens\`, \`development-guidelines\`, \`grammar\`, \`react\`, \`writing-guides\` | Filter by category |
+| \`section\` | \`ai\`, \`charts\`, \`components\`, \`content-design\`, \`extensions\`, \`foundations-and-styles\`, \`get-started\`, \`guidelines\`, \`layouts\`, \`patterns\`, \`resources\`, \`upgrade\` | Filter by section |
+| \`version\` | \`v4\`, \`v5\`, \`v6\` | Filter by version |
+
+## Available Patterns
+- **Base View**: \`patternfly://docs/index\`
+- **Filtered View (version=...)**: \`patternfly://docs/index?version=...\`
+- **Filtered View (category=...)**: \`patternfly://docs/index?category=...\`
+- **Filtered View (version=...&category=...)**: \`patternfly://docs/index?version=...&category=...\`
+- **Filtered View (section=...)**: \`patternfly://docs/index?section=...\`
+- **Filtered View (version=...&section=...)**: \`patternfly://docs/index?version=...&section=...\`
+- **Filtered View (category=...&section=...)**: \`patternfly://docs/index?category=...&section=...\`
+- **Filtered View (version=...&category=...&section=...)**: \`patternfly://docs/index?version=...&category=...&section=...\`",
+  "uri": "patternfly://docs/meta",
+}
+`;
+
 exports[`Builtin tools, HTTP transport should concatenate headers and separator with two remote files 1`] = `
 "# Content for https://www.patternfly.org/notARealPath/AboutModal.md
 Source: https://www.patternfly.org/notARealPath/AboutModal.md

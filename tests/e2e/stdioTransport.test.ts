@@ -189,11 +189,14 @@ describe('Builtin resources, STDIO', () => {
 
     expect(resourceNames).toContain('patternfly://context');
     expect(templateNames).toContain('patternfly://components/index');
+    expect(templateNames).toContain('patternfly://components/meta');
     expect(templateNames).toContain('patternfly://components/index{?version,category}');
     expect(templateNames).toContain('patternfly://docs/index');
+    expect(templateNames).toContain('patternfly://docs/meta');
     expect(templateNames).toContain('patternfly://docs/index{?version,category,section}');
     expect(templateNames).toContain('patternfly://docs/{name}{?version,category,section}');
     expect(templateNames).toContain('patternfly://schemas/index');
+    expect(templateNames).toContain('patternfly://schemas/meta');
     expect(templateNames).toContain('patternfly://schemas/index{?version,category}');
     expect(templateNames).toContain('patternfly://schemas/{name}{?version,category}');
   });
@@ -221,6 +224,19 @@ describe('Builtin resources, STDIO', () => {
     expect(content.text).toContain('PatternFly Documentation Index');
   });
 
+  it('should read the patternfly-docs-meta', async () => {
+    const uri = 'patternfly://docs/meta';
+    const response = await CLIENT.send({
+      method: 'resources/read',
+      params: { uri }
+    });
+    const content = response?.result.contents[0];
+
+    expect(content.uri).toBe(uri);
+    expect(content.text).toContain('PatternFly Documentation Index Metadata');
+    expect(content).toMatchSnapshot('meta output');
+  });
+
   it('should read a doc through a template', async () => {
     const uri = 'patternfly://docs/button?version=v6&category=react&section=components';
     const response = await CLIENT.send({
@@ -243,6 +259,18 @@ describe('Builtin resources, STDIO', () => {
 
     expect(content.uri).toBe(uri);
     expect(content.text).toContain('PatternFly Component JSON Schemas Index');
+  });
+
+  it('should read the patternfly-schemas-meta', async () => {
+    const uri = 'patternfly://schemas/meta';
+    const response = await CLIENT.send({
+      method: 'resources/read',
+      params: { uri }
+    });
+    const content = response?.result.contents[0];
+
+    expect(content.uri).toBe(uri);
+    expect(content.text).toContain('PatternFly Component Schemas Index Metadata');
   });
 });
 

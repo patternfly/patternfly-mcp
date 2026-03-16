@@ -1,0 +1,169 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`generateMarkdownTable should generate a markdown table, simple table 1`] = `
+"| Col1 | Col2 |
+| :--- | :--- |
+| Val1 | Val2 |
+| Val3 | Val4 |"
+`;
+
+exports[`generateMarkdownTable should generate a markdown table, with wrapped contents 1`] = `
+"| Param | Values |
+| :--- | :--- |
+| \`p1\` | \`v1\`, \`v2\` |"
+`;
+
+exports[`generateMetaContent should generate standardized meta content: meta-content 1`] = `
+"# Test Title
+Test Description
+
+## Available Parameters
+
+| Parameter | Valid Values | Description |
+| :--- | :--- | :--- |
+| \`category\` | \`c1\`, \`c2\` | Filter by category |
+
+## Available Patterns
+- **Base**: \`test://uri\`"
+`;
+
+exports[`getUriVariations should get URI variations, allCombos=false 1`] = `
+[
+  "test://uri",
+  "test://uri?v1=...",
+  "test://uri?v1=...&v2=...",
+]
+`;
+
+exports[`getUriVariations should get URI variations, allCombos=true 1`] = `
+[
+  "test://uri",
+  "test://uri?v1=...",
+]
+`;
+
+exports[`setMetaResources should attempt to return a resource, metaConfig is a template 1`] = `
+[
+  "test-resource-meta",
+  ResourceTemplate {
+    "_callbacks": {
+      "list": undefined,
+    },
+    "_uriTemplate": UriTemplate {
+      "parts": [
+        "test://uri/meta",
+        {
+          "exploded": false,
+          "name": "version",
+          "names": [
+            "version",
+          ],
+          "operator": "?",
+        },
+      ],
+      "template": "test://uri/meta{?version}",
+    },
+  },
+  {
+    "description": "Discovery manual for Test.",
+    "mimeType": "text/markdown",
+    "title": "Test Metadata",
+  },
+  [Function],
+]
+`;
+
+exports[`setMetaResources should attempt to return a resource, metaConfig is a template string 1`] = `
+[
+  "test-resource-meta",
+  ResourceTemplate {
+    "_callbacks": {
+      "list": undefined,
+    },
+    "_uriTemplate": UriTemplate {
+      "parts": [
+        "test://uri/meta",
+        {
+          "exploded": false,
+          "name": "version",
+          "names": [
+            "version",
+          ],
+          "operator": "?",
+        },
+      ],
+      "template": "test://uri/meta{?version}",
+    },
+  },
+  {
+    "description": "Discovery manual for Test.",
+    "mimeType": "text/markdown",
+    "title": "Test Metadata",
+  },
+  [Function],
+]
+`;
+
+exports[`setMetaResources should attempt to return a resource, metaConfig is almost a template 1`] = `
+[
+  "test-resource-meta",
+  ResourceTemplate {
+    "_callbacks": {
+      "list": undefined,
+    },
+    "_uriTemplate": UriTemplate {
+      "parts": [
+        "test://lorem-ipsum/meta",
+      ],
+      "template": "test://lorem-ipsum/meta",
+    },
+  },
+  {
+    "description": "Discovery manual for Test.",
+    "mimeType": "text/markdown",
+    "title": "Test Metadata",
+  },
+  [Function],
+]
+`;
+
+exports[`setMetaResources should attempt to return a resource, metaConfig is empty 1`] = `
+[
+  "test-resource-meta",
+  "test://uri/meta",
+  {
+    "description": "Discovery manual for Test.",
+    "mimeType": "text/markdown",
+    "title": "Test Metadata",
+  },
+  [Function],
+]
+`;
+
+exports[`setMetaResources should attempt to return a resource, metaConfig is undefined 1`] = `
+[
+  "test-resource",
+  "test://uri",
+  {
+    "description": "Test",
+    "title": "Test",
+  },
+  [MockFunction],
+  {
+    "metaConfig": undefined,
+  },
+]
+`;
+
+exports[`setMetaResources should attempt to return a resource, metaConfig is unique 1`] = `
+[
+  "test-resource-meta",
+  "test://lorem-ipsum/meta",
+  {
+    "description": "Discovery manual for Test.",
+    "mimeType": "text/markdown",
+    "title": "Test Metadata",
+  },
+  [Function],
+]
+`;
