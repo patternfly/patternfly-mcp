@@ -66,7 +66,7 @@ const CONFIG = {
  *
  * @note It's important to keep lists focused and concise, avoid listing all resources.
  *
- * @returns {Promise<PatterFlyListResourceResult>} The list of available resources.
+ * @returns {Promise<PatternFlyListResourceResult>} The list of available resources.
  */
 const listResources = async () => {
   const { availableVersions, byVersion } = await getPatternFlyMcpResources.memo();

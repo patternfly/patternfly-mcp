@@ -17,12 +17,23 @@ const paramCompletion = async (filters: FilterPatternFlyFilters) => {
   const schemas = new Set<string>();
 
   for (const entry of byEntry) {
-    names.add(entry.name);
-    categories.add(entry.category);
-    sections.add(entry.section);
-    versions.add(entry.version);
+    if (typeof entry.name === 'string') {
+      names.add(entry.name);
+    }
 
-    if (entry.uriSchemas !== undefined) {
+    if (typeof entry.category === 'string') {
+      categories.add(entry.category);
+    }
+
+    if (typeof entry.section === 'string') {
+      sections.add(entry.section);
+    }
+
+    if (typeof entry.version === 'string') {
+      versions.add(entry.version);
+    }
+
+    if (entry.uriSchemas !== undefined && typeof entry.name === 'string') {
       schemas.add(entry.name);
     }
   }

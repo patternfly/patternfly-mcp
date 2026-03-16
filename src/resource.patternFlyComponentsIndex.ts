@@ -46,7 +46,7 @@ const CONFIG = {
  * @note We use "byVersionComponentNames" instead of "byVersion" because it's specific to components.
  * Docs resources don't necessarily contain all components.
  *
- * @returns {Promise<PatterFlyListResourceResult>} The list of available resources.
+ * @returns {Promise<PatternFlyListResourceResult>} The list of available resources.
  */
 const listResources = async () => {
   const { availableVersions, byVersionComponentNames } = await getPatternFlyMcpResources.memo();
@@ -103,7 +103,7 @@ const uriCategoryComplete: ExtendedCompleteResourceTemplateCallback = async (cat
 uriCategoryComplete.memo = memo(uriCategoryComplete);
 
 /**
- * Name completion callback for the URI template.
+ * Version completion callback for the URI template.
  *
  * @param version - The value to complete.
  * @param context - The completion context containing arguments for the URI template.

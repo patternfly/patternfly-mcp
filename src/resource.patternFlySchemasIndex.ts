@@ -40,7 +40,7 @@ const CONFIG = {
 /**
  * List resources callback for the URI template.
  *
- * @returns {Promise<PatterFlyListResourceResult>} The list of available resources.
+ * @returns {Promise<PatternFlyListResourceResult>} The list of available resources.
  */
 const listResources = async () => {
   const { availableSchemasVersions, byVersionComponentNames } = await getPatternFlyMcpResources.memo();
