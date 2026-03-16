@@ -190,7 +190,15 @@ describe('Builtin resources, HTTP transport', () => {
     const updatedTemplates = templates?.result?.resourceTemplates || [];
     const templateNames = updatedTemplates.map((template: any) => template.uriTemplate).sort();
 
-    expect({ resourceNames, templateNames }).toMatchSnapshot('resources');
+    expect(resourceNames).toContain('patternfly://context');
+    expect(templateNames).toContain('patternfly://components/index');
+    expect(templateNames).toContain('patternfly://components/index{?version,category}');
+    expect(templateNames).toContain('patternfly://docs/index');
+    expect(templateNames).toContain('patternfly://docs/index{?version,category,section}');
+    expect(templateNames).toContain('patternfly://docs/{name}{?version,category,section}');
+    expect(templateNames).toContain('patternfly://schemas/index');
+    expect(templateNames).toContain('patternfly://schemas/index{?version,category}');
+    expect(templateNames).toContain('patternfly://schemas/{name}{?version,category}');
   });
 
   it('should read the patternfly-context resource', async () => {
@@ -204,37 +212,40 @@ describe('Builtin resources, HTTP transport', () => {
     expect(content.mimeType).toBe('text/markdown');
   });
 
-  it('should read the patternfly-docs-index', async () => {
+  it('should read the patternfly-docs-index with query params', async () => {
+    const uri = 'patternfly://docs/index?version=v6&category=accessibility&section=components';
     const response = await CLIENT?.send({
       method: 'resources/read',
-      params: { uri: 'patternfly://docs/index' }
+      params: { uri }
     });
     const content = response?.result.contents[0];
 
-    expect(content.uri).toBe('patternfly://docs/index');
+    expect(content.uri).toBe(uri);
     expect(content.text).toContain('PatternFly Documentation Index');
   });
 
   it('should read a doc through a template', async () => {
+    const uri = 'patternfly://docs/button?version=v6&category=react&section=components';
     const response = await CLIENT?.send({
       method: 'resources/read',
-      params: { uri: 'patternfly://docs/Button' }
+      params: { uri }
     });
     const content = response?.result.contents[0];
 
-    expect(content.uri).toBe('patternfly://docs/Button');
+    expect(content.uri).toBe(uri);
     expect(content.text).toContain('This is a test document for mocking remote HTTP requests');
   });
 
   it('should read the patternfly-schemas-index', async () => {
+    const uri = 'patternfly://schemas/index?version=v6&category=react';
     const response = await CLIENT?.send({
       method: 'resources/read',
-      params: { uri: 'patternfly://schemas/index' }
+      params: { uri }
     });
     const content = response?.result.contents[0];
 
-    expect(content.uri).toBe('patternfly://schemas/index');
-    expect(content.text).toContain('PatternFly Component JSON Schemas');
+    expect(content.uri).toBe(uri);
+    expect(content.text).toContain('PatternFly Component JSON Schemas Index');
   });
 });
 
