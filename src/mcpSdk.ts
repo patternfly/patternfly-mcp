@@ -54,7 +54,8 @@ const registerResource = (
     const baseUri = remainingBaseUri?.split('{#')?.[0];
     const searchUri = remainingUri?.split('}')?.[0]?.toLowerCase();
 
-    // Register initial, then all combinations OR incremental search params
+    // Register original uri, then all combinations OR incremental search params.
+    // Or fail the check and fallthrough to default registration.
     if (baseUri && searchUri) {
       // Register the original template first. MCP SDK matcher limitation.
       server.registerResource(name, uriOrTemplate, config, callback);

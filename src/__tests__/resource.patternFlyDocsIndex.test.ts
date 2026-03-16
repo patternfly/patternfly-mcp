@@ -77,7 +77,7 @@ describe('uriNameComplete', () => {
 describe('uriCategoryComplete', () => {
   it.each([
     {
-      description: 'all',
+      description: 'empty returns all',
       value: ''
     },
     {
@@ -109,7 +109,7 @@ describe('uriCategoryComplete', () => {
 describe('uriSectionComplete', () => {
   it.each([
     {
-      description: 'all',
+      description: 'empty returns all',
       value: ''
     },
     {
