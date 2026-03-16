@@ -31,7 +31,7 @@ const URI_TEMPLATE = 'patternfly://docs/{name}{?version,category,section}';
 /**
  * URI description for the resource.
  */
-const URI_DESCRIPTION = `Filter by PatternFly version, category, and section, ${URI_TEMPLATE}`;
+const URI_DESCRIPTION = `Filter by PatternFly version, category, and section. ${URI_TEMPLATE}`;
 
 /**
  * Resource configuration.

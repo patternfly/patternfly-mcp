@@ -6,6 +6,7 @@ import {
 } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { registerResource } from './mcpSdk';
+import { setMetaResources } from './server.resourceMeta';
 import { usePatternFlyDocsTool } from './tool.patternFlyDocs';
 import { searchPatternFlyDocsTool } from './tool.searchPatternFlyDocs';
 import { componentSchemasTool } from './tool.componentSchemas';
@@ -57,6 +58,51 @@ type McpTool = [
 type McpToolCreator = ((options?: GlobalOptions) => McpTool) & { toolName?: string };
 
 /**
+ * The metadata configuration for an MCP resource. Defining these properties
+ * refines a generated MCP metadata resource for an MCP resource.
+ *
+ * @interface McpResourceMetadataMetaConfig
+ *
+ * @property [uri] - A string representing the URI of the resource.
+ * @property [name] - A string indicating the name of the resource.
+ * @property [title] - A string providing the title of the resource.
+ * @property [description] - A string detailing the description of the resource.
+ * @property [searchFields] - An array of strings specifying which search fields should be completed automatically.
+ * @property [mimeType] - Specifies the MIME type of the resource. Acceptable values are:
+ *   - 'text/markdown'
+ *   - 'application/json'
+ * @property [metaHandler] - A function that processes metadata for the resource. It accepts an optional
+ *   object as its argument for passing parameters and returns either a `Promise` resolving to an unknown value or a
+ *   direct unknown value.
+ */
+interface McpResourceMetadataMetaConfig {
+  uri?: string;
+  name?: string;
+  title?: string;
+  description?: string;
+  searchFields?: string[] | undefined;
+  mimeType?: 'text/markdown' | 'application/json';
+  metaHandler?: (params: Record<string, string> | undefined) => Promise<unknown> | unknown;
+}
+
+/**
+ * A resource metadata configuration for the MCP server.
+ *
+ * @property registerAllSearchCombinations - Whether to register all search combinations for the resource.
+ * @property metaConfig - Optional configuration for generating a metadata resource. Being defined
+ *     (e.g. `{ metadata: { metaConfig: {} }}`) means a meta-resource will be generated for the related MCP resource.
+ * @property complete - Callback functions for resource completion.
+ */
+interface McpResourceMetadata {
+  registerAllSearchCombinations?: boolean | undefined;
+  metaConfig?: McpResourceMetadataMetaConfig;
+  complete?: {
+    [key: string]: CompleteResourceTemplateCallback;
+  } | undefined;
+  [key: string]: unknown;
+}
+
+/**
  * A resource registered with the MCP server.
  *
  * 0. `name`: Registered name of the resource.
@@ -65,21 +111,13 @@ type McpToolCreator = ((options?: GlobalOptions) => McpTool) & { toolName?: stri
  * 3. `handler`: Resource handler function.
  * 4. `metadata`: Optional **internal metadata** object. NOT used by the standard MCP SDK
  *     resource registry.
- *    - `metadata.complete`: Callback functions for resource read operations completion
- *    - `metadata.registerAllSearchCombinations`: Whether to register all search parameter permutations or not.
  */
 type McpResource = [
   name: string,
   uriOrTemplate: string | ResourceTemplate,
   config: ResourceMetadata,
   handler: (...args: any[]) => any | Promise<any>,
-  metadata?: {
-    registerAllSearchCombinations?: boolean | undefined;
-    complete?: {
-      [key: string]: CompleteResourceTemplateCallback;
-    } | undefined;
-    [key: string]: unknown;
-  } | undefined
+  metadata?: McpResourceMetadata | undefined
 ];
 
 /**
@@ -291,7 +329,10 @@ const runServer = async (options: ServerOptions = getOptions(), {
     log.info(`Server stats enabled.`);
 
     // Compose resources after logging is set up.
-    const updatedResources = await composeResources(resources);
+    let updatedResources = await composeResources(resources);
+
+    // Add dynamic metadata to resources
+    updatedResources = setMetaResources(updatedResources);
 
     // Combine built-in tools with custom ones after logging is set up.
     const updatedTools = await composeTools(tools);
@@ -314,6 +355,7 @@ const runServer = async (options: ServerOptions = getOptions(), {
       getStatsSetup = () => statsTracker.getStats();
     }
 
+    // Apply MCP resources, if available
     updatedResources.forEach(resourceCreator => {
       const [name, uri, config, callback, metadata] = resourceCreator(options);
 
@@ -338,6 +380,7 @@ const runServer = async (options: ServerOptions = getOptions(), {
       }
     });
 
+    // Apply MCP tools, if available
     updatedTools.forEach(toolCreator => {
       const [name, schema, callback] = toolCreator(options);
       // Do NOT normalize schemas here. This is by design and is a fallback check for malformed schemas.
@@ -487,6 +530,8 @@ export {
   type McpToolCreator,
   type McpResource,
   type McpResourceCreator,
+  type McpResourceMetadata,
+  type McpResourceMetadataMetaConfig,
   type ServerInstance,
   type ServerLogEvent,
   type ServerOnLog,

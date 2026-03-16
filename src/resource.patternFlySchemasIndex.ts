@@ -26,7 +26,7 @@ const URI_TEMPLATE = 'patternfly://schemas/index{?version,category}';
 /**
  * URI description for the resource.
  */
-const URI_DESCRIPTION = `Filter by PatternFly version, and category, ${URI_TEMPLATE}`;
+const URI_DESCRIPTION = `Filter by PatternFly version and category. ${URI_TEMPLATE}`;
 
 /**
  * Resource configuration.
@@ -152,10 +152,13 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
 };
 
 /**
- * Resource creator for the component schemas index.
+ * Resource creator for the component schemas index and metadata resources.
  *
  * @note This resource is being considered for deprecation in favor of a more
  * all encompassing resource, like "resource.patternFlyComponentsIndex."
+ *
+ * @note The `metaConfig` determines if a metadata resource is generated. Remove
+ * the config to disable it.
  *
  * @param options - Global options
  * @returns {McpResource} The resource definition tuple
@@ -180,7 +183,12 @@ const patternFlySchemasIndexResource = (options = getOptions()): McpResource => 
     CONFIG,
     callback,
     {
-      complete
+      complete,
+      metaConfig: {
+        uri: 'patternfly://schemas/meta{?version}',
+        title: `${CONFIG.title} Metadata`,
+        description: 'Use these parameters to filter the list of PatternFly component schemas.'
+      }
     }
   ];
 };

@@ -3,36 +3,6 @@ import { extname, sep } from 'node:path';
 import { type WhitelistUrl } from './options.defaults';
 
 /**
- * Construct a search/query string from an object of key-value pairs, optionally filtering out
- * specific values and adding a `?` prefix.
- *
- * @param values - An object containing key-value pairs to be converted into a query string.
- * @param [options] - Configuration options for constructing the query string.
- * @param [options.filter=[undefined, null]] - Array of values to filter out from the key-value pairs.
- * @param [options.prefix=false] - Determines whether to prepend a "?" to the query string.
- * @returns The constructed query string, optionally prefixed with "?", or `undefined` if no valid key-value pairs remain.
- */
-const buildSearchString = (
-  values: Record<string, unknown>,
-  { filter = [undefined, null], prefix = false }: { filter?: unknown[], prefix?: boolean } = {}
-) => {
-  let entries = Object.entries(values);
-
-  if (filter) {
-    entries = entries.filter(([_key, value]) => !filter.includes(value));
-  }
-
-  if (!entries.length) {
-    return undefined;
-  }
-
-  const entriesToString = entries.sort(([aKey], [bKey]) => aKey.localeCompare(bKey)).map(([key, value]) => [key, `${value}`]);
-  const searchParams = new URLSearchParams(Object.fromEntries(entriesToString));
-
-  return prefix ? `?${searchParams.toString()}` : searchParams.toString();
-};
-
-/**
  * Check if a value is a valid port number.
  *
  * @param port - Port number to check.
@@ -204,6 +174,8 @@ const isAsync = (obj: unknown) => /^\[object (Async|AsyncFunction)]/.test(Object
 
 /**
  * Check if "is a Promise", "Promise like".
+ *
+ * @note This is an internal intentional stable classifier, not a general "returns a thenable" check.
  *
  * @param obj - Object, or otherwise, to check
  * @returns `true` if the object is a Promise
@@ -462,6 +434,63 @@ const isWhitelistedUrl = (url: string, whitelist: WhitelistUrl[], { allowedProto
 };
 
 /**
+ * Generates all possible string combinations from a list of strings.
+ *
+ * @example Recombine a list of values into all possible combinations
+ * // [a, b, c]
+ * [[], [a], [a, b], [a, b, c], [b], [b, c], [c], [a, c]]
+ *
+ * @param values - List of string values.
+ * @returns Array of string combinations.
+ */
+const listAllCombinations = (values: string[]): string[][] =>
+  values.reduce((acc, val) => acc.concat(acc.map(prev => [...prev, val])), [[]] as string[][]);
+
+/**
+ * Generates incremental combinations of a list of strings, preserving order.
+ *
+ * @example Recombine a list of values into all incremental combinations
+ * // [a, b, c]
+ * [[], [a], [a, b], [a, b, c]]
+ *
+ * @param values - List of string values.
+ * @returns Array of incremental string combinations.
+ */
+const listIncrementalCombinations = (values: string[]): string[][] =>
+  values.reduce((acc, val) => {
+    const lastArray = acc[acc.length - 1] || [];
+
+    acc.push([...lastArray, val]);
+
+    return acc;
+  }, [[]] as string[][]);
+
+/**
+ * Basic split for URIs to find base and search.
+ *
+ * @note We only support a single `{?...}` query segment. Using `{?a}{?b}{?c}` will fail. Make sure
+ * resource URIs are set to use a single `{?a,b,c}` segment.
+ *
+ * @param uri - The URI to split
+ * @returns Object containing `base` and `search` URI parts
+ */
+const splitUri = (uri: string) => {
+  const [remainingBaseUri, remainingUri] = uri?.split('{?') || [];
+  const baseUri = remainingBaseUri?.split('{#')?.[0];
+  const searchUri = remainingUri
+    ?.split('}')?.[0]
+    ?.toLowerCase()
+    ?.split(',')
+    ?.map(param => param.trim())
+    ?.filter(Boolean);
+
+  return {
+    base: baseUri,
+    search: searchUri
+  };
+};
+
+/**
  * Join an array of values with a separator, optionally filtering out falsy values.
  *
  * - `stringJoin.basic` Join argument values with a single space separator
@@ -505,6 +534,40 @@ stringJoin.filtered = (...args: unknown[]) => stringJoin(args, { filterFalsyValu
  * @param args - Array of values to join
  */
 stringJoin.newlineFiltered = (...args: unknown[]) => stringJoin(args, { sep: '\n', filterFalsyValues: true });
+
+/**
+ * Construct a search/query string from an object of key-value pairs, optionally filtering out
+ * specific values and adding a `?` prefix.
+ *
+ * @param values - An object containing key-value pairs to be converted into a query string.
+ * @param [options] - Configuration options for constructing the query string.
+ * @param [options.filter=[undefined, null]] - Array of values to filter out from the key-value pairs.
+ * @param [options.prefix=false] - Determines whether to prepend a "?" to the query string.
+ * @returns The constructed query string, optionally prefixed with "?", or `undefined` if no valid key-value pairs remain.
+ */
+const buildSearchString = (
+  values: Record<string, unknown>,
+  { filter = [undefined, null], prefix = false }: { filter?: unknown[], prefix?: boolean } = {}
+) => {
+  if (!isPlainObject(values)) {
+    return undefined;
+  }
+
+  let entries = Object.entries(values);
+
+  if (filter) {
+    entries = entries.filter(([_key, value]) => !filter.includes(value));
+  }
+
+  if (!entries.length) {
+    return undefined;
+  }
+
+  const entriesToString = entries.sort(([aKey], [bKey]) => aKey.localeCompare(bKey)).map(([key, value]) => [key, `${value}`]);
+  const searchParams = new URLSearchParams(Object.fromEntries(entriesToString));
+
+  return prefix ? `?${searchParams.toString()}` : searchParams.toString();
+};
 
 /**
  * Wrap a function, or another Promise in a timeout, returning a
@@ -551,8 +614,11 @@ export {
   isReferenceLike,
   isUrl,
   isWhitelistedUrl,
+  listAllCombinations,
+  listIncrementalCombinations,
   mergeObjects,
   portValid,
+  splitUri,
   stringJoin,
   timeoutFunction
 };
