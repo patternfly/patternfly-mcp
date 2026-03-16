@@ -25,6 +25,9 @@ import { type McpResource } from './server';
  * - most params match first
  * - all search params required in templates
  *
+ * @note We only support a single `{?...}` query segment. Using `{?a}{?b}{?c}` will fail. Make sure
+ * resource URIs are set to use a single `{?a,b,c}` segment.
+ *
  * @param {McpServer} server - MCP Server instance
  * @param name - Resource name
  * @param uriOrTemplate - URI or ResourceTemplate
@@ -108,6 +111,7 @@ const registerResource = (
 
   // Register a string or fallthrough URI if conditional checks fail to match
   // Note: uri is being cast as any to bypass a type mismatch introduced at the MCP SDK level. Rereview when SDK is updated.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   server.registerResource(name, uriOrTemplate as any, config, callback);
 };
 
