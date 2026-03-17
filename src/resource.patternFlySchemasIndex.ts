@@ -52,7 +52,7 @@ const listResources = async () => {
     .forEach(([version]) => {
       resources.push({
         uri: `patternfly://schemas/index?version=${encodeURIComponent(version)}`,
-        mimeType: 'application/json',
+        mimeType: 'text/markdown',
         name: `JSON Component Schemas Index (${version})`,
         description: `JSON component schemas for PatternFly version ${version}. ${URI_DESCRIPTION}`
       });
