@@ -1,6 +1,25 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.9.0](https://github.com/patternfly/patternfly-mcp/compare/175057cc77fb6069e41dd8ef4e89c8794c32c00c...b097f506eb42c2b9fe734552458784173f419bee) (2026-03-17)
+⚠ May contain a breaking update for embedded use only. Move from `docsPath: string` to `docsPaths: string[]` with a behavior shift, see [#125](https://github.com/patternfly/patternfly-mcp/pull/125)
+
+### Features
+*  activate resource completions ([#107](https://github.com/patternfly/patternfly-mcp/pull/107)) ([09563dd](https://github.com/patternfly/patternfly-mcp/commit/09563dd42e1aadd1366aa15088fac409a2fe55a3))
+* **server** expose instructions ([#128](https://github.com/patternfly/patternfly-mcp/pull/128)) ([d7df9c2](https://github.com/patternfly/patternfly-mcp/commit/d7df9c2ddf83f464dc8d2145cbeafbcba8b28a48))
+
+### Code Refactoring
+* **tools** combine components, docs for search ([#129](https://github.com/patternfly/patternfly-mcp/pull/129)) ([c2b7176](https://github.com/patternfly/patternfly-mcp/commit/c2b7176291201300676069d15c2266cf90f00f72))
+* **docs** migrate to ai-helpers ([#125](https://github.com/patternfly/patternfly-mcp/pull/125)) ([124f41e](https://github.com/patternfly/patternfly-mcp/commit/124f41ec28ef901e4936141d1d23845497640b16))
+
+### Chores
+* **docs** add codemods, getting started guides ([#124](https://github.com/patternfly/patternfly-mcp/pull/124)) ([4492355](https://github.com/patternfly/patternfly-mcp/commit/4492355c8f6057f3ee7d0aba7fff34dd7b88ff37))
+
+### Builds
+* **deps** lock update ([#131](https://github.com/patternfly/patternfly-mcp/pull/131)) ([b097f50](https://github.com/patternfly/patternfly-mcp/commit/b097f506eb42c2b9fe734552458784173f419bee))
+* **deps** @modelcontextprotocol/sdk from 1.27.0 to 1.27.1 ([#127](https://github.com/patternfly/patternfly-mcp/pull/127)) ([dd4b2b5](https://github.com/patternfly/patternfly-mcp/commit/dd4b2b5ddeadf8cb38762854465372d18a02aa55))
+* **deps-dev** bump dev group with 8 updates ([#126](https://github.com/patternfly/patternfly-mcp/pull/126)) ([ca3d6c8](https://github.com/patternfly/patternfly-mcp/commit/ca3d6c8c52d20f805a90a6ae46e842650fb3fe17))
+
 ## [0.8.0](https://github.com/patternfly/patternfly-mcp/compare/f8bcb722c9d738f41688364e02ef882bc8665abd...c04aa0dcb9e0375326f697844abd03d0a526a28b) (2026-03-05)
 
 
