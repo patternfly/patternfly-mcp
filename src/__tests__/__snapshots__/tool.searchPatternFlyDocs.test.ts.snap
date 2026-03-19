@@ -50,23 +50,3 @@ exports[`searchPatternFlyDocsTool, callback should have a specific markdown form
   },
 ]
 `;
-
-exports[`searchPatternFlyDocsTool, callback should parse parameters, default: search 1`] = `"# Search results for PatternFly version "v6" and "Button". Showing 2 exact matches."`;
-
-exports[`searchPatternFlyDocsTool, callback should parse parameters, with "*" searchQuery all: search 1`] = `"# Search results for PatternFly version "v6" and "all" resources. Only showing the first 10 results. There are 806 potential match variations. Try searching with a more specific query."`;
-
-exports[`searchPatternFlyDocsTool, callback should parse parameters, with "all" searchQuery all: search 1`] = `"# Search results for PatternFly version "v6" and "all" resources. Only showing the first 10 results. There are 806 potential match variations. Try searching with a more specific query."`;
-
-exports[`searchPatternFlyDocsTool, callback should parse parameters, with explicit valid version: search 1`] = `"# Search results for PatternFly version "v6" and "Button". Showing 2 exact matches."`;
-
-exports[`searchPatternFlyDocsTool, callback should parse parameters, with lower case componentName: search 1`] = `"# Search results for PatternFly version "v6" and "button". Showing 2 exact matches."`;
-
-exports[`searchPatternFlyDocsTool, callback should parse parameters, with made up componentName: search 1`] = `"No PatternFly resources found matching "lorem ipsum dolor sit amet""`;
-
-exports[`searchPatternFlyDocsTool, callback should parse parameters, with multiple words: search 1`] = `"# Search results for PatternFly version "v6" and "Button Card Table". Showing 4 related matches."`;
-
-exports[`searchPatternFlyDocsTool, callback should parse parameters, with partial componentName: search 1`] = `"# Search results for PatternFly version "v6" and "ton". Showing 5 related matches."`;
-
-exports[`searchPatternFlyDocsTool, callback should parse parameters, with trimmed componentName: search 1`] = `"# Search results for PatternFly version "v6" and " Button  ". Showing 2 exact matches."`;
-
-exports[`searchPatternFlyDocsTool, callback should parse parameters, with upper case componentName: search 1`] = `"# Search results for PatternFly version "v6" and "BUTTON". Showing 2 exact matches."`;

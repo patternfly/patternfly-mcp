@@ -23,6 +23,13 @@ your contribution is aligned with the project's goals.
    ```
   All tests should pass, and the application should start successfully with confirmation messaging in the terminal.
 
+##### Windows and repository symlinks
+
+The repo uses **symlinks** so agent tools can find shared skills (for example `.agents/skills` and `.claude/skills` point at `guidelines/skills`). On **Windows**, a plain clone can leave those as plain files instead of links, which breaks that layout.
+
+- Prefer **Developer Mode** (Settings → Privacy & security → For developers) so Git can create symlinks without running as Administrator, **or** clone with symlink support enabled (for example `git clone -c core.symlinks=true …`).
+- If symlinks were not created, enable `core.symlinks` and re-check out the affected paths, or work from **WSL** / **Git for Windows** with symlink support configured.
+
 #### Development workflow
 - Make changes to the codebase
 - Run tests to verify your changes do not break existing functionality

@@ -1,6 +1,20 @@
 import docs from '../docs.json';
 
 describe('docs.json', () => {
+  it('should have a valid top-level generated timestamp (ISO date string)', () => {
+    expect(docs.generated).toBeDefined();
+    expect(typeof docs.generated).toBe('string');
+    expect(docs.generated.length).toBeGreaterThan(0);
+
+    const rawDate = docs.generated;
+    const parsedDate = Date.parse(rawDate);
+
+    expect(Number.isNaN(parsedDate)).toBe(false);
+
+    // Canonical ISO 8601 UTC form from Date.prototype.toISOString()
+    expect(new Date(parsedDate).toISOString()).toBe(rawDate);
+  });
+
   it('should have metadata reflective of its content and unique links per each entry', () => {
     const linkMap = new Map<string, string[]>();
     const allLinks = new Set<string>();
@@ -49,6 +63,9 @@ describe('docs.json', () => {
     /**
      * Confirm we have limited hashes, avoid variation within pf versions
      * If this increases, hashes need to be realigned. Do not randomly change this value.
+     * If you are updating `docs.json` with an agent confirm altering this value is acceptable
+     * when you open your MR/PR. You may be asked to change your git hash to one of the
+     * existing values and keep this value the same.
      * 1 (v6 org) + 1 (v6 react) + 1 (v5 org) + 1 (codemods) + 1 (ai-helpers)
      */
     expect(baseHashes.size).toBe(5);
