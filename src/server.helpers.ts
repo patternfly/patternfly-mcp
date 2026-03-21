@@ -468,7 +468,7 @@ const isWhitelistedUrl = (url: string, whitelist: WhitelistUrl[], { allowedProto
  *
  * @example Recombine a list of values into all possible combinations
  * // [a, b, c]
- * [[], [a], [a, b], [a, b, c], [b], [b, c], [c], [c, a]]
+ * [[], [a], [a, b], [a, b, c], [b], [b, c], [c], [a, c]]
  *
  * @param values - List of string values.
  * @returns Array of string combinations.
