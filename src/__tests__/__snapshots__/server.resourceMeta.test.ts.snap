@@ -47,6 +47,9 @@ exports[`setMetaResources should attempt to return a resource, metaConfig is a t
   "test-resource-meta",
   ResourceTemplate {
     "_callbacks": {
+      "complete": {
+        "version": [MockFunction],
+      },
       "list": undefined,
     },
     "_uriTemplate": UriTemplate {
@@ -150,6 +153,7 @@ exports[`setMetaResources should attempt to return a resource, metaConfig is und
   },
   [MockFunction],
   {
+    "complete": undefined,
     "metaConfig": undefined,
   },
 ]

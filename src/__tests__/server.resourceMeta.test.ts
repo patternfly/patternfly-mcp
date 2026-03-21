@@ -139,7 +139,7 @@ describe('setMetaResources', () => {
     {
       description: 'metaConfig is a template string',
       uri: 'test://uri{?version}',
-      complete: { version: jest.fn() },
+      complete: undefined,
       metaConfig: {},
       expected: 'test://uri/meta{?version}'
     },
@@ -152,14 +152,14 @@ describe('setMetaResources', () => {
       metaConfig: {},
       expected: 'test://uri/meta{?version}'
     }
-  ])('should attempt to return a resource, $description', ({ uri, metaConfig, expected }) => {
+  ])('should attempt to return a resource, $description', ({ uri, complete, metaConfig, expected }) => {
     const callback = jest.fn();
     const resource = () => [
       'test-resource',
       uri,
       { title: 'Test', description: 'Test' },
       callback,
-      { metaConfig }
+      { metaConfig, complete }
     ];
 
     const metaResource: any = setMetaResources([resource] as any)[0];
