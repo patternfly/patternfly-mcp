@@ -162,9 +162,16 @@ describe('setMetaResources', () => {
       expected: 'test://lorem-ipsum/meta'
     },
     {
-      description: 'metaConfig is a template string',
+      description: 'metaConfig is a template string with complete undefined',
       uri: 'test://uri{?version}',
       complete: undefined,
+      metaConfig: {},
+      expected: 'test://uri/meta'
+    },
+    {
+      description: 'metaConfig is a template string with complete',
+      uri: 'test://uri{?version}',
+      complete: { version: jest.fn() },
       metaConfig: {},
       expected: 'test://uri/meta{?version}'
     },

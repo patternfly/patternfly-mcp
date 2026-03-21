@@ -1,6 +1,27 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`Builtin resources, HTTP transport should read the patternfly-docs-meta: meta output 1`] = `
+exports[`Builtin resources, HTTP transport should read meta resources, patternfly-components-meta 1`] = `
+{
+  "mimeType": "text/markdown",
+  "text": "# PatternFly Components Index Metadata
+Use these parameters to filter the list of PatternFly components.
+
+## Available Parameters
+
+| Parameter | Valid Values | Description |
+| :--- | :--- | :--- |
+| \`category\` | \`accessibility\`, \`design-guidelines\`, \`react\` | Filter by category |
+| \`version\` | \`v5\`, \`v6\` | Filter by version |
+
+## Available Patterns
+- **Base View**: \`patternfly://components/index\`
+- **Filtered View (version=...)**: \`patternfly://components/index?version=...\`
+- **Filtered View (version=...&category=...)**: \`patternfly://components/index?version=...&category=...\`",
+  "uri": "patternfly://components/meta",
+}
+`;
+
+exports[`Builtin resources, HTTP transport should read meta resources, patternfly-docs-meta 1`] = `
 {
   "mimeType": "text/markdown",
   "text": "# PatternFly Documentation Index Metadata
@@ -24,6 +45,27 @@ Use these parameters to filter the PatternFly documentation index.
 - **Filtered View (category=...&section=...)**: \`patternfly://docs/index?category=...&section=...\`
 - **Filtered View (version=...&category=...&section=...)**: \`patternfly://docs/index?version=...&category=...&section=...\`",
   "uri": "patternfly://docs/meta",
+}
+`;
+
+exports[`Builtin resources, HTTP transport should read meta resources, patternfly-schemas-meta 1`] = `
+{
+  "mimeType": "text/markdown",
+  "text": "# PatternFly Component Schemas Index Metadata
+Use these parameters to filter the list of PatternFly component schemas.
+
+## Available Parameters
+
+| Parameter | Valid Values | Description |
+| :--- | :--- | :--- |
+| \`category\` | \`accessibility\`, \`design-guidelines\`, \`react\` | Filter by category |
+| \`version\` | \`v5\`, \`v6\` | Filter by version |
+
+## Available Patterns
+- **Base View**: \`patternfly://schemas/index\`
+- **Filtered View (version=...)**: \`patternfly://schemas/index?version=...\`
+- **Filtered View (version=...&category=...)**: \`patternfly://schemas/index?version=...&category=...\`",
+  "uri": "patternfly://schemas/meta",
 }
 `;
 
