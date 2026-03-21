@@ -205,6 +205,8 @@ const isAsync = (obj: unknown) => /^\[object (Async|AsyncFunction)]/.test(Object
 /**
  * Check if "is a Promise", "Promise like".
  *
+ * @note This is an internal intentional stable classifier, not a general "returns a thenable" check.
+ *
  * @param obj - Object, or otherwise, to check
  * @returns `true` if the object is a Promise
  */
@@ -462,6 +464,63 @@ const isWhitelistedUrl = (url: string, whitelist: WhitelistUrl[], { allowedProto
 };
 
 /**
+ * Generates all possible string combinations from a list of strings.
+ *
+ * @example Recombine a list of values into all possible combinations
+ * // [a, b, c]
+ * [[], [a], [a, b], [a, b, c], [b], [b, c], [c], [a, c]]
+ *
+ * @param values - List of string values.
+ * @returns Array of string combinations.
+ */
+const listAllCombinations = (values: string[]): string[][] =>
+  values.reduce((acc, val) => acc.concat(acc.map(prev => [...prev, val])), [[]] as string[][]);
+
+/**
+ * Generates incremental combinations of a list of strings, preserving order.
+ *
+ * @example Recombine a list of values into all incremental combinations
+ * // [a, b, c]
+ * [[], [a], [a, b], [a, b, c]]
+ *
+ * @param values - List of string values.
+ * @returns Array of incremental string combinations.
+ */
+const listIncrementalCombinations = (values: string[]): string[][] =>
+  values.reduce((acc, val) => {
+    const lastArray = acc[acc.length - 1] || [];
+
+    acc.push([...lastArray, val]);
+
+    return acc;
+  }, [[]] as string[][]);
+
+/**
+ * Basic split for URIs to find base and search.
+ *
+ * @note We only support a single `{?...}` query segment. Using `{?a}{?b}{?c}` will fail. Make sure
+ * resource URIs are set to use a single `{?a,b,c}` segment.
+ *
+ * @param uri - The URI to split
+ * @returns Object containing `base` and `search` URI parts
+ */
+const splitUri = (uri: string) => {
+  const [remainingBaseUri, remainingUri] = uri?.split('{?') || [];
+  const baseUri = remainingBaseUri?.split('{#')?.[0];
+  const searchUri = remainingUri
+    ?.split('}')?.[0]
+    ?.toLowerCase()
+    ?.split(',')
+    ?.map(param => param.trim())
+    ?.filter(Boolean);
+
+  return {
+    base: baseUri,
+    search: searchUri
+  };
+};
+
+/**
  * Join an array of values with a separator, optionally filtering out falsy values.
  *
  * - `stringJoin.basic` Join argument values with a single space separator
@@ -551,8 +610,11 @@ export {
   isReferenceLike,
   isUrl,
   isWhitelistedUrl,
+  listAllCombinations,
+  listIncrementalCombinations,
   mergeObjects,
   portValid,
+  splitUri,
   stringJoin,
   timeoutFunction
 };

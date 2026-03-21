@@ -1,5 +1,6 @@
 import { ResourceTemplate, type McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { type McpResource } from './server';
+import { listAllCombinations, listIncrementalCombinations, splitUri } from './server.helpers';
 
 /**
  * Register an MCP resource.
@@ -51,11 +52,7 @@ const registerResource = (
 
   if (uriOrTemplate instanceof ResourceTemplate) {
     const templateStr = uriOrTemplate.uriTemplate?.toString();
-    const [remainingBaseUri, remainingUri] = templateStr?.split('{?') || [];
-
-    // Technically, the hash should fall after a query, just a precaution
-    const baseUri = remainingBaseUri?.split('{#')?.[0];
-    const searchUri = remainingUri?.split('}')?.[0]?.toLowerCase();
+    const { base: baseUri, search: searchUri } = splitUri(templateStr);
 
     // Register original uri, then all combinations OR incremental search params.
     // Or fail the check and fallthrough to default registration.
@@ -64,7 +61,7 @@ const registerResource = (
       server.registerResource(name, uriOrTemplate, config, callback);
 
       const allVariableNames = uriOrTemplate.uriTemplate.variableNames;
-      const searchParams = allVariableNames.filter(param => searchUri.includes(param.toLowerCase()));
+      const searchParams = allVariableNames.filter(param => searchUri.some(searchParam => searchParam === param.toLowerCase()));
 
       // Register combinations
       const register = (incrementalParams: string[]) => {
@@ -80,25 +77,11 @@ const registerResource = (
         server.registerResource(newName, resourceTemplate, config, callback);
       };
 
-      // Variation for all combos, including empty
-      const paramAllCombinations = (params: string[]) =>
-        params.reduce((acc, val) => acc.concat(acc.map(prev => [...prev, val])), [[]] as string[][]);
-
-      // Variation for incremental combos, including empty
-      const paramIncrementalCombinations = (params: string[]) =>
-        params.reduce((acc, val) => {
-          const lastArray = acc[acc.length - 1] || [];
-
-          acc.push([...lastArray, val]);
-
-          return acc;
-        }, [[]] as string[][]);
-
       // Register the remaining combinations
       // Reverse order, limitation with the MCP SDK, most params match first
       const combinations = metadata?.registerAllSearchCombinations
-        ? paramAllCombinations(searchParams)
-        : paramIncrementalCombinations(searchParams);
+        ? listAllCombinations(searchParams)
+        : listIncrementalCombinations(searchParams);
 
       combinations
         .filter(combination => combination.length < searchParams.length)

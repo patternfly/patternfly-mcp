@@ -6,7 +6,14 @@ import { startHttpTransport, type HttpServerHandle } from '../server.http';
 import { DEFAULT_OPTIONS } from '../options.defaults';
 
 // Mock dependencies
-jest.mock('@modelcontextprotocol/sdk/server/mcp.js');
+jest.mock('@modelcontextprotocol/sdk/server/mcp.js', () => {
+  const actual = jest.requireActual('@modelcontextprotocol/sdk/server/mcp.js');
+
+  return {
+    ...actual,
+    McpServer: jest.fn()
+  };
+});
 jest.mock('@modelcontextprotocol/sdk/server/stdio.js');
 jest.mock('../logger');
 jest.mock('../server.logger', () => ({

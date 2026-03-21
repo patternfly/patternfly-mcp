@@ -1,12 +1,13 @@
-import docs from '../docs.json';
+import { distance } from 'fastest-levenshtein';
+import docsJson from '../docs.json';
 
 describe('docs.json', () => {
   it('should have a valid top-level generated timestamp (ISO date string)', () => {
-    expect(docs.generated).toBeDefined();
-    expect(typeof docs.generated).toBe('string');
-    expect(docs.generated.length).toBeGreaterThan(0);
+    expect(docsJson.generated).toBeDefined();
+    expect(typeof docsJson.generated).toBe('string');
+    expect(docsJson.generated.length).toBeGreaterThan(0);
 
-    const rawDate = docs.generated;
+    const rawDate = docsJson.generated;
     const parsedDate = Date.parse(rawDate);
 
     expect(Number.isNaN(parsedDate)).toBe(false);
@@ -21,7 +22,7 @@ describe('docs.json', () => {
     const baseHashes = new Set<string | undefined>();
     let totalDocs = 0;
 
-    Object.entries(docs.docs).forEach(([key, entries]) => {
+    Object.entries(docsJson.docs).forEach(([key, entries]) => {
       entries.forEach(entry => {
         totalDocs += 1;
         allLinks.add(entry.path);
@@ -56,9 +57,9 @@ describe('docs.json', () => {
       throw new Error(`Found ${duplicates.length} duplicate links in docs.json:\n\n${message}`);
     }
 
-    expect(docs.meta.totalEntries).toBeDefined();
-    expect(docs.meta.totalDocs).toBeDefined();
-    expect(Object.entries(docs.docs).length).toBe(docs.meta.totalEntries);
+    expect(docsJson.meta.totalEntries).toBeDefined();
+    expect(docsJson.meta.totalDocs).toBeDefined();
+    expect(Object.entries(docsJson.docs).length).toBe(docsJson.meta.totalEntries);
 
     /**
      * Confirm we have limited hashes, avoid variation within pf versions
@@ -74,13 +75,48 @@ describe('docs.json', () => {
      * Confirm total docs count matches metadata
      * Update the JSON metadata accordingly
      */
-    expect(totalDocs).toBe(docs.meta.totalDocs);
+    expect(totalDocs).toBe(docsJson.meta.totalDocs);
 
     /**
      * Confirm unique links against metadata totals
      * Update the JSON metadata accordingly
      */
     expect(allLinks.size).toBe(linkMap.size);
-    expect(allLinks.size).toBe(docs.meta.totalDocs);
+    expect(allLinks.size).toBe(docsJson.meta.totalDocs);
+  });
+});
+
+describe('docs.json data integrity', () => {
+  const allEntries = Object.values(docsJson.docs).flat();
+  const uniqueCategories = [...new Set(allEntries.map(entry => entry.category).filter(Boolean))];
+  const uniqueSections = [...new Set(allEntries.map(entry => entry.section).filter(Boolean))];
+
+  const checkSimilarity = (list: string[], type: string) => {
+    for (let i = 0; i < list.length; i++) {
+      for (let j = i + 1; j < list.length; j++) {
+        const str1 = list[i]!.toLowerCase();
+        const str2 = list[j]!.toLowerCase();
+
+        // Check for near-duplicates using Levenshtein distance
+        const dist = distance(str1, str2);
+
+        if (dist <= 2) {
+          throw new Error(`Potential duplicate ${type} found: "${list[i]}" and "${list[j]}" (distance: ${dist})`);
+        }
+
+        // Check if one is a substring of another (e.g., "component" and "components")
+        if (str1.includes(str2) || str2.includes(str1)) {
+          throw new Error(`Potential overlapping ${type} found: "${list[i]}" and "${list[j]}"`);
+        }
+      }
+    }
+  };
+
+  it('should have categories that are unique and distinct', () => {
+    expect(() => checkSimilarity(uniqueCategories, 'category')).not.toThrow();
+  });
+
+  it('should have sections that are unique and distinct', () => {
+    expect(() => checkSimilarity(uniqueSections, 'section')).not.toThrow();
   });
 });
