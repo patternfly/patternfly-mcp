@@ -164,10 +164,10 @@ const setMetadataOptions = ({ name, baseUri, searchParams, metaConfig, config, c
   if (typeof metaHandler !== 'function') {
     // Generated example URIs for fallback handler
     const exampleUris = getUriVariations(baseUri, searchParams, Boolean(registerAllSearchCombinations)).map(uri => {
-      const searchParams = uri.split('?')[1];
+      const splitSearchParams = uri.split('?')[1];
 
       return {
-        label: !searchParams ? 'Base View' : `Filtered View (${searchParams})`,
+        label: !splitSearchParams ? 'Base View' : `Filtered View (${splitSearchParams})`,
         uri
       };
     });
@@ -231,8 +231,12 @@ const getUriBreakdown = ({ uriOrTemplate, configUri, complete }: {
   let baseUri: string | undefined;
 
   const tempOriginalUri = isResourceTemplate ? uriOrTemplate.uriTemplate?.toString() : uriOrTemplate;
-  const { base: baseOriginalUri, search } = splitUri(tempOriginalUri);
-  const searchParams = (isResourceTemplate && uriOrTemplate.uriTemplate?.variableNames) || (complete && Object.keys(complete)) || search || [];
+  const { base: baseOriginalUri, search: searchKeys } = splitUri(tempOriginalUri);
+
+  const resourceKeys = isResourceTemplate && uriOrTemplate.uriTemplate?.variableNames ? uriOrTemplate.uriTemplate?.variableNames : [];
+  const completeKeys = isPlainObject(complete) ? Object.keys(complete) : [];
+
+  const searchParams = (resourceKeys.length && resourceKeys) || (completeKeys.length && completeKeys) || searchKeys || [];
   const isMetaTemplate = isResourceTemplate || searchParams.length > 0;
 
   if (metaUri) {
