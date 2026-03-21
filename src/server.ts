@@ -70,8 +70,9 @@ type McpToolCreator = ((options?: GlobalOptions) => McpTool) & { toolName?: stri
  * @property [mimeType] - Specifies the MIME type of the resource. Acceptable values are:
  *   - 'text/markdown'
  *   - 'application/json'
- * @property [metaHandler] - A function that processes metadata for the resource. It accepts a version string
- *   as its argument and returns either a `Promise` resolving to an unknown value or a direct unknown value.
+ * @property [metaHandler] - A function that processes metadata for the resource. It accepts an optional
+ *   version string as its argument and returns either a `Promise` resolving to an unknown value or a
+ *   direct unknown value.
  */
 interface McpResourceMetadataMetaConfig {
   uri?: string;
@@ -79,7 +80,7 @@ interface McpResourceMetadataMetaConfig {
   title?: string;
   description?: string;
   mimeType?: 'text/markdown' | 'application/json';
-  metaHandler?: (version: string) => Promise<unknown> | unknown;
+  metaHandler?: (version: string | undefined) => Promise<unknown> | unknown;
 }
 
 /**

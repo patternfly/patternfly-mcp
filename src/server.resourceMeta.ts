@@ -25,7 +25,8 @@ import { getOptions, runWithOptions } from './options.context';
  * @property {McpResource[2]} config - Configuration for the resource.
  * @property {McpResourceMetadataMetaConfig | undefined} metaConfig - Metadata configuration for the resource.
  * @property {McpResourceMetadata['complete']} complete - Completion function for the resource metadata.
- * @property {McpResourceMetadata['registerAllSearchCombinations']} registerAllSearchCombinations - Function to register all search combinations for the resource metadata.
+ * @property {McpResourceMetadata['registerAllSearchCombinations']} registerAllSearchCombinations - Boolean indicating
+ *     whether to register all search combinations for the resource metadata.
  */
 interface SetMetadataOptions {
   name: string;
@@ -173,7 +174,7 @@ const setMetadataOptions = ({ name, baseUri, searchParams, metaConfig, config, c
     });
 
     // Fallback handler for generating metadata content
-    metaHandler = async (version: string) => {
+    metaHandler = async (version: string | undefined) => {
       const params = [];
 
       if (complete) {
@@ -183,7 +184,9 @@ const setMetadataOptions = ({ name, baseUri, searchParams, metaConfig, config, c
           let values: string[] = [];
 
           if (complete[prop]) {
-            values = await complete[prop]('', { arguments: { version } });
+            try {
+              values = await complete[prop]('', { arguments: { version: version || '' } });
+            } catch {}
           }
 
           params.push({ name, values, description });
@@ -322,7 +325,9 @@ const setMetaResources = (resources: McpResourceCreator[], options = getOptions(
         runWithOptions(opts, async () => {
           const { version } = variables || {};
           const resourceText = await metaHandler(version);
-          const updatedText = isPlainObject(resourceText) ? JSON.stringify(resourceText, null, 2) : resourceText;
+          const updatedText = isPlainObject(resourceText) || Array.isArray(resourceText)
+            ? JSON.stringify(resourceText, null, 2)
+            : String(resourceText);
 
           return {
             contents: [
@@ -356,7 +361,9 @@ const setMetaResources = (resources: McpResourceCreator[], options = getOptions(
 
           if (result.contents) {
             const resourceText = await metaHandler(version);
-            const updatedText = isPlainObject(resourceText) ? JSON.stringify(resourceText, null, 2) : resourceText;
+            const updatedText = isPlainObject(resourceText) || Array.isArray(resourceText)
+              ? JSON.stringify(resourceText, null, 2)
+              : String(resourceText);
 
             result.contents.push({
               uri: `${uriBreakdown.baseUri}${version ? `?version=${version}` : ''}`,
