@@ -79,7 +79,7 @@ interface McpResourceMetadataMetaConfig {
   title?: string;
   description?: string;
   mimeType?: 'text/markdown' | 'application/json';
-  metaHandler?: (version: string) => Promise<unknown> | unknown
+  metaHandler?: (version: string) => Promise<unknown> | unknown;
 }
 
 /**
