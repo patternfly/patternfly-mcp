@@ -185,7 +185,7 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
 };
 
 /**
- * Resource creator for the component schemas index and metadata resources.
+ * Resource creator for the components index and metadata resources.
  *
  * @note The `metaConfig` determines if a metadata resource is generated. Remove
  * the config to disable it.
