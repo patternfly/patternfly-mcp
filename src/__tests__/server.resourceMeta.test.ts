@@ -80,6 +80,24 @@ describe('setMetadataOptions', () => {
 
     expect(content).toContain('# Test Config Metadata');
   });
+
+  it('should fall back to empty values when a complete callback throws', async () => {
+    const throwingComplete = jest.fn().mockRejectedValue(new Error('network error'));
+    const options = setMetadataOptions({
+      name: 'test',
+      baseUri: 'test://uri',
+      searchParams: [],
+      config: { title: 'Test Config' } as any,
+      metaConfig: {},
+      complete: { version: throwingComplete },
+      registerAllSearchCombinations: undefined
+    });
+
+    const content = await options.metaHandler('v6');
+
+    expect(content).toContain('# Test Config Metadata');
+    expect(throwingComplete).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('getUriBreakdown', () => {
@@ -97,6 +115,13 @@ describe('getUriBreakdown', () => {
       configUri: undefined,
       complete: { version: jest.fn() },
       expected: { isMetaTemplate: true, metaUri: 'test://uri/meta{?version}' }
+    },
+    {
+      description: 'configUri provided overrides derived meta URI',
+      uriOrTemplate: 'test://uri{?version}',
+      configUri: 'test://custom/meta{?version}',
+      complete: undefined,
+      expected: { isMetaTemplate: true, metaUri: 'test://custom/meta{?version}' }
     }
   ])('should breakdown URI, $description', ({ uriOrTemplate, configUri, complete, expected }) => {
     const result = getUriBreakdown({ uriOrTemplate, configUri, complete } as any);
@@ -167,5 +192,28 @@ describe('setMetaResources', () => {
 
     expect(JSON.stringify(response[1])).toContain(expected);
     expect(response).toMatchSnapshot();
+  });
+
+  it('should append meta content to original resource read result', async () => {
+    const originalContent = {
+      contents: [{ uri: 'test://uri', mimeType: 'text/markdown', text: 'original' }]
+    };
+    const callback = jest.fn().mockResolvedValue(originalContent);
+    const resource = () => [
+      'test-resource',
+      'test://uri',
+      { title: 'Test', description: 'Test' },
+      callback,
+      { metaConfig: {} }
+    ];
+
+    const [, enhancedResource]: any = setMetaResources([resource] as any);
+    const [, , , enhancedCallback] = enhancedResource();
+    const result = await enhancedCallback(new URL('test://uri'), {});
+
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(result.contents).toHaveLength(2);
+    expect(result.contents[0].text).toBe('original');
+    expect(result.contents[1].text).toContain('Test Metadata');
   });
 });
