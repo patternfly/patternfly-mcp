@@ -192,13 +192,44 @@ describe('Builtin resources, HTTP transport', () => {
 
     expect(resourceNames).toContain('patternfly://context');
     expect(templateNames).toContain('patternfly://components/index');
+    expect(templateNames).toContain('patternfly://components/meta');
     expect(templateNames).toContain('patternfly://components/index{?version,category}');
     expect(templateNames).toContain('patternfly://docs/index');
+    expect(templateNames).toContain('patternfly://docs/meta');
     expect(templateNames).toContain('patternfly://docs/index{?version,category,section}');
     expect(templateNames).toContain('patternfly://docs/{name}{?version,category,section}');
     expect(templateNames).toContain('patternfly://schemas/index');
+    expect(templateNames).toContain('patternfly://schemas/meta');
     expect(templateNames).toContain('patternfly://schemas/index{?version,category}');
     expect(templateNames).toContain('patternfly://schemas/{name}{?version,category}');
+  });
+
+  it.each([
+    {
+      description: 'patternfly-components-meta',
+      uri: 'patternfly://components/meta',
+      expected: 'PatternFly Components Index Metadata'
+    },
+    {
+      description: 'patternfly-docs-meta',
+      uri: 'patternfly://docs/meta',
+      expected: 'PatternFly Documentation Index Metadata'
+    },
+    {
+      description: 'patternfly-schemas-meta',
+      uri: 'patternfly://schemas/meta',
+      expected: 'PatternFly Component Schemas Index Metadata'
+    }
+  ])('should read meta resources, $description', async ({ uri, expected }) => {
+    const response = await CLIENT?.send({
+      method: 'resources/read',
+      params: { uri }
+    });
+    const content = response?.result.contents[0];
+
+    expect(content.uri).toBe(uri);
+    expect(content.text).toContain(expected);
+    expect(content).toMatchSnapshot();
   });
 
   it('should read the patternfly-context resource', async () => {

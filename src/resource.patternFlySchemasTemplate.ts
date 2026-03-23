@@ -30,7 +30,7 @@ const URI_TEMPLATE = 'patternfly://schemas/{name}{?version,category}';
 /**
  * URI description for the resource.
  */
-const URI_DESCRIPTION = `Filter by PatternFly version, and category, ${URI_TEMPLATE}`;
+const URI_DESCRIPTION = `Filter by PatternFly version and category. ${URI_TEMPLATE}`;
 
 /**
  * Resource configuration.

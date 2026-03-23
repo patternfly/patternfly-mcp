@@ -10,8 +10,11 @@ import {
   isUrl,
   isPath,
   isWhitelistedUrl,
+  listAllCombinations,
+  listIncrementalCombinations,
   mergeObjects,
   portValid,
+  splitUri,
   stringJoin,
   timeoutFunction
 } from '../server.helpers';
@@ -753,6 +756,51 @@ describe('isWhitelistedUrl', () => {
   });
 });
 
+describe('listAllCombinations', () => {
+  it.each([
+    {
+      values: ['a', 'b'],
+      expected: [[], ['a'], ['a', 'b'], ['b']]
+    },
+    {
+      values: ['a'],
+      expected: [[], ['a']]
+    },
+    {
+      values: [],
+      expected: [[]]
+    }
+  ])('should list all combinations, $values', ({ values, expected }) => {
+    const result = listAllCombinations(values);
+
+    // Sequence in `listAllCombinations` may vary, take the simple approach
+    expect(result.length).toBe(expected.length);
+
+    expected.forEach(combo => {
+      expect(result).toContainEqual(combo);
+    });
+  });
+});
+
+describe('listIncrementalCombinations', () => {
+  it.each([
+    {
+      values: ['a', 'b', 'c'],
+      expected: [[], ['a'], ['a', 'b'], ['a', 'b', 'c']]
+    },
+    {
+      values: ['x'],
+      expected: [[], ['x']]
+    },
+    {
+      values: [],
+      expected: [[]]
+    }
+  ])('should list incremental combinations, $values', ({ values, expected }) => {
+    expect(listIncrementalCombinations(values)).toEqual(expected);
+  });
+});
+
 describe('mergeObjects', () => {
   it.each([
     {
@@ -899,6 +947,29 @@ describe('portValid', () => {
     }
   ])('should validate a port, $description', ({ port, expected }) => {
     expect(portValid(port)).toBe(expected);
+  });
+});
+
+describe('splitUri', () => {
+  it.each([
+    {
+      uri: 'patternfly://docs{?category,section}',
+      expected: { base: 'patternfly://docs', search: ['category', 'section'] }
+    },
+    {
+      uri: 'patternfly://docs{#anchor}{?version}',
+      expected: { base: 'patternfly://docs', search: ['version'] }
+    },
+    {
+      uri: 'patternfly://docs',
+      expected: { base: 'patternfly://docs', search: undefined }
+    },
+    {
+      uri: '',
+      expected: { base: '', search: undefined }
+    }
+  ])('should split URI, $uri', ({ uri, expected }) => {
+    expect(splitUri(uri)).toEqual(expected);
   });
 });
 
