@@ -81,6 +81,29 @@ describe('setMetadataOptions', () => {
     expect(content).toContain('# Test Config Metadata');
   });
 
+  it('should merge values from multiple complete callbacks', async () => {
+    const completeVersion = jest.fn().mockResolvedValue(['v1']);
+    const completeCategory = jest.fn().mockResolvedValue(['cat1']);
+    const options = setMetadataOptions({
+      name: 'test',
+      baseUri: 'test://uri',
+      searchParams: [],
+      config: { title: 'Test Multiple Callbacks' } as any,
+      metaConfig: {},
+      complete: { version: completeVersion, category: completeCategory },
+      registerAllSearchCombinations: undefined
+    });
+
+    const content = await options.metaHandler({});
+
+    expect(completeVersion).toHaveBeenCalledTimes(1);
+    expect(completeCategory).toHaveBeenCalledTimes(1);
+    expect(content).toContain('version');
+    expect(content).toContain('category');
+    expect(content).toContain('v1');
+    expect(content).toContain('cat1');
+  });
+
   it('should fall back to empty values when a complete callback throws', async () => {
     const throwingComplete = jest.fn().mockRejectedValue(new Error('network error'));
     const options = setMetadataOptions({
@@ -252,6 +275,7 @@ describe('setMetaResources', () => {
 
     expect(callback).toHaveBeenCalledTimes(1);
     expect(result.contents).toHaveLength(2);
+    expect(result.contents[0]).toBe(originalContent.contents[0]);
     expect(result.contents[0].text).toBe('original');
     expect(result.contents[1].text).toContain('Test Metadata');
   });

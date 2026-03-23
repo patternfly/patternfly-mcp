@@ -401,18 +401,25 @@ const setMetaResources = (resources: McpResourceCreator[], options = getOptions(
         runWithOptions(opts, async () => {
           const result = await callback(passedUri, variables);
 
-          if (result.contents) {
-            const updatedText = await resolveMetaText(variables);
-            const queryString = buildSearchString(variables, { prefix: true });
-
-            result.contents.push({
-              uri: queryString ? `${uriBreakdown.metaBaseUri}${queryString}` : uriBreakdown.metaBaseUri,
-              mimeType: metaMimeType,
-              text: updatedText
-            });
+          if (!isPlainObject(result) || !Array.isArray(result.contents)) {
+            return result;
           }
 
-          return result;
+          const updatedText = await resolveMetaText(variables);
+          const queryString = buildSearchString(variables, { prefix: true });
+          const metaContentUri = queryString ? `${uriBreakdown.metaBaseUri}${queryString}` : uriBreakdown.metaBaseUri;
+
+          return {
+            ...result,
+            contents: [
+              ...result.contents,
+              {
+                uri: metaContentUri,
+                mimeType: metaMimeType,
+                text: updatedText
+              }
+            ]
+          };
         });
 
       return [name, uriOrTemplate, config, metaEnhancedCallback, metadata];
