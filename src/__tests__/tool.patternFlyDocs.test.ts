@@ -1,15 +1,23 @@
 import { McpError } from '@modelcontextprotocol/sdk/types.js';
-import { usePatternFlyDocsTool } from '../tool.patternFlyDocs';
 import { processDocsFunction } from '../server.getResources';
+import { getPatternFlyComponentSchema, getPatternFlyMcpResources, setCategoryDisplayLabel } from '../patternFly.getResources';
+import { searchPatternFly } from '../patternFly.search';
 import { isPlainObject } from '../server.helpers';
+import { usePatternFlyDocsTool } from '../tool.patternFlyDocs';
 
 // Mock dependencies
 jest.mock('../server.getResources');
+jest.mock('../patternFly.getResources');
+jest.mock('../patternFly.search');
 jest.mock('../server.caching', () => ({
   memo: jest.fn(fn => fn)
 }));
 
 const mockProcessDocs = processDocsFunction as jest.MockedFunction<typeof processDocsFunction>;
+const mockComponentSchema = getPatternFlyComponentSchema as jest.MockedFunction<typeof getPatternFlyComponentSchema>;
+const mockGetResources = getPatternFlyMcpResources as jest.MockedFunction<typeof getPatternFlyMcpResources>;
+const mockSearch = searchPatternFly as jest.MockedFunction<typeof searchPatternFly>;
+const mockSetCategoryLabel = setCategoryDisplayLabel as jest.MockedFunction<typeof setCategoryDisplayLabel>;
 
 describe('usePatternFlyDocsTool', () => {
   beforeEach(() => {
@@ -30,6 +38,21 @@ describe('usePatternFlyDocsTool', () => {
 describe('usePatternFlyDocsTool, callback', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+
+    mockGetResources.mockResolvedValue({
+      latestVersion: 'v6',
+      latestSchemasVersion: 'v6',
+      byPath: {
+        'components/loremButton.md': { name: 'button', version: 'v6', displayName: 'Button' }
+      }
+    } as any);
+
+    mockSearch.mockResolvedValue({
+      exactMatches: [{ entries: [{ path: 'components/loremButton.md' }] }],
+      searchResults: []
+    } as any);
+
+    mockSetCategoryLabel.mockImplementation(entry => entry?.category || 'Documentation');
   });
 
   it.each([
@@ -138,6 +161,15 @@ describe('usePatternFlyDocsTool, callback', () => {
         content: 'ipsum documentation content'
       }
     ] as any);
+
+    mockComponentSchema.mockResolvedValue({
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      title: 'Button',
+      type: 'object',
+      properties: {
+        variant: { type: 'string' }
+      }
+    } as any);
 
     const [_name, _schema, callback] = usePatternFlyDocsTool();
     const result = await callback({ name: 'button' });
