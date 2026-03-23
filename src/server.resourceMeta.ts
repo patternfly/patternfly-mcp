@@ -81,11 +81,11 @@ const generateMarkdownTable = (columnHeaders: string[], rows: (string | string[]
 /**
  * Generate a standardized metadata table for resource discovery.
  *
- * @param settings
- * @param settings.title - Resource title or name.
- * @param settings.description - Resource description.
- * @param settings.params - Parameter details for the resource.
- * @param [settings.exampleUris] - Example URIs for the resource.
+ * @param param - Object parameter
+ * @param param.title - Heading title for the generated Markdown.
+ * @param param.description - Resource description/summary for the Markdown.
+ * @param param.params - Resource rows for the parameters Markdown table.
+ * @param [param.exampleUris] - Example URIs for the resource "Available Patterns" Markdown section.
  * @returns Markdown content for resource metadata.
  */
 const generateMetaContent = ({ title, description, params, exampleUris = [] }: {

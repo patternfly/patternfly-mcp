@@ -58,22 +58,23 @@ type McpTool = [
 type McpToolCreator = ((options?: GlobalOptions) => McpTool) & { toolName?: string };
 
 /**
- * The metadata configuration for an MCP resource. Defining these properties
- * refines a generated MCP metadata resource for an MCP resource.
+ * Configuration for a generated metadata MCP resource.
  *
  * @interface McpResourceMetadataMetaConfig
  *
- * @property [uri] - A string representing the URI of the resource.
- * @property [name] - A string indicating the name of the resource.
- * @property [title] - A string providing the title of the resource.
- * @property [description] - A string detailing the description of the resource.
- * @property [searchFields] - An array of strings specifying which search fields should be completed automatically.
- * @property [mimeType] - Specifies the MIME type of the resource. Acceptable values are:
+ * @property [uri] - Override URI for the meta-resource. (e.g., `test://lorem/meta`, `test://ipsum/meta{?var}`).
+ * @property [name] - Registered name for the meta-resource (defaults to `{primaryName}-meta`).
+ * @property [title] - Title shown for the meta-resource in listings and generated Markdown.
+ * @property [description] - Description for the meta-resource in listings and generated Markdown.
+ * @property [searchFields] - Query parameter names included on the meta-URI template for completion.
+ *   - If an empty array is provided the meta-resource uses a static URI, no template
+ *   - If omitted the search fields are inferred from the `uri` or the primary resource template.
+ * @property [mimeType] - MIME type of the meta-resource body. Acceptable values are:
  *   - 'text/markdown'
  *   - 'application/json'
- * @property [metaHandler] - A function that processes metadata for the resource. It accepts an optional
- *   object as its argument for passing parameters and returns either a `Promise` resolving to an unknown value or a
- *   direct unknown value.
+ * @property [metaHandler] - A custom handler for the meta-resource. It accepts an optional object as its
+ *     argument for passing parameters and returns a serialized value to the MCP client. A default fallback
+ *     async handler is used if none is provided.
  */
 interface McpResourceMetadataMetaConfig {
   uri?: string;
@@ -106,11 +107,11 @@ interface McpResourceMetadata {
  * A resource registered with the MCP server.
  *
  * 0. `name`: Registered name of the resource.
- * 1. `uriOrTemplate`: URI string or template.
- * 2. `config`: Resource configuration metadata.
+ * 1. `uriOrTemplate`: URI string or template. {@link ResourceTemplate}
+ * 2. `config`: Resource configuration metadata. {@link ResourceMetadata}
  * 3. `handler`: Resource handler function.
- * 4. `metadata`: Optional **internal metadata** object. NOT used by the standard MCP SDK
- *     resource registry.
+ * 4. `metadata`: Optional **internal metadata** object, not used by the standard MCP SDK
+ *     resource registry. {@link McpResourceMetadata}
  */
 type McpResource = [
   name: string,
