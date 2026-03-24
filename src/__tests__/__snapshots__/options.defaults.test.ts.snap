@@ -41,12 +41,19 @@ exports[`options defaults should return specific properties: defaults 1`] = `
   "mode": "programmatic",
   "modeOptions": {
     "cli": {},
+    "docs": {},
     "programmatic": {},
     "test": {},
   },
   "name": "@patternfly/patternfly-mcp",
   "nodeVersion": 22,
   "patternflyOptions": {
+    "api": {
+      "endpoints": {
+        "v6": "https://patternfly-doc-core.pages.dev/api/v6",
+      },
+      "expireDays": 14,
+    },
     "availableResourceVersions": [
       "6.0.0",
     ],
@@ -70,6 +77,7 @@ exports[`options defaults should return specific properties: defaults 1`] = `
     },
     "urlWhitelist": [
       "https://patternfly.org",
+      "https://patternfly-doc-core.pages.dev",
       "https://github.com/patternfly",
       "https://raw.githubusercontent.com/patternfly",
     ],
