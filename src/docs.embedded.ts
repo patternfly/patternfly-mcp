@@ -35,6 +35,7 @@ interface PatternFlyMcpDocsCatalog {
     totalEntries: number;
     totalDocs: number;
     source: string;
+    [key: string]: unknown;
   };
   docs: PatternFlyMcpDocsCatalogEntry
 }
