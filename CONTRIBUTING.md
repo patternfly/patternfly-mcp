@@ -59,7 +59,7 @@ Development pull requests (PRs) should be opened against the default branch.
 > If your pull request work contains any of the following warning signs
 >  - has no related issue
 >  - ignores existing code style
->  - out of sync commits (not rebased against the default branch)
+>  - out-of-sync commits (not rebased against the default branch)
 >  - poorly structured commits and messages
 >  - any one commit relies on other commits to work (beyond "review requested updates")
 >  - dramatic file restructures that attempt complex behavior
@@ -116,7 +116,7 @@ Basic code style guidelines are generally enforced by ESLint, but there are addi
 - Tests should focus on functionality.
 - Tests should not be written for external packages. That is the responsibility of the external package, or it shouldn't be used.
 
-#### Typescript
+#### TypeScript
 - Typings within the project may be generally loose for initial development but should be refined over time.
 - Typings exposed to consumers should always attempt to maintain consistency.
 - Typings for tests are less of a focus than functionality checks.
@@ -142,9 +142,28 @@ npm run test:integration
 
 This mode leverages the `--mode test` and `--mode-test-url` flags to redirect resource lookups to a fixture server instead of live or local resources.
 
+## Maintenance: Node.js engine bumps
+
+The `Node.js` engine requirements are updated on a predictable biannual schedule to ensure the server remains secure, leverages modern runtime features, and provides stability for consumers.
+
+> Our engine requirements are intended to be the minimum to run the MCP server. They are not intended to be a maximum, as newer versions may introduce breaking changes or require additional configuration.
+
+### Schedule and process
+- **Timing**: Bumps are generally targeted for **Spring (April/May)** and **Fall (October/November)**, aligned with the [Node.js release schedule](https://nodejs.org/en/about/previous-releases) as versions enter or exit LTS.
+- **Security**: Out-of-band updates may be performed if critical security considerations arise.
+- **Version Targets**:
+  - Focus on the latest **even-numbered (LTS/Stable)** versions (e.g., bumping to 22, 24, or 26).
+  - GitHub Workflows should be updated to include the latest available even version.
+
+### Acceptance criteria for bumps
+- Update `package.json` engine requirements.
+- Update related GitHub Action workflows (CI/CD).
+- Update "Environmental Requirements" in documentation.
+- Ensure all tests pass on the new target version.
+
 ## AI agent
 
-### User Section
+### User section
 
 Current agent interaction can be triggered with the chat command
 
@@ -157,12 +176,12 @@ For detailed information on agent interaction, see [guidelines/README.md](./guid
 As developers, we often have our own preferred workflows, and that includes working with AI agents. To that point, we've added agent guidance
 to allow customization for your work environment through a tool-agnostic git-ignored directory `./.agent` in the root of the project.
 
-#### Noting AI Agent contributions
+#### Noting AI agent contributions
 
 Please reference [PatternFly's AI-assisted development guidelines](https://github.com/patternfly/.github/blob/main/CONTRIBUTING.md) for guidance on how to
 acknowledge AI agent contributions.
 
-### Agent Only
+### Agent only
 Agents: This repository contains a hierarchical guideline system. Agents should review agent-only comment blocks.
 
 <!--

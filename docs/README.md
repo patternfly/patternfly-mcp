@@ -1,4 +1,4 @@
-# PatternFly MCP Server Documentation
+# PatternFly MCP Server documentation
 
 Welcome to the PatternFly MCP Server documentation. This guide is organized by user intent.
 
@@ -6,11 +6,11 @@ Welcome to the PatternFly MCP Server documentation. This guide is organized by u
 - **[MCP Tools and Resources](./usage.md)**: Use built-in tools and resources like `searchPatternFlyDocs` and `usePatternFlyDocs`.
 - **[Client Configuration](./usage.md)**: Configure the server for your environment.
 
-### 🛠️ Developer Reference
+### 🛠️ Developer reference
 - **[CLI Reference](./development.md#cli-usage)**: Reference of server options.
 - **[API Reference](./development.md#programmatic-usage)**: Using the server as a base library in your own Node.js MCP.
 - **[Examples](./examples/README.md)**: Standalone snippets for HTTP transport, embedding, and custom tools.
 
-### 🏗️ Architecture & Design
+### 🏗️ Architecture & design
 - **[System Architecture](./architecture.md)**: Design concept and architecture.
 - **[Roadmap](./architecture.md#roadmap)**: Future plans for the project.

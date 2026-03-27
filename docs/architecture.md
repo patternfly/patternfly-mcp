@@ -6,29 +6,27 @@ The PatternFly MCP server is centered around the concept of a library for all th
 
 ### The library, PatternFly integration
 
-PatternFly integration is centered around the following current, and future, tools:
-- Searching for a resource
-- Use and read a resource
-- Finding, or discovering, a resource
+The current PatternFly MCP server provides a hybrid documentation system that will merge baseline guidelines with dynamic content. It is centered around a **Resource Metadata** discovery layer that powers the following core concepts:
 
-#### Search PatternFly documentation
+- **Searching for resources**: Querying the library for relevant documentation and components.
+- **Reading resources**: Accessing full documentation and machine-readable schemas.
+- **Discovering resources**: Navigating the library via resource indexes and URI templates.
 
-A built-in tool for searching PatternFly documentation and resources integrated into the server.
+#### Discovery layer (resource metadata)
 
-#### Use PatternFly documentation
+Instead of a standalone "discovery" tool, the server implements a robust **Resource Metadata system**. This system:
+- Generates automated indexes for all available documentation (`patternfly://docs/index`), components (`patternfly://components/index`), and schemas (`patternfly://schemas/index`).
+- Supports completion logic for MCP clients, allowing LLMs and users to browse available resources effortlessly.
+- Provides parameterized URI templates (RFC 6570) like `patternfly://docs/{name}` for direct, predictable access.
+- Provides generated `meta` resources that document available MCP resource template parameters for MCP clients that do not have completion (`patternfly://docs/meta`, `patternfly://components/meta`, `patternfly://schemas/meta`).
 
-A built-in tool for reading and using PatternFly documentation and resources integrated into the server.
+> This discovery layer treats the MCP server as a living library. It enables the server to provide updates for all built-in tools and resources while maintaining a tailored experience based on user patterns (e.g., tailoring responses for designers vs. developers).
 
-#### Find and discover PatternFly documentation
+#### Hybrid documentation model (in-progress)
 
-An evolving "future" tool (still undergoing refinement) for finding PatternFly documentation and resources not directly integrated into the server.
-
-> This tool treats the MCP server as a library. Like a library, sometimes you need an interlibrary loan to gain access to the resource you need.
->
-> The interlibrary concept is key because it starts to highlight that this third MCP tool could
-> - Help provide updates for all PatternFly MCP server built-in tools, resources, and prompts
-> - Maintain up-to-date documentation and resources
-> - Provide a tailored experience for users based on their use patterns (e.g., a designer's experience is tailored to design, a developer's experience is tailored to development)
+We'll be introducing our hybrid documentation model in upcoming releases. This concept balances stability and currentness by integrating core guidelines and standards directly into the server while syncing from the latest available PatternFly implementation.
+- **Baseline Data**: Core guidelines and standards integrated directly into the server for standalone purposes, quick starts, and immediate access.
+- **Dynamic Content**: Content synced from the latest available PatternFly implementation while you work, ensuring the LLM always has access to the latest documentation and patterns.
 
 ### Tools, resources, and prompts as customizable plugins
 
@@ -48,18 +46,23 @@ Key goals aided by moving towards plugins:
 flowchart TD
   subgraph A1["MCP server"]
     subgraph E1["Session context"]
-      subgraph F1["Logging, stats context"]
+      subgraph F1["Logging, Resource discovery context"]
         subgraph F1A["Built-In tools"]
-          F1AA(["Search PF docs"])
-          F1AB(["Use PF docs"])
+          F1AA(["Search PatternFly docs"])
+          F1AB(["Use PatternFly docs"])
         end
-        F1B --> F1A
-        F1B(["Built-In resources"])
+        F1B <--> F1A
+        F1B(["Built-In resources & discovery layer"])
       end
     end
     D1(["Server proxy"])
+    D1 <--> F1
+    subgraph G1["Child process host"]
+      G1A(["Tools host & isolation sandbox"])
+    end
+    D1 <--> G1
   end
-  B1(["Local external tools, prompts, resources"])
+  B1(["Local and remote external tools, prompts, resources"])
   B1 <--> D1
 ```
 
@@ -67,19 +70,19 @@ flowchart TD
 
 ### Planned features and integrations
 
-To get towards our future state, there are a series of planned features and integrations.
+Our roadmap focuses on expanding the server's reach and providing a more integrated development experience.
 
-Current focus:
-- **YAML configuration for remote tools, resources and prompts** - YAML configuration for remote MCP tools, resources, and prompt plugins
-- **MCP resource, prompts, and helper function sharing** - A way to share MCP resources, prompts, and helper functions towards external tool plugins.
-- **Find PatternFly documentation tool** - A tool that reaches out to known PatternFly documentation sources, caches locally, and integrates the results with existing MCP tools and resources.
-- **PatternFly API integration** - A JSON API for PatternFly documentation, components, and patterns.
-- **Hosted resource for sharing MCP tools, resources, prompts** - Shared tooling customization through PatternFly AI tooling repository (or equivalent)
+#### In-progress
+- **Hybrid documentation model**: A JSON API for documentation, components, and patterns that ensures the server is always in sync with the latest releases.
+   - **PatternFly API Integration**: Embedded integration into the server for standalone purposes, quick starts, and immediate access.
+   - **Child Process Lifecycle Management**: Background process while you work for API synchronization.
 
-Under consideration:
-- **MCP client** - A tailored MCP client specific for the PatternFly MCP server.
-- **Auditing for shared tools, resources, and prompts** - An auditing tool that helps you refine your shared tools, resources, and prompts.
-- **Containerized PatternFly MCP server, client, and LLM** - A containerized PatternFly MCP server, client, and embedded LLM. Use your own PatternFly chat client resource.
+#### In-planning and under review
+- **Resource-Tool Integration**: Directly integrate MCP resources into tool responses to reduce token counts and allow tools to accept URI links as inputs.
+- **Environment & Analysis Tooling**: A third built-in tool focused on environment snapshots, code analysis, and whitelisted resource access for local project analysis.
+- **Agentless MCP Client**: An MCP client for use without an LLM, allowing PatternFly tooling to integrate into CLI tools and CI/CD pipelines.
+- **YAML Configuration**: Remote tool, resource, and prompt plugins configured via YAML.
+- **Resource/Helper Sharing**: Mechanisms to share resources and helper functions across external tool plugins.
 
 #### Future state
 
@@ -87,21 +90,30 @@ Under consideration:
 flowchart TD
   subgraph A1["MCP server"]
     subgraph E1["Session context"]
-      subgraph F1["Logging, stats context"]
+      subgraph F1["Logging, Resource discovery context"]
         F1C(["Built-In prompts"])
         F1C <--> F1A
         subgraph F1A["Built-In tools"]
-          F1AA(["Search PF docs"])
-          F1AB(["Use PF docs"])
-          F1AC(["Find PF docs"])
+          F1AA(["Search PatternFly docs"])
+          F1AB(["Use PatternFly docs"])
+          F1AC(["Analyze environment"])
         end
         F1B <--> F1A
-        F1B(["Built-In resources"])
+        F1B(["Built-In resources & discovery layer"])
       end
     end
-    F1B --> D1
     D1(["Server proxy"])
+    D1 <--> F1
+    subgraph G1["Child process host"]
+      G1A(["Tools host & isolation sandbox"])
+      G1B(["API synchronization process"])
+    end
+    D1 <--> G1
   end
+  subgraph H1["Agentless client layer"]
+    H1A(["CLI & Automation integration"])
+  end
+  A1 <--> H1
   B1(["Local and remote external tools, prompts, resources"])
   B1 <--> D1
 ```

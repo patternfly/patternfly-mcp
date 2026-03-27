@@ -10,7 +10,7 @@ It is intended to be extensible to meet the needs of different teams and project
 - [Node.js 20+](https://nodejs.org/)
 - NPM (or equivalent package manager)
 
-## Quick Start
+## Quick start
 
 The PatternFly MCP Server supports multiple configurations; see the [usage documentation](./docs/usage.md#mcp-client-configuration) for details.
 
