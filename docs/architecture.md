@@ -25,8 +25,8 @@ Instead of a standalone "discovery" tool, the server implements a robust **Resou
 #### Hybrid documentation model (in-progress)
 
 We'll be introducing our hybrid documentation model in upcoming releases. This concept balances stability and currentness by integrating core guidelines and standards directly into the server while syncing from the latest available PatternFly implementation.
-- **Baseline Data**: Core guidelines and standards integrated directly into the server for standalone purposes, quick starts, and immediate access.
-- **Dynamic Content**: Content synced from the latest available PatternFly implementation while you work, ensuring the LLM always has access to the latest documentation and patterns.
+- **Baseline data**: Core guidelines and standards integrated directly into the server for standalone purposes, quick starts, and immediate access.
+- **Dynamic content**: Content synced from the latest available PatternFly implementation while you work, ensuring the LLM always has access to the latest documentation and patterns.
 
 ### Tools, resources, and prompts as customizable plugins
 
