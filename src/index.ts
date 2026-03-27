@@ -176,6 +176,22 @@ const main = async (
 
     // Finalize exit policy after merging options
     updatedAllowProcessExit = allowProcessExit ?? mergedOptions.mode !== 'test';
+
+    // Handle documentation building mode
+    if (mergedOptions.mode === 'docs') {
+      const { createLogger } = await import('./logger');
+      const { buildPatternFlyDocs } = await import('#buildDocs' as string);
+
+      createLogger();
+
+      const instance = await buildPatternFlyDocs(mergedOptions);
+
+      if (updatedAllowProcessExit) {
+        process.exit(0);
+      }
+
+      return instance as any;
+    }
   } catch (error) {
     processExit('Set options error, failed to start server:', error);
   }

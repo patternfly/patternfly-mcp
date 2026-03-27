@@ -18,6 +18,7 @@ exports[`parseCliOptions should attempt to parse args with --allowed-hosts 1`] =
   },
   "modeOptions": {
     "cli": {},
+    "docs": {},
     "programmatic": {},
     "test": {},
   },
@@ -44,6 +45,7 @@ exports[`parseCliOptions should attempt to parse args with --allowed-origins 1`]
   },
   "modeOptions": {
     "cli": {},
+    "docs": {},
     "programmatic": {},
     "test": {},
   },
@@ -67,6 +69,7 @@ exports[`parseCliOptions should attempt to parse args with --http and --host 1`]
   },
   "modeOptions": {
     "cli": {},
+    "docs": {},
     "programmatic": {},
     "test": {},
   },
@@ -90,6 +93,7 @@ exports[`parseCliOptions should attempt to parse args with --http and --port 1`]
   },
   "modeOptions": {
     "cli": {},
+    "docs": {},
     "programmatic": {},
     "test": {},
   },
@@ -113,6 +117,7 @@ exports[`parseCliOptions should attempt to parse args with --http and invalid --
   },
   "modeOptions": {
     "cli": {},
+    "docs": {},
     "programmatic": {},
     "test": {},
   },
@@ -134,6 +139,7 @@ exports[`parseCliOptions should attempt to parse args with --http flag 1`] = `
   },
   "modeOptions": {
     "cli": {},
+    "docs": {},
     "programmatic": {},
     "test": {},
   },
@@ -155,6 +161,7 @@ exports[`parseCliOptions should attempt to parse args with --log-level flag 1`] 
   },
   "modeOptions": {
     "cli": {},
+    "docs": {},
     "programmatic": {},
     "test": {},
   },
@@ -176,6 +183,7 @@ exports[`parseCliOptions should attempt to parse args with --log-stderr flag and
   },
   "modeOptions": {
     "cli": {},
+    "docs": {},
     "programmatic": {},
     "test": {},
   },
@@ -197,6 +205,7 @@ exports[`parseCliOptions should attempt to parse args with --tool 1`] = `
   },
   "modeOptions": {
     "cli": {},
+    "docs": {},
     "programmatic": {},
     "test": {},
   },
@@ -221,6 +230,7 @@ exports[`parseCliOptions should attempt to parse args with --verbose flag 1`] = 
   },
   "modeOptions": {
     "cli": {},
+    "docs": {},
     "programmatic": {},
     "test": {},
   },
@@ -242,6 +252,7 @@ exports[`parseCliOptions should attempt to parse args with --verbose flag and --
   },
   "modeOptions": {
     "cli": {},
+    "docs": {},
     "programmatic": {},
     "test": {},
   },
@@ -263,6 +274,7 @@ exports[`parseCliOptions should attempt to parse args with other arguments 1`] =
   },
   "modeOptions": {
     "cli": {},
+    "docs": {},
     "programmatic": {},
     "test": {},
   },
