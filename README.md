@@ -94,6 +94,10 @@ main();
 
 For comprehensive usage, development, and project state [read the docs](./docs/README.md).
 
+- **Architecture**: Learn about our [hybrid documentation model and data sources](./docs/architecture.md#data-sources-and-integrations).
+- **Usage**: Detailed guide on [built-in tools and resources](./docs/usage.md).
+- **Development**: Reference for [CLI options and tool plugins](./docs/development.md).
+
 ## Contributing
 
 Contributing? Guidelines can be found here [CONTRIBUTING.md](./CONTRIBUTING.md).

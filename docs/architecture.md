@@ -28,6 +28,18 @@ We'll be introducing our hybrid documentation model in upcoming releases. This c
 - **Baseline data**: Core guidelines and standards integrated directly into the server for standalone purposes, quick starts, and immediate access.
 - **Dynamic content**: Content synced from the latest available PatternFly implementation while you work, ensuring the LLM always has access to the latest documentation and patterns.
 
+### Data sources and integrations
+
+The PatternFly MCP server aggregates content from multiple official sources to provide a comprehensive development resource.
+
+#### PatternFly ai-helpers
+The server integrates the [patternfly/ai-helpers](https://github.com/patternfly/ai-helpers) repository to provide specialized, LLM-optimized guidance. This integration powers several key resource categories:
+- **AI Guidance**: Specialized patterns for React Charts, Chatbot, and general React development.
+- **Styling Standards**: CSS and styling requirements tailored for AI code generation.
+- **Prompt Engineering**: Includes `ai-prompt-guidance.md` to help users write more effective prompts for PatternFly.
+
+These helpers are a core part of our [Hybrid documentation model](#hybrid-documentation-model-in-progress), acting as the bridge between stable design patterns and dynamic implementation details.
+
 ### Tools, resources, and prompts as customizable plugins
 
 Tools, resources, and prompts as customizable plugins are the result of predictable MCP SDK patterns. In the case of the PatternFly MCP server,
