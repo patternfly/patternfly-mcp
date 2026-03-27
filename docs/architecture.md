@@ -6,11 +6,13 @@ The PatternFly MCP server is centered around the concept of a library for all th
 
 ### The library, PatternFly integration
 
-The current PatternFly MCP server provides a hybrid documentation system that will merge baseline guidelines with dynamic content. It is centered around a **Resource Metadata** discovery layer that powers the following core concepts:
+The current PatternFly MCP server is centered on a **Resource Metadata** discovery layer that enables the following core concepts:
 
 - **Searching for resources**: Querying the library for relevant documentation and components.
 - **Reading resources**: Accessing full documentation and machine-readable schemas.
 - **Discovering resources**: Navigating the library via resource indexes and URI templates.
+
+> [A more in-depth version of our **hybrid documentation model** concept is currently in progress](#hybrid-documentation-model-in-progress).
 
 #### Discovery layer (resource metadata)
 
@@ -24,7 +26,7 @@ Instead of a standalone "discovery" tool, the server implements a robust **Resou
 
 #### Hybrid documentation model (in-progress)
 
-We'll be introducing our hybrid documentation model in upcoming releases. This concept balances stability and currentness by integrating core guidelines and standards directly into the server while syncing from the latest available PatternFly implementation.
+We'll be introducing more updates based on our hybrid documentation concept in upcoming releases. The base concept balances stability and currentness by integrating core guidelines and standards directly into the server while syncing from the latest available PatternFly implementation.
 - **Baseline data**: Core guidelines and standards integrated directly into the server for standalone purposes, quick starts, and immediate access.
 - **Dynamic content**: Content synced from the latest available PatternFly implementation while you work, ensuring the LLM always has access to the latest documentation and patterns.
 
