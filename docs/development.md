@@ -3,12 +3,14 @@
 Complete guide to using the PatternFly MCP Server for development including CLI and programmatic API usage.
 
 **Development:**
-- [CLI Usage](#cli-usage)
-- [Programmatic Usage](#programmatic-usage)
-- [Tool Plugins](#tool-plugins)
-- [Initial Troubleshooting](#initial-troubleshooting)
+- [CLI usage](#cli-usage)
+- [Programmatic usage](#programmatic-usage)
+- [MCP tool plugins](#mcp-tool-plugins)
+- [Initial troubleshooting](#initial-troubleshooting)
+- [Project maintenance](#project-maintenance)
+- [In-progress and future work](#in-progress-and-future-work)
 
-## CLI Usage
+## CLI usage
 
 ### Available options
 
@@ -31,8 +33,8 @@ Complete guide to using the PatternFly MCP Server for development including CLI 
 #### Notes
 - **HTTP transport mode** - By default, the server uses `stdio`. Use the `--http` flag to enable HTTP transport.
 - **Logging** - The server uses a `diagnostics_channel`-based logger that keeps STDIO stdout pure by default.
-- **Programmatic API** - The server can also be used programmatically with options. See [Programmatic Usage](#programmatic-usage) for more details.
-- **Tool Plugins** - The server can load external tool plugins at startup. See [Tool Plugins](#tool-plugins) for more details.
+- **Programmatic API** - The server can also be used programmatically with options. See [Programmatic usage](#programmatic-usage) for more details.
+- **Tool plugins** - The server can load external tool plugins at startup. See [MCP tool plugins](#mcp-tool-plugins) for more details.
 - **Test Mode** - When `--mode test` is used, the server redirects resource requests to the URL provided by `--mode-test-url`, enabling E2E testing without local filesystem access.
 
 ### Basic use scenarios
@@ -128,6 +130,11 @@ const server: PfMcpInstance = await start(options);
 
 The documentation catalog `src/docs.json` pins remote resources to specific commit SHAs (or explicit refs) for stability and reproducibility. This avoids unexpected upstream changes from breaking results. The `searchPatternFlyDocs` tool handles these lookups transparently for the user.
 
+#### Programmatic runtime requirements
+
+- **Node.js 20+**: Required to run the core MCP server.
+- **Node.js 22+**: Required for loading external tool plugins (`--tool`) and for developers working on advanced process isolation features.
+
 **Example: Programmatic test mode**
 ```typescript
 import { start, type PfMcpInstance } from '@patternfly/patternfly-mcp';
@@ -220,7 +227,7 @@ const logSubscription = subscribe(logChannel, logHandler);
 
 Reference typings are exported from the package. The full listing can be found in [src/index.ts](../src/index.ts).
 
-### Embedding the Server
+### Embedding the server
 
 You can embed the MCP server inside your application using the `start()` function and provide **Tool Modules** directly.
 
@@ -267,17 +274,17 @@ main();
 
 See [examples/](examples/) for more programmatic usage examples.
 
-## MCP Tool Plugins
+## MCP tool plugins
 
 You can extend the server's capabilities by loading **Tool Plugins** at startup. These plugins run out‑of‑process in an isolated **Tools Host** to ensure security and stability.
 
-### Environmental Requirements
+### Tool plugin runtime requirements
 
 - **Node.js >= 22**: Loading external tool plugins (`--tool`) requires Node.js version 22 or higher due to the use of advanced process isolation and ESM module loading features.
 - **ESM**: Plugins MUST be authored as ECMAScript Modules.
 - **Dependency Resolution**: Plugins importing from `@patternfly/patternfly-mcp` require the package to be resolvable in the execution environment. This may require a local `npm install` in the plugin's directory or project root if the package is not available globally.
 
-### Security & Isolation
+### Security & isolation
 
 The server provides two isolation modes for external plugins via the `--plugin-isolation` flag:
 
@@ -293,11 +300,11 @@ The server provides two isolation modes for external plugins via the `--plugin-i
 - **`Tool Factory`**: A function wrapper `(options) => Tool` (internal).
 - **`Tool Module`**: The programmatic result of `createMcpTool`, representing a collection of tools.
 
-### Authoring Tools
+### Authoring tools
 
 We recommend using the `createMcpTool` helper to define tools. It ensures your tools are properly normalized for the server.
 
-#### Authoring a single Tool Module
+#### Authoring a single tool module
 
 ```ts
 import { createMcpTool } from '@patternfly/patternfly-mcp';
@@ -329,7 +336,7 @@ export default createMcpTool([
 ]);
 ```
 
-#### Input Schema Format
+#### Input schema format
 
 The `inputSchema` property accepts either **plain JSON Schema objects** or **Zod schemas**. Both formats are automatically converted to the format required by the MCP SDK.
 
@@ -357,24 +364,31 @@ const inputSchema = z.object({
 
 See [examples/toolPluginHelloWorld.js](examples/toolPluginHelloWorld.js) for a basic example.
 
-## Initial Troubleshooting
+## Initial troubleshooting
 
-### Tool Plugins
+### Tool plugins
 
 - **Plugins don't appear**: Verify the Node version (requires Node.js >= 20; >= 22 for tool plugins) and check logs (enable `--log-stderr`).
 - **Startup warnings/errors**: Startup `load:ack` warnings/errors from tool plugins are logged when stderr/protocol logging is enabled.
-- **Schema errors**: If `tools/call` rejects with schema errors, ensure `inputSchema` is valid. See [Authoring Tools](#authoring-tools) for details.
+- **Schema errors**: If `tools/call` rejects with schema errors, ensure `inputSchema` is valid. See [Authoring tools](#authoring-tools) for details.
 - **Network access issues**: If the tool is having network access issues, you may need to configure `--plugin-isolation none`. This is generally discouraged for security reasons but may be necessary in some cases.
 
-### HTTP Transport
+### HTTP transport
 
 - **Connection issues**: Ensure the port is not already in use and the host is correct.
 - **CORS errors**: Configure `--allowed-origins` if accessing from a web client.
 - **DNS rebinding protection**: If behind a proxy, ensure correct `Host` header and configure `--allowed-hosts`.
 
-### General Issues
+### General issues
 
 - **Server won't start**: Check Node.js version (requires Node.js >= 20; >= 22 for tool plugins).
 - **Missing tools/resources**: Verify the server started successfully and check logs with `--log-stderr`.
 - **Type errors**: Ensure TypeScript types are installed: `npm install --save-dev @types/node`
 
+## Project maintenance
+
+For information on how we manage project dependencies, including our biannual Node.js engine bump schedule, please refer to the [Maintenance section in CONTRIBUTING.md](../CONTRIBUTING.md#maintenance-nodejs-engine-bumps).
+
+## In-progress and future work
+
+For more information on our development roadmap, including "in-progress" and "future" work, please refer to the [Architecture & Roadmap](./architecture.md#roadmap) documentation.
