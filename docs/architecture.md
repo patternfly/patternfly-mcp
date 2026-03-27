@@ -12,7 +12,7 @@ The current PatternFly MCP server is centered on a **Resource Metadata** discove
 - **Reading resources**: Accessing full documentation and machine-readable schemas.
 - **Discovering resources**: Navigating the library via resource indexes and URI templates.
 
-> [A more in-depth version of our **hybrid documentation model** concept is currently in progress](#hybrid-documentation-model-in-progress).
+> [A more in-depth version of our **hybrid documentation** concept is currently in progress](#hybrid-documentation-in-progress).
 
 #### Discovery layer (resource metadata)
 
@@ -24,7 +24,7 @@ Instead of a standalone "discovery" tool, the server implements a robust **Resou
 
 > This discovery layer treats the MCP server as a living library. It enables the server to provide updates for all built-in tools and resources while maintaining a tailored experience based on user patterns (e.g., tailoring responses for designers vs. developers).
 
-#### Hybrid documentation model (in-progress)
+#### Hybrid documentation (in-progress)
 
 We'll be introducing more updates based on our hybrid documentation concept in upcoming releases. The base concept balances stability and currentness by integrating core guidelines and standards directly into the server while syncing from the latest available PatternFly implementation.
 - **Baseline data**: Core guidelines and standards integrated directly into the server for standalone purposes, quick starts, and immediate access.
@@ -40,7 +40,7 @@ The server integrates the [patternfly/ai-helpers](https://github.com/patternfly/
 - **Styling Standards**: CSS and styling requirements tailored for AI code generation.
 - **Prompt Engineering**: Includes `ai-prompt-guidance.md` to help users write more effective prompts for PatternFly.
 
-These helpers are a core part of our [Hybrid documentation model](#hybrid-documentation-model-in-progress), acting as the bridge between stable design patterns and dynamic implementation details.
+These helpers are a core part of our [Hybrid documentation](#hybrid-documentation-in-progress), acting as the bridge between stable design patterns and dynamic implementation details.
 
 ### Tools, resources, and prompts as customizable plugins
 
@@ -87,7 +87,7 @@ flowchart TD
 Our roadmap focuses on expanding the server's reach and providing a more integrated development experience.
 
 #### In-progress
-- **Hybrid documentation model**: A JSON API for documentation, components, and patterns that ensures the server is always in sync with the latest releases.
+- **Hybrid documentation**: A JSON API for documentation, components, and patterns that ensures the server is always in sync with the latest releases.
    - **PatternFly API Integration**: Embedded integration into the server for standalone purposes, quick starts, and immediate access.
    - **Child Process Lifecycle Management**: Background process while you work for API synchronization.
 
