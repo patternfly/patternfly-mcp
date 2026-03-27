@@ -49,9 +49,6 @@ exports[`runServer should allow server to be stopped, http stop server: diagnost
       "Registered tool: searchPatternFlyDocs",
     ],
     [
-      "Registered tool: componentSchemas",
-    ],
-    [
       "test-server server running on HTTP transport",
     ],
     [
@@ -112,9 +109,6 @@ exports[`runServer should allow server to be stopped, stdio stop server: diagnos
     ],
     [
       "Registered tool: searchPatternFlyDocs",
-    ],
-    [
-      "Registered tool: componentSchemas",
     ],
     [
       "test-server server running on stdio transport",
@@ -644,9 +638,6 @@ exports[`runServer should attempt to run server, use default tools, http: diagno
       "Registered tool: searchPatternFlyDocs",
     ],
     [
-      "Registered tool: componentSchemas",
-    ],
-    [
       "test-server-2 server running on HTTP transport",
     ],
   ],
@@ -676,7 +667,6 @@ exports[`runServer should attempt to run server, use default tools, http: diagno
   "registerTool": [
     "usePatternFlyDocs",
     "searchPatternFlyDocs",
-    "componentSchemas",
   ],
 }
 `;
@@ -730,9 +720,6 @@ exports[`runServer should attempt to run server, use default tools, stdio: diagn
       "Registered tool: searchPatternFlyDocs",
     ],
     [
-      "Registered tool: componentSchemas",
-    ],
-    [
       "test-server-1 server running on stdio transport",
     ],
   ],
@@ -762,7 +749,6 @@ exports[`runServer should attempt to run server, use default tools, stdio: diagn
   "registerTool": [
     "usePatternFlyDocs",
     "searchPatternFlyDocs",
-    "componentSchemas",
   ],
 }
 `;

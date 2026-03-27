@@ -9,7 +9,6 @@ import { registerResource } from './mcpSdk';
 import { setMetaResources } from './server.resourceMeta';
 import { usePatternFlyDocsTool } from './tool.patternFlyDocs';
 import { searchPatternFlyDocsTool } from './tool.searchPatternFlyDocs';
-import { componentSchemasTool } from './tool.componentSchemas';
 import { patternFlyComponentsIndexResource } from './resource.patternFlyComponentsIndex';
 import { patternFlyContextResource } from './resource.patternFlyContext';
 import { patternFlyDocsIndexResource } from './resource.patternFlyDocsIndex';
@@ -209,8 +208,7 @@ interface ServerInstance {
  */
 const builtinTools: McpToolCreator[] = [
   usePatternFlyDocsTool,
-  searchPatternFlyDocsTool,
-  componentSchemasTool
+  searchPatternFlyDocsTool
 ];
 
 /**

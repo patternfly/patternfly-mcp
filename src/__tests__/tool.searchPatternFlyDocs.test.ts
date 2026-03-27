@@ -1,11 +1,18 @@
 import { McpError } from '@modelcontextprotocol/sdk/types.js';
-import { searchPatternFlyDocsTool } from '../tool.searchPatternFlyDocs';
+import { searchPatternFly } from '../patternFly.search';
+import { getPatternFlyMcpResources } from '../patternFly.getResources';
 import { isPlainObject } from '../server.helpers';
+import { searchPatternFlyDocsTool } from '../tool.searchPatternFlyDocs';
 
 // Mock dependencies
+jest.mock('../patternFly.search');
+jest.mock('../patternFly.getResources');
 jest.mock('../server.caching', () => ({
   memo: jest.fn(fn => fn)
 }));
+
+const mockSearch = searchPatternFly as jest.MockedFunction<typeof searchPatternFly>;
+const mockGetResources = getPatternFlyMcpResources as jest.MockedFunction<typeof getPatternFlyMcpResources>;
 
 describe('searchPatternFlyDocsTool', () => {
   beforeEach(() => {
@@ -26,67 +33,56 @@ describe('searchPatternFlyDocsTool', () => {
 describe('searchPatternFlyDocsTool, callback', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+
+    mockGetResources.mockResolvedValue({
+      latestVersion: 'v6'
+    } as any);
+
+    mockSearch.mockResolvedValue({
+      isSearchWildCardAll: false,
+      exactMatches: [],
+      remainingMatches: [],
+      searchResults: [],
+      totalPotentialMatches: 0
+    } as any);
   });
 
   it.each([
     {
-      description: 'default',
-      searchQuery: 'Button',
-      expected: '# Search results for PatternFly version "v6" and "Button". Showing'
-    },
-    {
-      description: 'with trimmed componentName',
-      searchQuery: ' Button  ',
-      expected: '# Search results for PatternFly version "v6" and " Button  ". Showing'
-    },
-    {
-      description: 'with lower case componentName',
+      description: 'exact match',
       searchQuery: 'button',
-      expected: '# Search results for PatternFly version "v6" and "button". Showing'
+      searchValue: {
+        totalPotentialMatches: 1
+      }
     },
     {
-      description: 'with upper case componentName',
-      searchQuery: 'BUTTON',
-      expected: '# Search results for PatternFly version "v6" and "BUTTON". Showing'
-    },
-    {
-      description: 'with explicit valid version',
-      searchQuery: 'Button',
-      version: 'v6',
-      expected: '# Search results for PatternFly version "v6" and "Button". Showing'
-    },
-    {
-      description: 'with partial componentName',
-      searchQuery: 'ton',
-      expected: '# Search results for PatternFly version "v6" and "ton". Showing'
-    },
-    {
-      description: 'with multiple words',
-      searchQuery: 'Button Card Table',
-      expected: '# Search results for PatternFly version "v6" and "Button Card Table". Showing'
-    },
-    {
-      description: 'with made up componentName',
-      searchQuery: 'lorem ipsum dolor sit amet',
-      expected: 'No PatternFly resources found matching'
-    },
-    {
-      description: 'with "*" searchQuery all',
+      description: 'wildcard search',
       searchQuery: '*',
-      expected: '# Search results for PatternFly version "v6" and "all" resources. Only showing the first'
-    },
-    {
-      description: 'with "all" searchQuery all',
-      searchQuery: 'ALL',
-      expected: '# Search results for PatternFly version "v6" and "all" resources. Only showing the first'
+      searchValue: {
+        isSearchWildCardAll: true,
+        totalPotentialMatches: 50
+      }
     }
-  ])('should parse parameters, $description', async ({ searchQuery, version, expected }) => {
-    const [_name, _schema, callback] = searchPatternFlyDocsTool();
-    const updatedParams = version ? { searchQuery, version } : { searchQuery };
-    const result = await callback(updatedParams);
-    const firstLine = result.content[0].text.split('\n')[0];
+  ])('should parse parameters, $description', async ({ searchValue, searchQuery }) => {
+    mockSearch.mockResolvedValue({
+      isSearchWildCardAll: false,
+      exactMatches: [{
+        name: 'button',
+        entries: [{ displayName: 'Button', version: 'v6', description: 'Docs', path: 'pf/button.md' }],
+        uri: 'patternfly://docs/button?version=v6',
+        uriSchemas: 'patternfly://schemas/button?version=v6'
+      }],
+      remainingMatches: [],
+      searchResults: [{ displayName: 'Button', version: 'v6', description: 'Docs', path: 'pf/button.md' }],
+      ...searchValue
+    } as any);
 
-    expect(firstLine).toContain(expected);
+    const [_name, _schema, callback] = searchPatternFlyDocsTool();
+    const result = await callback({ searchQuery });
+
+    expect(mockSearch).toHaveBeenCalledTimes(1);
+    expect(result.content[0].text).toBeDefined();
+    expect(result.content[0].text.split('\n')[0]).toMatchSnapshot();
   });
 
   it.each([
@@ -125,9 +121,27 @@ describe('searchPatternFlyDocsTool, callback', () => {
   });
 
   it('should have a specific markdown format', async () => {
+    mockSearch.mockResolvedValue({
+      isSearchWildCardAll: false,
+      exactMatches: [{
+        name: 'button',
+        entries: [{
+          displayName: 'Button',
+          version: 'v6',
+          description: 'Design Guidelines',
+          path: 'https://pf.org/button.md'
+        }],
+        uri: 'patternfly://docs/button?version=v6',
+        uriSchemas: 'patternfly://schemas/button?version=v6'
+      }],
+      remainingMatches: [],
+      searchResults: [{ displayName: 'Button', version: 'v6', description: 'Docs', path: 'pf/button.md' }],
+      totalPotentialMatches: 1
+    } as any);
+
     const [_name, _schema, callback] = searchPatternFlyDocsTool();
     const result = await callback({ searchQuery: 'button' });
 
-    expect(result.content).toMatchSnapshot('tooltip');
+    expect(result.content).toMatchSnapshot('Button');
   });
 });

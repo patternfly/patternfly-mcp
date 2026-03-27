@@ -57,8 +57,8 @@ Fetch full documentation and component JSON schemas for specific PatternFly URLs
 #### ~~Tool: fetchDocs~~ (Removed)
 > "fetchDocs" has been integrated into "usePatternFlyDocs."
 
-#### ~~Tool: componentSchemas~~ (Deprecated)
-> "componentSchemas" has been integrated into "usePatternFlyDocs."
+#### ~~Tool: componentSchemas~~ (Removed)
+> "componentSchemas" has been integrated into "usePatternFlyDocs" and MCP resources.
 
 ## Built-in resources
 

@@ -129,6 +129,119 @@ describe('Builtin tools, HTTP transport', () => {
     expect(text).toMatchSnapshot();
     await CLIENT.close();
   });
+
+  it.each([
+    {
+      description: 'exact match for Button',
+      searchQuery: 'Button',
+      contains: [
+        '# Search results for PatternFly version "v6" and "Button". Showing',
+        '**button**',
+        'Use a search all'
+      ]
+    },
+    {
+      description: 'with trimmed query',
+      searchQuery: ' Button   ',
+      contains: [
+        '# Search results for PatternFly version "v6" and " Button   ". Showing',
+        '**button**',
+        'Use a search all'
+      ]
+    },
+    {
+      description: 'with lower case match',
+      searchQuery: 'button',
+      contains: [
+        '# Search results for PatternFly version "v6" and "button". Showing',
+        '**button**',
+        'Use a search all'
+      ]
+    },
+    {
+      description: 'with upper case match',
+      searchQuery: 'BUTTON',
+      contains: [
+        '# Search results for PatternFly version "v6" and "BUTTON". Showing',
+        '**button**',
+        'Use a search all'
+      ]
+    },
+    {
+      description: 'wildcard search',
+      searchQuery: '*',
+      contains: [
+        '# Search results for PatternFly version "v6" and "all" resources. Only showing the first',
+        '**a',
+        'Use a search all'
+      ]
+    },
+    {
+      description: 'fuzzy search for partial name',
+      searchQuery: 'ton',
+      contains: [
+        '# Search results for PatternFly version "v6" and "ton". Showing',
+        '**button**',
+        'Use a search all'
+      ]
+    },
+    {
+      description: 'explicit version search',
+      searchQuery: 'Button',
+      version: 'v6',
+      contains: [
+        '# Search results for PatternFly version "v6" and "Button". Showing',
+        '**button**',
+        'Use a search all'
+      ]
+    },
+    {
+      description: 'with multiple words',
+      searchQuery: 'Button Card Table',
+      contains: [
+        '# Search results for PatternFly version "v6" and "Button Card Table". Showing',
+        '**button**',
+        '**card**',
+        '**table**',
+        'Use a search all'
+      ]
+    },
+    {
+      description: 'made up search query',
+      searchQuery: 'lorem ipsum dolor sit amet',
+      contains: [
+        'No PatternFly resources found matching "lorem ipsum dolor sit amet"',
+        'Use a search all'
+      ]
+    }
+  ])('should perform searchPatternFlyDocs: $description', async ({ searchQuery, version, contains }) => {
+    const req = {
+      method: 'tools/call',
+      params: {
+        name: 'searchPatternFlyDocs',
+        arguments: version ? { searchQuery, version } : { searchQuery }
+      }
+    };
+
+    const response = await CLIENT?.send(req);
+    const text = response?.result?.content?.[0]?.text || '';
+
+    contains.forEach(item => expect(text).toContain(item));
+  });
+
+  it('should return expected markdown structure for search results', async () => {
+    const response = await CLIENT?.send({
+      method: 'tools/call',
+      params: {
+        name: 'searchPatternFlyDocs',
+        arguments: { searchQuery: 'button' }
+      }
+    });
+
+    const text = response?.result?.content?.[0]?.text || '';
+
+    expect(text).toMatchSnapshot('markdown');
+  });
 });
 
 describe('Builtin resources, HTTP transport', () => {

@@ -19,17 +19,34 @@ exports[`usePatternFlyDocsTool, callback should attempt to parse parameters, wit
 exports[`usePatternFlyDocsTool, callback should have a specific markdown format: Button 1`] = `
 [
   {
-    "text": "# Content for components/ipsumButton.md
+    "text": "# Documentation for Button (v6) [Documentation]
+Source: components/loremButton.md
+
+lorem documentation content
+
+---
+
+# Content for components/ipsumButton.md
 Source: components/ipsumButton.md
 
 ipsum documentation content
 
 ---
 
-# Content for components/loremButton.md
-Source: components/loremButton.md
-
-lorem documentation content",
+# Component Schema for button (v6) 
+This machine-readable JSON schema defines the component's props, types, and validation rules.
+\`\`\`json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Button",
+  "type": "object",
+  "properties": {
+    "variant": {
+      "type": "string"
+    }
+  }
+}
+\`\`\`",
     "type": "text",
   },
 ]
