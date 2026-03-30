@@ -254,7 +254,7 @@ const main = async () => {
   });
 
   // Optional: observe refined server logs in-process.
-  // We recommend getting in the habit of avoiding use of console.log and info, they pollute stdout.
+  // We recommend getting in the habit of avoiding use of console.log and info since they pollute stdout.
   server.onLog((event) => {
     if (event.level !== 'debug') {
       console.warn(`[${event.level}] ${event.msg || ''}`);
