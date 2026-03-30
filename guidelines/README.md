@@ -46,9 +46,9 @@ Agents should use these phrases as signals to consult specific documentation and
 
 ### File Maintenance Principles
 - Update index files (e.g., `docs/examples/README.md` or `guidelines/README.md`) immediately when adding or removing content.
-- Reference and index guidelines. Don't duplicate content
-- Update references when adding new files
-- Keep descriptions concise and focused
+- Reference and index guidelines. Don't duplicate content.
+- Update references when adding new files.
+- Keep descriptions concise and focused.
 
 ### Adding New Guidelines
 1. Add entry to "Guidelines Index" section

@@ -44,7 +44,7 @@ These helpers are a core part of our [Hybrid documentation](#hybrid-documentatio
 
 ### Tools, resources, and prompts as customizable plugins
 
-Tools, resources, and prompts as customizable plugins are the result of predictable MCP SDK patterns. In the case of the PatternFly MCP server,
+Customizable plugins for tools, resources, and prompts follow predictable MCP SDK patterns. In the case of the PatternFly MCP server,
 this actively plays a role in the library architecture because it allows us to focus on providing stability.
 
 Key goals aided by moving towards plugins:

@@ -8,7 +8,6 @@ PatternFly MCP code examples for tooling plugins and development use cases.
 - **[toolPluginGitStatus.js](toolPluginGitStatus.js)** - A custom tool using Git
 - **[toolPluginHelloWorld.js](toolPluginHelloWorld.js)** - A basic JS tool plugin example
 
-
 ## Adding new example guidance
 
 Examples should follow the basic guidelines:
