@@ -8,7 +8,7 @@ Comprehensive guide to agent behaviors, workflows, and standards for the codebas
 
 ### Processing Priority
 
-Critical - This document should be processed first when working with the repository.
+Critical - This document should be processed first when working with agent guidelines in the repository.
 
 ### Related Guidelines
 
