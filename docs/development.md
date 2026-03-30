@@ -32,7 +32,7 @@ Complete guide to using the PatternFly MCP Server for development including CLI 
 
 #### Notes
 - **HTTP transport mode** - By default, the server uses `stdio`. Use the `--http` flag to enable HTTP transport.
-- **Logging** - The server uses a `diagnostics_channel`-based logger that keeps STDIO stdout pure by default.
+- **Logging** - The server uses a `diagnostics_channel`-based logger that keeps stdout pure by default.
 - **Programmatic API** - The server can also be used programmatically with options. See [Programmatic usage](#programmatic-usage) for more details.
 - **Tool plugins** - The server can load external tool plugins at startup. See [MCP tool plugins](#mcp-tool-plugins) for more details.
 - **Test Mode** - When `--mode test` is used, the server redirects resource requests to the URL provided by `--mode-test-url`, enabling E2E testing without local filesystem access.
@@ -205,7 +205,7 @@ process.on('SIGINT', async () => {
 
 #### server.getStats()
 
-Returns a `PfMcpStats` object containing server metrics, includes diagnostic channel IDs for listening to server activity.
+Returns a `PfMcpStats` object containing server metrics and diagnostic channel IDs for listening to server activity.
 
 ```typescript
 import { channel, unsubscribe, subscribe } from 'node:diagnostics_channel';
@@ -220,7 +220,6 @@ const logHandler = (event: PfMcpStatReport) => {
 };
 
 const logSubscription = subscribe(logChannel, logHandler);
-
 ```
 
 ### Typing reference
@@ -254,8 +253,8 @@ const main = async () => {
     ]
   });
 
-  // Optional: observe refined server logs in‑process.
-  // We recommend getting in the habit of avoiding use of console.log and info, they pollute STDOUT.
+  // Optional: observe refined server logs in-process.
+  // We recommend getting in the habit of avoiding use of console.log and info, they pollute stdout.
   server.onLog((event) => {
     if (event.level !== 'debug') {
       console.warn(`[${event.level}] ${event.msg || ''}`);
@@ -276,7 +275,7 @@ See [examples/](examples/) for more programmatic usage examples.
 
 ## MCP tool plugins
 
-You can extend the server's capabilities by loading **Tool Plugins** at startup. These plugins run out‑of‑process in an isolated **Tools Host** to ensure security and stability.
+You can extend the server's capabilities by loading **Tool Plugins** at startup. These plugins run out-of-process in an isolated **Tools Host** to ensure security and stability.
 
 ### Tool plugin runtime requirements
 

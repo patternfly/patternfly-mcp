@@ -229,5 +229,5 @@ Agents MUST validate all code outputs using the project's quality suite:
 
 1. **Linting**: `npm run test:lint` (Ensures style consistency)
 2. **Type Checking**: `npm run test:types` (tsc validation)
-3. **Documentation**: `npm run test:spell-docs` (Cspell validation)
+3. **Documentation**: `npm run test:spell-docs` (CSpell validation)
 4. **Testing**: `npm run test` (Unit) and `npm run test:integration` (E2E)

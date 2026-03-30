@@ -3,10 +3,10 @@
 A comprehensive guide to PatternFly MCP Server tools, resources, and configuration.
 
 **User Guide:**
-- [Built-in Tools](#built-in-tools)
-- [Built-in Resources](#built-in-resources)
-- [MCP Client Configuration](#mcp-client-configuration)
-- [Custom MCP Tool Plugins](#custom-mcp-tool-plugins)
+- [Built-in tools](#built-in-tools)
+- [Built-in resources](#built-in-resources)
+- [MCP client configuration](#mcp-client-configuration)
+- [Custom MCP tool plugins](#custom-mcp-tool-plugins)
 
 ## Built-in tools
 

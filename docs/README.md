@@ -12,5 +12,5 @@ Welcome to the PatternFly MCP Server documentation. This guide is organized by u
 - **[Examples](./examples/README.md)**: Standalone snippets for HTTP transport, embedding, and custom tools.
 
 ### 🏗️ Architecture & design
-- **[System Architecture](./architecture.md)**: Architecture and roadmap.
+- **[System Architecture](./architecture.md)**: Design and core concepts.
 - **[Roadmap](./architecture.md#roadmap)**: Future plans for the project.

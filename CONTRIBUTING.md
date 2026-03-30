@@ -21,7 +21,7 @@ your contribution is aligned with the project's goals.
    npm run test:integration
    npm start
    ```
-  All tests should pass, and the application should start successfully with confirmation messaging in the terminal.
+  All tests should pass, and the application should start successfully with a confirmation message in the terminal.
 
 ##### Windows and repository symlinks
 
@@ -48,7 +48,7 @@ Our process follows the standard GitHub fork and pull request workflow.
 ##### Main repository branches
 - The `main` branch currently represents both development and stable releases
 
-> In the future, a consideration for a `stable` branch may be made against an increase in contributions.
+> In the future, if there is an increase in contributions, we may consider implementing a `stable` branch.
 >    - `main` would be the default branch for development and feature work rebased from `stable` after release.
 >    - `stable` would be a branch used for stable releases/hashes, reference links, and only updated with release commits.
 
@@ -93,8 +93,8 @@ Commit messages follow two basic guidelines:
   - **Description**: What the commit work encompasses.
   - **#PR_NUMBER**: The pull request number. Typically added automatically during merge/squash operations. Including it manually is optional. It can help with traceability during review.
 
-> If your **pull request contains multiple commits**, they will be squashed into a single commit before merging and the messaging
-> altered to reflect current guidelines.
+> If your **pull request contains multiple commits**, they will be squashed into a single commit before merging, and the messaging
+> will be altered to reflect current guidelines.
 
 #### Pull request test failures
 Before any review takes place, all tests should pass. You may be asked to update your pull request to resolve any failing tests
