@@ -1,6 +1,29 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.0](https://github.com/patternfly/patternfly-mcp/compare/eab711f0d79baa3b1a092514f83bffc2d9ada71d...d7185c712d90741480098d6dd2cac72242ca8445) (2026-03-30)
+⚠ BREAKING CHANGES, remove componentSchemas MCP tool, favor MCP resources instead, see [#137](https://github.com/patternfly/patternfly-mcp/pull/137)
+
+### Features
+*  generate meta resources ([#130](https://github.com/patternfly/patternfly-mcp/pull/130)) ([083adc0](https://github.com/patternfly/patternfly-mcp/commit/083adc029ac4a5bc88ee24756085aa90d946e99e))
+
+### Documentation
+*  consistent casing, copy, grammar, spacing ([#144](https://github.com/patternfly/patternfly-mcp/pull/144)) ([784be0a](https://github.com/patternfly/patternfly-mcp/commit/784be0a2cdde90bc7ba520836c97a6ca13dc5ba2))
+*  update usage, architecture, maintenance ([#143](https://github.com/patternfly/patternfly-mcp/pull/143)) ([7a2188f](https://github.com/patternfly/patternfly-mcp/commit/7a2188f743968f5ce51736f577c34d070673705f))
+*  add contributor, repo skills ([#136](https://github.com/patternfly/patternfly-mcp/pull/136)) ([365e318](https://github.com/patternfly/patternfly-mcp/commit/365e318b59743dc448901da2383fb696088e1b4a))
+
+### Code Refactoring
+* ⚠ **tools** remove componentSchemas tool ([#137](https://github.com/patternfly/patternfly-mcp/pull/137)) ([396b0d5](https://github.com/patternfly/patternfly-mcp/commit/396b0d593d52f93b42c3cc2faea370c9d6841151))
+
+### Builds
+* **deps** lock update ([#145](https://github.com/patternfly/patternfly-mcp/pull/145)) ([d7185c7](https://github.com/patternfly/patternfly-mcp/commit/d7185c712d90741480098d6dd2cac72242ca8445))
+* **deps** lock update ([#140](https://github.com/patternfly/patternfly-mcp/pull/140)) ([560a3c1](https://github.com/patternfly/patternfly-mcp/commit/560a3c180b83cfcdc6766983206a10109a79c437))
+* **deps-dev** bump dev group with 8 updates ([#138](https://github.com/patternfly/patternfly-mcp/pull/138)) ([77c9c40](https://github.com/patternfly/patternfly-mcp/commit/77c9c403578148a8f37a64f1fa31c2d6d017f736))
+* **deps-dev** bump dev group with 2 updates ([#135](https://github.com/patternfly/patternfly-mcp/pull/135)) ([45509c0](https://github.com/patternfly/patternfly-mcp/commit/45509c0e0b7e73576f78bb9d792637d37159955f))
+
+### Bug Fixes
+* **resources** schemas index mimeType ([#133](https://github.com/patternfly/patternfly-mcp/pull/133)) ([8585475](https://github.com/patternfly/patternfly-mcp/commit/85854754e0a7355f266ab56357275c9fb2e21181))
+
 ## [0.9.0](https://github.com/patternfly/patternfly-mcp/compare/175057cc77fb6069e41dd8ef4e89c8794c32c00c...b097f506eb42c2b9fe734552458784173f419bee) (2026-03-17)
 ⚠ May contain a breaking update for embedded use only. Move from `docsPath: string` to `docsPaths: string[]` with a behavior shift, see [#125](https://github.com/patternfly/patternfly-mcp/pull/125)
 
