@@ -126,6 +126,14 @@ const options: PfMcpOptions = {
 const server: PfMcpInstance = await start(options);
 ```
 
+> **Tools-as-plugins**
+> 1. Internally (maintained and built into the server), the MCP tool schemas require Zod. Failure to use Zod, or raw Zod shapes, will result in the MCP tool being logged and skipped during registration.
+> 2. Externally (CLI and embedding), MCP tools-as-plugins can be `JSON`, Zod, or raw Zod shapes.
+>
+> The server attempts to normalize external tools-as-plugins plain JSON schemas to facilitate consumer flexibility.
+>
+> Not sure what "tools-as-plugins" and "raw Zod" mean? [See terminology for full definitions](#terminology).
+
 #### About pinned documentation sources
 
 The documentation catalog `src/docs.json` pins remote resources to specific commit SHAs (or explicit refs) for stability and reproducibility. This avoids unexpected upstream changes from breaking results. The `searchPatternFlyDocs` tool handles these lookups transparently for the user.
@@ -277,6 +285,8 @@ See [examples/](examples/) for more programmatic usage examples.
 
 You can extend the server's capabilities by loading **Tool Plugins** at startup. These plugins run out-of-process in an isolated **Tools Host** to ensure security and stability.
 
+> While we recommend using `createMcpTool` for automatic normalization, external plugins are purposefully flexible. They can use plain JSON schemas for `inputSchema`, and the server will handle the conversion to Zod automatically during the loading process.
+
 ### Tool plugin runtime requirements
 
 - **Node.js >= 22**: Loading external tool plugins (`--tool`) requires Node.js version 22 or higher due to the use of advanced process isolation and ESM module loading features.
@@ -291,13 +301,6 @@ The server provides two isolation modes for external plugins via the `--plugin-i
 - **`none`**: The plugin has full access to the system environment, including the filesystem and network, inherited from the host process. Use this mode ONLY if your tool requires specific system access (e.g., executing Git commands or accessing local files outside the sandbox) and you trust the plugin code.
 
 > **Warning**: Disabling isolation (`--plugin-isolation none`) increases the security risk. Always document the reason for requiring this mode in your tool's documentation.
-
-### Terminology
-
-- **`Tool`**: The low-level tuple format `[name, schema, handler]`.
-- **`Tool Config`**: The authoring object format `{ name, description, inputSchema, handler }`.
-- **`Tool Factory`**: A function wrapper `(options) => Tool` (internal).
-- **`Tool Module`**: The programmatic result of `createMcpTool`, representing a collection of tools.
 
 ### Authoring tools
 
@@ -362,6 +365,17 @@ const inputSchema = z.object({
 ```
 
 See [examples/toolPluginHelloWorld.js](examples/toolPluginHelloWorld.js) for a basic example.
+
+### Terminology
+These terms describe **how tools and their related properties are represented** in code and configuration.
+
+- **`Tool`**: The low-level tuple format `[name, schema, handler]`.
+- **`Tool Config`**: The authoring object format `{ name, description, inputSchema, handler }`.
+- **`Tool Factory`**: A function wrapper `(options) => Tool` (internal).
+- **`Tool Module`**: The programmatic result of `createMcpTool`, representing a collection of tools.
+- **`JSON Schema` (`plain object`)**: A plain object intended as JSON Schema (for example `type`, `properties`, `required`). Converted toward Zod where possible via `jsonSchemaToZod` / `fromJSONSchema`.
+- **`Zod schema`**: A Zod schema instance. Loosely detected with `isZodSchema`.
+- **`Raw Zod shape` (`ZodRawShapeCompat`)**: A **non-empty** plain object whose **values** are Zod schemas; keys are field names. An empty `{}` is **not** a raw Zod shape. Detected with `isZodRawShape`.
 
 ## Initial troubleshooting
 

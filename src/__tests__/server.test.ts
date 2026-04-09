@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { runServer } from '../server';
@@ -112,7 +113,7 @@ describe('runServer', () => {
       tools: [
         jest.fn().mockReturnValue([
           'loremIpsum',
-          { description: 'Lorem Ipsum', inputSchema: {} },
+          { description: 'Lorem Ipsum', inputSchema: z.object({}) },
           jest.fn()
         ])
       ],
@@ -124,12 +125,12 @@ describe('runServer', () => {
       tools: [
         jest.fn().mockReturnValue([
           'loremIpsum',
-          { description: 'Lorem Ipsum', inputSchema: {} },
+          { description: 'Lorem Ipsum', inputSchema: z.object({}) },
           jest.fn()
         ]),
         jest.fn().mockReturnValue([
           'dolorSit',
-          { description: 'Dolor Sit', inputSchema: {} },
+          { description: 'Dolor Sit', inputSchema: z.object({}) },
           jest.fn()
         ])
       ],
@@ -177,6 +178,31 @@ describe('runServer', () => {
     }).toMatchSnapshot('diagnostics');
 
     // Clean up: stop the server to prevent cache pollution
+    await serverInstance.stop();
+  });
+
+  it('should skip registration of internal tools with non-Zod schemas', async () => {
+    const tools = [
+      jest.fn().mockReturnValue([
+        'badTool',
+        { description: 'Bad Tool', inputSchema: {} },
+        jest.fn()
+      ])
+    ];
+
+    const serverInstance = await runServer(
+      { ...DEFAULT_OPTIONS, name: 'test-skip-server' } as any,
+      { tools, allowProcessExit: false }
+    );
+
+    expect(mockServer.registerTool).not.toHaveBeenCalledWith(
+      expect.stringContaining('badTool')
+    );
+
+    expect(MockLog.warn).toHaveBeenCalledWith(
+      expect.stringContaining('has a non Zod inputSchema. Skipping registration.')
+    );
+
     await serverInstance.stop();
   });
 

@@ -462,7 +462,23 @@ exports[`makeProxyCreators should attempt to invoke a creator then throw an erro
 ]
 `;
 
-exports[`makeProxyCreators should attempt to return proxy creators, a function wrapper per tool, basic 1`] = `
+exports[`makeProxyCreators should attempt to return proxy creators, a function wrapper per tool, JSON schema 1`] = `
+{
+  "debug": [],
+  "output": [
+    [
+      "Lorem Ipsum",
+      {
+        "description": "Lorem ipsum dolor sit amet",
+        "inputSchema": "isZod = true",
+      },
+      [Function],
+    ],
+  ],
+}
+`;
+
+exports[`makeProxyCreators should attempt to return proxy creators, a function wrapper per tool, Zod 1`] = `
 {
   "debug": [],
   "output": [
@@ -489,11 +505,43 @@ exports[`makeProxyCreators should attempt to return proxy creators, a function w
 {
   "debug": [
     [
-      "Tool "Lorem Ipsum" from unknown source failed strict JSON to Zod reconstruction.",
+      "Tool "Dolor Sit" from unknown source failed strict JSON to Zod reconstruction.",
       "Using fallback best effort schema. Review the tool's inputSchema and ensure it is a valid JSON or Zod schema.",
       "[ZOD_SCHEMA: defined: true]",
     ],
   ],
+  "output": [
+    [
+      "Dolor Sit",
+      {
+        "description": "Lorem ipsum dolor sit amet",
+        "inputSchema": "isZod = true",
+      },
+      [Function],
+    ],
+  ],
+}
+`;
+
+exports[`makeProxyCreators should attempt to return proxy creators, a function wrapper per tool, plain object 1`] = `
+{
+  "debug": [],
+  "output": [
+    [
+      "Lorem Ipsum",
+      {
+        "description": "Lorem ipsum dolor sit amet",
+        "inputSchema": "isZod = true",
+      },
+      [Function],
+    ],
+  ],
+}
+`;
+
+exports[`makeProxyCreators should attempt to return proxy creators, a function wrapper per tool, raw Zod 1`] = `
+{
+  "debug": [],
   "output": [
     [
       "Lorem Ipsum",
@@ -511,14 +559,14 @@ exports[`makeProxyCreators should attempt to return proxy creators, a function w
 {
   "debug": [
     [
-      "Tool "Lorem Ipsum" from unknown source failed strict JSON to Zod reconstruction.",
+      "Tool "Amet" from unknown source failed strict JSON to Zod reconstruction.",
       "Using fallback best effort schema. Review the tool's inputSchema and ensure it is a valid JSON or Zod schema.",
       "[ZOD_SCHEMA: defined: true]",
     ],
   ],
   "output": [
     [
-      "Lorem Ipsum",
+      "Amet",
       {
         "description": "Lorem ipsum dolor sit amet",
         "inputSchema": "isZod = true",

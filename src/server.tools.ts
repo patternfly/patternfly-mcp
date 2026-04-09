@@ -19,7 +19,7 @@ import {
 import { getOptions, getSessionOptions } from './options.context';
 import { setToolOptions } from './options.tools';
 import { normalizeTools, sanitizeStaticToolName, type NormalizedToolEntry } from './server.toolsUser';
-import { jsonSchemaToZod } from './server.schema';
+import { jsonSchemaToZod, normalizeInputSchema } from './server.schema';
 
 /**
  * Handle for a spawned Tools Host process.
@@ -327,6 +327,7 @@ const spawnToolsHost = async (
  * - Parent does not perform validation; the child validates with Zod at invocation.
  * - A minimal Zod inputSchema from the parent is required to trigger the MCP SDK parameter
  *    validation.
+ * - Descriptors from the manifest are JSON. `normalizeInputSchema` is used defensively.
  * - There is an unreachable defensive check in `makeProxyCreators` that ensures the Zod schema
  *    always returns a value.
  * - Invocation errors from the child preserve `error.code` and `error.details` for debugging.
@@ -342,8 +343,8 @@ const makeProxyCreators = (
   const name = tool.name;
   const invokeTimeoutMs = Math.max(0, Number(pluginHost?.invokeTimeoutMs) || 0);
 
-  // Rebuild Zod schema from serialized JSON.
-  const zodSchemaStrict = jsonSchemaToZod(tool.inputSchema);
+  // Rebuild Zod schema from serialized JSON. Defensive use of `normalizeInputSchema` also allows for Zod and raw Zod shapes.
+  const zodSchemaStrict = normalizeInputSchema(tool.inputSchema, { returnUndefined: true });
   let zodSchema = zodSchemaStrict;
 
   // Rebuild Zod schema again for compatibility.

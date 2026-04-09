@@ -1,5 +1,6 @@
 import { resolve } from 'node:path';
-import { spawn } from 'child_process';
+import { spawn } from 'node:child_process';
+import { z } from 'zod';
 import { log } from '../logger';
 import {
   getBuiltInToolNames,
@@ -323,7 +324,7 @@ describe('makeProxyCreators', () => {
       tools: []
     },
     {
-      description: 'basic',
+      description: 'plain object',
       tools: [
         {
           id: 'loremIpsum',
@@ -335,11 +336,47 @@ describe('makeProxyCreators', () => {
       ]
     },
     {
-      description: 'null JSON input schema',
+      description: 'JSON schema',
       tools: [
         {
           id: 'loremIpsum',
           name: 'Lorem Ipsum',
+          description: 'Lorem ipsum dolor sit amet',
+          inputSchema: { type: 'object', prop: {} },
+          source: ''
+        }
+      ]
+    },
+    {
+      description: 'Zod',
+      tools: [
+        {
+          id: 'loremIpsum',
+          name: 'Lorem Ipsum',
+          description: 'Lorem ipsum dolor sit amet',
+          inputSchema: z.object({}),
+          source: ''
+        }
+      ]
+    },
+    {
+      description: 'raw Zod',
+      tools: [
+        {
+          id: 'loremIpsum',
+          name: 'Lorem Ipsum',
+          description: 'Lorem ipsum dolor sit amet',
+          inputSchema: { prop: z.object({}) },
+          source: ''
+        }
+      ]
+    },
+    {
+      description: 'null JSON input schema',
+      tools: [
+        {
+          id: 'dolorSit',
+          name: 'Dolor Sit',
           description: 'Lorem ipsum dolor sit amet',
           inputSchema: null,
           source: ''
@@ -350,8 +387,8 @@ describe('makeProxyCreators', () => {
       description: 'undefined JSON input schema',
       tools: [
         {
-          id: 'loremIpsum',
-          name: 'Lorem Ipsum',
+          id: 'Amet',
+          name: 'Amet',
           description: 'Lorem ipsum dolor sit amet',
           inputSchema: undefined,
           source: ''
@@ -579,9 +616,9 @@ describe('composeTools', () => {
   const MockLog = jest.mocked(log);
 
   // Mock default creators
-  const loremIpsum = () => ['loremIpsum', { description: 'lorem ipsum', inputSchema: {} }, () => {}];
-  const dolorSitAmet = () => ['dolorSitAmet', { description: 'dolor sit amet', inputSchema: {} }, () => {}];
-  const consecteturAdipiscingElit = () => ['consecteturAdipiscingElit', { description: 'consectetur adipiscing elit', inputSchema: {} }, () => {}];
+  const loremIpsum = () => ['loremIpsum', { description: 'lorem ipsum', inputSchema: z.object({}) }, () => {}];
+  const dolorSitAmet = () => ['dolorSitAmet', { description: 'dolor sit amet', inputSchema: z.object({}) }, () => {}];
+  const consecteturAdipiscingElit = () => ['consecteturAdipiscingElit', { description: 'consectetur adipiscing elit', inputSchema: z.object({}) }, () => {}];
 
   loremIpsum.toolName = 'loremIpsum';
   dolorSitAmet.toolName = 'dolorSitAmet';
@@ -630,7 +667,7 @@ describe('composeTools', () => {
       nodeVersion: 22,
       modules: [
         () => ['lorem', { description: 'lorem ipsum', inputSchema: { type: 'object', properties: {} } }, () => {}],
-        () => ['dolor', { description: 'sit amet', inputSchema: { type: 'object', properties: {} } }, () => {}]
+        () => ['dolor', { description: 'sit amet', inputSchema: z.object({}) }, () => {}]
       ],
       expectedModuleCount: 3
     },
@@ -645,8 +682,8 @@ describe('composeTools', () => {
 
           return testing;
         })(),
-        { name: 'dolor', description: 'sit amet', inputSchema: {}, handler: () => {} },
-        { name: 'dolor', description: 'sit amet', inputSchema: {}, handler: () => {} }
+        { name: 'dolor', description: 'sit amet', inputSchema: z.object({}), handler: () => {} },
+        { name: 'dolor', description: 'sit amet', inputSchema: z.object({}), handler: () => {} }
       ],
       expectedModuleCount: 5
     },
@@ -691,7 +728,7 @@ describe('composeTools', () => {
 
           return testing;
         })(),
-        { name: 'dolor', description: 'sit amet', inputSchema: {}, handler: () => {} },
+        { name: 'dolor', description: 'sit amet', inputSchema: z.object({}), handler: () => {} },
         'file:///test/module.js',
         '@patternfly/tools'
       ],
@@ -701,7 +738,7 @@ describe('composeTools', () => {
       description: 'inline and file package creators duplicate builtin creators',
       nodeVersion: 22,
       modules: [
-        ['loremIpsum', { description: 'lorem ipsum', inputSchema: {} }, () => {}],
+        ['loremIpsum', { description: 'lorem ipsum', inputSchema: z.object({}) }, () => {}],
         'dolorSitAmet'
       ],
       expectedModuleCount: 3
@@ -711,7 +748,7 @@ describe('composeTools', () => {
       nodeVersion: 22,
       modules: [
         { name: '@patternfly/tools', description: 'lorem ipsum', inputSchema: {}, handler: () => {} },
-        { name: 'dolor', description: 'sit amet', inputSchema: {}, handler: () => {} },
+        { name: 'dolor', description: 'sit amet', inputSchema: z.object({}), handler: () => {} },
         'file:///test/module.js',
         '@patternfly/tools',
         'DOLOR   '
@@ -723,7 +760,7 @@ describe('composeTools', () => {
       nodeVersion: 20,
       modules: [
         { name: '@patternfly/tools', description: 'lorem ipsum', inputSchema: {}, handler: () => {} },
-        { name: 'dolor', description: 'sit amet', inputSchema: {}, handler: () => {} },
+        { name: 'dolor', description: 'sit amet', inputSchema: z.object({}), handler: () => {} },
         'file:///test/module.js',
         '@patternfly/tools',
         'DOLOR   '

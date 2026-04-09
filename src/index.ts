@@ -129,13 +129,13 @@ type PfMcpStatReport = ServerStatReport;
  *   stop();
  * }
  *
- * @example Programmatic: A MCP server with inline tool configuration.
+ * @example Programmatic: A MCP server with inline tool configuration and JSON inputSchema.
  * import { start, createMcpTool } from '@patternfly/patternfly-mcp';
  *
  * const myToolModule = createMcpTool({
  *   name: 'my-tool',
  *   description: 'My tool description',
- *   inputSchema: {},
+ *   inputSchema: { type: 'object', properties: {} },
  *   handler: async (args) => args
  * });
  *
