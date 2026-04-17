@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { runServer } from '../server';
@@ -112,7 +113,7 @@ describe('runServer', () => {
       tools: [
         jest.fn().mockReturnValue([
           'loremIpsum',
-          { description: 'Lorem Ipsum', inputSchema: {} },
+          { description: 'Lorem Ipsum', inputSchema: z.object({}) },
           jest.fn()
         ])
       ],
@@ -124,12 +125,12 @@ describe('runServer', () => {
       tools: [
         jest.fn().mockReturnValue([
           'loremIpsum',
-          { description: 'Lorem Ipsum', inputSchema: {} },
+          { description: 'Lorem Ipsum', inputSchema: z.object({}) },
           jest.fn()
         ]),
         jest.fn().mockReturnValue([
           'dolorSit',
-          { description: 'Dolor Sit', inputSchema: {} },
+          { description: 'Dolor Sit', inputSchema: z.object({}) },
           jest.fn()
         ])
       ],
