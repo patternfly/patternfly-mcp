@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { runServer, type McpTool } from '../server';
@@ -122,7 +123,7 @@ describe('tool creator options context', () => {
 
       return [
         'alsContract',
-        { description: 'Context test tool', inputSchema: {} },
+        { description: 'Context test tool', inputSchema: z.object({}) },
         callback
       ];
     };

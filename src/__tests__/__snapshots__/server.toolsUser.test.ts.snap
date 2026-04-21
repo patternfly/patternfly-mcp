@@ -482,3 +482,16 @@ exports[`normalizeTupleSchema should normalize object, valid JSON schema without
   "inputSchema": "isZod = true",
 }
 `;
+
+exports[`normalizeTupleSchema should normalize object, valid Zod schema with description 1`] = `
+{
+  "description": "hello",
+  "inputSchema": "isZod = true",
+}
+`;
+
+exports[`normalizeTupleSchema should normalize object, valid Zod schema without description 1`] = `
+{
+  "inputSchema": "isZod = true",
+}
+`;

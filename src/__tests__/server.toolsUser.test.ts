@@ -107,6 +107,14 @@ describe('normalizeTupleSchema', () => {
       schema: { inputSchema: { type: 'object', properties: {} } }
     },
     {
+      description: 'valid Zod schema with description',
+      schema: { description: '  hello  ', inputSchema: z.object({}) }
+    },
+    {
+      description: 'valid Zod schema without description',
+      schema: { inputSchema: z.object({}) }
+    },
+    {
       description: 'non-object',
       schema: 'nope'
     },

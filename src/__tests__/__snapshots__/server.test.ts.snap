@@ -389,9 +389,6 @@ exports[`runServer should attempt to run server, register a tool: diagnostics 1`
     [
       "Built-in tool at index 0 is missing the static name property, "toolName"",
     ],
-    [
-      "Tool "loremIpsum" has a non Zod inputSchema. This may cause unexpected issues.",
-    ],
   ],
   "hasDebugLogs": true,
   "mcpServer": [
@@ -478,12 +475,6 @@ exports[`runServer should attempt to run server, register multiple tools: diagno
     ],
     [
       "Built-in tool at index 1 is missing the static name property, "toolName"",
-    ],
-    [
-      "Tool "loremIpsum" has a non Zod inputSchema. This may cause unexpected issues.",
-    ],
-    [
-      "Tool "dolorSit" has a non Zod inputSchema. This may cause unexpected issues.",
     ],
   ],
   "hasDebugLogs": true,
