@@ -229,7 +229,10 @@ const builtinResources: McpResourceCreator[] = [
  * Create and run the MCP server, register tools, and return a handle.
  *
  *  - Built-in and inline tools are realized in-process
- *  - External plugins are realized in the Tools Host (child).
+ *  - External MCP tools-as-plugins are realized in the Tools Host (child).
+ *  - In-process MCP tools must supply a Zod-shaped `inputSchema` or they will be skipped during registration.
+ *     - Internally (maintained and built into the server), the MCP tool schemas require Zod.
+ *     - Externally (CLI and embedding), MCP tools-as-plugins can be `JSON`, Zod, or raw Zod shapes, and are normalized for convenience.
  *
  * @param [options] Server options
  * @param [settings] Server settings (tools, signal handling, etc.)

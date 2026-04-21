@@ -124,9 +124,9 @@ const jsonSchemaToZod = (
  *
  * @param inputSchema - Input schema (Zod schema, ZodRawShapeCompat, or plain JSON Schema)
  * @param settings - Optional settings
- * @param settings.returnUndefined - Return `undefined` instead of the original value.
- * @returns Returns a Zod instance for known inputs such as "Zod schema", "raw shape", or "JSON Schema", or the original value otherwise.
- *     When provided `settings.returnValue` takes precedence over the original value.
+ * @param settings.returnUndefined - When `true`, return `undefined` instead of the original value.
+ * @returns Returns a Zod instance for known inputs (e.g. "Zod schema", "raw shape", or "JSON Schema") or on failure, the original value.
+ *     If `settings.returnUndefined` is provided and `true`, `undefined` is returned on failure.
  */
 const normalizeInputSchema = (
   inputSchema: unknown,
