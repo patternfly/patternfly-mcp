@@ -19,6 +19,20 @@ const baseConfig = {
 };
 
 export default {
+  collectCoverageFrom: [
+    'src/**/*.ts',
+    '!src/**/.*/**',
+    '!src/cli.ts',
+    '!src/declarations*'
+  ],
+  coverageThreshold: {
+    global: {
+      branches: 75,
+      functions: 75,
+      lines: 85,
+      statements: 85
+    }
+  },
   projects: [
     {
       displayName: 'unit',
