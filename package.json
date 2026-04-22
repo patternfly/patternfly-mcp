@@ -71,7 +71,7 @@
     "@typescript-eslint/eslint-plugin": "^8.58.1",
     "@typescript-eslint/parser": "^8.58.1",
     "changelog-light": "^3.0.8",
-    "cspell": "^9.7.0",
+    "cspell": "^10.0.0",
     "eslint": "^9.39.4",
     "jest": "^30.3.0",
     "pkgroll": "^2.27.0",
