@@ -33,6 +33,7 @@
     "start:dev": "tsx watch src/cli.ts --verbose --log-stderr",
     "test": "npm run test:spell && npm run test:spell-docs && npm run test:lint && npm run test:types && jest --selectProjects unit --roots=src/",
     "test:audit": "jest --selectProjects audit --roots=tests/audit/",
+    "test:ci": "npm test -- --coverage",
     "test:dev": "npm test -- --watchAll",
     "test:integration": "npm run build && NODE_OPTIONS='--experimental-vm-modules' jest --selectProjects e2e --roots=tests/e2e/",
     "test:integration-dev": "npm run test:integration -- --watchAll",
