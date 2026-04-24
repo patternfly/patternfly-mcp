@@ -1,9 +1,9 @@
 {
   "version": "1",
-  "generated": "2026-03-09T00:00:00.000Z",
+  "generated": "2026-04-24T14:10:12.330Z",
   "meta": {
-    "totalEntries": 129,
-    "totalDocs": 320,
+    "totalEntries": 131,
+    "totalDocs": 324,
     "source": "patternfly-mcp-internal"
   },
   "docs": {
@@ -1855,7 +1855,7 @@
         "section": "components",
         "category": "react",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/5b010163ea2a7537fbb6431d262fc6db72ec7a73/docs/components/data-display/table.md",
+        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/docs/components/data-display/table.md",
         "version": "v6"
       }
     ],
@@ -2677,7 +2677,7 @@
         "section": "guidelines",
         "category": "react",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/5b010163ea2a7537fbb6431d262fc6db72ec7a73/docs/charts/README.md",
+        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/docs/charts/README.md",
         "version": "v6"
       }
     ],
@@ -2689,7 +2689,7 @@
         "section": "guidelines",
         "category": "react",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/5b010163ea2a7537fbb6431d262fc6db72ec7a73/docs/chatbot/README.md",
+        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/docs/chatbot/README.md",
         "version": "v6"
       }
     ],
@@ -2701,7 +2701,7 @@
         "section": "guidelines",
         "category": "react",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/5b010163ea2a7537fbb6431d262fc6db72ec7a73/docs/guidelines/README.md",
+        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/docs/guidelines/README.md",
         "version": "v6"
       },
       {
@@ -2711,7 +2711,7 @@
         "section": "guidelines",
         "category": "react",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/5b010163ea2a7537fbb6431d262fc6db72ec7a73/docs/guidelines/styling-standards.md",
+        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/docs/guidelines/styling-standards.md",
         "version": "v6"
       },
       {
@@ -2721,7 +2721,7 @@
         "section": "guidelines",
         "category": "react",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/5b010163ea2a7537fbb6431d262fc6db72ec7a73/docs/guidelines/ai-prompt-guidance.md",
+        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/docs/guidelines/ai-prompt-guidance.md",
         "version": "v6"
       },
       {
@@ -2731,7 +2731,7 @@
         "section": "guidelines",
         "category": "react",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/5b010163ea2a7537fbb6431d262fc6db72ec7a73/docs/setup/README.md",
+        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/docs/setup/README.md",
         "version": "v6"
       },
       {
@@ -2741,7 +2741,7 @@
         "section": "guidelines",
         "category": "react",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/5b010163ea2a7537fbb6431d262fc6db72ec7a73/docs/setup/development-environment.md",
+        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/docs/setup/development-environment.md",
         "version": "v6"
       },
       {
@@ -2751,7 +2751,7 @@
         "section": "guidelines",
         "category": "react",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/5b010163ea2a7537fbb6431d262fc6db72ec7a73/docs/setup/quick-start.md",
+        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/docs/setup/quick-start.md",
         "version": "v6"
       },
       {
@@ -2761,7 +2761,7 @@
         "section": "resources",
         "category": "react",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/5b010163ea2a7537fbb6431d262fc6db72ec7a73/docs/resources/external-links.md",
+        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/docs/resources/external-links.md",
         "version": "v6"
       },
       {
@@ -2771,7 +2771,7 @@
         "section": "guidelines",
         "category": "react",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/5b010163ea2a7537fbb6431d262fc6db72ec7a73/docs/troubleshooting/common-issues.md",
+        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/docs/troubleshooting/common-issues.md",
         "version": "v6"
       },
       {
@@ -2781,7 +2781,7 @@
         "section": "guidelines",
         "category": "react",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/5b010163ea2a7537fbb6431d262fc6db72ec7a73/docs/guidelines/component-architecture.md",
+        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/docs/guidelines/component-architecture.md",
         "version": "v6"
       },
       {
@@ -2791,7 +2791,7 @@
         "section": "guidelines",
         "category": "react",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/5b010163ea2a7537fbb6431d262fc6db72ec7a73/docs/guidelines/deployment-guide.md",
+        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/docs/guidelines/deployment-guide.md",
         "version": "v6"
       },
       {
@@ -2801,7 +2801,7 @@
         "section": "guidelines",
         "category": "react",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/5b010163ea2a7537fbb6431d262fc6db72ec7a73/docs/component-groups/README.md",
+        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/docs/component-groups/README.md",
         "version": "v6"
       },
       {
@@ -2811,7 +2811,7 @@
         "section": "guidelines",
         "category": "react",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/5b010163ea2a7537fbb6431d262fc6db72ec7a73/docs/components/data-display/README.md",
+        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/docs/components/data-display/README.md",
         "version": "v6"
       },
       {
@@ -2821,7 +2821,7 @@
         "section": "guidelines",
         "category": "react",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/5b010163ea2a7537fbb6431d262fc6db72ec7a73/docs/components/layout/README.md",
+        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/docs/components/layout/README.md",
         "version": "v6"
       }
     ],
@@ -3461,7 +3461,51 @@
         "section": "get-started",
         "category": "development-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/5b010163ea2a7537fbb6431d262fc6db72ec7a73/docs/README.md",
+        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/docs/README.md",
+        "version": "v6"
+      }
+    ],
+    "PatternFlyCli": [
+      {
+        "displayName": "PatternFly CLI",
+        "description": "Overview for the official PatternFly CLI covering installation, commands, and usage. Features include project scaffolding commands, code modification, and task runners.",
+        "pathSlug": "patternfly-cli",
+        "section": "get-started",
+        "category": "development-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-cli/168a7cce0abf20591fdaf65d12d90029f901fd5b/README.md",
+        "version": "v6"
+      }
+    ],
+    "AIHelpers": [
+      {
+        "displayName": "AI Helpers, an agent marketplace for skills",
+        "description": "Overview of the PatternFly AI Helpers repository, an agent marketplace. Find available PatternFly agent skills and plugins, and guidelines for AI workflows.",
+        "pathSlug": "ai-helpers-readme",
+        "section": "get-started",
+        "category": "development-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/README.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "AI Helpers contributing skills",
+        "description": "How to propose and land agent skills in the PatternFly AI Helpers repository (structure, review, and conventions).",
+        "pathSlug": "ai-helpers-contributing-skills",
+        "section": "get-started",
+        "category": "development-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/CONTRIBUTING-SKILLS.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "AI Helpers contributing",
+        "description": "General contribution guide for the PatternFly AI Helpers repository (issues, PRs, and repo workflow).",
+        "pathSlug": "ai-helpers-contributing",
+        "section": "get-started",
+        "category": "development-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/CONTRIBUTING.md",
         "version": "v6"
       }
     ]
