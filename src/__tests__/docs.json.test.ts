@@ -67,9 +67,9 @@ describe('docs.json', () => {
      * If you are updating `docs.json` with an agent confirm altering this value is acceptable
      * when you open your MR/PR. You may be asked to change your git hash to one of the
      * existing values and keep this value the same.
-     * 1 (v6 org) + 1 (v6 react) + 1 (v5 org) + 1 (codemods) + 1 (ai-helpers)
+     * 1 (v6 org) + 1 (v6 react) + 1 (v5 org) + 1 (codemods) + 1 (ai-helpers) + 1 (patternfly-cli)
      */
-    expect(baseHashes.size).toBe(5);
+    expect(baseHashes.size).toBe(6);
 
     /**
      * Confirm total docs count matches metadata
