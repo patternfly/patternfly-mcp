@@ -1,6 +1,29 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.1](https://github.com/patternfly/patternfly-mcp/compare/320c784093dc1498c70f99c4f4ff7374be295c02...5a63c12d88adf40fcc9c2cfa5d94b41ce142d543) (2026-04-27)
+
+
+### Documentation
+*  remove update skill refs for docs.json ([#167](https://github.com/patternfly/patternfly-mcp/pull/167)) ([7d6b188](https://github.com/patternfly/patternfly-mcp/commit/7d6b1884eec5d459f78b44e92ce68b511dc5766a))
+
+### Chores
+* **docs** pf-4036 add pf-cli, ai-helpers intros ([#166](https://github.com/patternfly/patternfly-mcp/pull/166)) ([5a63c12](https://github.com/patternfly/patternfly-mcp/commit/5a63c12d88adf40fcc9c2cfa5d94b41ce142d543))
+
+### Builds
+*  workflow, coverage, issue templates ([#164](https://github.com/patternfly/patternfly-mcp/pull/164)) ([ec5c76f](https://github.com/patternfly/patternfly-mcp/commit/ec5c76f99f04726f6d2b8dfff27e4dce3b1ac7de))
+* **deps-dev** bump dev group with 4 updates ([#162](https://github.com/patternfly/patternfly-mcp/pull/162)) ([cee9368](https://github.com/patternfly/patternfly-mcp/commit/cee93680f2518827730c6787d5472cc16d4ea6ee))
+* **deps** lock update ([#161](https://github.com/patternfly/patternfly-mcp/pull/161)) ([5c9e9ba](https://github.com/patternfly/patternfly-mcp/commit/5c9e9ba4769b3b6c9dfa3b291b6b53149a5367cb))
+* **deps** @modelcontextprotocol/sdk from 1.27.1 to 1.29.0 ([#159](https://github.com/patternfly/patternfly-mcp/pull/159)) ([161fca1](https://github.com/patternfly/patternfly-mcp/commit/161fca10a6703d8da76b22b3a5093b97f2b07fe5))
+* **deps** bump pid-port from 2.1.0 to 2.1.1 ([#158](https://github.com/patternfly/patternfly-mcp/pull/158)) ([1976ade](https://github.com/patternfly/patternfly-mcp/commit/1976adefa9f38f7d3e35b79137e39a3a3a15cce1))
+* **deps-dev** bump dev group with 5 updates ([#157](https://github.com/patternfly/patternfly-mcp/pull/157)) ([ae338dd](https://github.com/patternfly/patternfly-mcp/commit/ae338ddbd4dcaa013800d6aa263c0cc15ce0c35d))
+* **deps-dev** bump dev group with 3 updates ([#152](https://github.com/patternfly/patternfly-mcp/pull/152)) ([d2d65c4](https://github.com/patternfly/patternfly-mcp/commit/d2d65c4c70531209eb437f6b8d300b3bbe70a2a9))
+* **deps** bump pid-port from 2.0.1 to 2.1.0 ([#150](https://github.com/patternfly/patternfly-mcp/pull/150)) ([6a47a78](https://github.com/patternfly/patternfly-mcp/commit/6a47a78351fc23b8fa5a296e6959a2d428222bf5))
+* **deps-dev** bump dev group with 4 updates ([#149](https://github.com/patternfly/patternfly-mcp/pull/149)) ([b6f99ea](https://github.com/patternfly/patternfly-mcp/commit/b6f99ea7766420a7197620b69c7d20e861bdcbfc))
+
+### Bug Fixes
+* **server** catch tool registration errors ([#155](https://github.com/patternfly/patternfly-mcp/pull/155)) ([934f7c7](https://github.com/patternfly/patternfly-mcp/commit/934f7c73903d2feaf00a2fdf5ea6666f1ffa84ae))
+
 ## [1.0.0](https://github.com/patternfly/patternfly-mcp/compare/eab711f0d79baa3b1a092514f83bffc2d9ada71d...d7185c712d90741480098d6dd2cac72242ca8445) (2026-03-30)
 ⚠ BREAKING CHANGES, remove componentSchemas MCP tool, favor MCP resources instead, see [#137](https://github.com/patternfly/patternfly-mcp/pull/137)
 
