@@ -46,7 +46,7 @@ For a detailed overview of the system design and roadmap, see [docs/architecture
 - **Confirmation Required**: Confirm success; summarize changes; explain impact; verify understanding.
 - **Guidance Review Scope**: Unless the user explicitly asks, do not make recommendations on improving guidance if all you're asked to do is review guidance.
 - **Environment Awareness**: 
-  - Server execution requires **Node.js >= 20**.
+  - Server execution requires **Node.js >= 22**.
   - External tool plugins (`--tool`) require **Node.js >= 22** primarily for its robust **Permission Model** (`--experimental-permission`), which enables strict filesystem and network isolation.
   - Always verify environment compatibility when proposing tools using modern Node.js features.
 - **Security Context**:
