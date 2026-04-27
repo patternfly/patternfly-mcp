@@ -46,7 +46,7 @@ exports[`options defaults should return specific properties: defaults 1`] = `
     "test": {},
   },
   "name": "@patternfly/patternfly-mcp",
-  "nodeEngine": ">=20.0.0",
+  "nodeEngine": ">=22.0.0",
   "nodeVersion": 22,
   "nodeVersionPreferred": 22,
   "patternflyOptions": {

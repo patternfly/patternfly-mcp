@@ -352,8 +352,8 @@ const MODE_OPTIONS: ModeOptions = {
  * The application's preferred Node.js major. Typically used for
  * unit testing.
  *
- * @note Currently hardcoded, but once Node.js 20 support is removed
- * we could consider populating this from package.json engine.
+ * @note Currently hardcoded due to potential differences in Node.js
+ * versions. Review populating this from the `package.json` engine.
  */
 const NODE_VERSION_PREFERRED = 22;
 

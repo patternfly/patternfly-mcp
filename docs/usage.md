@@ -97,6 +97,33 @@ Access specific component documentation or technical specifications using the fo
 
 Most MCP clients use JSON configuration to specify how the server is started. Below are examples you can adapt for your client.
 
+### Pinned MCP package version
+
+Depending on your environment, you may have to delay updating to the minimum Node.js version required by the server. If you are unable to upgrade your Node.js version and must remain on a previous Node.js version, you can pin your MCP configuration to the last compatible version of the server.
+
+> **Note**: Currently, pinning to an older PatternFly MCP version means you will not receive updated documentation or new features until you "update" your pinned version. In the future, pinning a version may still make an allowance for documentation updates. [See our planned architecture.](./architecture.md#hybrid-documentation-in-progress) 
+
+#### When to choose `@latest` or a pinned version for configuration
+
+| Node.js version | Package spec                        | Feature notes                                                                                                          |
+|-----------------|-------------------------------------|------------------------------------------------------------------------------------------------------------------------|
+| **>=22**        | `@patternfly/patternfly-mcp@latest` | Newest PatternFly features and rules. Includes **enhanced security isolation** for custom tool plugins.                |
+| **>=20**        | `@patternfly/patternfly-mcp@1.1.0`  | Standard features and rules. Lacks **advanced tool isolation**; compatible with all default PatternFly configurations. |
+
+##### Node.js 20 compatible pin
+
+```json
+{
+  "mcpServers": {
+    "patternfly-mcp": {
+      "command": "npx",
+      "args": ["-y", "@patternfly/patternfly-mcp@1.1.0"],
+      "description": "PatternFly rules and documentation (Node.js 20 compatible)"
+    }
+  }
+}
+```
+
 ### Minimal client config (stdio)
 
 ```json
@@ -182,14 +209,16 @@ These are **first-step checks** for common setup problems, not full diagnostics.
 
 > **Agents**: PatternFly MCP server information is available internally through the `patternfly://context` MCP resource.
 
-### 1. Verify Node.js Version
-The PatternFly MCP server requires **Node.js 20 or higher**.
+### 1. Verify Node.js version
+The PatternFly MCP server requires **Node.js 22 or higher**.
 
 - **How to check**:
   - **macOS/Linux**: Open **Terminal** and type `node -v`.
   - **Windows**: Open **PowerShell** or **Command Prompt** and type `node -v`.
-- **Requirement**: You should see a version starting with `v20`, `v22`, or higher.
-- **Solution**: If your version is lower than 20, please download and install the latest "LTS" (Long Term Support) version from [nodejs.org](https://nodejs.org/).
+- **Requirement**: You should see a version starting with `v22`, or higher.
+- **Solution**: If your version is lower than 22, please download and install the latest "LTS" (Long Term Support) version from [nodejs.org](https://nodejs.org/).
+
+> **Unable to update your Node.js version?** [See pinned configuration examples for earlier Node.js versions.](#pinned-mcp-package-version)
 
 ### 2. Reset the npx Cache
 If you encounter an `ERR_MODULE_NOT_FOUND` error or don't see the latest features, your system may be using a "stale" or corrupted version in its cache.

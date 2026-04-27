@@ -14,17 +14,14 @@ exports[`composeTools should attempt to setup creators, file package creators 1`
 }
 `;
 
-exports[`composeTools should attempt to setup creators, file package creators, Node.js 20 1`] = `
+exports[`composeTools should attempt to setup creators, file package creators, Node.js 22 1`] = `
 {
   "log": [
     [
       "Existing Tools Host session detected test-session-id. Shutting down the existing host before creating a new one.",
     ],
-    [
-      "External tool plugins require Node >= 22; skipping file-based tools.",
-    ],
   ],
-  "toolsCount": 3,
+  "toolsCount": 5,
 }
 `;
 
@@ -112,17 +109,20 @@ exports[`composeTools should attempt to setup creators, inline and file package 
 }
 `;
 
-exports[`composeTools should attempt to setup creators, inline and file package creators, duplicates, Node.js 20 1`] = `
+exports[`composeTools should attempt to setup creators, inline and file package creators, duplicates, Node.js 22 1`] = `
 {
   "log": [
     [
       "Existing Tools Host session detected test-session-id. Shutting down the existing host before creating a new one.",
     ],
     [
-      "External tool plugins require Node >= 22; skipping file-based tools.",
+      "Skipping tool plugin "@patternfly/tools" – name already used by built-in/inline tool.",
+    ],
+    [
+      "Skipping tool plugin "DOLOR   " – name already used by built-in/inline tool.",
     ],
   ],
-  "toolsCount": 5,
+  "toolsCount": 6,
 }
 `;
 

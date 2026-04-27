@@ -45,7 +45,7 @@ For a detailed overview of the system design and roadmap, see [docs/architecture
 - **Validation Required**: Follow checklists; verify requirements; test thoroughly. Review [pull request warning signs](../CONTRIBUTING.md#pull-requests) to avoid common pitfalls.
 - **Confirmation Required**: Confirm success; summarize changes; explain impact; verify understanding.
 - **Guidance Review Scope**: Unless the user explicitly asks, do not make recommendations on improving guidance if all you're asked to do is review guidance.
-- **Environment Awareness**: 
+- **Environment Awareness**:
   - Server and plugin execution requirements are defined in `package.json`.
   - Always verify environment compatibility by checking `patternfly://context` or `package.json`.
   - Proactively check for environment mismatches (e.g., Node.js version) if tools fail to load.
