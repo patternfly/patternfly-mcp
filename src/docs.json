@@ -2,7 +2,7 @@
   "version": "1",
   "generated": "2026-04-24T14:10:12.330Z",
   "meta": {
-    "totalEntries": 131,
+    "totalEntries": 130,
     "totalDocs": 324,
     "source": "patternfly-mcp-internal"
   },
@@ -2837,7 +2837,7 @@
         "version": "v6"
       }
     ],
-    "CLI guidelines": [
+    "CLI": [
       {
         "displayName": "CLI guidelines",
         "description": "Detailed guidance for designing and writing content for text-based command-line interfaces (CLIs).",
@@ -2846,6 +2846,16 @@
         "category": "writing-guides",
         "source": "github",
         "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/content-design/writing-guides/cli-guidelines.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "PatternFly CLI",
+        "description": "Overview for the official PatternFly CLI covering installation, commands, and usage. Features include project scaffolding commands, code modification, and task runners.",
+        "pathSlug": "patternfly-cli",
+        "section": "get-started",
+        "category": "development-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-cli/168a7cce0abf20591fdaf65d12d90029f901fd5b/README.md",
         "version": "v6"
       }
     ],
@@ -3462,18 +3472,6 @@
         "category": "development-guidelines",
         "source": "github",
         "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/docs/README.md",
-        "version": "v6"
-      }
-    ],
-    "PatternFlyCli": [
-      {
-        "displayName": "PatternFly CLI",
-        "description": "Overview for the official PatternFly CLI covering installation, commands, and usage. Features include project scaffolding commands, code modification, and task runners.",
-        "pathSlug": "patternfly-cli",
-        "section": "get-started",
-        "category": "development-guidelines",
-        "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-cli/168a7cce0abf20591fdaf65d12d90029f901fd5b/README.md",
         "version": "v6"
       }
     ],
