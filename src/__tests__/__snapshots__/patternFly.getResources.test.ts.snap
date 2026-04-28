@@ -35,6 +35,28 @@ exports[`getPatternFlyMcpResources should return multiple organized facets: prop
 ]
 `;
 
+exports[`mutateKeyWordsMap should handle filtering keywords map, blocklist is prioritized over exception for split tokens 1`] = `
+[
+  "cli",
+  "tooling",
+  "component cli tooling",
+]
+`;
+
+exports[`mutateKeyWordsMap should handle filtering keywords map, exception keeps length token when not blocked 1`] = `
+[
+  "cli",
+  "guidelines",
+  "cli guidelines",
+]
+`;
+
+exports[`mutateKeyWordsMap should handle filtering keywords map, word length filter combined with blocklist 1`] = `
+[
+  "cli or guidelines",
+]
+`;
+
 exports[`setCategoryDisplayLabel should normalize categories and apply linking markdown, accessibility 1`] = `"Accessibility"`;
 
 exports[`setCategoryDisplayLabel should normalize categories and apply linking markdown, design 1`] = `"Design Guidelines"`;

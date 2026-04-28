@@ -2,6 +2,7 @@ import {
   setCategoryDisplayLabel,
   getPatternFlyComponentSchema,
   getPatternFlyComponentNames,
+  mutateKeyWordsMap,
   getPatternFlyMcpResources
 } from '../patternFly.getResources';
 
@@ -93,6 +94,50 @@ describe('getPatternFlyComponentNames', () => {
 
   it('should have a memoized property', () => {
     expect(getPatternFlyComponentNames).toHaveProperty('memo');
+  });
+});
+
+describe('mutateKeyWordsMap', () => {
+  it.each([
+    {
+      description: 'blocklist is prioritized over exception for split tokens',
+      params: {
+        keyword: 'component cli tooling',
+        name: 'resource',
+        version: 'v1'
+      },
+      settings: {
+        blockList: ['component'],
+        exceptionList: ['component', 'cli']
+      }
+    },
+    {
+      description: 'exception keeps length token when not blocked',
+      params: {
+        keyword: 'cli guidelines',
+        name: 'resource',
+        version: 'v1'
+      },
+      settings: undefined
+    },
+    {
+      description: 'word length filter combined with blocklist',
+      params: {
+        keyword: 'cli or guidelines',
+        name: 'resource',
+        version: 'v1'
+      },
+      settings: {
+        blockList: ['cli', 'guidelines'],
+        lengthFilter: 2
+      }
+    }
+  ])('should handle filtering keywords map, $description', ({ params, settings }) => {
+    const keywordsMap = new Map();
+
+    mutateKeyWordsMap(keywordsMap, params, settings);
+
+    expect(Object.keys(Object.fromEntries(keywordsMap))).toMatchSnapshot();
   });
 });
 
