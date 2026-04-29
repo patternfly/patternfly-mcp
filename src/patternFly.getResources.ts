@@ -1,3 +1,5 @@
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import {
   componentNames as pfComponentNames,
   getComponentSchema
@@ -169,26 +171,143 @@ interface PatternFlyMcpAvailableResources extends PatternFlyVersionContext {
 }
 
 /**
+ * Merges two API catalogs. Dynamic cache takes precedence over baseline.
+ *
+ * @param baseline - Baseline API catalog
+ * @param dynamic - Dynamic API catalog
+ * @returns Merged API catalog
+ */
+const mergeApiData = (baseline: PatternFlyMcpDocsCatalog, dynamic: PatternFlyMcpDocsCatalog): PatternFlyMcpDocsCatalog => {
+  const mergedDocs = { ...baseline.docs };
+
+  Object.entries(dynamic.docs || {}).forEach(([name, entries]) => {
+    if (mergedDocs[name]) {
+      mergedDocs[name] = [...mergedDocs[name], ...(entries as PatternFlyMcpDocsCatalogDoc[])];
+    } else {
+      mergedDocs[name] = entries as PatternFlyMcpDocsCatalogDoc[];
+    }
+  });
+
+  return {
+    ...baseline,
+    ...dynamic,
+    meta: {
+      ...baseline.meta,
+      ...(dynamic.meta || {})
+    },
+    docs: mergedDocs
+  };
+};
+
+/**
+ * Merges API data and embedded docs, deduplicating based on resource signatures.
+ *
+ * @param apiData - Merged API catalog
+ * @param embeddedDocs - Embedded documentation catalog
+ * @returns Merged and deduplicated catalog
+ */
+const mergeAndDeduplicate = (apiData: PatternFlyMcpDocsCatalog, embeddedDocs: PatternFlyMcpDocsCatalog): PatternFlyMcpDocsCatalog => {
+  const apiDocs = apiData.docs || {};
+  const embeddedDocsMap = embeddedDocs.docs || {};
+
+  // 1. Create a Set of signatures already covered by the API
+  const apiSignatures = new Set<string>();
+
+  Object.entries(apiDocs).forEach(([name, entries]) => {
+    (entries as PatternFlyMcpDocsCatalogDoc[]).forEach(entry => {
+      const signature = `${name.toLowerCase()}|${(entry.version || '').toLowerCase()}|${(entry.section || '').toLowerCase()}|${(entry.category || '').toLowerCase()}`;
+
+      apiSignatures.add(signature);
+    });
+  });
+
+  // 2. Filter embedded docs: Only keep what isn't in the API
+  const filteredEmbeddedDocs: Record<string, PatternFlyMcpDocsCatalogDoc[]> = {};
+  const duplicatesFound: string[] = [];
+
+  Object.entries(embeddedDocsMap).forEach(([name, entries]) => {
+    const remainingEntries = (entries as PatternFlyMcpDocsCatalogDoc[]).filter(entry => {
+      const signature = `${name.toLowerCase()}|${(entry.version || '').toLowerCase()}|${(entry.section || '').toLowerCase()}|${(entry.category || '').toLowerCase()}`;
+
+      if (apiSignatures.has(signature)) {
+        duplicatesFound.push(signature);
+
+        return false; // Skip this embedded entry
+      }
+
+      return true;
+    });
+
+    if (remainingEntries.length > 0) {
+      filteredEmbeddedDocs[name] = remainingEntries;
+    }
+  });
+
+  // 3. Combine: API data is the primary, filtered embedded is the fallback
+  const mergedDocs = { ...filteredEmbeddedDocs };
+
+  Object.entries(apiDocs).forEach(([name, entries]) => {
+    if (mergedDocs[name]) {
+      // Correctly merge the arrays to preserve both embedded (non-duplicate) and API entries
+      mergedDocs[name] = [...mergedDocs[name], ...(entries as PatternFlyMcpDocsCatalogDoc[])];
+    } else {
+      mergedDocs[name] = entries as PatternFlyMcpDocsCatalogDoc[];
+    }
+  });
+
+  return {
+    ...apiData,
+    docs: mergedDocs,
+    meta: {
+      ...apiData.meta,
+      duplicatesOffset: duplicatesFound.length,
+      offsetLog: duplicatesFound
+    }
+  };
+};
+
+/**
  * Lazy load the PatternFly documentation catalog.
  *
  * @returns PatternFly documentation catalog JSON, or fallback catalog if import fails.
  */
 const getPatternFlyDocsCatalog = async (): Promise<PatternFlyMcpDocsCatalog & { isFallback: boolean }> => {
-  let docsCatalog = EMBEDDED_DOCS;
-  let isFallback = false;
+  let embeddedDocs = EMBEDDED_DOCS;
+  let apiBaseline = { docs: {}, meta: {} } as PatternFlyMcpDocsCatalog;
 
   try {
     if (process.env.NODE_ENV === 'local') {
-      docsCatalog = (await import('./docs.json', { with: { type: 'json' } })).default;
+      embeddedDocs = (await import('./docs.json', { with: { type: 'json' } })).default;
+      apiBaseline = (await import('./api.json', { with: { type: 'json' } })).default;
     } else {
-      docsCatalog = (await import('#docsCatalog', { with: { type: 'json' } })).default;
+      embeddedDocs = (await import('#docsCatalog' as string, { with: { type: 'json' } })).default;
+      apiBaseline = (await import('#apiCatalog' as string, { with: { type: 'json' } })).default;
     }
-  } catch (error) {
-    isFallback = true;
-    log.debug(`Failed to import docs catalog '#docsCatalog': ${formatUnknownError(error)}`, 'Using fallback docs catalog.');
-  }
 
-  return { ...docsCatalog, isFallback };
+    // Attempt to load dynamic cache from local storage
+    let dynamicCache = { docs: {} } as PatternFlyMcpDocsCatalog;
+
+    try {
+      // Path will eventually be configurable via options.defaults
+      const cachePath = join(process.cwd(), 'cache', 'api.dynamic.json');
+
+      if (existsSync(cachePath)) {
+        dynamicCache = JSON.parse(readFileSync(cachePath, 'utf-8'));
+      }
+    } catch (error) {
+      log.debug(`No dynamic API cache found, proceeding with baseline: ${formatUnknownError(error)}`);
+    }
+
+    // Merge API Baseline + Dynamic Cache
+    const apiCatalog = mergeApiData(apiBaseline, dynamicCache);
+
+    // Deduplicate: Prefer API data and "Offset" embedded docs
+    return { ...mergeAndDeduplicate(apiCatalog, embeddedDocs), isFallback: false };
+  } catch (error) {
+    log.debug(`Failed to import docs catalog: ${formatUnknownError(error)}`, 'Using fallback docs catalog.');
+
+    return { ...EMBEDDED_DOCS, isFallback: true };
+  }
 };
 
 /**

@@ -536,6 +536,46 @@ stringJoin.filtered = (...args: unknown[]) => stringJoin(args, { filterFalsyValu
 stringJoin.newlineFiltered = (...args: unknown[]) => stringJoin(args, { sep: '\n', filterFalsyValues: true });
 
 /**
+ * Joins multiple URL segments into a single URL string, ensuring no double slashes.
+ * If `base` is not a valid URL, it's returned as-is.
+ *
+ * @param base - The base URL string
+ * @param parts - Additional path segments to join
+ * @returns The joined URL string
+ */
+const joinUrl = (base: string, ...parts: string[]): string => {
+  if (!isUrl(base)) {
+    return base;
+  }
+
+  const url = new URL(base);
+
+  parts.join('/').split('/').filter(Boolean).forEach(part => {
+    const updatedPathname = url.pathname.endsWith('/') ? url.pathname : `${url.pathname}/`;
+
+    url.pathname = `${updatedPathname}${part}`;
+  });
+
+  return url.toString();
+};
+
+/**
+ * Normalizes a string to a CamelCase name.
+ *
+ * @param str - string to normalize (e.g., "about_modal", "alert")
+ * @returns CamelCase name (e.g., "AboutModal", "Alert")
+ */
+const toCamelCase = (str: string) => str.split(/[_-]/).map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('');
+
+/**
+ * Normalizes a string to a space-separated display name.
+ *
+ * @param str - string to normalize (e.g., "about_modal", "alert")
+ * @returns Display name (e.g., "About Modal", "Alert")
+ */
+const toDisplayName = (str: string) => str.split(/[_-]/).map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
+
+/**
  * Construct a search/query string from an object of key-value pairs, optionally filtering out
  * specific values and adding a `?` prefix.
  *
@@ -614,11 +654,14 @@ export {
   isReferenceLike,
   isUrl,
   isWhitelistedUrl,
+  joinUrl,
   listAllCombinations,
   listIncrementalCombinations,
   mergeObjects,
   portValid,
   splitUri,
   stringJoin,
+  toCamelCase,
+  toDisplayName,
   timeoutFunction
 };
