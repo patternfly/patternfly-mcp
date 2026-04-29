@@ -15,7 +15,11 @@ import {
   type PatternFlyMcpDocsCatalogEntry,
   type PatternFlyMcpDocsCatalogDoc
 } from './docs.embedded';
-import { INDEX_BLOCKLIST_WORDS, INDEX_NOISE_WORDS } from './docs.filterWords';
+import {
+  INDEX_BLOCKLIST_WORDS,
+  INDEX_EXCEPTION_WORDS,
+  INDEX_NOISE_WORDS
+} from './docs.filterWords';
 
 /**
  * Derive the component schema type from @patternfly/patternfly-component-schemas
@@ -300,17 +304,34 @@ const getPatternFlyComponentNames = async (contextPathOverride?: string): Promis
 getPatternFlyComponentNames.memo = memo(getPatternFlyComponentNames);
 
 /**
- * Filter keywords by removing noise words.
+ * Filter keywords using the exception list and noise-word rules.
+ *
+ * - Words are kept that match the `exceptionList`.
+ * - Words are removed that match the `filterList` or the `distanceMatch` checks.
+ * - All other words are kept by default.
  *
  * @param keywordsMap - Available keywords by resource name.
  * @param settings - Settings object
+ * @param settings.exceptionList - List of words to exempt from filtering.
  * @param settings.filterList - List of words to filter out from keywords.
+ * @param settings.distanceMatch - Allowed length gap in characters between a keyword and a
+ *     filter word.
  */
-const filterKeywords = (keywordsMap: PatternFlyMcpKeywordsMap, { filterList = INDEX_NOISE_WORDS } = {}) => {
+const filterKeywords = (
+  keywordsMap: PatternFlyMcpKeywordsMap,
+  { exceptionList = INDEX_EXCEPTION_WORDS, filterList = INDEX_NOISE_WORDS, distanceMatch = 3 } = {}
+) => {
   const filteredKeywords: PatternFlyMcpKeywordsMap = new Map();
 
   for (const [keyword, versionMap] of keywordsMap) {
     const updatedKeyword = keyword.toLowerCase().trim();
+
+    // Exception match, never filter these out.
+    if (exceptionList.includes(updatedKeyword)) {
+      filteredKeywords.set(keyword, versionMap);
+      continue;
+    }
+
     const isVariant = filterList.some(word => {
       const updatedWord = word.toLowerCase().trim();
 
@@ -320,7 +341,7 @@ const filterKeywords = (keywordsMap: PatternFlyMcpKeywordsMap, { filterList = IN
       }
 
       // Related match, is filterList word related?
-      if (Math.abs(updatedKeyword.length - updatedWord.length) <= 3) {
+      if (Math.abs(updatedKeyword.length - updatedWord.length) <= distanceMatch) {
         return updatedKeyword.startsWith(updatedWord) || updatedKeyword.endsWith(updatedWord);
       }
 
@@ -336,7 +357,17 @@ const filterKeywords = (keywordsMap: PatternFlyMcpKeywordsMap, { filterList = IN
 };
 
 /**
- * Update the keywords map with the given keyword.
+ * Mutate the `keywordsMap` with the given normalized keyword.
+ *
+ * - The normalized keyword is always indexed.
+ * - When the normalized keyword has multiple words, each word is also indexed unless:
+ *   - They are on the `blockList`.
+ *   - Their character length fails the `lengthFilter` and they are not on the `exceptionList`.
+ *
+ * @note Future updates for this function should consider returning a new Map
+ * instead of mutating.
+ *
+ * @internal Exposed for testing only. Not recommended for general use.
  *
  * @param keywordsMap - Available keywords by resource name.
  * @param params - Params object
@@ -345,11 +376,14 @@ const filterKeywords = (keywordsMap: PatternFlyMcpKeywordsMap, { filterList = IN
  * @param params.version - Version of the resource associated with the keyword.
  * @param settings - Settings object
  * @param settings.blockList - List of words to block from indexing.
+ * @param settings.exceptionList - List of words to exempt from filtering. `blocklist` words
+ *     are prioritized over `exceptionList` words.
+ * @param settings.lengthFilter - Word length filter for reducing keyword noise.
  */
 const mutateKeyWordsMap = (
   keywordsMap: PatternFlyMcpKeywordsMap,
   { keyword, name, version }: { keyword: string, name: string, version: string },
-  { blockList = INDEX_BLOCKLIST_WORDS } = {}
+  { blockList = INDEX_BLOCKLIST_WORDS, exceptionList = INDEX_EXCEPTION_WORDS, lengthFilter = 3 } = {}
 ) => {
   const normalizedKeyword = keyword.toLowerCase().trim();
   const initialSplit = normalizedKeyword.split(' ').filter(Boolean);
@@ -378,7 +412,13 @@ const mutateKeyWordsMap = (
     const splitKeywords = initialSplit.map(word => word.trim().replace(/[()|"'<>@#!,.;:]/g, ''));
 
     for (const word of splitKeywords) {
-      if (word.length <= 3 || blockList.find(blockedWord => blockedWord === word.toLowerCase())) {
+      const lowerWord = word.toLowerCase();
+
+      if (blockList.includes(lowerWord)) {
+        continue;
+      }
+
+      if (word.length <= lengthFilter && !exceptionList.includes(lowerWord)) {
         continue;
       }
 
@@ -482,6 +522,10 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
 
       mutateKeyWordsMap(rawKeywordsMap, { keyword: name, name, version });
 
+      if (entry.displayName) {
+        mutateKeyWordsMap(rawKeywordsMap, { keyword: entry.displayName, name, version });
+      }
+
       if (entry.category) {
         mutateKeyWordsMap(rawKeywordsMap, { keyword: entry.category, name, version });
       }
@@ -562,6 +606,7 @@ export {
   getPatternFlyComponentSchema,
   getPatternFlyMcpResources,
   getPatternFlyComponentNames,
+  mutateKeyWordsMap,
   setCategoryDisplayLabel,
   type PatternFlyMcpComponentNames,
   type PatternFlyMcpComponentNamesByVersion,
