@@ -140,7 +140,7 @@ The documentation catalog `src/docs.json` pins remote resources to specific comm
 
 #### Programmatic runtime requirements
 
-- **Node.js 20+**: Required to run the core MCP server.
+- **Node.js 22+**: Required to run the core MCP server.
 - **Node.js 22+**: Required for loading external tool plugins (`--tool`) and for developers working on advanced process isolation features.
 
 **Example: Programmatic test mode**
@@ -381,7 +381,7 @@ These terms describe **how tools and their related properties are represented** 
 
 ### Tool plugins
 
-- **Plugins don't appear**: Verify the Node version (requires Node.js >= 20; >= 22 for tool plugins) and check logs (enable `--log-stderr`).
+- **Plugins don't appear**: Verify the Node version (requires Node.js >= 22 for tool plugins) and check logs (enable `--log-stderr`).
 - **Startup warnings/errors**: Startup `load:ack` warnings/errors from tool plugins are logged when stderr/protocol logging is enabled.
 - **Schema errors**: If `tools/call` rejects with schema errors, ensure `inputSchema` is valid. See [Authoring tools](#authoring-tools) for details.
 - **Network access issues**: If the tool is having network access issues, you may need to configure `--plugin-isolation none`. This is generally discouraged for security reasons but may be necessary in some cases.
@@ -394,7 +394,7 @@ These terms describe **how tools and their related properties are represented** 
 
 ### General issues
 
-- **Server won't start**: Check Node.js version (requires Node.js >= 20; >= 22 for tool plugins).
+- **Server won't start**: Check Node.js version (requires Node.js >= 22 for tool plugins).
 - **Missing tools/resources**: Verify the server started successfully and check logs with `--log-stderr`.
 - **Type errors**: Ensure TypeScript types are installed: `npm install --save-dev @types/node`
 
