@@ -11,5 +11,5 @@
 ### Assumptions and questions, context, version information
 <!-- Please do not post sensitive information, we are not liable. -->
 <!-- Append a sanitized log/demo/screenshot/animated GIF of the problem.  -->
-<!-- Package.json version, tag, or git commit information. -->
+<!-- PatternFly MCP version, Node.js version, tag or git commit information. -->
 ...

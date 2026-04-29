@@ -7,6 +7,7 @@ A comprehensive guide to PatternFly MCP Server tools, resources, and configurati
 - [Built-in resources](#built-in-resources)
 - [MCP client configuration](#mcp-client-configuration)
 - [Custom MCP tool plugins](#custom-mcp-tool-plugins)
+- [Troubleshooting](#troubleshooting)
 
 ## Built-in tools
 
@@ -101,10 +102,10 @@ Most MCP clients use JSON configuration to specify how the server is started. Be
 ```json
 {
   "mcpServers": {
-    "patternfly-docs": {
+    "patternfly-mcp": {
       "command": "npx",
       "args": ["-y", "@patternfly/patternfly-mcp@latest"],
-      "description": "PatternFly React development rules and documentation"
+      "description": "PatternFly rules and documentation"
     }
   }
 }
@@ -115,10 +116,10 @@ Most MCP clients use JSON configuration to specify how the server is started. Be
 ```json
 {
   "mcpServers": {
-    "patternfly-docs": {
+    "patternfly-mcp": {
       "command": "npx",
       "args": ["-y", "@patternfly/patternfly-mcp@latest", "--http", "--port", "8080"],
-      "description": "PatternFly docs (HTTP transport)"
+      "description": "PatternFly rules and documentation (HTTP transport)"
     }
   }
 }
@@ -129,7 +130,7 @@ Most MCP clients use JSON configuration to specify how the server is started. Be
 ```json
 {
   "mcpServers": {
-    "patternfly-docs": {
+    "patternfly-mcp": {
       "command": "npx",
       "args": [
         "-y",
@@ -148,7 +149,7 @@ Most MCP clients use JSON configuration to specify how the server is started. Be
 ```json
 {
   "mcpServers": {
-    "patternfly-docs": {
+    "patternfly-mcp": {
       "command": "npx",
       "args": [
         "-y",
@@ -161,7 +162,7 @@ Most MCP clients use JSON configuration to specify how the server is started. Be
         "--allowed-hosts",
         "localhost,127.0.0.1"
       ],
-      "description": "PatternFly docs (HTTP transport with security)"
+      "description": "PatternFly rules and documentation (HTTP transport with security)"
     }
   }
 }
@@ -172,3 +173,69 @@ Most MCP clients use JSON configuration to specify how the server is started. Be
 You can extend the server's capabilities by loading custom **Tool Plugins** at startup.
 
 [See development documentation for tool plugins.](./development.md#mcp-tool-plugins)
+
+## Troubleshooting
+
+This guide is designed to help resolve common environment-related issues across macOS, Linux, and Windows.
+
+> **Note on Operating Systems**: Our primary development and testing environments are **macOS and Linux**. While we provide instructions for **Windows**, these commands are run at your own discretion. If you are unsure, please verify them with your IT or system administrator before proceeding.
+
+### 1. Verify Node.js Version
+The PatternFly MCP server requires **Node.js 20 or higher**.
+
+- **How to check**:
+  - **macOS/Linux**: Open **Terminal** and type `node -v`.
+  - **Windows**: Open **PowerShell** or **Command Prompt** and type `node -v`.
+- **Requirement**: You should see a version starting with `v20`, `v22`, or higher.
+- **Solution**: If your version is lower than 20, please download and install the latest "LTS" (Long Term Support) version from [nodejs.org](https://nodejs.org/).
+
+### 2. Reset the npx Cache
+If you encounter an `ERR_MODULE_NOT_FOUND` error or don't see the latest features, your system may be using a "stale" or corrupted version in its cache.
+
+#### **macOS and Linux**
+Run this command in your **Terminal**:
+```bash
+rm -rf ~/.npm/_npx
+```
+
+#### **Windows**
+Run the appropriate command for your terminal:
+- **PowerShell**:
+  ```powershell
+  Remove-Item -Recurse -Force "$env:LOCALAPPDATA\npm-cache\_npx"
+  ```
+- **Command Prompt (CMD)**:
+  ```cmd
+  rd /s /q "%LocalAppData%\npm-cache\_npx"
+  ```
+
+**Next Step**: Restart your MCP client (e.g., Claude Desktop, IDE, or Cursor) to force a fresh download.
+
+### 3. Windows-Specific: Symbolic Links
+If you are developing locally or have cloned the repository on Windows, you may encounter issues with "missing" files in `.agents/skills` and `.claude/skills`. This is often due to Git not creating symbolic links correctly on Windows.
+
+- **The Fix**: Enable **Developer Mode** in Windows Settings (Privacy & security → For developers).
+- **Git Config**: Run `git config --global core.symlinks true` and then re-clone the repository or run `git checkout .` to restore the links.
+
+### 4. Configuration Best Practices
+To ensure you stay up to date with the latest PatternFly documentation, use the `@latest` tag in your configuration:
+
+```json
+"patternfly-mcp": {
+  "command": "npx",
+  "args": ["-y", "@patternfly/patternfly-mcp@latest"],
+  "description": "PatternFly rules and documentation"
+}
+```
+
+> Using `@latest` in the configuration means installs resolve to the "latest" published version when npm/npx fetches the package, typically on a new `npx` run.
+
+### 5. Common Error: `ERR_MODULE_NOT_FOUND`
+If your logs show `Error [ERR_MODULE_NOT_FOUND]`, it likely indicates a corrupted cache following a PatternFly MCP version update. Please follow the [Reset the npx Cache](#2-reset-the-npx-cache) steps above for your specific operating system.
+
+### 6. Community Support
+If you have tried the steps above and are still encountering issues, or if you have specific questions about using PatternFly with your AI assistant, the following community resources are available:
+
+- **[PatternFly Slack](https://patternfly.slack.com/)**: Join our Slack community for real-time support and conversation.
+- **[GitHub Discussions](https://github.com/orgs/patternfly/discussions)**: A great place to ask questions, share ideas, and see how others are leveraging PatternFly.
+- **[PatternFly on Medium](https://medium.com/patternfly)**: Read articles and deep-dives into PatternFly design and development practices.

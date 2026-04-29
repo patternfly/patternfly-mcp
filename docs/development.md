@@ -41,43 +41,57 @@ Complete guide to using the PatternFly MCP Server for development including CLI 
 
 **stdio mode (default):**
 ```bash
-npx @patternfly/patternfly-mcp
+npx -y @patternfly/patternfly-mcp
+```
+
+**stdio mode with terminal logging:**
+```bash
+npx -y @patternfly/patternfly-mcp --log-stderr
 ```
 
 **HTTP mode:**
 ```bash
-npx @patternfly/patternfly-mcp --http --port 8080
+npx -y @patternfly/patternfly-mcp --http --port 8080
 ```
 
 **HTTP mode with custom security**:
 ```bash
-npx @patternfly/patternfly-mcp --http --port 3000 --allowed-origins "https://app.com"
+npx -y @patternfly/patternfly-mcp --http --port 3000 --allowed-origins "https://app.com"
 ```
 
 **Loading external tool plugins**:
 ```bash
-npx @patternfly/patternfly-mcp --tool ./first-tool.js --tool ./second-tool.ts
+npx -y @patternfly/patternfly-mcp --tool ./first-tool.js --tool ./second-tool.ts
 ```
+
 **Testing with a fixture server**:
 ```bash
-npx @patternfly/patternfly-mcp --mode test --mode-test-url "http://localhost:3000"
+npx -y @patternfly/patternfly-mcp --mode test --mode-test-url "http://localhost:3000"
 ```
 
 ### Testing with MCP Inspector
 
 The `@modelcontextprotocol/inspector` is the recommended way to visualize the server's interface.
 
-1. **Start the Inspector**:
+1. **Build the PatternFly MCP**:
    ```bash
-   npx -y @modelcontextprotocol/inspector npx @patternfly/patternfly-mcp
+   npm install
+   npm run build
    ```
-2. **Interact**: The inspector opens a web interface (typically at `http://localhost:5173`) where you can list tools, execute them, and view resource contents.
+2. **Start the Inspector**:
+   ```bash
+   npx -y @modelcontextprotocol/inspector node dist/cli.js
+   ```
+3. **Interact**: The inspector opens a web interface (typically at `http://localhost:5173`) where you can list tools, resources, and prompts, then execute and view their responses.
 
-**Example with repository context:**
+#### Use the MCP Inspector with configuration
+
+If you use `@modelcontextprotocol/inspector-cli` with an MCP client config file, set `--server` to the server key in that file. For example, use `patternfly-mcp` when it matches `mcp-config-example.json`.
+
 ```bash
-npx @modelcontextprotocol/inspector-cli \
-  --config ./mcp-config.json \
-  --server patternfly-docs \
+npx -y @modelcontextprotocol/inspector-cli \
+  --config ./mcp-config-example.json \
+  --server patternfly-mcp \
   --cli \
   --method tools/call \
   --tool-name usePatternFlyDocs \
