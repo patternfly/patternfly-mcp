@@ -41,32 +41,32 @@ Complete guide to using the PatternFly MCP Server for development including CLI 
 
 **stdio mode (default):**
 ```bash
-npx -y @patternfly/patternfly-mcp
+npx -y @patternfly/patternfly-mcp@latest
 ```
 
 **stdio mode with terminal logging:**
 ```bash
-npx -y @patternfly/patternfly-mcp --log-stderr
+npx -y @patternfly/patternfly-mcp@latest --log-stderr
 ```
 
 **HTTP mode:**
 ```bash
-npx -y @patternfly/patternfly-mcp --http --port 8080
+npx -y @patternfly/patternfly-mcp@latest --http --port 8080
 ```
 
 **HTTP mode with custom security**:
 ```bash
-npx -y @patternfly/patternfly-mcp --http --port 3000 --allowed-origins "https://app.com"
+npx -y @patternfly/patternfly-mcp@latest --http --port 3000 --allowed-origins "https://app.com"
 ```
 
 **Loading external tool plugins**:
 ```bash
-npx -y @patternfly/patternfly-mcp --tool ./first-tool.js --tool ./second-tool.ts
+npx -y @patternfly/patternfly-mcp@latest --tool ./first-tool.js --tool ./second-tool.ts
 ```
 
 **Testing with a fixture server**:
 ```bash
-npx -y @patternfly/patternfly-mcp --mode test --mode-test-url "http://localhost:3000"
+npx -y @patternfly/patternfly-mcp@latest --mode test --mode-test-url "http://localhost:3000"
 ```
 
 ### Testing with MCP Inspector

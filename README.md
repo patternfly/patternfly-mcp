@@ -52,13 +52,13 @@ HTTP transport mode
 Run the latest published package immediately via `npx`:
 
 ```bash
-npx -y @patternfly/patternfly-mcp
+npx -y @patternfly/patternfly-mcp@latest
 ```
 
 Or with options
 
 ```bash
-npx -y @patternfly/patternfly-mcp --log-stderr --verbose
+npx -y @patternfly/patternfly-mcp@latest --log-stderr --verbose
 ```
 
 #### Run a locally built server
@@ -71,7 +71,7 @@ npm start
 Visualize and test the packaged MCP interface:
 
 ```bash
-npx -y @modelcontextprotocol/inspector npx -y @patternfly/patternfly-mcp
+npx -y @modelcontextprotocol/inspector npx -y @patternfly/patternfly-mcp@latest
 ```
 
 Build from source and test a local built MCP interface:
