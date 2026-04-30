@@ -2,7 +2,7 @@
   "mcpServers": {
     "patternfly-mcp": {
       "command": "npx",
-      "args": ["-y","@patternfly/patternfly-mcp@latest"],
+      "args": ["-y", "@patternfly/patternfly-mcp@latest"],
       "description": "PatternFly rules and documentation"
     }
   }

@@ -25,20 +25,18 @@ your contribution is aligned with the project's goals.
 
 ##### Windows and repository symlinks
 
-The repo uses **symlinks** so agent tools can find shared skills (for example `.agents/skills` and `.claude/skills` point at `guidelines/skills`). On **Windows**, Git can check out those paths as plain files instead of links, which breaks that layout.
-
 Some paths in this repo are **symbolic links** so tools can reach shared skills without needing to host multiple versions of the same files. For example, `.agents/skills` and `.claude/skills` point at `guidelines/skills`. On **Windows**, Git may create **regular folders or files** instead of links, so these locations can look empty or broken.
 
-**Before you clone the repository** 
+**Before you clone the repository**
 
-- Turn on **Developer Mode** (Settings → Privacy & security → For developers). That usually lets Git create symlinks without running as Administrator.
+- Turn on **Developer Mode** (Settings -> Privacy & security -> For developers). That usually lets Git create symlinks without running as Administrator.
 - Prefer cloning with links enabled, for example: `git clone -c core.symlinks=true <repository-url>`, or use **WSL** / **Git for Windows** with symlink support configured.
 
 **If the repo is already on disk and the links are broken**
 
 Turning on Developer Mode or Git symlink settings **does not always fix** paths Git has already created as ordinary files.
 - Delete the broken `.agents/skills` and `.claude/skills` entries, or remove the entire folder/directory and **clone again**
-- Then follow the above steps for `"Before you clone the repository"`
+- Then follow the **Before you clone the repository** steps above
 
 > If you are unsure of any steps, please verify them with your IT or system administrator before proceeding.
 
