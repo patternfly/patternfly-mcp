@@ -212,7 +212,7 @@ Run the appropriate command for your terminal:
 **Next Step**: Restart your MCP client (e.g., Claude Desktop, IDE, or Cursor) to force a fresh download.
 
 ### 3. Windows-Specific: Symbolic Links
-If you are developing locally or have cloned the repository on Windows, you may encounter issues with "missing" files in `.agents/skills` and `.claude/skills`. This is typically due to how Windows handles symbolic links.
+If you are developing locally or have cloned the repository on Windows, you may encounter issues with "missing" files in `.agents/skills` and `.claude/skills`. That usually means **Git** checked out symlinked paths as plain files instead of links—for example when symlink creation is restricted until Developer Mode is on or `core.symlinks` is set.
 
 For detailed instructions on enabling and restoring symlinks, please refer to the **[Windows and repository symlinks section in CONTRIBUTING.md](../CONTRIBUTING.md#windows-and-repository-symlinks)**.
 

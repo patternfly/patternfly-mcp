@@ -25,11 +25,10 @@ your contribution is aligned with the project's goals.
 
 ##### Windows and repository symlinks
 
-The repo uses **symlinks** so agent tools can find shared skills (for example `.agents/skills` and `.claude/skills` point at `guidelines/skills`). On **Windows**, a plain clone can leave those as plain files instead of links, which breaks that layout.
+The repo uses **symlinks** so agent tools can find shared skills (for example `.agents/skills` and `.claude/skills` point at `guidelines/skills`). On **Windows**, Git can check out those paths as plain files instead of links, which breaks that layout.
 
-- **The Fix**: Enable **Developer Mode** in Windows Settings (Privacy & security → For developers) so Git can create symlinks without running as Administrator.
-- **Git Config**: Run `git config --global core.symlinks true` and then re-clone the repository or run `git checkout .` to restore the links.
-- **Alternative**: Work from **WSL** or **Git for Windows** with symlink support configured (e.g., `git clone -c core.symlinks=true ...`).
+- Prefer **Developer Mode** (Settings → Privacy & security → For developers) so Git can create symlinks without running as Administrator, **or** clone with symlink support enabled (for example `git clone -c core.symlinks=true …`).
+- If symlinks were not created, enable `core.symlinks` and re-check out the affected paths, or work from **WSL** / **Git for Windows** with symlink support configured.
 
 #### Development workflow
 - Make changes to the codebase
