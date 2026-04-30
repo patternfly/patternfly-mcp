@@ -176,7 +176,7 @@ You can extend the server's capabilities by loading custom **Tool Plugins** at s
 
 ## Troubleshooting
 
-This guide is designed to help resolve common environment-related issues across macOS, Linux, and Windows.
+These are **first-step checks** for common setup problems, not full diagnostics. If something still fails, use the community links at the end of this section or ask your IT team, especially on **Windows**, where permissions, security software, and Git setup vary and may be beyond simple troubleshooting.
 
 > **Note on Operating Systems**: Our primary development and testing environments are **macOS and Linux**. While we provide instructions for **Windows**, these commands are run at your own discretion. If you are unsure, please verify them with your IT or system administrator before proceeding.
 
@@ -212,7 +212,7 @@ Run the appropriate command for your terminal:
 **Next Step**: Restart your MCP client (e.g., Claude Desktop, IDE, or Cursor) to force a fresh download.
 
 ### 3. Windows-Specific: Symbolic Links
-If you are developing locally or have cloned the repository on Windows, you may encounter issues with "missing" files in `.agents/skills` and `.claude/skills`. That usually means **Git** checked out symlinked paths as plain files instead of links—for example when symlink creation is restricted until Developer Mode is on or `core.symlinks` is set.
+On Windows, folders such as `.agents/skills` and `.claude/skills` can look empty if **Git** created them as normal folders instead of **links** to `guidelines/skills`. This often happens because Developer Mode, or Git symlink support, hasn't been enabled.
 
 For detailed instructions on enabling and restoring symlinks, please refer to the **[Windows and repository symlinks section in CONTRIBUTING.md](../CONTRIBUTING.md#windows-and-repository-symlinks)**.
 
