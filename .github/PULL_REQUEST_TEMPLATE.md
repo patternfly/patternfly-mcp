@@ -23,18 +23,25 @@ PR tips
 1. `> [test prompt]`
 -->
 <!--
+### Check the work
+1. Update the NPM packages with `$ npm install`
+1. `$ npm run build`
+1. `npx -y @modelcontextprotocol/inspector node dist/cli.js`
+1. next...
+-->
+<!--
 ### Unit test check
-1. update the NPM packages with `$ npm install`
+1. Update the NPM packages with `$ npm install`
 1. `$ npm test`
 -->
 <!--
 ### E2E test check
-1. update the NPM packages with `$ npm install`
+1. Update the NPM packages with `$ npm install`
 1. `$ npm run test:integration`
 -->
 <!--
 ### Check the build
-1. update the NPM packages with `$ npm install`
+1. Update the NPM packages with `$ npm install`
 1. `$ npm run build`
 1. next...
 -->

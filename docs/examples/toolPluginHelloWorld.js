@@ -3,7 +3,7 @@
  *
  * To load this tool into the PatternFly MCP server:
  * 1. Save this file (e.g., `toolPluginHelloWorld.js`)
- * 2. Run the server with: `npx @patternfly/patternfly-mcp --tool <path-to-the-file>/toolPluginHelloWorld.js`
+ * 2. Run the server with: `npx -y @patternfly/patternfly-mcp@latest --tool <path-to-the-file>/toolPluginHelloWorld.js`
  *
  * Note:
  * - External tool file loading requires Node.js >= 22.

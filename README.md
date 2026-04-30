@@ -22,7 +22,7 @@ Minimal configuration
 ```json
 {
   "mcpServers": {
-    "patternfly-docs": {
+    "patternfly-mcp": {
       "command": "npx",
       "args": ["-y", "@patternfly/patternfly-mcp@latest"],
       "description": "PatternFly rules and documentation"
@@ -35,10 +35,10 @@ HTTP transport mode
 ```json
 {
   "mcpServers": {
-    "patternfly-docs": {
+    "patternfly-mcp": {
       "command": "npx",
       "args": ["-y", "@patternfly/patternfly-mcp@latest", "--http", "--port", "8080"],
-      "description": "PatternFly docs (HTTP transport)"
+      "description": "PatternFly rules and documentation (HTTP transport)"
     }
   }
 }
@@ -48,24 +48,37 @@ HTTP transport mode
 
 ### For development, advanced usage
 
-#### Run the server directly
-Run the server immediately via `npx`:
+#### Run the latest released server
+Run the latest published package immediately via `npx`:
 
 ```bash
-npx -y @patternfly/patternfly-mcp
+npx -y @patternfly/patternfly-mcp@latest
 ```
 
 Or with options
 
 ```bash
-npx -y @patternfly/patternfly-mcp --log-stderr --verbose
+npx -y @patternfly/patternfly-mcp@latest --log-stderr --verbose
+```
+
+#### Run a locally built server
+```bash
+# clone the repo, change the directory, npm install, npm run build, then in the repo context run...
+npm start
 ```
 
 #### Inspect the server
-Visualize and test the MCP interface:
+Visualize and test the packaged MCP interface:
 
 ```bash
-npx -y @modelcontextprotocol/inspector npx @patternfly/patternfly-mcp
+npx -y @modelcontextprotocol/inspector npx -y @patternfly/patternfly-mcp@latest
+```
+
+Build from source and test a local built MCP interface:
+
+```bash
+# clone the repo, change the directory, npm install, npm run build, then in the repo context run...
+npx -y @modelcontextprotocol/inspector node dist/cli.js
 ```
 
 #### Embed the server in your application
@@ -94,7 +107,7 @@ main();
 For comprehensive usage, development, and project state [read the docs](./docs/README.md).
 
 - **Architecture**: Learn about our [hybrid documentation concept and data sources](./docs/architecture.md#data-sources-and-integrations).
-- **Usage**: Detailed guide on [built-in tools and resources](./docs/usage.md).
+- **Usage**: Detailed guide on [built-in tools, resources, and troubleshooting for general use](./docs/usage.md).
 - **Development**: Reference for [CLI options and tool plugins](./docs/development.md).
 
 ## Contributing

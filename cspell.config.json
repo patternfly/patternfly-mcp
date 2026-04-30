@@ -5,6 +5,7 @@
     "codemods",
     "ized",
     "llms",
+    "localappdata",
     "midrun",
     "modelcontextprotocol",
     "nosniff",
