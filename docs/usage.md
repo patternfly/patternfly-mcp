@@ -212,10 +212,9 @@ Run the appropriate command for your terminal:
 **Next Step**: Restart your MCP client (e.g., Claude Desktop, IDE, or Cursor) to force a fresh download.
 
 ### 3. Windows-Specific: Symbolic Links
-If you are developing locally or have cloned the repository on Windows, you may encounter issues with "missing" files in `.agents/skills` and `.claude/skills`. This is often due to Git not creating symbolic links correctly on Windows.
+If you are developing locally or have cloned the repository on Windows, you may encounter issues with "missing" files in `.agents/skills` and `.claude/skills`. This is typically due to how Windows handles symbolic links.
 
-- **The Fix**: Enable **Developer Mode** in Windows Settings (Privacy & security → For developers).
-- **Git Config**: Run `git config --global core.symlinks true` and then re-clone the repository or run `git checkout .` to restore the links.
+For detailed instructions on enabling and restoring symlinks, please refer to the **[Windows and repository symlinks section in CONTRIBUTING.md](../CONTRIBUTING.md#windows-and-repository-symlinks)**.
 
 ### 4. Configuration Best Practices
 To ensure you stay up to date with the latest PatternFly documentation, use the `@latest` tag in your configuration:
