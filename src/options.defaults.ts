@@ -2,6 +2,7 @@ import { basename, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import packageJson from '../package.json';
 import { type ToolModule } from './server.toolsUser';
+import { getNodeMajorVersion } from './options.helpers';
 
 /**
  * Application defaults, not all fields are user-configurable
@@ -23,12 +24,16 @@ import { type ToolModule } from './server.toolsUser';
  *    - `test`: Testing or debugging mode.
  * @property {ModeOptions} modeOptions - Mode-specific options.
  * @property name - Name of the package.
+ * @property nodeEngine - Minimum Node.js version requirement from package.json.
  * @property nodeVersion - Node.js major version.
+ * @property nodeVersionPreferred = Preferred Node.js major version. Typically used for testing.
  * @property {PatternFlyOptions} patternflyOptions - PatternFly-specific options.
  * @property pluginIsolation - Isolation preset for external plugins.
  * @property {PluginHostOptions} pluginHost - Plugin host options.
+ * @property repoBugs - Bugs URL of the repository.
  * @property repoName - Name of the repository.
  * @property {RepoResources} repoResources - Repository resources.
+ * @property repoTroubleshoot - Troubleshooting URL of the repository.
  * @property {typeof RESOURCE_MEMO_OPTIONS} resourceMemoOptions - Resource-level memoization options.
  * @property resourceModules - Array for programmatic registration of resource provider modules, similar to `toolModules` but
  *     for MCP resources and currently only internal.
@@ -54,12 +59,16 @@ interface DefaultOptions<TLogOptions = LoggingOptions> {
   mode: 'cli' | 'programmatic' | 'test';
   modeOptions: ModeOptions;
   name: string;
+  nodeEngine: string | undefined;
   nodeVersion: number;
+  nodeVersionPreferred: number;
   patternflyOptions: PatternFlyOptions;
   pluginIsolation: 'none' | 'strict';
   pluginHost: PluginHostOptions;
+  repoBugs: string | undefined;
   repoName: string | undefined;
   repoResources: RepoResources;
+  repoTroubleshoot: string | undefined;
   resourceMemoOptions: Partial<typeof RESOURCE_MEMO_OPTIONS>;
   resourceModules: unknown | unknown[];
   separator: string;
@@ -352,6 +361,15 @@ const MODE_OPTIONS: ModeOptions = {
 };
 
 /**
+ * The application's preferred Node.js major. Typically used for
+ * unit testing.
+ *
+ * @note Currently hardcoded, but once Node.js 20 support is removed
+ * we could consider populating this from package.json engine.
+ */
+const NODE_VERSION_PREFERRED = 22;
+
+/**
  * Default plugin host options.
  */
 const PLUGIN_HOST_OPTIONS: PluginHostOptions = {
@@ -474,23 +492,6 @@ const URL_REGEX = /^(https?:)\/\//i;
 const MODE_LEVELS: DefaultOptions['mode'][] = ['cli', 'programmatic', 'test'];
 
 /**
- * Get the current Node.js major version.
- *
- * @param nodeVersion
- * @returns Node.js major version.
- */
-const getNodeMajorVersion = (nodeVersion = process.versions.node) => {
-  const updatedNodeVersion = nodeVersion || '0.0.0';
-  const major = Number.parseInt(updatedNodeVersion?.split?.('.')?.[0] || '0', 10);
-
-  if (Number.isFinite(major)) {
-    return major;
-  }
-
-  return 0;
-};
-
-/**
  * Global default options. Base defaults before CLI/programmatic overrides.
  *
  * @note `maxDocsToLoad` and `recommendedMaxDocsToLoad` should be generated from the length
@@ -510,10 +511,14 @@ const DEFAULT_OPTIONS: DefaultOptions = {
   mode: 'programmatic',
   modeOptions: MODE_OPTIONS,
   name: packageJson.name,
-  nodeVersion: (process.env.NODE_ENV === 'local' && 22) || getNodeMajorVersion(),
+  nodeEngine: packageJson.engines?.node,
+  nodeVersion: (process.env.NODE_ENV === 'local' && NODE_VERSION_PREFERRED) || getNodeMajorVersion(process.versions.node),
+  nodeVersionPreferred: NODE_VERSION_PREFERRED,
   patternflyOptions: PATTERNFLY_OPTIONS,
   pluginIsolation: 'strict',
   pluginHost: PLUGIN_HOST_OPTIONS,
+  repoBugs: packageJson.bugs?.url,
+  repoTroubleshoot: packageJson.support?.url,
   repoName: basename(process.cwd() || '').trim(),
   repoResources: REPO_RESOURCES,
   resourceMemoOptions: RESOURCE_MEMO_OPTIONS,
@@ -532,7 +537,6 @@ export {
   DEFAULT_OPTIONS,
   LOG_BASENAME,
   MODE_LEVELS,
-  getNodeMajorVersion,
   type DefaultOptions,
   type DefaultOptionsOverrides,
   type HttpOptions,

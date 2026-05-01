@@ -1,5 +1,6 @@
 import { type McpResource } from './server';
 import { stringJoin } from './server.helpers';
+import { DEFAULT_OPTIONS } from './options.defaults';
 
 /**
  * Name of the resource.
@@ -41,6 +42,11 @@ const patternFlyContextResource = (): McpResource => [
   URI_TEMPLATE,
   CONFIG,
   async (passedUri: URL) => {
+    const troubleshooting = stringJoin.newlineFiltered(
+      DEFAULT_OPTIONS.repoTroubleshoot && `- **Troubleshooting guidance:** ${DEFAULT_OPTIONS.repoTroubleshoot}`,
+      DEFAULT_OPTIONS.repoBugs && `- **Report bugs:** ${DEFAULT_OPTIONS.repoBugs}`
+    );
+
     const context = `PatternFly is an open-source design system for building consistent, accessible user interfaces.
 
 **What is PatternFly?**
@@ -56,6 +62,13 @@ PatternFly provides React components, design guidelines, and development tools f
 This MCP server provides tools and resources to access all PatternFly documentation resources ranging from design to development.
 - **MCP tools:** Can be used to search, fetch and display available documentation resources.
 - **MCP resources:** Can be used to list, filter and display available documentation resources.
+
+**Environment:**
+- **MCP Server Mode:** ${DEFAULT_OPTIONS.mode}
+- **MCP Server Version:** ${DEFAULT_OPTIONS.version}
+- **Node.js Major Version:** ${DEFAULT_OPTIONS.nodeVersion}
+
+${(troubleshooting && stringJoin.newline('**Troubleshooting:**', troubleshooting)) || ''}
 `;
 
     return {

@@ -94,5 +94,8 @@
   "bugs": {
     "url": "https://github.com/patternfly/patternfly-mcp/issues"
   },
+  "support": {
+    "url": "https://github.com/patternfly/patternfly-mcp/tree/main/docs#-usage"
+  },
   "homepage": "https://github.com/patternfly/patternfly-mcp#readme"
 }

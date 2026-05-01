@@ -46,12 +46,13 @@ For a detailed overview of the system design and roadmap, see [docs/architecture
 - **Confirmation Required**: Confirm success; summarize changes; explain impact; verify understanding.
 - **Guidance Review Scope**: Unless the user explicitly asks, do not make recommendations on improving guidance if all you're asked to do is review guidance.
 - **Environment Awareness**: 
-  - Server execution requires **Node.js >= 20**.
-  - External tool plugins (`--tool`) require **Node.js >= 22** primarily for its robust **Permission Model** (`--experimental-permission`), which enables strict filesystem and network isolation.
-  - Always verify environment compatibility when proposing tools using modern Node.js features.
+  - Server and plugin execution requirements are defined in `package.json`.
+  - Always verify environment compatibility by checking `patternfly://context` or `package.json`.
+  - Proactively check for environment mismatches (e.g., Node.js version) if tools fail to load.
 - **Security Context**:
   - Default to `--plugin-isolation strict`.
-  - If a tool requires filesystem or network access beyond the sandbox, document the need for `--plugin-isolation none` explicitly.
+  - If a tool requires filesystem or network access beyond the sandbox, document the need for `--plugin-isolation none`.
+  - **Implicit Diagnostics**: If a tool call fails, the agent MUST proactively check `patternfly://context` to see if the user's environment meets requirements before requesting more technical details.
   - Warn users when a proposed solution requires disabling isolation.
 - **State Management**: Use `.agent/` directory for local guidance and state; maintain context; preserve session information.
 - **Security Awareness**: Be mindful of path traversal and isolation levels when working with external tools and resource loading.
