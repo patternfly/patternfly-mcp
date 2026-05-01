@@ -45,7 +45,9 @@ exports[`options defaults should return specific properties: defaults 1`] = `
     "test": {},
   },
   "name": "@patternfly/patternfly-mcp",
+  "nodeEngine": ">=20.0.0",
   "nodeVersion": 22,
+  "nodeVersionPreferred": 22,
   "patternflyOptions": {
     "availableResourceVersions": [
       "6.0.0",
@@ -84,12 +86,14 @@ exports[`options defaults should return specific properties: defaults 1`] = `
     "loadTimeoutMs": 5000,
   },
   "pluginIsolation": "strict",
+  "repoBugs": "https://github.com/patternfly/patternfly-mcp/issues",
   "repoName": "patternfly-mcp",
   "repoResources": {
     "bugs": "https://github.com/patternfly/patternfly-mcp/issues",
     "git": "git+https://github.com/patternfly/patternfly-mcp.git",
     "homepage": "https://github.com/patternfly/patternfly-mcp#readme",
   },
+  "repoSupport": "https://github.com/patternfly/patternfly-mcp/blob/main/docs/usage.md#troubleshooting",
   "resourceMemoOptions": {
     "default": {
       "cacheLimit": 3,
@@ -112,7 +116,7 @@ exports[`options defaults should return specific properties: defaults 1`] = `
 
 ",
   "serverInstanceOptions": {
-    "instructions": "Use the PatternFly MCP when a user asks about: PatternFly, pf, pf docs, design tokens, design guidelines, accessibility, PatternFly components, and frontend development.",
+    "instructions": "Use the PatternFly MCP when a user asks about: PatternFly, pf, pf docs, design tokens, design guidelines, accessibility, PatternFly components, and frontend development. Use patternfly://context for server environment and troubleshooting links if runtime issues occur.",
   },
   "stats": {
     "reportIntervalMs": {

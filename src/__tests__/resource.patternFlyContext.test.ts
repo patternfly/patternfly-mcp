@@ -1,4 +1,7 @@
-import { patternFlyContextResource } from '../resource.patternFlyContext';
+import {
+  patternFlyContextResource,
+  resourceCallback
+} from '../resource.patternFlyContext';
 import { isPlainObject } from '../server.helpers';
 
 describe('patternFlyContextResource', () => {
@@ -18,7 +21,7 @@ describe('patternFlyContextResource', () => {
   });
 });
 
-describe('patternFlyContextResource, callback', () => {
+describe('resourceCallback', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -26,13 +29,13 @@ describe('patternFlyContextResource, callback', () => {
   it.each([
     {
       description: 'default',
-      args: []
+      expected: 'Troubleshooting'
     }
-  ])('should return context content, $description', async ({ args }) => {
-    const [_name, _uri, _config, callback] = patternFlyContextResource();
-    const result = await callback(...args);
+  ])('should return context content, $description', async ({ expected }) => {
+    const result = await resourceCallback(undefined as any);
 
     expect(result.contents).toBeDefined();
-    expect(Object.keys(result.contents[0])).toEqual(['uri', 'mimeType', 'text']);
+    expect(Object.keys(result.contents[0] as any)).toEqual(['uri', 'mimeType', 'text']);
+    expect(result.contents[0]?.text).toContain(expected);
   });
 });
