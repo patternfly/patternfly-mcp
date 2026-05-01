@@ -45,7 +45,9 @@ exports[`options defaults should return specific properties: defaults 1`] = `
     "test": {},
   },
   "name": "@patternfly/patternfly-mcp",
+  "nodeEngine": ">=20.0.0",
   "nodeVersion": 22,
+  "nodeVersionPreferred": 22,
   "patternflyOptions": {
     "availableResourceVersions": [
       "6.0.0",
@@ -84,12 +86,14 @@ exports[`options defaults should return specific properties: defaults 1`] = `
     "loadTimeoutMs": 5000,
   },
   "pluginIsolation": "strict",
+  "repoBugs": "https://github.com/patternfly/patternfly-mcp/issues",
   "repoName": "patternfly-mcp",
   "repoResources": {
     "bugs": "https://github.com/patternfly/patternfly-mcp/issues",
     "git": "git+https://github.com/patternfly/patternfly-mcp.git",
     "homepage": "https://github.com/patternfly/patternfly-mcp#readme",
   },
+  "repoTroubleshoot": "https://github.com/patternfly/patternfly-mcp/tree/main/docs#-usage",
   "resourceMemoOptions": {
     "default": {
       "cacheLimit": 3,

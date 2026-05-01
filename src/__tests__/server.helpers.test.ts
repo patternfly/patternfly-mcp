@@ -1001,6 +1001,11 @@ describe('stringJoin', () => {
       description: 'newline filtered',
       args: ['lorem', 'ipsum', 0, 1, 2, 3, true, false, null, undefined],
       settings: { sep: '\n', filterFalsyValues: true }
+    },
+    {
+      description: 'newline filtered empty',
+      args: [false, null, undefined],
+      settings: { sep: '\n', filterFalsyValues: true }
     }
   ])('should join values, $description', ({ args, settings }) => {
     expect(stringJoin(args, settings)).toMatchSnapshot();
