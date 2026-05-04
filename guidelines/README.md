@@ -36,6 +36,7 @@ Agents should use these phrases as signals to consult specific documentation and
 | **"review development guide"**      | Review `docs/development.md` for CLI, API, and plugin authoring.                                                                                       |
 | **"create an example tool plugin"** | Review `guidelines/agent_coding.md`, `docs/development.md`, `docs/examples/*`, and `src/*` for context, coding standards, and existing example formats. |
 | **"add documentation links"** / **"add doc entries"** / **"register docs"** / **"update docs.json"** / **"contribute to docs.json"** | Follow `guidelines/skills/add-docs-links/SKILL.md`: docs.json format, duplicate check, raw URL confirmation, then run unit tests and update meta. |
+| **"troubleshoot server"** / **"debug server"** | Review `docs/usage.md#troubleshooting` and the PatternFly MCP server resource `patternfly://context` |
 
 ## Guidelines Processing Order
 

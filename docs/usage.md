@@ -180,6 +180,8 @@ These are **first-step checks** for common setup problems, not full diagnostics.
 
 > **Note on Operating Systems**: Our primary development and testing environments are **macOS and Linux**. While we provide instructions for **Windows**, these commands are run at your own discretion. If you are unsure, please verify them with your IT or system administrator before proceeding.
 
+> **Agents**: PatternFly MCP server information is available internally through the `patternfly://context` MCP resource.
+
 ### 1. Verify Node.js Version
 The PatternFly MCP server requires **Node.js 20 or higher**.
 

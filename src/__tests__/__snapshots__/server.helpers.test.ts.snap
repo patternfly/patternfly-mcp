@@ -132,3 +132,5 @@ ipsum
 3
 true"
 `;
+
+exports[`stringJoin should join values, newline filtered empty 1`] = `""`;
