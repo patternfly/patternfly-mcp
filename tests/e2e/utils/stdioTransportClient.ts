@@ -233,7 +233,7 @@ export const startServer = async ({
     },
 
     logs: () => [
-      ...stderrLogs,
+      ...(stderrLogs.length > 0 ? [stderrLogs.join('')] : []),
       ...protocolLogs
     ],
     stderrLogs: () => stderrLogs.slice(),

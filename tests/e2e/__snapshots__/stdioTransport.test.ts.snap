@@ -149,32 +149,19 @@ exports[`Logging should allow setting logging options, stderr 1`] = `
   "[INFO]: Server logging enabled.
 [INFO]: Server stats enabled.
 [INFO]: No external resources loaded.
-",
-  "[INFO]: No external tools loaded.
-",
-  "[INFO]: Registered resource: patternfly-context
-",
-  "[INFO]: Registered resource: patternfly-components-index-meta
-",
-  "[INFO]: Registered resource: patternfly-components-index
-",
-  "[INFO]: Registered resource: patternfly-docs-index-meta
-",
-  "[INFO]: Registered resource: patternfly-docs-index
-",
-  "[INFO]: Registered resource: patternfly-docs-template
-",
-  "[INFO]: Registered resource: patternfly-schemas-index-meta
-",
-  "[INFO]: Registered resource: patternfly-schemas-index
-",
-  "[INFO]: Registered resource: patternfly-schemas-template
-",
-  "[INFO]: Registered tool: usePatternFlyDocs
-",
-  "[INFO]: Registered tool: searchPatternFlyDocs
-",
-  "[INFO]: @patternfly/patternfly-mcp server running on stdio transport
+[INFO]: No external tools loaded.
+[INFO]: Registered resource: patternfly-context
+[INFO]: Registered resource: patternfly-components-index-meta
+[INFO]: Registered resource: patternfly-components-index
+[INFO]: Registered resource: patternfly-docs-index-meta
+[INFO]: Registered resource: patternfly-docs-index
+[INFO]: Registered resource: patternfly-docs-template
+[INFO]: Registered resource: patternfly-schemas-index-meta
+[INFO]: Registered resource: patternfly-schemas-index
+[INFO]: Registered resource: patternfly-schemas-template
+[INFO]: Registered tool: usePatternFlyDocs
+[INFO]: Registered tool: searchPatternFlyDocs
+[INFO]: @patternfly/patternfly-mcp server running on stdio transport
 ",
 ]
 `;
