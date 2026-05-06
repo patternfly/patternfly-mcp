@@ -120,7 +120,7 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
   const docs = [];
 
   try {
-    const matchedUrls = byEntry.map(entry => entry.path).filter(Boolean);
+    const matchedUrls = byEntry.map(entry => entry.path).filter((path): path is string => typeof path === 'string' && path.length > 0);
 
     if (matchedUrls.length > 0) {
       const processedDocs = await processDocsFunction.memo(matchedUrls);

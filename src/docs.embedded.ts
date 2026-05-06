@@ -1,5 +1,16 @@
 /**
- * PatternFly JSON catalog doc
+ * Expand a GitHub directory into one catalog row per file (GitHub Contents API at runtime).
+ */
+type ExpandGithubDirectoryConfig = {
+  owner: string;
+  repo: string;
+  ref: string;
+  directoryPath: string;
+  includePattern?: string;
+};
+
+/**
+ * Resolved catalog row (concrete documentation URL).
  */
 type PatternFlyMcpDocsCatalogDoc = {
   displayName: string;
@@ -13,10 +24,33 @@ type PatternFlyMcpDocsCatalogDoc = {
 };
 
 /**
- * PatternFly JSON catalog documentation entries.
+ * Stub row expanded at startup via {@link ExpandGithubDirectoryConfig}.
+ */
+type PatternFlyMcpDocsCatalogDocStub = {
+  displayName: string;
+  description: string;
+  pathSlug: string;
+  section: string;
+  category: string;
+  source: string;
+  version: string;
+  expandGithubDirectory: ExpandGithubDirectoryConfig;
+};
+
+type PatternFlyMcpDocsCatalogDocImport = PatternFlyMcpDocsCatalogDoc | PatternFlyMcpDocsCatalogDocStub;
+
+/**
+ * PatternFly JSON catalog documentation entries (resolved).
  */
 type PatternFlyMcpDocsCatalogEntry = {
   [key: string]: PatternFlyMcpDocsCatalogDoc[]
+};
+
+/**
+ * Catalog entries as stored in `docs.json` (may include expansion stubs).
+ */
+type PatternFlyMcpDocsCatalogEntryImport = {
+  [key: string]: PatternFlyMcpDocsCatalogDocImport[]
 };
 
 /**
@@ -37,6 +71,16 @@ interface PatternFlyMcpDocsCatalog {
     source: string;
   };
   docs: PatternFlyMcpDocsCatalogEntry
+}
+
+/**
+ * Shape of `docs.json` on disk (may include GitHub directory expansion stubs).
+ */
+interface PatternFlyMcpDocsCatalogSource {
+  version?: string;
+  generated?: string;
+  meta: PatternFlyMcpDocsCatalog['meta'];
+  docs: PatternFlyMcpDocsCatalogEntryImport;
 }
 
 /**
@@ -109,7 +153,12 @@ const EMBEDDED_DOCS: PatternFlyMcpDocsCatalog = {
 
 export {
   EMBEDDED_DOCS,
+  type ExpandGithubDirectoryConfig,
   type PatternFlyMcpDocsCatalog,
+  type PatternFlyMcpDocsCatalogDoc,
+  type PatternFlyMcpDocsCatalogDocImport,
+  type PatternFlyMcpDocsCatalogDocStub,
   type PatternFlyMcpDocsCatalogEntry,
-  type PatternFlyMcpDocsCatalogDoc
+  type PatternFlyMcpDocsCatalogEntryImport,
+  type PatternFlyMcpDocsCatalogSource
 };

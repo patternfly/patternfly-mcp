@@ -5,6 +5,23 @@ import {
   resourceCallback
 } from '../resource.patternFlyDocsTemplate';
 import { isPlainObject } from '../server.helpers';
+import { GITHUB_AI_GUIDELINES_DIRECTORY_FIXTURE } from './fixtures/githubAiGuidelinesDirectory';
+
+const getFetchUrl = (input: RequestInfo | URL): string => {
+  if (typeof input === 'string') {
+    return input;
+  }
+
+  if (input instanceof URL) {
+    return input.href;
+  }
+
+  if (typeof input === 'object' && input !== null && 'url' in input && typeof (input as Request).url === 'string') {
+    return (input as Request).url;
+  }
+
+  return String(input);
+};
 
 jest.mock('node:fs/promises', () => ({
   ...jest.requireActual('node:fs/promises'),
@@ -74,10 +91,21 @@ describe('resourceCallback', () => {
     const mockContent = `Mock content for ${variables.name}`;
 
     mockReadFile.mockResolvedValue(mockContent);
-    mockFetch.mockResolvedValue({
-      ok: true,
-      text: () => mockContent
-    } as any);
+    mockFetch.mockImplementation(async (input: RequestInfo | URL, _init?: RequestInit) => {
+      const urlStr = getFetchUrl(input);
+
+      if (urlStr.includes('api.github.com/repos/project-felt/ai-guidelines')) {
+        return new Response(JSON.stringify(GITHUB_AI_GUIDELINES_DIRECTORY_FIXTURE), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+
+      return {
+        ok: true,
+        text: async () => mockContent
+      } as Response;
+    });
 
     const result = await resourceCallback(
       { href: `patternfly://docs/${variables.version}/${variables.name}` } as any,
@@ -149,10 +177,21 @@ describe('resourceCallback', () => {
     const mockContent = `Mock content for ${variables.name}`;
 
     mockReadFile.mockResolvedValue(mockContent);
-    mockFetch.mockResolvedValue({
-      ok: true,
-      text: () => mockContent
-    } as any);
+    mockFetch.mockImplementation(async (input: RequestInfo | URL, _init?: RequestInit) => {
+      const urlStr = getFetchUrl(input);
+
+      if (urlStr.includes('api.github.com/repos/project-felt/ai-guidelines')) {
+        return new Response(JSON.stringify(GITHUB_AI_GUIDELINES_DIRECTORY_FIXTURE), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+
+      return {
+        ok: true,
+        text: async () => mockContent
+      } as Response;
+    });
 
     const uri = new URL('patternfly://docs/test');
 

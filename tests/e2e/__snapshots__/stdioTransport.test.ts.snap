@@ -31,7 +31,7 @@ Use these parameters to filter the PatternFly documentation index.
 
 | Parameter | Valid Values | Description |
 | :--- | :--- | :--- |
-| \`category\` | \`accessibility\`, \`design-guidelines\`, \`design-tokens\`, \`development-guidelines\`, \`grammar\`, \`react\`, \`writing-guides\` | Filter by category |
+| \`category\` | \`accessibility\`, \`ai\`, \`design-guidelines\`, \`design-tokens\`, \`development-guidelines\`, \`grammar\`, \`react\`, \`writing-guides\` | Filter by category |
 | \`section\` | \`ai\`, \`charts\`, \`components\`, \`content-design\`, \`extensions\`, \`foundations-and-styles\`, \`get-started\`, \`guidelines\`, \`layouts\`, \`patterns\`, \`resources\`, \`upgrade\` | Filter by section |
 | \`version\` | \`v4\`, \`v5\`, \`v6\` | Filter by version |
 
@@ -147,10 +147,8 @@ exports[`Logging should allow setting logging options, default 1`] = `[]`;
 exports[`Logging should allow setting logging options, stderr 1`] = `
 [
   "[INFO]: Server logging enabled.
-",
-  "[INFO]: Server stats enabled.
-",
-  "[INFO]: No external resources loaded.
+[INFO]: Server stats enabled.
+[INFO]: No external resources loaded.
 ",
   "[INFO]: No external tools loaded.
 ",

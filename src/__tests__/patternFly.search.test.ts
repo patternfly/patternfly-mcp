@@ -1,4 +1,5 @@
 import { filterPatternFly, searchPatternFly } from '../patternFly.search';
+import { installGithubFetchMock, restoreNativeFetch } from './fixtures/mockGithubFetch';
 
 describe('filterPatternFly', () => {
   it.each([
@@ -113,5 +114,42 @@ describe('searchPatternFly', () => {
     expect(searchResults.length).toBeGreaterThanOrEqual(0);
     expect(totalResults).toBeGreaterThanOrEqual(searchResults.length);
     expect(totalPotentialMatches).toBeGreaterThanOrEqual(totalResults);
+  });
+});
+
+describe('searchPatternFly, AiGuidelines catalog', () => {
+  beforeAll(() => installGithubFetchMock());
+  afterAll(() => restoreNativeFetch());
+  const feltPath = (paths: { path?: string }[]) =>
+    paths.some(entry => typeof entry.path === 'string' && entry.path.includes('project-felt/ai-guidelines'));
+
+  it('should exact-match resource aiguidelines for query AiGuidelines', async () => {
+    const { exactMatches, searchResults } = await searchPatternFly('AiGuidelines');
+
+    const byName = new Map(searchResults.map(result => [result.name, result]));
+    const aiGuidelinesResource = byName.get('aiguidelines');
+
+    expect(aiGuidelinesResource).toBeDefined();
+    expect(exactMatches.some(match => match.name === 'aiguidelines')).toBe(true);
+    expect(feltPath(aiGuidelinesResource!.entries)).toBe(true);
+    expect(aiGuidelinesResource!.entries.length).toBeGreaterThanOrEqual(7);
+  });
+
+  it('should exact-match resource aiguidelines for query aiguidelines', async () => {
+    const { exactMatches } = await searchPatternFly('aiguidelines');
+
+    expect(exactMatches.some(match => match.name === 'aiguidelines')).toBe(true);
+  });
+
+  it.each([
+    { description: 'transparency wording', search: 'transparency notices' },
+    { description: 'chatbot avatars display name fragment', search: 'chatbot avatars' },
+    { description: 'legal requirements description fragment', search: 'legal review' }
+  ])('should surface project-felt AiGuidelines URLs when searching $description', async ({ search }) => {
+    const { searchResults } = await searchPatternFly(search);
+
+    const hitsFelt = searchResults.some(result => feltPath(result.entries));
+
+    expect(hitsFelt).toBe(true);
   });
 });

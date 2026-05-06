@@ -1,9 +1,9 @@
 {
   "version": "1",
-  "generated": "2026-04-29T20:24:40.471Z",
+  "generated": "2026-05-05T00:00:00.000Z",
   "meta": {
-    "totalEntries": 130,
-    "totalDocs": 324,
+    "totalEntries": 131,
+    "totalDocs": 325,
     "source": "patternfly-mcp-internal"
   },
   "docs": {
@@ -3505,6 +3505,23 @@
         "source": "github",
         "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/CONTRIBUTING.md",
         "version": "v6"
+      }
+    ],
+    "AiGuidelines": [
+      {
+        "displayName": "AI Guidelines (GitHub directory)",
+        "description": "project-felt/ai-guidelines",
+        "pathSlug": "ai-guidelines-directory",
+        "section": "guidelines",
+        "category": "ai",
+        "source": "github",
+        "version": "v6",
+        "expandGithubDirectory": {
+          "owner": "project-felt",
+          "repo": "ai-guidelines",
+          "ref": "main",
+          "directoryPath": "content"
+        }
       }
     ]
   }

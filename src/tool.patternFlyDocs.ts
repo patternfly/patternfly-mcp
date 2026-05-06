@@ -110,7 +110,7 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
         ErrorCode.InvalidParams
       );
 
-      updatedUrlList.push(...exactMatches.flatMap(match => match.entries.map(entry => entry.path)).filter(Boolean));
+      updatedUrlList.push(...exactMatches.flatMap(match => match.entries.map(entry => entry.path)).filter((path): path is string => typeof path === 'string' && path.length > 0));
     }
 
     const docs: ProcessedDoc[] = [];

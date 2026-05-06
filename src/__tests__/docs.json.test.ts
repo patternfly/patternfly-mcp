@@ -1,5 +1,6 @@
 import { distance } from 'fastest-levenshtein';
 import docsJson from '../docs.json';
+import type { PatternFlyMcpDocsCatalogDocImport } from '../docs.embedded';
 
 describe('docs.json', () => {
   it('should have a valid top-level generated timestamp (ISO date string)', () => {
@@ -23,21 +24,28 @@ describe('docs.json', () => {
     let totalDocs = 0;
 
     Object.entries(docsJson.docs).forEach(([key, entries]) => {
-      entries.forEach(entry => {
+      entries.forEach((entry: PatternFlyMcpDocsCatalogDocImport) => {
         totalDocs += 1;
-        allLinks.add(entry.path);
-        const path = entry.path;
+        const linkKey = 'expandGithubDirectory' in entry
+          ? `catalog-expand:${entry.expandGithubDirectory.owner}/${entry.expandGithubDirectory.repo}:${entry.expandGithubDirectory.directoryPath}@${entry.expandGithubDirectory.ref}`
+          : entry.path;
 
-        if (!linkMap.has(path)) {
-          linkMap.set(path, []);
+        allLinks.add(linkKey);
+
+        if (!linkMap.has(linkKey)) {
+          linkMap.set(linkKey, []);
         }
 
-        linkMap.get(path)?.push(`${key}: ${entry.displayName} (${entry.category})`);
+        linkMap.get(linkKey)?.push(`${key}: ${entry.displayName} (${entry.category})`);
 
-        if (entry.path.includes('documentation:')) {
+        if ('expandGithubDirectory' in entry) {
+          baseHashes.add(entry.expandGithubDirectory.ref);
+        } else if (entry.path.includes('documentation:')) {
           baseHashes.add('documentation:');
         } else if (/^https:\/\/raw\.githubusercontent\.com\/patternfly\/[a-zA-Z0-9-]+\//.test(entry.path)) {
           baseHashes.add(entry.path.split(/\/patternfly\/[a-zA-Z0-9-]+\//)[1]?.split('/')[0]);
+        } else if (/^https:\/\/raw\.githubusercontent\.com\/project-felt\/[a-zA-Z0-9-]+\//.test(entry.path)) {
+          baseHashes.add(entry.path.split(/\/project-felt\/[a-zA-Z0-9-]+\//)[1]?.split('/')[0]);
         } else {
           baseHashes.add(`new-resource-${entry.path}`);
         }
@@ -67,9 +75,9 @@ describe('docs.json', () => {
      * If you are updating `docs.json` with an agent confirm altering this value is acceptable
      * when you open your MR/PR. You may be asked to change your git hash to one of the
      * existing values and keep this value the same.
-     * 1 (v6 org) + 1 (v6 react) + 1 (v5 org) + 1 (codemods) + 1 (ai-helpers) + 1 (patternfly-cli)
+     * 1 (v6 org) + 1 (v6 react) + 1 (v5 org) + 1 (codemods) + 1 (ai-helpers) + 1 (patternfly-cli) + 1 (project-felt/ai-guidelines)
      */
-    expect(baseHashes.size).toBe(6);
+    expect(baseHashes.size).toBe(7);
 
     /**
      * Confirm total docs count matches metadata

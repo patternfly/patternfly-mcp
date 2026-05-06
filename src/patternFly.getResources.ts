@@ -12,14 +12,16 @@ import { log, formatUnknownError } from './logger';
 import {
   EMBEDDED_DOCS,
   type PatternFlyMcpDocsCatalog,
+  type PatternFlyMcpDocsCatalogDoc,
   type PatternFlyMcpDocsCatalogEntry,
-  type PatternFlyMcpDocsCatalogDoc
+  type PatternFlyMcpDocsCatalogSource
 } from './docs.embedded';
 import {
   INDEX_BLOCKLIST_WORDS,
   INDEX_EXCEPTION_WORDS,
   INDEX_NOISE_WORDS
 } from './docs.filterWords';
+import { expandGithubDirectoryInCatalog } from './catalog.expandGithubDirectory';
 
 /**
  * Derive the component schema type from @patternfly/patternfly-component-schemas
@@ -178,21 +180,53 @@ interface PatternFlyMcpAvailableResources extends PatternFlyVersionContext {
  * @returns PatternFly documentation catalog JSON, or fallback catalog if import fails.
  */
 const getPatternFlyDocsCatalog = async (): Promise<PatternFlyMcpDocsCatalog & { isFallback: boolean }> => {
-  let docsCatalog = EMBEDDED_DOCS;
+  let docsCatalog: PatternFlyMcpDocsCatalogSource = EMBEDDED_DOCS;
   let isFallback = false;
 
   try {
     if (process.env.NODE_ENV === 'local') {
-      docsCatalog = (await import('./docs.json', { with: { type: 'json' } })).default;
+      docsCatalog = (await import('./docs.json', { with: { type: 'json' } })).default as PatternFlyMcpDocsCatalogSource;
     } else {
-      docsCatalog = (await import('#docsCatalog', { with: { type: 'json' } })).default;
+      docsCatalog = (await import('#docsCatalog', { with: { type: 'json' } })).default as PatternFlyMcpDocsCatalogSource;
     }
   } catch (error) {
     isFallback = true;
     log.debug(`Failed to import docs catalog '#docsCatalog': ${formatUnknownError(error)}`, 'Using fallback docs catalog.');
   }
 
-  return { ...docsCatalog, isFallback };
+  if (isFallback) {
+    return { ...EMBEDDED_DOCS, isFallback };
+  }
+
+  try {
+    const resolvedCatalog = await expandGithubDirectoryInCatalog(docsCatalog);
+
+    return { ...resolvedCatalog, isFallback };
+  } catch (error) {
+    log.error(`Failed to expand GitHub directory catalog entries: ${formatUnknownError(error)}`, 'Serving catalog without expanded entries.');
+
+    // Strip stubs that have no `path` so downstream code doesn't break
+    const safeDocs: PatternFlyMcpDocsCatalogEntry = {};
+
+    for (const [key, entries] of Object.entries(docsCatalog.docs)) {
+      const concrete = entries.filter((e): e is PatternFlyMcpDocsCatalogDoc => 'path' in e && typeof e.path === 'string');
+
+      if (concrete.length > 0) {
+        safeDocs[key] = concrete;
+      }
+    }
+
+    return {
+      ...docsCatalog,
+      docs: safeDocs,
+      meta: {
+        ...docsCatalog.meta,
+        totalDocs: Object.values(safeDocs).reduce((acc, list) => acc + list.length, 0),
+        totalEntries: Object.keys(safeDocs).length
+      },
+      isFallback: true
+    };
+  }
 };
 
 /**
