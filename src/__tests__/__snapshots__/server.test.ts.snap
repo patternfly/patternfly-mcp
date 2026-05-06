@@ -43,10 +43,19 @@ exports[`runServer should allow server to be stopped, http stop server: diagnost
       "Registered resource: patternfly-schemas-template",
     ],
     [
+      "Registered resource: aihelpers-skills-index",
+    ],
+    [
+      "Registered resource: aihelpers-skills-template",
+    ],
+    [
       "Registered tool: usePatternFlyDocs",
     ],
     [
       "Registered tool: searchPatternFlyDocs",
+    ],
+    [
+      "Registered tool: useAiHelpersSkill",
     ],
     [
       "test-server server running on HTTP transport",
@@ -105,10 +114,19 @@ exports[`runServer should allow server to be stopped, stdio stop server: diagnos
       "Registered resource: patternfly-schemas-template",
     ],
     [
+      "Registered resource: aihelpers-skills-index",
+    ],
+    [
+      "Registered resource: aihelpers-skills-template",
+    ],
+    [
       "Registered tool: usePatternFlyDocs",
     ],
     [
       "Registered tool: searchPatternFlyDocs",
+    ],
+    [
+      "Registered tool: useAiHelpersSkill",
     ],
     [
       "test-server server running on stdio transport",
@@ -165,6 +183,12 @@ exports[`runServer should attempt to run server, create transport, connect, and 
     ],
     [
       "Registered resource: patternfly-schemas-template",
+    ],
+    [
+      "Registered resource: aihelpers-skills-index",
+    ],
+    [
+      "Registered resource: aihelpers-skills-template",
     ],
     [
       "test-server-4 server running on stdio transport",
@@ -240,6 +264,12 @@ exports[`runServer should attempt to run server, disable SIGINT handler: diagnos
       "Registered resource: patternfly-schemas-template",
     ],
     [
+      "Registered resource: aihelpers-skills-index",
+    ],
+    [
+      "Registered resource: aihelpers-skills-template",
+    ],
+    [
       "test-server-7 server running on stdio transport",
     ],
   ],
@@ -306,6 +336,12 @@ exports[`runServer should attempt to run server, enable SIGINT handler explicitl
     ],
     [
       "Registered resource: patternfly-schemas-template",
+    ],
+    [
+      "Registered resource: aihelpers-skills-index",
+    ],
+    [
+      "Registered resource: aihelpers-skills-template",
     ],
     [
       "test-server-8 server running on stdio transport",
@@ -379,6 +415,12 @@ exports[`runServer should attempt to run server, register a tool: diagnostics 1`
     ],
     [
       "Registered resource: patternfly-schemas-template",
+    ],
+    [
+      "Registered resource: aihelpers-skills-index",
+    ],
+    [
+      "Registered resource: aihelpers-skills-template",
     ],
     [
       "Registered tool: loremIpsum",
@@ -460,6 +502,12 @@ exports[`runServer should attempt to run server, register multiple tools: diagno
     ],
     [
       "Registered resource: patternfly-schemas-template",
+    ],
+    [
+      "Registered resource: aihelpers-skills-index",
+    ],
+    [
+      "Registered resource: aihelpers-skills-template",
     ],
     [
       "Registered tool: loremIpsum",
@@ -550,6 +598,12 @@ exports[`runServer should attempt to run server, use custom options: diagnostics
       "Registered resource: patternfly-schemas-template",
     ],
     [
+      "Registered resource: aihelpers-skills-index",
+    ],
+    [
+      "Registered resource: aihelpers-skills-template",
+    ],
+    [
       "test-server-3 server running on stdio transport",
     ],
   ],
@@ -623,10 +677,19 @@ exports[`runServer should attempt to run server, use default tools, http: diagno
       "Registered resource: patternfly-schemas-template",
     ],
     [
+      "Registered resource: aihelpers-skills-index",
+    ],
+    [
+      "Registered resource: aihelpers-skills-template",
+    ],
+    [
       "Registered tool: usePatternFlyDocs",
     ],
     [
       "Registered tool: searchPatternFlyDocs",
+    ],
+    [
+      "Registered tool: useAiHelpersSkill",
     ],
     [
       "test-server-2 server running on HTTP transport",
@@ -658,6 +721,7 @@ exports[`runServer should attempt to run server, use default tools, http: diagno
   "registerTool": [
     "usePatternFlyDocs",
     "searchPatternFlyDocs",
+    "useAiHelpersSkill",
   ],
 }
 `;
@@ -705,10 +769,19 @@ exports[`runServer should attempt to run server, use default tools, stdio: diagn
       "Registered resource: patternfly-schemas-template",
     ],
     [
+      "Registered resource: aihelpers-skills-index",
+    ],
+    [
+      "Registered resource: aihelpers-skills-template",
+    ],
+    [
       "Registered tool: usePatternFlyDocs",
     ],
     [
       "Registered tool: searchPatternFlyDocs",
+    ],
+    [
+      "Registered tool: useAiHelpersSkill",
     ],
     [
       "test-server-1 server running on stdio transport",
@@ -740,6 +813,7 @@ exports[`runServer should attempt to run server, use default tools, stdio: diagn
   "registerTool": [
     "usePatternFlyDocs",
     "searchPatternFlyDocs",
+    "useAiHelpersSkill",
   ],
 }
 `;

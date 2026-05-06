@@ -99,6 +99,7 @@ exports[`Builtin tools, STDIO should expose expected tools and stable shape 1`] 
 {
   "toolNames": [
     "searchPatternFlyDocs",
+    "useAiHelpersSkill",
     "usePatternFlyDocs",
   ],
 }
@@ -172,9 +173,15 @@ exports[`Logging should allow setting logging options, stderr 1`] = `
 ",
   "[INFO]: Registered resource: patternfly-schemas-template
 ",
+  "[INFO]: Registered resource: aihelpers-skills-index
+",
+  "[INFO]: Registered resource: aihelpers-skills-template
+",
   "[INFO]: Registered tool: usePatternFlyDocs
 ",
   "[INFO]: Registered tool: searchPatternFlyDocs
+",
+  "[INFO]: Registered tool: useAiHelpersSkill
 ",
   "[INFO]: @patternfly/patternfly-mcp server running on stdio transport
 ",

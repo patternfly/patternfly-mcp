@@ -15,6 +15,9 @@ import { patternFlyDocsIndexResource } from './resource.patternFlyDocsIndex';
 import { patternFlyDocsTemplateResource } from './resource.patternFlyDocsTemplate';
 import { patternFlySchemasIndexResource } from './resource.patternFlySchemasIndex';
 import { patternFlySchemasTemplateResource } from './resource.patternFlySchemasTemplate';
+import { aiHelpersSkillsIndexResource } from './resource.aiHelpersSkillsIndex';
+import { aiHelpersSkillsTemplateResource } from './resource.aiHelpersSkillsTemplate';
+import { useAiHelpersSkillTool } from './tool.aiHelpersSkills';
 import { startHttpTransport, type HttpServerHandle } from './server.http';
 import { memo } from './server.caching';
 import { log, type LogEvent } from './logger';
@@ -208,7 +211,8 @@ interface ServerInstance {
  */
 const builtinTools: McpToolCreator[] = [
   usePatternFlyDocsTool,
-  searchPatternFlyDocsTool
+  searchPatternFlyDocsTool,
+  useAiHelpersSkillTool
 ];
 
 /**
@@ -222,7 +226,9 @@ const builtinResources: McpResourceCreator[] = [
   patternFlyDocsIndexResource,
   patternFlyDocsTemplateResource,
   patternFlySchemasIndexResource,
-  patternFlySchemasTemplateResource
+  patternFlySchemasTemplateResource,
+  aiHelpersSkillsIndexResource,
+  aiHelpersSkillsTemplateResource
 ];
 
 /**

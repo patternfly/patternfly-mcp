@@ -1,6 +1,7 @@
 {
   "language": "en",
   "words": [
+    "aihelpers",
     "amet",
     "codemods",
     "ized",
@@ -12,6 +13,7 @@
     "onsessioninitialized",
     "onsessionclosed",
     "patternfly",
+    "prerendered",
     "rereview",
     "rsort",
     "sparkline",

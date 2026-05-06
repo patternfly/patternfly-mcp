@@ -9,6 +9,9 @@ dist/
 build/
 *.tsbuildinfo
 
+# Runtime cache
+.cache/
+
 # Environment variables
 .env
 .env.local

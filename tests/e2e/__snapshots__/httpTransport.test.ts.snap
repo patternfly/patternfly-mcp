@@ -69,6 +69,16 @@ Use these parameters to filter the list of PatternFly component schemas.
 }
 `;
 
+exports[`Builtin tools, HTTP transport should expose expected tools and stable shape: tools 1`] = `
+{
+  "toolNames": [
+    "searchPatternFlyDocs",
+    "useAiHelpersSkill",
+    "usePatternFlyDocs",
+  ],
+}
+`;
+
 exports[`Builtin tools, HTTP transport should concatenate headers and separator with two remote files 1`] = `
 "# Content for https://www.patternfly.org/notARealPath/AboutModal.md
 Source: https://www.patternfly.org/notARealPath/AboutModal.md
@@ -85,23 +95,6 @@ Source: https://www.patternfly.org/notARealPath/ChartLegend.md
 # Test Document
 
 This is a test document for mocking remote HTTP requests."
-`;
-
-exports[`Builtin tools, HTTP transport should expose expected tools and stable shape: tools 1`] = `
-{
-  "toolNames": [
-    "searchPatternFlyDocs",
-    "usePatternFlyDocs",
-  ],
-}
-`;
-
-exports[`Builtin tools, HTTP transport should initialize MCP session over HTTP 1`] = `
-{
-  "baseUrl": "http://127.0.0.1:8000",
-  "name": "@patternfly/patternfly-mcp",
-  "version": "2024-11-05",
-}
 `;
 
 exports[`Builtin tools, HTTP transport should return expected markdown structure for search results: markdown 1`] = `
@@ -140,4 +133,12 @@ exports[`Builtin tools, HTTP transport should return expected markdown structure
 **Important**:
   - Use the "usePatternFlyDocs" tool with the above names and URLs to fetch resource content.
   - Use a search all ("*") to find all available resources."
+`;
+
+exports[`Builtin tools, HTTP transport should initialize MCP session over HTTP 1`] = `
+{
+  "baseUrl": "http://127.0.0.1:8000",
+  "name": "@patternfly/patternfly-mcp",
+  "version": "2024-11-05",
+}
 `;
