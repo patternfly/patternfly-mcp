@@ -209,7 +209,7 @@ const getPatternFlyDocsCatalog = async (): Promise<PatternFlyMcpDocsCatalog & { 
     const safeDocs: PatternFlyMcpDocsCatalogEntry = {};
 
     for (const [key, entries] of Object.entries(docsCatalog.docs)) {
-      const concrete = entries.filter((e): e is PatternFlyMcpDocsCatalogDoc => 'path' in e && typeof e.path === 'string');
+      const concrete = entries.filter((entry): entry is PatternFlyMcpDocsCatalogDoc => 'path' in entry && typeof entry.path === 'string');
 
       if (concrete.length > 0) {
         safeDocs[key] = concrete;
