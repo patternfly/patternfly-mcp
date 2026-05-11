@@ -118,4 +118,4 @@ Contributing? Guidelines can be found here [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 If you're using an AI assistant to help with development in this repository, please prompt it to `review the repo guidelines` to ensure adherence to project conventions.
 
-Guidelines for developer-agent interaction can be found in [CONTRIBUTING.md](./CONTRIBUTING.md#ai-agent).
+Guidelines for developer-agent interaction can be found in [CONTRIBUTING.md](./CONTRIBUTING.md#ai-agent-guidance).

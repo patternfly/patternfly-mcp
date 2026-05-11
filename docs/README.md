@@ -15,3 +15,8 @@ Welcome to the PatternFly MCP Server documentation. This guide is organized by u
 ### 🏗️ Architecture & design
 - **[System Architecture](./architecture.md)**: Design and core concepts.
 - **[Roadmap](./architecture.md#roadmap)**: Future plans for the project.
+
+### 📜 Policies
+- **[Contribution Guidelines](../CONTRIBUTING.md)**: Guidelines for contributing to the project.
+- **[Security Policy](../SECURITY.md)**: Security standards and reporting vulnerabilities.
+- **[Governance Policy](../GOVERNANCE.md)**: Project governance and contribution review layers.
