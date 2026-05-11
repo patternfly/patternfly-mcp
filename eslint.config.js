@@ -127,7 +127,8 @@ export default [
   {
     files: [
       'docs/**/*.ts',
-      'docs/**/*.js'
+      'docs/**/*.js',
+      'scripts/**/*.js'
     ],
     rules: {
       'jsdoc/require-returns': 0,
