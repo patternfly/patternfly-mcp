@@ -1,6 +1,32 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.0](https://github.com/patternfly/patternfly-mcp/compare/362dd7f7439ba94617b0739dc9591fba115913d6...de4fbe8501faa2e26e000d206a05c87f190f64d9) (2026-05-11)
+
+
+### Features
+* **cli,resources** pf-4059 cli catch start issues ([#179](https://github.com/patternfly/patternfly-mcp/pull/179)) ([5974f60](https://github.com/patternfly/patternfly-mcp/commit/5974f606b28240912792a7956fc5be34a4417f88))
+
+### Documentation
+*  troubleshooting steps, examples ([#173](https://github.com/patternfly/patternfly-mcp/pull/173)) ([e69a213](https://github.com/patternfly/patternfly-mcp/commit/e69a213f35b0bc15dfde829df675b446e0b0167f))
+
+### Code Refactoring
+* **docs** pf-4036 pf-cli references ([#170](https://github.com/patternfly/patternfly-mcp/pull/170)) ([3b004b7](https://github.com/patternfly/patternfly-mcp/commit/3b004b7fb9f1ed16e86a45b7e169c25657598a18))
+
+### Chores
+*  add pf team label workflow ([#177](https://github.com/patternfly/patternfly-mcp/pull/177)) ([db78d35](https://github.com/patternfly/patternfly-mcp/commit/db78d35d3c1f5bd98bf01c5509493e01d93b7218))
+
+### Builds
+* **deps** lock update ([#191](https://github.com/patternfly/patternfly-mcp/pull/191)) ([de4fbe8](https://github.com/patternfly/patternfly-mcp/commit/de4fbe8501faa2e26e000d206a05c87f190f64d9))
+* **deps** lock update ([#189](https://github.com/patternfly/patternfly-mcp/pull/189)) ([f75460f](https://github.com/patternfly/patternfly-mcp/commit/f75460ffecf5a0720fbd050d1d937a606f2b88b8))
+* **deps-dev** bump dev group with 4 updates ([#180](https://github.com/patternfly/patternfly-mcp/pull/180)) ([10a49da](https://github.com/patternfly/patternfly-mcp/commit/10a49daa57654ee14e6820cc91477e4a9a3aa641))
+* **deps** bump actions/setup-node from 6 to 6.3.0 ([#178](https://github.com/patternfly/patternfly-mcp/pull/178)) ([c16a164](https://github.com/patternfly/patternfly-mcp/commit/c16a16429bfd95330751c02835a417111dd7d3ec))
+*  add codeowners, pr reviews ([#175](https://github.com/patternfly/patternfly-mcp/pull/175)) ([70c9470](https://github.com/patternfly/patternfly-mcp/commit/70c94709a179eacd99245dac20bd3f8a962a6f8d))
+* **deps-dev** bump dev group with 4 updates ([#174](https://github.com/patternfly/patternfly-mcp/pull/174)) ([871098a](https://github.com/patternfly/patternfly-mcp/commit/871098ab1b231bfeaa28f63e4ed7c0b4ab509fab))
+
+### Bug Fixes
+* **patternfly** keyword exception list filter ([#171](https://github.com/patternfly/patternfly-mcp/pull/171)) ([77f664f](https://github.com/patternfly/patternfly-mcp/commit/77f664f22fd48a3fc3c994c648b6330992678af4))
+
 ## [1.0.1](https://github.com/patternfly/patternfly-mcp/compare/320c784093dc1498c70f99c4f4ff7374be295c02...5a63c12d88adf40fcc9c2cfa5d94b41ce142d543) (2026-04-27)
 
 
