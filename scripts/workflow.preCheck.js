@@ -157,23 +157,23 @@ const signatureScan = ({ description, files, fileCount } = {}) => {
     const errors = [];
 
     if (isMaxFilesUpdated === true) {
-      errors.push(`⚠️ You've updated a lot of files (${fileCount}/${fileChangeLimit}). **Resolution:** To ensure a smooth review, please consider reducing the scope of these changes by splitting them into smaller, more focused PR contributions.`);
+      errors.push(`⚠️ Large number of file updates detected (${fileCount} files exceeds the ${fileChangeLimit} file limit). **Resolution:** Smaller PRs are easier to review and can lead to faster merges. Please split these changes into focused PRs, each addressing a single concern.`);
     }
 
     if (isCoreModified) {
-      errors.push(`⚠️ I detected core file modifications. To help us track and plan your work, please ensure these updates are associated with a GitHub issue (${coreModified.join(', ')}). **Resolution:** Link a GitHub issue in your PR description. Starting with an issue ensures your work is recognized and aligned with the roadmap.`);
+      errors.push(`⚠️ Core file modifications detected (${coreModified.join(', ')}). **Resolution:** Please link a related GitHub, or Jira, issue in your PR description. If no issue exists, please create an issue first so we can discuss alignment with our roadmap.`);
     }
 
     if (isExtraModified) {
-      errors.push(`⚠️ I've found extra file updates that seem tailored to a specific workflow (${extraModified.join(', ')}). **Resolution:** Please align with the project's code style and remove these changes to maintain consistency.`);
+      errors.push(`⚠️ New workflow file updates detected. These updates may be tailored to a specific workflow (${extraModified.join(', ')}). **Resolution:** Please align with the project's existing code and testing style, and remove these changes to maintain consistency.`);
     }
 
     if (isAgentModified) {
-      errors.push(`⚠️ I found modifications to agent guidelines (${agentModified.join(', ')}). **Resolution:** Changes to shared guidelines require architectural alignment. Please coordinate these updates through a GitHub issue first.`);
+      errors.push(`⚠️ Agent guideline updates detected (${agentModified.join(', ')}). **Resolution:** Please link a related GitHub, or Jira, issue in your PR description. Changes to shared guidelines require maintainer review for security and quality. `);
     }
 
     if (isSecModified) {
-      errors.push(`⚠️ I've found updates to security-sensitive files (${secModified.join(', ')}). **Resolution:** These changes require a core contributor's review. You can remove these changes or provide a clear explanation for these updates in your PR description.`);
+      errors.push(`⚠️ Updates to security-sensitive files detected (${secModified.join(', ')}). **Resolution:** These changes require a core contributor's security review. You can remove these changes or provide a clear explanation for these updates in your PR description.`);
     }
 
     return {
@@ -194,7 +194,7 @@ const signatureScan = ({ description, files, fileCount } = {}) => {
 
   return {
     errors: [
-      `📡 I'm calling for backup! I encountered an unexpected issue while processing your work. A maintainer has been notified.`
+      `📡 System error detected. An unexpected issue encountered while processing this PR. A maintainer has been notified.`
     ],
     isMaxFilesUpdated: false,
     isPrTemplateModified: false,

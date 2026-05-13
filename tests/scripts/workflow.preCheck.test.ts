@@ -621,7 +621,7 @@ describe('start', () => {
     }));
 
     expect(core.warning).toHaveBeenCalledWith(expect.stringContaining('Security-sensitive changes detected'));
-    expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining("core contributor's review"));
+    expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining("core contributor's security review"));
   });
 
   it('should notify success and apply pass label when all pre-checks pass', async () => {
