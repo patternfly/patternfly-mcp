@@ -4,6 +4,8 @@ Welcome! Our goal is to make PatternFly documentation and components easily acce
 
 Review these guidelines and our [planned architecture](./docs/architecture.md), [security policy](./SECURITY.md), and [governance policy](./GOVERNANCE.md) to ensure your contribution aligns with the project's goals.
 
+> **Project State**: We've passed our `1.0.0` stable release, but we haven't hit our "feature plateau" yet! We're still actively implementing core features, which is why alignment with our [planned architecture](./docs/architecture.md) and roadmap is helpful for all feature work.
+
 ### Navigation
 
 - [Step 1: Start a Conversation](#step-1-start-a-conversation)
@@ -14,15 +16,31 @@ Review these guidelines and our [planned architecture](./docs/architecture.md), 
 - [Node.js Engine Bumps](#maintenance-nodejs-engine-bumps)
 - [AI Agent Guidance](#ai-agent)
 
+### How can I contribute?
+
+Code is only one way to contribute! Contributions can include:
+
+- **Planning & Feedback**: Opening an issue to propose an idea or helping us refine a roadmap item.
+- **Documentation**: Improving this repository's documentation or contributing to the [PatternFly Org documentation](https://github.com/patternfly/patternfly-org).
+- **AI Tooling**: Contributing specialized guidance or skills to the [AI-Helpers repository](https://github.com/patternfly/ai-helpers).
+- **Bug Reporting**: Think you found a bug? Open an issue so the whole community benefits.
+- **Community Support**: Helping other developers in issues or discussions.
+
+**First-time contributor?**
+The best way to start is by helping us plan! Review our open issues, join a conversation, or open a new issue to share how you're using PatternFly MCP. Helping us plan and share your use cases is the most effective way to ensure your idea is a valuable addition.
+
 ---
 
 ### Step 1: Start a Conversation
 
-In the new age of agentic coding where your ideas can be up and working quickly, we encourage opening a GitHub issue before starting any work.
+In the new age of agentic coding where ideas can move fast, we strongly encourage opening a GitHub issue first. Since we are still building toward our feature plateau, this helps ensure your work aligns with the project's direction.
 
-Opening an issue first starts the planning conversation to have your idea integrated, push the PatternFly MCP forward collectively, and give you the recognition for your effort and planning without forcing a code review from maintainers. We want your planned idea, not our reactive interpretation.
+Opening an issue first:
+1. **Starts the planning conversation**: Get feedback for your idea and effort before writing a single line of code.
+2. **Helps move PatternFly and the project forward collectively**: The community benefits when we can align your idea with our long-term roadmap.
+3. **Ensures architectural alignment**: Early feedback helps ensure your implementation fits within the project's modular goals, saving everyone time during review.
 
-Opening a PR without an issue has a higher likelihood your work will be flagged with automation, delayed for maintainer review, and potentially closed.
+Opening a PR without an issue has a higher likelihood of being flagged by automation, delayed for maintainer review, or potentially closed if it conflicts with the current roadmap.
 
 #### Just want to show us your work?
 If you're leveraging the GitHub PR to provide us with file diffs, you can achieve the same Git diff applied by PRs by simply using the GitHub link format and applying it to your issue:
