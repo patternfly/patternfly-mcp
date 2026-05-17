@@ -1,6 +1,6 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { randomUUID } from 'node:crypto';
-import { type AppSession, type GlobalOptions, type DefaultOptionsOverrides } from './options';
+import { type AppSession, type GlobalOptions, type ProgrammaticOptions } from './options';
 import {
   DEFAULT_OPTIONS,
   LOG_BASENAME,
@@ -98,10 +98,10 @@ const optionsContext = new AsyncLocalStorage<GlobalOptions>();
  * @note In the future, look at adding a re-validation helper here, and potentially in `runWithOptions`,
  * that aligns with CLI options parsing. We need to account for both CLI and programmatic use.
  *
- * @param {DefaultOptionsOverrides} [options] - Optional overrides merged with DEFAULT_OPTIONS.
+ * @param {ProgrammaticOptions} [options] - Optional overrides merged with DEFAULT_OPTIONS.
  * @returns {GlobalOptions} Cloned frozen default options object with session.
  */
-const setOptions = (options?: DefaultOptionsOverrides): GlobalOptions => {
+const setOptions = (options?: ProgrammaticOptions): GlobalOptions => {
   const base = mergeObjects(DEFAULT_OPTIONS, options, { allowNullValues: false, allowUndefinedValues: false });
 
   assertProtocol(base.patternflyOptions.urlWhitelist, base.patternflyOptions.urlWhitelistProtocols);
