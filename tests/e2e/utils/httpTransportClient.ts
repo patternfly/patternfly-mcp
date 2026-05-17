@@ -15,7 +15,7 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 
 // @ts-ignore - dist/index.js isn't necessarily built yet, remember to build before running tests
-import { start, type PfMcpOptions, type PfMcpSettings, type ServerLogEvent } from '../../../dist/index.js';
+import { start, type PfMcpOptions, type PfMcpSettings, type PfMcpLogEvent } from '../../../dist/index.js';
 
 export type { Request as RpcRequest } from '@modelcontextprotocol/sdk/types.js';
 
@@ -98,7 +98,7 @@ export const startServer = async (
   // Collect all server logs in-process
   const inProcessLogs: string[] = [];
 
-  server.onLog((event: ServerLogEvent) => {
+  server.onLog((event: PfMcpLogEvent) => {
     inProcessLogs.push(event.msg || JSON.stringify(event));
   });
 

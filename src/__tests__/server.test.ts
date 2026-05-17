@@ -150,6 +150,15 @@ describe('runServer', () => {
       tools: [],
       enableSigint: true,
       transportMethod: MockStdioServerTransport
+    },
+    {
+      description: 'log warnings for experimental options',
+      options: {
+        name: 'experimental-server',
+        experimental: ['loremIpsum'],
+        testLog: true
+      },
+      transportMethod: MockStdioServerTransport
     }
   ])('should attempt to run server, $description', async ({ options, tools, enableSigint, transportMethod }) => {
     const settings = {
@@ -180,6 +189,21 @@ describe('runServer', () => {
 
     // Clean up: stop the server to prevent cache pollution
     await serverInstance.stop();
+  });
+
+  it('should log experimental warnings on start-up', async () => {
+    await runServer({
+      ...DEFAULT_OPTIONS,
+      experimental: ['testLog'],
+      testLog: true
+    } as any);
+
+    expect(MockLog.warn).toHaveBeenCalledWith(
+      expect.stringContaining('Enabled experimental options!')
+    );
+    expect(MockLog.warn).toHaveBeenCalledWith(
+      expect.stringContaining('Enabled experimental option: testLog')
+    );
   });
 
   it('should skip registration of internal tools with non-Zod schemas', async () => {

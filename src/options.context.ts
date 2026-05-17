@@ -1,6 +1,12 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { randomUUID } from 'node:crypto';
-import { type AppSession, type GlobalOptions, type ProgrammaticOptions } from './options';
+import {
+  EXPERIMENTAL_OPTIONS,
+  type AppSession,
+  type ExperimentalOptionKey,
+  type GlobalOptions,
+  type ProgrammaticOptions
+} from './options';
 import {
   DEFAULT_OPTIONS,
   LOG_BASENAME,
@@ -98,19 +104,32 @@ const optionsContext = new AsyncLocalStorage<GlobalOptions>();
  * @note In the future, look at adding a re-validation helper here, and potentially in `runWithOptions`,
  * that aligns with CLI options parsing. We need to account for both CLI and programmatic use.
  *
- * @param {ProgrammaticOptions} [options] - Optional overrides merged with DEFAULT_OPTIONS.
+ * @param [options] - Consumer optional overrides to be merged with DEFAULT_OPTIONS.
+ * @param [settings] - Function settings
+ * @param [settings.experimentalOptions] - Available experimental options list for comparison and filtering.
  * @returns {GlobalOptions} Cloned frozen default options object with session.
  */
-const setOptions = (options?: ProgrammaticOptions): GlobalOptions => {
-  const base = mergeObjects(DEFAULT_OPTIONS, options, { allowNullValues: false, allowUndefinedValues: false });
+const setOptions = (
+  options?: ProgrammaticOptions & { experimental?: string[] },
+  {
+    experimentalOptions = EXPERIMENTAL_OPTIONS
+  }: { experimentalOptions?: Set<ExperimentalOptionKey> } = {}
+): GlobalOptions => {
+  const base = mergeObjects(DEFAULT_OPTIONS as GlobalOptions, options, { allowNullValues: false, allowUndefinedValues: false });
 
   assertProtocol(base.patternflyOptions.urlWhitelist, base.patternflyOptions.urlWhitelistProtocols);
 
   const baseLogging = isPlainObject(base.logging) ? base.logging : DEFAULT_OPTIONS.logging;
   const basePluginIsolation = PLUGIN_ISOLATION.includes(base.pluginIsolation) ? base.pluginIsolation : DEFAULT_OPTIONS.pluginIsolation;
 
+  const baseExperimental = base.experimental.filter(
+    option => experimentalOptions.has(option as ExperimentalOptionKey) &&
+      base[option as ExperimentalOptionKey] !== (DEFAULT_OPTIONS as unknown as Record<string, unknown>)[option]
+  );
+
   const merged: GlobalOptions = {
     ...base,
+    experimental: baseExperimental,
     mode: MODE_LEVELS.includes(base.mode) ? base.mode : DEFAULT_OPTIONS.mode,
     logging: {
       level: ['debug', 'info', 'warn', 'error'].includes(baseLogging.level) ? baseLogging.level : DEFAULT_OPTIONS.logging.level,

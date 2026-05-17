@@ -1,15 +1,14 @@
 import {
-  DEFAULT_OPTIONS,
-  MODE_LEVELS,
-  PLUGIN_ISOLATION,
   type DefaultOptions,
   type LoggingOptions,
   type HttpOptions,
-  type ModeOptions,
-  type ToolModule
+  type ModeOptions
 } from './options.defaults';
-import { type LogLevel, logSeverity } from './logger';
-import { isUrl, portValid } from './server.helpers';
+
+/**
+ * Global options, convenience type for `DefaultOptions`
+ */
+type GlobalOptions = DefaultOptions & ProgrammaticOptionsBase;
 
 /**
  * Session defaults, not user-configurable
@@ -17,246 +16,179 @@ import { isUrl, portValid } from './server.helpers';
 type AppSession = {
   readonly sessionId: string;
   readonly publicSessionId: string;
-  readonly channelName: string
+  readonly channelName: string;
 };
 
 /**
- * Global options, convenience type for `DefaultOptions`
+ * Configuration metadata for an option.
+ * The `_type` property is a phantom property used only for TypeScript inference.
+ *
+ * See {@link defineOption} and {@link MakeExperimental}
  */
-type GlobalOptions = DefaultOptions;
+interface OptionConfig<T, C extends boolean = boolean, E extends boolean = boolean> {
+  readonly cli: C;
+  readonly experimental: E;
+  readonly _type: T;
+}
 
 /**
- * Option overrides parsed from programmatic use. Exposed to the consumer/user.
+ * Helper to define an option with metadata-first inference.
+ *
+ * Allows 'C' and 'E' to be inferred strictly from the value
+ * without being widened, even when 'T' is provided later.
+ *
+ * @param config - Option configuration
+ * @param config.cli - Required `boolean` indicating CLI availability.
+ * @param config.experimental - Optional `boolean` indicating option is experimental.
  */
-type ProgrammaticOptions = Partial<
-  Omit<DefaultOptions, 'mode' | 'modeOptions' | 'http' | 'logging' | 'pluginIsolation' | 'toolModules'>
-> & {
-  mode?: DefaultOptions['mode'] | undefined;
-  modeOptions?: Partial<ModeOptions> | undefined;
-  http?: Partial<HttpOptions>;
-  logging?: Partial<LoggingOptions>;
-  pluginIsolation?: DefaultOptions['pluginIsolation'] | undefined;
-  toolModules?: ToolModule | ToolModule[] | undefined;
+const defineOption = <const C extends boolean, const E extends boolean = false>(
+  config: { cli: C; experimental?: E }
+) => <T>(): OptionConfig<T, C, E> => ({
+  ...config,
+  experimental: (config.experimental ?? false) as E,
+  _type: undefined as unknown as T
+} as OptionConfig<T, C, E>);
+
+/**
+ * Set options for consumers.
+ *
+ * To expose options for consumer use:
+ * 1. Add the internal key name to `SET_OPTIONS` using {@link defineOption}
+ * 2. Config `cli: true`, add the flag to `parseCliOptions`
+ *    - Initialize the key on the `result` object (e.g. `loremIpsum: undefined`).
+ *    - Add a `switch` case for the arg (e.g. `--lorem-ipsum`).
+ *    - The option is exposed to consumers as `--lorem-ipsum`
+ * 3. Config `experimental`
+ *    - If `experimental: false`, add the internal name and type to {@link DefaultOptions} and name with default to {@link DEFAULT_OPTIONS}
+ *    - If `experimental: true`, you can OPTIONALLY skip adding the internal name and type to {@link DefaultOptions} and {@link DEFAULT_OPTIONS}
+ *       - The programmatic option is exposed to consumers as `experimentalLoremIpsum`
+ *       - The CLI option is exposed to consumers as `--experimental-lorem-ipsum`
+ *
+ * @example Add a new option:
+ * {
+ *   loremIpsum: defineOption({
+ *     cli: true,
+ *     experimental: false
+ *   })<DefaultOptions['loremIpsum']>(),
+ * }
+ *
+ * @note We account for scenarios where an option may be set for consumers
+ * but there is no corresponding entry in `options.defaults` by requiring it
+ * to be `experimental`.
+ */
+const SET_OPTIONS = {
+  mode: defineOption({ cli: true })<DefaultOptions['mode']>(),
+  modeOptions: defineOption({ cli: true })<Partial<ModeOptions>>(),
+  http: defineOption({ cli: true })<Partial<HttpOptions>>(),
+  isHttp: defineOption({ cli: true })<boolean>(),
+  logging: defineOption({ cli: true })<Partial<LoggingOptions>>(),
+  pluginIsolation: defineOption({ cli: true })<DefaultOptions['pluginIsolation']>(),
+  docsPaths: defineOption({ cli: false })<DefaultOptions['docsPaths']>(),
+  name: defineOption({ cli: false })<string>(),
+  toolModules: defineOption({ cli: true })<DefaultOptions['toolModules']>(),
+  version: defineOption({ cli: false })<string>()
+} as const;
+
+/**
+ * See {@link SET_OPTIONS}
+ */
+type SetOptions = typeof SET_OPTIONS;
+
+/**
+ * See {@link SET_OPTIONS}
+ */
+type ProgrammaticOptionsKey = keyof SetOptions;
+
+/**
+ * See {@link SET_OPTIONS}
+ */
+type ProgrammaticOptionsBase = {
+  -readonly [K in ProgrammaticOptionsKey]?: SetOptions[K]['_type'] | undefined;
 };
 
 /**
- * Options parsed from CLI arguments. Exposed to the consumer/user.
- *
- * @note `pluginIsolation` preset for external plugins (CLI-provided). If omitted, defaults
- * to 'strict' when external tools are requested, otherwise 'none'.
+ * See {@link SET_OPTIONS}
  */
-type CliOptions = {
-  mode?: DefaultOptions['mode'];
-  modeOptions?: Partial<ModeOptions>;
-  http?: Partial<HttpOptions>;
-  isHttp: boolean;
-  logging: Partial<LoggingOptions>;
-  toolModules: string[];
-  pluginIsolation: DefaultOptions['pluginIsolation'] | undefined;
+type CliOptionsBase = {
+  -readonly [K in ProgrammaticOptionsKey as SetOptions[K]['cli'] extends true ? K : never]?:
+  K extends 'toolModules' ? string[] | undefined : SetOptions[K]['_type'] | undefined
 };
 
 /**
- * Get argument value from argv (defaults to `process.argv`).
+ * Convert specific options towards an "experimental-" prefix for consumers.
  *
- * @param flag - CLI flag to search for
- * @param [options] - Options
- * @param [options.defaultValue] - Default arg value
- * @param [options.argv] - Command-line arguments to parse. Defaults to `process.argv`.
+ * See {@link SET_OPTIONS}
  */
-const getArgValue = (flag: string, { defaultValue, argv = process.argv }: { defaultValue?: unknown, argv?: string[] } = {}) => {
-  const index = argv.indexOf(flag);
-
-  if (index === -1) {
-    return defaultValue;
-  }
-
-  const value = argv[index + 1];
-
-  if (!value || value.startsWith('-')) {
-    return defaultValue;
-  }
-
-  if (typeof defaultValue === 'number') {
-    const num = parseInt(value, 10);
-
-    if (isNaN(num)) {
-      return defaultValue;
-    }
-
-    return num;
-  }
-
-  return value;
+type MakeExperimental<T, K extends string = never> = T & {
+  -readonly [P in Extract<K, keyof T> as `experimental${Capitalize<P & string>}`]?: T[P] | undefined
 };
 
 /**
- * Parse CLI configuration options.
- * - Parses `process.argv` options
- *
- * Available options:
- * - `--mode <mode>`: Specifies the mode of operation. Valid values are `cli`, `programmatic`, and `test`.
- * - `--mode-test-url`: Specifies the base URL for testing mode.
- * - `--log-level <level>`: Specifies the logging level. Valid values are `debug`, `info`, `warn`, and `error`.
- * - `--verbose`: Log all severity levels. Shortcut to set the logging level to `debug`.
- * - `--log-stderr`: Enables terminal logging of channel events
- * - `--log-protocol`: Enables MCP protocol logging. Forward server logs to MCP clients (requires advertising `capabilities.logging`).
- * - `--http`: Indicates if the `--http` option is enabled.
- * - `--port`: The port number specified via `--port`
- * - `--host`: The host name specified via `--host`
- * - `--allowed-origins`: List of allowed origins derived from the `--allowed-origins` parameter, split by commas, or undefined if not provided.
- * - `--allowed-hosts`: List of allowed hosts derived from the `--allowed-hosts` parameter, split by commas, or undefined if not provided.
- * - `--plugin-isolation <none|strict>`: Isolation preset for external tools-as-plugins.
- * - `--tool <tool-spec>`: Either a repeatable single tool-as-plugin specification or a comma-separated list of tool-as-plugin specifications. Each tool-as-plugin
- *     specification is a local module name or path.
- *
- * @note Review removing `programmatic` mode from this function path.
- *
- * @param [argv] - User-defined CLI configuration options (overrides).
- * @returns An object with parsed command-line options and used experimental options.
+ * See {@link SET_OPTIONS}
  */
-const parseCliOptions = (argv: string[] = process.argv): CliOptions => {
-  const modeIndex = argv.indexOf('--mode');
-  const modeTestUrl = argv.indexOf('--mode-test-url');
-  const modeOptions: ModeOptions = {
-    ...DEFAULT_OPTIONS.modeOptions
-  };
-  const levelIndex = argv.indexOf('--log-level');
-  const logging: LoggingOptions = {
-    ...DEFAULT_OPTIONS.logging,
-    stderr: argv.includes('--log-stderr'),
-    protocol: argv.includes('--log-protocol')
-  };
+type ExperimentalOptions = keyof {
+  [K in ProgrammaticOptionsKey as SetOptions[K]['experimental'] extends true ? K : never]: unknown
+} & string;
 
-  let mode: CliOptions['mode'] | undefined;
+/**
+ * Consumer facing CLI options.
+ */
+type CliOptions = MakeExperimental<CliOptionsBase, ExperimentalOptions>;
 
-  if (modeIndex >= 0) {
-    const maybeMode = String(argv[modeIndex + 1] || '').toLowerCase();
+/**
+ * Consumer facing programmatic options.
+ */
+type ProgrammaticOptions = MakeExperimental<ProgrammaticOptionsBase, ExperimentalOptions>;
 
-    if (MODE_LEVELS.includes(maybeMode as DefaultOptions['mode'])) {
-      mode = argv[modeIndex + 1] as DefaultOptions['mode'];
-    }
-  }
+/**
+ * See {@link SET_OPTIONS}
+ */
+type ExperimentalOptionKey = ProgrammaticOptionsKey & string;
 
-  if (modeTestUrl >= 0) {
-    const maybeBaseUrl = String(argv[modeTestUrl + 1] || '').trim();
+/**
+ * Experimental options list.
+ *
+ * See {@link SET_OPTIONS}
+ */
+const EXPERIMENTAL_OPTIONS = new Set<ExperimentalOptionKey>(
+  Object.entries(SET_OPTIONS)
+    .filter(([_, meta]) => meta.experimental)
+    .map(([key]) => key as ExperimentalOptionKey)
+);
 
-    if (isUrl(maybeBaseUrl)) {
-      modeOptions.test ??= {};
-      modeOptions.test.baseUrl = maybeBaseUrl;
-    }
-  }
+/**
+ * Experimental options list for CLI.
+ *
+ * See {@link SET_OPTIONS}
+ */
+const EXPERIMENTAL_CLI_OPTIONS = new Set<ExperimentalOptionKey>(
+  Object.entries(SET_OPTIONS)
+    .filter(([_, meta]) => meta.experimental && meta.cli)
+    .map(([key]) => key as ExperimentalOptionKey)
+);
 
-  if (argv.includes('--verbose')) {
-    logging.level = 'debug';
-  } else if (levelIndex >= 0) {
-    const maybeLevel = String(argv[levelIndex + 1] || '').toLowerCase();
-
-    if (logSeverity(maybeLevel as LogLevel) > -1) {
-      logging.level = maybeLevel as LoggingOptions['level'];
-    }
-  }
-
-  const isHttp = argv.includes('--http');
-  const http: Partial<HttpOptions> = {};
-
-  if (isHttp) {
-    const rawPort = getArgValue('--port', { argv });
-    const parsedPort = portValid(rawPort);
-    const host = getArgValue('--host', { argv });
-
-    const allowedOrigins = (getArgValue('--allowed-origins', { argv }) as string)
-      ?.split(',')
-      ?.map((origin: string) => origin.trim())
-      ?.filter(Boolean);
-
-    const allowedHosts = (getArgValue('--allowed-hosts', { argv }) as string)
-      ?.split(',')
-      ?.map((host: string) => host.trim())
-      ?.filter(Boolean);
-
-    const port = parsedPort;
-
-    if (port !== undefined) {
-      http.port = port;
-    }
-
-    if (typeof host === 'string') {
-      http.host = host;
-    }
-
-    if (Array.isArray(allowedHosts) && allowedHosts.length) {
-      http.allowedHosts = allowedHosts;
-    }
-
-    if (Array.isArray(allowedOrigins) && allowedOrigins.length) {
-      http.allowedOrigins = allowedOrigins;
-    }
-  }
-
-  // Parse external tool modules: single canonical flag `--tool`
-  // Supported forms:
-  //   --tool a --tool b      (repeatable)
-  //   --tool a,b             (comma-separated)
-  const toolModules: string[] = [];
-  const seenSpecs = new Set<string>();
-
-  const addSpec = (spec?: string) => {
-    const trimmed = String(spec || '').trim();
-
-    if (!trimmed || seenSpecs.has(trimmed)) {
-      return;
-    }
-
-    seenSpecs.add(trimmed);
-    toolModules.push(trimmed);
-  };
-
-  for (let argIndex = 0; argIndex < argv.length; argIndex += 1) {
-    const token = argv[argIndex];
-    const next = argv[argIndex + 1];
-
-    if (token === '--tool' && typeof next === 'string' && !next.startsWith('-')) {
-      next
-        .split(',')
-        .map(value => value.trim())
-        .filter(Boolean)
-        .forEach(addSpec);
-
-      argIndex += 1;
-    }
-  }
-
-  // Parse isolation preset: --plugin-isolation <none|strict>
-  let pluginIsolation: CliOptions['pluginIsolation'];// = DEFAULT_OPTIONS.pluginIsolation;
-  const isolationIndex = argv.indexOf('--plugin-isolation');
-
-  if (isolationIndex >= 0) {
-    const maybePluginIsolation = String(argv[isolationIndex + 1] || '').toLowerCase();
-
-    if (PLUGIN_ISOLATION.includes(maybePluginIsolation as DefaultOptions['pluginIsolation'])) {
-      pluginIsolation = maybePluginIsolation as DefaultOptions['pluginIsolation'];
-    }
-  }
-
-  return {
-    ...(mode ? { mode } : {}),
-    modeOptions,
-    logging,
-    isHttp,
-    http,
-    toolModules,
-    pluginIsolation
-  };
-};
+/**
+ * Options list for programmatic use.
+ *
+ * See {@link SET_OPTIONS}
+ */
+const PROGRAMMATIC_OPTIONS = Object.keys(SET_OPTIONS) as ReadonlyArray<ProgrammaticOptionsKey>;
 
 export {
-  parseCliOptions,
-  getArgValue,
+  EXPERIMENTAL_CLI_OPTIONS,
+  EXPERIMENTAL_OPTIONS,
+  PROGRAMMATIC_OPTIONS,
+  SET_OPTIONS,
   type AppSession,
   type CliOptions,
+  type CliOptionsBase,
   type DefaultOptions,
+  type ExperimentalOptions,
+  type ExperimentalOptionKey,
   type GlobalOptions,
-  type HttpOptions,
-  type LoggingOptions,
-  type ProgrammaticOptions
+  type MakeExperimental,
+  type ProgrammaticOptions,
+  type ProgrammaticOptionsBase,
+  type ProgrammaticOptionsKey,
+  type SetOptions
 };
