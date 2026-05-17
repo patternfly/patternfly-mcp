@@ -497,6 +497,11 @@ const URL_REGEX = /^(https?:)\/\//i;
 const MODE_LEVELS: DefaultOptions['mode'][] = ['cli', 'programmatic', 'test'];
 
 /**
+ * Available plugin isolation settings.
+ */
+const PLUGIN_ISOLATION: DefaultOptions['pluginIsolation'][] = ['none', 'strict'];
+
+/**
  * Global default options. Base defaults before CLI/programmatic overrides.
  *
  * @note `maxDocsToLoad` and `recommendedMaxDocsToLoad` should be generated from the length
@@ -542,6 +547,7 @@ export {
   DEFAULT_OPTIONS,
   LOG_BASENAME,
   MODE_LEVELS,
+  PLUGIN_ISOLATION,
   type DefaultOptions,
   type DefaultOptionsOverrides,
   type HttpOptions,

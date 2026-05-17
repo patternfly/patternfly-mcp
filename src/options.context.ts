@@ -5,6 +5,7 @@ import {
   DEFAULT_OPTIONS,
   LOG_BASENAME,
   MODE_LEVELS,
+  PLUGIN_ISOLATION,
   type LoggingSession,
   type StatsSession
 } from './options.defaults';
@@ -77,8 +78,25 @@ const optionsContext = new AsyncLocalStorage<GlobalOptions>();
 /**
  * Set and freeze cloned options in the current async context.
  *
- * @note Look at adding a re-validation helper here, and potentially in `runWithOptions`, that aligns with
- * CLI options parsing. We need to account for both CLI and programmatic use.
+ * @note This function performs a two-stage configuration setup:
+ * 1. Structural Merge: `mergeObjects` handles initial deep merging and filters out null/undefined.
+ * 2. Runtime Guards & Policy Enforcement: Explicit redeclarations act as guards to:
+ *    - Validate values against allowed sets (e.g., MODE_LEVELS).
+ *    - Ensure structural integrity for nested objects (e.g., `logging`) if malformed inputs are passed.
+ *    - Enforce internal invariants (like memoization limits) that are strictly non-overridable.
+ *
+ * @note When to add a redeclaration (guard):
+ * Add a property to the `merged` object redeclaration list if it meets any of these criteria:
+ * - Choice-based: It is an enum or string-literal type that must match a specific set of values.
+ * - Deeply Nested: It belongs to an object branch that programmatic users might accidentally
+ *   overwrite with a non-object value (e.g. `logging: "none"`).
+ * - Invariant: It represents a performance or stability limit (like cache TTLs) that the
+ *   server must control internally to prevent leaks.
+ * - Parity: It is already sanitized in `parseCliOptions` and needs matching protection
+ *   for programmatic consumers.
+ *
+ * @note In the future, look at adding a re-validation helper here, and potentially in `runWithOptions`,
+ * that aligns with CLI options parsing. We need to account for both CLI and programmatic use.
  *
  * @param {DefaultOptionsOverrides} [options] - Optional overrides merged with DEFAULT_OPTIONS.
  * @returns {GlobalOptions} Cloned frozen default options object with session.
@@ -89,7 +107,7 @@ const setOptions = (options?: DefaultOptionsOverrides): GlobalOptions => {
   assertProtocol(base.patternflyOptions.urlWhitelist, base.patternflyOptions.urlWhitelistProtocols);
 
   const baseLogging = isPlainObject(base.logging) ? base.logging : DEFAULT_OPTIONS.logging;
-  const basePluginIsolation = ['strict', 'none'].includes(base.pluginIsolation) ? base.pluginIsolation : DEFAULT_OPTIONS.pluginIsolation;
+  const basePluginIsolation = PLUGIN_ISOLATION.includes(base.pluginIsolation) ? base.pluginIsolation : DEFAULT_OPTIONS.pluginIsolation;
 
   const merged: GlobalOptions = {
     ...base,

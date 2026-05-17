@@ -1,6 +1,7 @@
 import {
   DEFAULT_OPTIONS,
   MODE_LEVELS,
+  PLUGIN_ISOLATION,
   type DefaultOptions,
   type DefaultOptionsOverrides,
   type LoggingOptions,
@@ -26,6 +27,9 @@ type GlobalOptions = DefaultOptions;
 
 /**
  * Options parsed from CLI arguments
+ *
+ * @note `pluginIsolation` preset for external plugins (CLI-provided). If omitted, defaults
+ * to 'strict' when external tools are requested, otherwise 'none'.
  */
 type CliOptions = {
   mode?: DefaultOptions['mode'];
@@ -34,12 +38,7 @@ type CliOptions = {
   isHttp: boolean;
   logging: Partial<LoggingOptions>;
   toolModules: string[];
-
-  /**
-   * Isolation preset for external plugins (CLI-provided). If omitted, defaults
-   * to 'strict' when external tools are requested, otherwise 'none'.
-   */
-  pluginIsolation: 'none' | 'strict' | undefined;
+  pluginIsolation: DefaultOptions['pluginIsolation'] | undefined;
 };
 
 /**
@@ -77,7 +76,8 @@ const getArgValue = (flag: string, { defaultValue, argv = process.argv }: { defa
 };
 
 /**
- * Parses CLI options and return config options for the application.
+ * Parse CLI configuration options.
+ * - Parses `process.argv` options
  *
  * Available options:
  * - `--mode <mode>`: Specifies the mode of operation. Valid values are `cli`, `programmatic`, and `test`.
@@ -95,8 +95,10 @@ const getArgValue = (flag: string, { defaultValue, argv = process.argv }: { defa
  * - `--tool <tool-spec>`: Either a repeatable single tool-as-plugin specification or a comma-separated list of tool-as-plugin specifications. Each tool-as-plugin
  *     specification is a local module name or path.
  *
- * @param [argv] - Command-line arguments to parse. Defaults to `process.argv`.
- * @returns Parsed command-line options.
+ * @note Review removing `programmatic` mode from this function path.
+ *
+ * @param [argv] - User-defined CLI configuration options (overrides).
+ * @returns An object with parsed command-line options and used experimental options.
  */
 const parseCliOptions = (argv: string[] = process.argv): CliOptions => {
   const modeIndex = argv.indexOf('--mode');
@@ -215,12 +217,10 @@ const parseCliOptions = (argv: string[] = process.argv): CliOptions => {
   const isolationIndex = argv.indexOf('--plugin-isolation');
 
   if (isolationIndex >= 0) {
-    const val = String(argv[isolationIndex + 1] || '').toLowerCase();
+    const maybePluginIsolation = String(argv[isolationIndex + 1] || '').toLowerCase();
 
-    switch (val) {
-      case 'none':
-      case 'strict':
-        pluginIsolation = val;
+    if (PLUGIN_ISOLATION.includes(maybePluginIsolation as DefaultOptions['pluginIsolation'])) {
+      pluginIsolation = maybePluginIsolation as DefaultOptions['pluginIsolation'];
     }
   }
 
