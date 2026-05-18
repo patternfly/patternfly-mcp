@@ -12,7 +12,8 @@ import { normalizeInputSchema } from './server.schema';
 /**
  * Inline tool options.
  *
- * @alias GlobalOptions
+ * Alias of {@link GlobalOptions}.
+ *
  * @note Author-facing configuration.
  */
 type ToolInternalOptions = GlobalOptions;
@@ -20,7 +21,8 @@ type ToolInternalOptions = GlobalOptions;
 /**
  * External tool options.
  *
- * @alias ToolOptions
+ * Alias of {@link ToolOptions}.
+ *
  * @note Author-facing configuration.
  */
 type ToolExternalOptions = ToolOptions;
@@ -67,7 +69,8 @@ type CreatorEntry = Pick<NormalizedToolEntry, 'type' | 'original' | 'value' | 't
 /**
  * An MCP tool. A tool config tuple. The handler may be async or sync.
  *
- * @alias McpTool
+ * Alias of {@link McpTool}.
+ *
  * @note Author-facing configuration.
  * @example A tool config tuple. The handler may be async or sync.
  * [

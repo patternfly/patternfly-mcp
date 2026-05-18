@@ -3,10 +3,10 @@ import {
   MODE_LEVELS,
   PLUGIN_ISOLATION,
   type DefaultOptions,
-  type DefaultOptionsOverrides,
   type LoggingOptions,
   type HttpOptions,
-  type ModeOptions
+  type ModeOptions,
+  type ToolModule
 } from './options.defaults';
 import { type LogLevel, logSeverity } from './logger';
 import { isUrl, portValid } from './server.helpers';
@@ -26,7 +26,21 @@ type AppSession = {
 type GlobalOptions = DefaultOptions;
 
 /**
- * Options parsed from CLI arguments
+ * Option overrides parsed from programmatic use. Exposed to the consumer/user.
+ */
+type ProgrammaticOptions = Partial<
+  Omit<DefaultOptions, 'mode' | 'modeOptions' | 'http' | 'logging' | 'pluginIsolation' | 'toolModules'>
+> & {
+  mode?: DefaultOptions['mode'] | undefined;
+  modeOptions?: Partial<ModeOptions> | undefined;
+  http?: Partial<HttpOptions>;
+  logging?: Partial<LoggingOptions>;
+  pluginIsolation?: DefaultOptions['pluginIsolation'] | undefined;
+  toolModules?: ToolModule | ToolModule[] | undefined;
+};
+
+/**
+ * Options parsed from CLI arguments. Exposed to the consumer/user.
  *
  * @note `pluginIsolation` preset for external plugins (CLI-provided). If omitted, defaults
  * to 'strict' when external tools are requested, otherwise 'none'.
@@ -241,8 +255,8 @@ export {
   type AppSession,
   type CliOptions,
   type DefaultOptions,
-  type DefaultOptionsOverrides,
   type GlobalOptions,
   type HttpOptions,
-  type LoggingOptions
+  type LoggingOptions,
+  type ProgrammaticOptions
 };

@@ -26,7 +26,7 @@ const mcpAssert = (condition: unknown, message: string | (() => string), code: E
 /**
  * General purpose input assert/validation function.
  *
- * @alias mcpAssert
+ * Alias of {@link mcpAssert}.
  *
  * @param condition - Function or condition to be validated.
  * @param message - Thrown error message, or function, that returns the error message.

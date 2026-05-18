@@ -1,4 +1,4 @@
-import { parseCliOptions, type CliOptions, type DefaultOptionsOverrides } from './options';
+import { parseCliOptions, type CliOptions, type ProgrammaticOptions } from './options';
 import { getSessionOptions, setOptions, runWithSession } from './options.context';
 import {
   runServer,
@@ -23,9 +23,25 @@ import {
 } from './server.toolsUser';
 
 /**
- * Options for "programmatic" use. Extends the `DefaultOptions` interface.
+ * Exposed options for CLI use. A focused options interface.
+ *
+ * Alias of {@link CliOptions} (Internal type).
  */
-type PfMcpOptions = DefaultOptionsOverrides;
+type PfMcpCliOptions = CliOptions;
+
+/**
+ * `CliOptions` renamed to `PfMcpCliOptions` to avoid conflicts with internal naming.
+ *
+ * @deprecated Use {@link PfMcpCliOptions} instead.
+ */
+type DeprecatedCliOptions = PfMcpCliOptions;
+
+/**
+ * Exposed options for programmatic use. A limited `DefaultOptions` interface.
+ *
+ * Alias of {@link ProgrammaticOptions} (Internal type).
+ */
+type PfMcpOptions = ProgrammaticOptions;
 
 /**
  * Additional settings for programmatic control.
@@ -41,49 +57,49 @@ type PfMcpSettings = Pick<ServerSettings, 'allowProcessExit'>;
 /**
  * Server instance with shutdown capability
  *
- * @alias ServerInstance
+ * Alias of {@link ServerInstance} (Internal type).
  */
 type PfMcpInstance = ServerInstance;
 
 /**
  * Subscribes a handler function, `PfMcpOnLogHandler`, to server logs. Automatically unsubscribed on server shutdown.
  *
- * @alias ServerOnLog
+ * Alias of {@link ServerOnLog} (Internal type).
  */
 type PfMcpOnLog = ServerOnLog;
 
 /**
  * The handler function passed by `onLog`, `PfMcpOnLog`, to subscribe to server logs. Automatically unsubscribed on server shutdown.
  *
- * @alias ServerOnLogHandler
+ * Alias of {@link ServerOnLogHandler} (Internal type).
  */
 type PfMcpOnLogHandler = ServerOnLogHandler;
 
 /**
  * The log event passed to the `onLog` handler, `PfMcpOnLogHandler`.
  *
- * @alias ServerLogEvent
+ * Alias of {@link ServerLogEvent} (Internal type).
  */
 type PfMcpLogEvent = ServerLogEvent;
 
 /**
  * Get statistics about the server.
  *
- * @alias ServerGetStats
+ * Alias of {@link ServerGetStats} (Internal type).
  */
 type PfMcpGetStats = ServerGetStats;
 
 /**
  * Statistics about the server.
  *
- * @alias ServerStats
+ * Alias of {@link ServerStats} (Internal type).
  */
 type PfMcpStats = ServerStats;
 
 /**
  * Statistics report about the server.
  *
- * @alias ServerStatReport
+ * Alias of {@link ServerStatReport} (Internal type).
  */
 type PfMcpStatReport = ServerStatReport;
 
@@ -199,7 +215,8 @@ export {
   createMcpTool,
   main,
   main as start,
-  type CliOptions,
+  type DeprecatedCliOptions as CliOptions,
+  type PfMcpCliOptions,
   type PfMcpOptions,
   type PfMcpSettings,
   type PfMcpInstance,

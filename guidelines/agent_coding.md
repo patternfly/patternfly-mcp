@@ -194,7 +194,10 @@ While the codebase emphasizes pragmatism, **public APIs require comprehensive JS
 
 - **`@param`**, **`@returns`**, **`@throws`**: Standard documentation for function signature.
 - **`@property`**: Document properties for interfaces or classes.
-- **`@alias`**: Used for stable aliased typings exposed to consumers.
+- **Type aliases (do not use `@alias`)**:
+  - **Don't** use the `@alias` JSDoc tag on type aliases. Documentation generators may apply unwanted side effects (e.g. remaining symbols in the generated output).
+  - **Do** document aliases with prose: `Alias of {@link InternalType} (Internal type).` for stable aliased typings exposed to consumers in `src/index.ts`.
+  - **Do** use the simplified `Alias of {@link InternalType}.` for internal-only aliases to reduce redundancy.
 - **`@template`**: Document generic type parameters.
 - **`@example`**: Provide usage examples for complex functions.
 - **`@note`**: Important implementation details or gotchas.
@@ -202,6 +205,13 @@ While the codebase emphasizes pragmatism, **public APIs require comprehensive JS
 ### 4.2 JSDoc Format Examples
 
 ```typescript
+/**
+ * Exposed options for CLI use. A focused options interface.
+ *
+ * Alias of {@link CliOptions} (Internal type).
+ */
+type PfMcpCliOptions = CliOptions;
+
 /**
  * Fetches documentation for a PatternFly component.
  * 

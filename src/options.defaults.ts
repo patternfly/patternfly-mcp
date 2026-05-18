@@ -82,20 +82,6 @@ interface DefaultOptions<TLogOptions = LoggingOptions> {
 }
 
 /**
- * Overrides for default options. Exposed to the consumer/user.
- */
-type DefaultOptionsOverrides = Partial<
-  Omit<DefaultOptions, 'mode' | 'modeOptions' | 'http' | 'logging' | 'pluginIsolation' | 'toolModules'>
-> & {
-  mode?: DefaultOptions['mode'] | undefined;
-  modeOptions?: Partial<ModeOptions> | undefined;
-  http?: Partial<HttpOptions>;
-  logging?: Partial<LoggingOptions>;
-  pluginIsolation?: 'none' | 'strict' | undefined;
-  toolModules?: ToolModule | ToolModule[] | undefined;
-};
-
-/**
  * HTTP server options.
  *
  * See `HTTP_OPTIONS` for defaults.
@@ -549,7 +535,6 @@ export {
   MODE_LEVELS,
   PLUGIN_ISOLATION,
   type DefaultOptions,
-  type DefaultOptionsOverrides,
   type HttpOptions,
   type LoggingOptions,
   type LoggingSession,
@@ -560,6 +545,7 @@ export {
   type RepoResources,
   type ServerInstanceOptions,
   type StatsSession,
+  type ToolModule,
   type WhitelistUrl,
   type XhrFetchOptions
 };
