@@ -194,7 +194,7 @@ While the codebase emphasizes pragmatism, **public APIs require comprehensive JS
 
 - **`@param`**, **`@returns`**, **`@throws`**: Standard documentation for function signature.
 - **`@property`**: Document properties for interfaces or classes.
-- **`@alias`**: Used for stable aliased typings exposed to consumers.
+- **Alias description**: Use the format `Alias of {@link InternalType} (Internal type).` for stable aliased typings exposed to consumers in `src/index.ts`. Use the simplified `Alias of {@link InternalType}.` for internal-only aliases to reduce redundancy. This avoids `@alias` tag side-effects in documentation generators.
 - **`@template`**: Document generic type parameters.
 - **`@example`**: Provide usage examples for complex functions.
 - **`@note`**: Important implementation details or gotchas.

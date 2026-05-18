@@ -53,14 +53,14 @@ interface ServerSettings {
 /**
  * Server stats.
  *
- * @alias Stats
+ * Alias of {@link Stats}.
  */
 type ServerStats = Stats;
 
 /**
  * Server stats report.
  *
- * @alias StatReport
+ * Alias of {@link StatReport}.
  */
 type ServerStatReport = StatReport;
 

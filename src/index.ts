@@ -25,7 +25,7 @@ import {
 /**
  * Exposed options for CLI use. A focused options interface.
  *
- * @alias CliOptions - Internal type.
+ * Alias of {@link CliOptions} (Internal type).
  */
 type PfMcpCliOptions = CliOptions;
 
@@ -39,7 +39,7 @@ type DeprecatedCliOptions = PfMcpCliOptions;
 /**
  * Exposed options for programmatic use. A limited `DefaultOptions` interface.
  *
- * @alias ProgrammaticOptions - Internal type.
+ * Alias of {@link ProgrammaticOptions} (Internal type).
  */
 type PfMcpOptions = ProgrammaticOptions;
 
@@ -57,49 +57,49 @@ type PfMcpSettings = Pick<ServerSettings, 'allowProcessExit'>;
 /**
  * Server instance with shutdown capability
  *
- * @alias ServerInstance - Internal type.
+ * Alias of {@link ServerInstance} (Internal type).
  */
 type PfMcpInstance = ServerInstance;
 
 /**
  * Subscribes a handler function, `PfMcpOnLogHandler`, to server logs. Automatically unsubscribed on server shutdown.
  *
- * @alias ServerOnLog - Internal type.
+ * Alias of {@link ServerOnLog} (Internal type).
  */
 type PfMcpOnLog = ServerOnLog;
 
 /**
  * The handler function passed by `onLog`, `PfMcpOnLog`, to subscribe to server logs. Automatically unsubscribed on server shutdown.
  *
- * @alias ServerOnLogHandler - Internal type.
+ * Alias of {@link ServerOnLogHandler} (Internal type).
  */
 type PfMcpOnLogHandler = ServerOnLogHandler;
 
 /**
  * The log event passed to the `onLog` handler, `PfMcpOnLogHandler`.
  *
- * @alias ServerLogEvent - Internal type.
+ * Alias of {@link ServerLogEvent} (Internal type).
  */
 type PfMcpLogEvent = ServerLogEvent;
 
 /**
  * Get statistics about the server.
  *
- * @alias ServerGetStats - Internal type.
+ * Alias of {@link ServerGetStats} (Internal type).
  */
 type PfMcpGetStats = ServerGetStats;
 
 /**
  * Statistics about the server.
  *
- * @alias ServerStats - Internal type.
+ * Alias of {@link ServerStats} (Internal type).
  */
 type PfMcpStats = ServerStats;
 
 /**
  * Statistics report about the server.
  *
- * @alias ServerStatReport - Internal type.
+ * Alias of {@link ServerStatReport} (Internal type).
  */
 type PfMcpStatReport = ServerStatReport;
 
