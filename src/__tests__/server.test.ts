@@ -1,10 +1,11 @@
 import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { runServer } from '../server';
+import { runServer, registerServerTools, registerServerResources } from '../server';
 import { log } from '../logger';
 import { startHttpTransport, type HttpServerHandle } from '../server.http';
 import { DEFAULT_OPTIONS } from '../options.defaults';
+import * as mcpSdk from '../mcpSdk';
 
 // Mock dependencies
 jest.mock('@modelcontextprotocol/sdk/server/mcp.js', () => {
@@ -254,5 +255,147 @@ describe('runServer', () => {
     mockServer.connect.mockRejectedValue(error);
 
     await expect(runServer(undefined, { tools: [] })).rejects.toThrowErrorMatchingSnapshot('Connection failed');
+  });
+});
+
+describe('registerServerTools', () => {
+  let mockServer: any;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockServer = {
+      registerTool: jest.fn()
+    };
+  });
+
+  it('should register and execute a tool successfully', async () => {
+    const mockCallback = jest.fn().mockResolvedValue({ content: [{ type: 'text', text: 'result' }] });
+    const toolCreator = () => [
+      'testTool',
+      { description: 'A test tool', inputSchema: z.object({ key: z.string() }) },
+      mockCallback
+    ];
+
+    await registerServerTools([toolCreator as any], mockServer, DEFAULT_OPTIONS, {} as any);
+
+    // 1. Verify Registration
+    expect(mockServer.registerTool).toHaveBeenCalledWith(
+      'testTool',
+      expect.objectContaining({ description: 'A test tool' }),
+      expect.any(Function)
+    );
+
+    // 2. Verify Execution
+    const response = mockServer.registerTool.mock.calls[0];
+    const [_name, _schema, handler] = response || [];
+
+    expect(handler).toBeDefined();
+
+    const args = { key: 'value' };
+    const result = await handler(args);
+
+    expect(mockCallback).toHaveBeenCalledWith(args);
+    expect(result).toEqual({ content: [{ type: 'text', text: 'result' }] });
+  });
+
+  it.each([
+    {
+      description: 'non-Zod schema',
+      tool: () => ['badTool', { description: 'Bad', inputSchema: {} }, jest.fn()]
+    },
+    {
+      description: 'undefined schema',
+      tool: () => ['noSchemaTool', { description: 'No Schema' } as any, jest.fn()]
+    }
+  ])('should skip registration for $description', async ({ tool }) => {
+    await registerServerTools([tool as any], mockServer, DEFAULT_OPTIONS, {} as any);
+
+    expect(mockServer.registerTool).not.toHaveBeenCalled();
+    expect(MockLog.warn).toHaveBeenCalledWith(expect.stringContaining('has a non Zod inputSchema. Skipping registration.'));
+  });
+
+  it('should handle errors during tool registration', async () => {
+    const toolCreator = () => [
+      'failTool',
+      { description: 'Fail', inputSchema: z.object({}) },
+      jest.fn()
+    ];
+
+    mockServer.registerTool.mockImplementation(() => {
+      throw new Error('Registration failed');
+    });
+
+    await registerServerTools([toolCreator as any], mockServer);
+
+    expect(MockLog.error).toHaveBeenCalledWith(
+      expect.stringContaining('Failed to register tool "failTool":'),
+      expect.any(Error)
+    );
+  });
+});
+
+describe('registerServerResources', () => {
+  let mockServer: any;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockServer = {
+      registerResource: jest.fn()
+    };
+  });
+
+  it('should register and execute a resource successfully', async () => {
+    const mockRegisterResource = jest.spyOn(mcpSdk, 'registerResource');
+    const mockCallback = jest.fn().mockResolvedValue({ contents: [{ uri: 'test://uri', text: 'content' }] });
+    const resourceCreator = () => [
+      'testResource',
+      'test://uri',
+      { mimeType: 'text/plain' },
+      mockCallback
+    ];
+
+    await registerServerResources([resourceCreator as any], mockServer, DEFAULT_OPTIONS, {} as any);
+
+    // Verify Registration
+    expect(mockRegisterResource).toHaveBeenCalledWith(
+      mockServer,
+      'testResource',
+      'test://uri',
+      expect.objectContaining({ mimeType: 'text/plain' }),
+      expect.any(Function),
+      undefined
+    );
+
+    // Verify Execution
+    const response = mockRegisterResource.mock.calls[0];
+    const [_server, _name, _uri, _config, handler] = response || [];
+
+    expect(handler).toBeDefined();
+
+    const result = await handler?.('arg1');
+
+    expect(mockCallback).toHaveBeenCalledWith('arg1');
+    expect(result).toEqual({ contents: [{ uri: 'test://uri', text: 'content' }] });
+  });
+
+  it('should handle errors during resource registration', async () => {
+    const mockRegisterResource = jest.spyOn(mcpSdk, 'registerResource');
+    const resourceCreator = () => [
+      'failResource',
+      'test://uri',
+      { mimeType: 'text/plain' },
+      jest.fn()
+    ];
+
+    mockRegisterResource.mockImplementation(() => {
+      throw new Error('Registration failed');
+    });
+
+    await registerServerResources([resourceCreator as any], mockServer);
+
+    expect(MockLog.error).toHaveBeenCalledWith(
+      expect.stringContaining('Failed to register resource "failResource":'),
+      expect.any(Error)
+    );
   });
 });

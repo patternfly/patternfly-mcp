@@ -7,14 +7,6 @@ import {
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { registerResource } from './mcpSdk';
 import { setMetaResources } from './server.resourceMeta';
-import { usePatternFlyDocsTool } from './tool.patternFlyDocs';
-import { searchPatternFlyDocsTool } from './tool.searchPatternFlyDocs';
-import { patternFlyComponentsIndexResource } from './resource.patternFlyComponentsIndex';
-import { patternFlyContextResource } from './resource.patternFlyContext';
-import { patternFlyDocsIndexResource } from './resource.patternFlyDocsIndex';
-import { patternFlyDocsTemplateResource } from './resource.patternFlyDocsTemplate';
-import { patternFlySchemasIndexResource } from './resource.patternFlySchemasIndex';
-import { patternFlySchemasTemplateResource } from './resource.patternFlySchemasTemplate';
 import { startHttpTransport, type HttpServerHandle } from './server.http';
 import { memo } from './server.caching';
 import { log, type LogEvent } from './logger';
@@ -33,6 +25,7 @@ import { isZodRawShape, isZodSchema } from './server.schema';
 import { isPlainObject, timeoutFunction } from './server.helpers';
 import { createServerStats, type Stats } from './server.stats';
 import { stat, type StatReport } from './stats';
+import { builtinTools, builtinResources } from './options.registry';
 
 /**
  * A tool registered with the MCP server.
@@ -41,6 +34,13 @@ import { stat, type StatReport } from './stats';
  * `inputSchema`. Input schemas are actually reconstructed as part of the
  * tools-as-plugins architecture to help guarantee that a minimal tool schema is
  * always available and minimally valid.
+ *
+ * 0. `name` `{string}`: Name of the tool.
+ * 1. `schema` `{Object}`: Descriptions and schemas provided to allow parameter input and outputs in a standardized format.
+ *    - `schema.description` `{string}`: Concise description of functionality for the tool.
+ *    - `schema.inputSchema` `{*}`: Internally, a raw Zod schema. Externally, a JSON or raw Zod schema. External tools are
+ *       converted to Zod for user convenience.
+ * 2. `handler` `{Function}`: Tool handler function for returning content.
  */
 type McpTool = [
   name: string,
@@ -202,28 +202,114 @@ interface ServerInstance {
 }
 
 /**
- * Built-in tools.
+ * Register server resources.
  *
- * Array of built-in tools
+ * @note Leaving as async for now, even though it is sync. Easier
+ * to migrate from async to sync instead of vice versa.
+ *
+ * @param {McpResourceCreator[]} resources - MCP resources to register.
+ * @param {McpServer} server - MCP server instance.
+ * @param {GlobalOptions} [options]
+ * @param {AppSession} [session]
  */
-const builtinTools: McpToolCreator[] = [
-  usePatternFlyDocsTool,
-  searchPatternFlyDocsTool
-];
+const registerServerResources = async (resources: McpResourceCreator[], server: McpServer, options = getOptions(), session = getSessionOptions()) => {
+  for (const resourceCreator of resources) {
+    const [name, uri, config, callback, metadata] = resourceCreator(options);
+
+    try {
+      registerResource(server, name, uri, config, (...args: unknown[]) =>
+        runWithSession(session, async () =>
+          runWithOptions(options, async () => {
+            log.debug(
+              `Running resource "${name}"`,
+              `isArgs = ${args?.length > 0}`
+            );
+
+            const timedReport = stat.traffic();
+            const resourceResult = await callback(...args);
+
+            timedReport({ resource: name });
+
+            return resourceResult;
+          })), metadata);
+
+      log.info(`Registered resource: ${name}`);
+    } catch (error) {
+      log.error(`Failed to register resource "${name}":`, error);
+    }
+  }
+};
 
 /**
- * Built-in resources.
+ * Register server tools.
  *
- * Array of built-in resources
+ * @note Leaving as async for now, even though it is sync. Easier
+ * to migrate from async to sync instead of vice versa.
+ *
+ * @param {McpToolCreator[]} tools - MCP tools to register.
+ * @param {McpServer} server - MCP server instance.
+ * @param {GlobalOptions} [options]
+ * @param {AppSession} [session]
  */
-const builtinResources: McpResourceCreator[] = [
-  patternFlyContextResource,
-  patternFlyComponentsIndexResource,
-  patternFlyDocsIndexResource,
-  patternFlyDocsTemplateResource,
-  patternFlySchemasIndexResource,
-  patternFlySchemasTemplateResource
-];
+const registerServerTools = async (tools: McpToolCreator[], server: McpServer, options = getOptions(), session = getSessionOptions()) => {
+  for (const toolCreator of tools) {
+    const [name, schema, callback] = toolCreator(options);
+
+    // Do NOT normalize schemas here. This is by design and is a fallback check for malformed schemas.
+    const isZod = isZodSchema(schema?.inputSchema) || isZodRawShape(schema?.inputSchema);
+    const isSchemaDefined = schema?.inputSchema !== undefined;
+
+    if (!isZod) {
+      log.warn(`Tool "${name}" has a non Zod inputSchema. Skipping registration.`);
+      log.debug(
+        `Tool "${name}" has received a non Zod inputSchema from the tool pipeline.`,
+        `This will cause unexpected issues, such as failure to pass arguments.`,
+        `MCP SDK requires Zod. Kneel before Zod.`
+      );
+
+      continue;
+    }
+
+    // Lightweight check for malformed schemas that bypass validation.
+    const isContextLike = (value: unknown) => isPlainObject(value) && 'requestId' in value && 'signal' in value;
+
+    try {
+      server.registerTool(name, schema, (args: unknown = {}, ..._args: unknown[]) =>
+        runWithSession(session, async () =>
+          runWithOptions(options, async () => {
+            // Basic track for remaining args to account for future MCP SDK alterations.
+            log.debug(
+              `Running tool "${name}"`,
+              `isArgs = ${args !== undefined}`,
+              `isRemainingArgs = ${_args?.length > 0}`
+            );
+
+            const timedReport = stat.traffic();
+            const isContextLikeArgs = isContextLike(args);
+
+            // Log potential Zod validation errors triggered by context fail.
+            if (isContextLikeArgs) {
+              log.debug(
+                `Tool "${name}" handler received a context like object as the first parameter.`,
+                'If this is unexpected this is likely an undefined schema or a schema not registering as Zod.',
+                'Review the related schema definition and ensure it is defined and valid.',
+                `Schema is Defined = ${isSchemaDefined}; Schema is Zod = ${isZod}; Context like = ${isContextLikeArgs};`
+              );
+            }
+
+            const toolResult = await callback(args);
+
+            timedReport({ tool: name });
+
+            return toolResult;
+          })));
+
+      log.info(`Registered tool: ${name}`);
+    } catch (error) {
+      log.error(`Failed to register tool "${name}":`, error);
+    }
+  }
+};
 
 /**
  * Create and run the MCP server, register tools, and return a handle.
@@ -358,87 +444,10 @@ const runServer = async (options: ServerOptions = getOptions(), {
     }
 
     // Apply MCP resources, if available
-    updatedResources.forEach(resourceCreator => {
-      const [name, uri, config, callback, metadata] = resourceCreator(options);
-
-      log.info(`Registered resource: ${name}`);
-
-      if (server) {
-        registerResource(server, name, uri, config, (...args: unknown[]) =>
-          runWithSession(session, async () =>
-            runWithOptions(options, async () => {
-              log.debug(
-                `Running resource "${name}"`,
-                `isArgs = ${args?.length > 0}`
-              );
-
-              const timedReport = stat.traffic();
-              const resourceResult = await callback(...args);
-
-              timedReport({ resource: name });
-
-              return resourceResult;
-            })), metadata);
-      }
-    });
+    await registerServerResources(updatedResources, server, options, session);
 
     // Apply MCP tools, if available
-    updatedTools.forEach(toolCreator => {
-      const [name, schema, callback] = toolCreator(options);
-      // Do NOT normalize schemas here. This is by design and is a fallback check for malformed schemas.
-      const isZod = isZodSchema(schema?.inputSchema) || isZodRawShape(schema?.inputSchema);
-      const isSchemaDefined = schema?.inputSchema !== undefined;
-
-      if (!isZod) {
-        log.warn(`Tool "${name}" has a non Zod inputSchema. Skipping registration.`);
-        log.debug(
-          `Tool "${name}" has received a non Zod inputSchema from the tool pipeline.`,
-          `This will cause unexpected issues, such as failure to pass arguments.`,
-          `MCP SDK requires Zod. Kneel before Zod.`
-        );
-
-        return;
-      }
-
-      // Lightweight check for malformed schemas that bypass validation.
-      const isContextLike = (value: unknown) => isPlainObject(value) && 'requestId' in value && 'signal' in value;
-
-      try {
-        server?.registerTool(name, schema, (args: unknown = {}, ..._args: unknown[]) =>
-          runWithSession(session, async () =>
-            runWithOptions(options, async () => {
-              // Basic track for remaining args to account for future MCP SDK alterations.
-              log.debug(
-                `Running tool "${name}"`,
-                `isArgs = ${args !== undefined}`,
-                `isRemainingArgs = ${_args?.length > 0}`
-              );
-
-              const timedReport = stat.traffic();
-              const isContextLikeArgs = isContextLike(args);
-
-              // Log potential Zod validation errors triggered by context fail.
-              if (isContextLikeArgs) {
-                log.debug(
-                  `Tool "${name}" handler received a context like object as the first parameter.`,
-                  'If this is unexpected this is likely an undefined schema or a schema not registering as Zod.',
-                  'Review the related schema definition and ensure it is defined and valid.',
-                  `Schema is Defined = ${isSchemaDefined}; Schema is Zod = ${isZod}; Context like = ${isContextLikeArgs};`
-                );
-              }
-
-              const toolResult = await callback(args);
-
-              timedReport({ tool: name });
-
-              return toolResult;
-            })));
-
-        log.info(`Registered tool: ${name}`);
-      } catch (error) {
-        log.error(`Failed to register tool "${name}":`, error);
-      }
-    });
+    await registerServerTools(updatedTools, server, options, session);
 
     if (enableSigint && !sigintHandler) {
       sigintHandler = () => {
@@ -533,7 +542,8 @@ runServer.memo = memo(
 
 export {
   runServer,
-  builtinTools,
+  registerServerResources,
+  registerServerTools,
   type McpTool,
   type McpToolCreator,
   type McpResource,

@@ -171,6 +171,18 @@ const server: PfMcpInstance = await start({
 });
 ```
 
+### Public API and imports
+
+To ensure stability and a predictable developer experience, this package currently enforces a strict public API. All supported programmatic functions and types are exported directly from the root entry point:
+
+```typescript
+import { start, type PfMcpInstance } from '@patternfly/patternfly-mcp';
+```
+
+**Deep imports are not supported.** Accessing internal modules (e.g., `@patternfly/patternfly-mcp/dist/server`) is restricted by our package configuration. This "flattened" export strategy allows us to refactor internal code and move logic between files without impacting your programmatic integrations, as long as the root exports remain stable.
+
+If you require access to a type or utility that is not currently exported from the root, please open an issue to discuss your use case for extending the public API.
+
 ### Server instance
 
 The server instance exposes the following methods:
