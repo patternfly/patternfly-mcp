@@ -1,4 +1,4 @@
-import { type McpResource } from './server';
+import { type McpResource } from './mcpSdk';
 import { stringJoin } from './server.helpers';
 import { getOptions, runWithOptions } from './options.context';
 

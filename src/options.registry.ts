@@ -1,4 +1,4 @@
-import { type McpToolCreator, type McpResourceCreator } from './server';
+import { type McpToolCreator, type McpResourceCreator } from './mcpSdk';
 import { usePatternFlyDocsTool } from './tool.patternFlyDocs';
 import { searchPatternFlyDocsTool } from './tool.searchPatternFlyDocs';
 import { patternFlyComponentsIndexResource } from './resource.patternFlyComponentsIndex';

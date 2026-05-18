@@ -1,4 +1,4 @@
-import { type McpResourceCreator } from './server';
+import { type McpResourceCreator } from './mcpSdk';
 import { type AppSession, type GlobalOptions } from './options';
 import { getOptions, getSessionOptions } from './options.context';
 import { log } from './logger';

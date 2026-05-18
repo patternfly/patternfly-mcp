@@ -2,7 +2,7 @@ import {
   ResourceTemplate,
   type CompleteResourceTemplateCallback
 } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { type McpResource } from './server';
+import { type McpResource } from './mcpSdk';
 import { memo } from './server.caching';
 import { assertInput, assertInputStringLength } from './server.assertions';
 import { getOptions, runWithOptions } from './options.context';

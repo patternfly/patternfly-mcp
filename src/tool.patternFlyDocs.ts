@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js';
-import { type McpTool } from './server';
+import { type McpTool } from './mcpSdk';
 import { processDocsFunction, type ProcessedDoc } from './server.getResources';
 import { stringJoin } from './server.helpers';
 import {
