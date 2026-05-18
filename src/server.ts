@@ -274,7 +274,7 @@ const registerServerTools = async (tools: McpToolCreator[], server: McpServer, o
     const isContextLike = (value: unknown) => isPlainObject(value) && 'requestId' in value && 'signal' in value;
 
     try {
-      server?.registerTool(name, schema, (args: unknown = {}, ..._args: unknown[]) =>
+      server.registerTool(name, schema, (args: unknown = {}, ..._args: unknown[]) =>
         runWithSession(session, async () =>
           runWithOptions(options, async () => {
             // Basic track for remaining args to account for future MCP SDK alterations.
