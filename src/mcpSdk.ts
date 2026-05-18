@@ -1,6 +1,109 @@
-import { ResourceTemplate, type McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { type McpResource } from './server';
+import {
+  ResourceTemplate,
+  type McpServer,
+  type ResourceMetadata,
+  type CompleteResourceTemplateCallback
+} from '@modelcontextprotocol/sdk/server/mcp.js';
+import { type GlobalOptions } from './options';
 import { listAllCombinations, listIncrementalCombinations, splitUri } from './server.helpers';
+
+/**
+ * A tool registered with the MCP server.
+ *
+ * @note Use of `any` here is intentional as part of a pass-through policy around
+ * `inputSchema`. Input schemas are actually reconstructed as part of the
+ * tools-as-plugins architecture to help guarantee that a minimal tool schema is
+ * always available and minimally valid.
+ *
+ * 0. `name` `{string}`: Name of the tool.
+ * 1. `schema` `{Object}`: Descriptions and schemas provided to allow parameter input and outputs in a standardized format.
+ *    - `schema.description` `{string}`: Concise description of functionality for the tool.
+ *    - `schema.inputSchema` `{*}`: Internally, a raw Zod schema. Externally, a JSON or raw Zod schema. External tools are
+ *       converted to Zod for user convenience.
+ * 2. `handler` `{Function}`: Tool handler function for returning content.
+ */
+type McpTool = [
+  name: string,
+  schema: {
+    description: string;
+    inputSchema: any;
+  },
+  handler: (arg?: unknown) => any | Promise<any>
+];
+
+/**
+ * A function that creates a tool registered with the MCP server.
+ */
+type McpToolCreator = ((options?: GlobalOptions) => McpTool) & { toolName?: string };
+
+/**
+ * Configuration for a generated metadata MCP resource.
+ *
+ * @interface McpResourceMetadataMetaConfig
+ *
+ * @property [uri] - Override URI for the meta-resource. (e.g., `test://lorem/meta`, `test://ipsum/meta{?var}`).
+ * @property [name] - Registered name for the meta-resource (defaults to `{primaryName}-meta`).
+ * @property [title] - Title shown for the meta-resource in listings and generated Markdown.
+ * @property [description] - Description for the meta-resource in listings and generated Markdown.
+ * @property [searchFields] - Query parameter names included on the meta-URI template for completion.
+ *   - If an empty array is provided the meta-resource uses a static URI, no template
+ *   - If omitted the search fields are inferred from the `uri` or the primary resource template.
+ * @property [mimeType] - MIME type of the meta-resource body. Acceptable values are:
+ *   - 'text/markdown'
+ *   - 'application/json'
+ * @property [metaHandler] - A custom handler for the meta-resource. It accepts an optional object as its
+ *     argument for passing parameters and returns a serialized value to the MCP client. A default fallback
+ *     async handler is used if none is provided.
+ */
+interface McpResourceMetadataMetaConfig {
+  uri?: string;
+  name?: string;
+  title?: string;
+  description?: string;
+  searchFields?: string[] | undefined;
+  mimeType?: 'text/markdown' | 'application/json';
+  metaHandler?: (params: Record<string, string> | undefined) => Promise<unknown> | unknown;
+}
+
+/**
+ * A resource metadata configuration for the MCP server.
+ *
+ * @property registerAllSearchCombinations - Whether to register all search combinations for the resource.
+ * @property metaConfig - Optional configuration for generating a metadata resource. Being defined
+ *     (e.g. `{ metadata: { metaConfig: {} }}`) means a meta-resource will be generated for the related MCP resource.
+ * @property complete - Callback functions for resource completion.
+ */
+interface McpResourceMetadata {
+  registerAllSearchCombinations?: boolean | undefined;
+  metaConfig?: McpResourceMetadataMetaConfig;
+  complete?: {
+    [key: string]: CompleteResourceTemplateCallback;
+  } | undefined;
+  [key: string]: unknown;
+}
+
+/**
+ * A resource registered with the MCP server.
+ *
+ * 0. `name`: Registered name of the resource.
+ * 1. `uriOrTemplate`: URI string or template. {@link ResourceTemplate}
+ * 2. `config`: Resource configuration metadata. {@link ResourceMetadata}
+ * 3. `handler`: Resource handler function.
+ * 4. `metadata`: Optional **internal metadata** object, not used by the standard MCP SDK
+ *     resource registry. {@link McpResourceMetadata}
+ */
+type McpResource = [
+  name: string,
+  uriOrTemplate: string | ResourceTemplate,
+  config: ResourceMetadata,
+  handler: (...args: any[]) => any | Promise<any>,
+  metadata?: McpResourceMetadata | undefined
+];
+
+/**
+ * A function that creates a resource registered with the MCP server.
+ */
+type McpResourceCreator = ((options?: GlobalOptions) => McpResource) & { resourceName?: string };
 
 /**
  * Register an MCP resource.
@@ -98,4 +201,12 @@ const registerResource = (
   server.registerResource(name, uriOrTemplate as any, config, callback);
 };
 
-export { registerResource };
+export {
+  registerResource,
+  type McpTool,
+  type McpToolCreator,
+  type McpResourceMetadataMetaConfig,
+  type McpResourceMetadata,
+  type McpResource,
+  type McpResourceCreator
+};

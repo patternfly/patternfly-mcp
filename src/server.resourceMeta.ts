@@ -7,7 +7,7 @@ import {
   type McpResourceCreator,
   type McpResourceMetadata,
   type McpResourceMetadataMetaConfig
-} from './server';
+} from './mcpSdk';
 import {
   buildSearchString,
   isPlainObject,

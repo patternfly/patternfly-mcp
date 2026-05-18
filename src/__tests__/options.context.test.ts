@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { runServer, type McpTool } from '../server';
+import { type McpTool } from '../mcpSdk';
+import { runServer } from '../server';
 import { getOptions, setOptions } from '../options.context';
 import { DEFAULT_OPTIONS } from '../options.defaults';
 

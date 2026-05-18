@@ -1,4 +1,4 @@
-import { type McpTool, type McpToolCreator } from './server';
+import { type McpTool, type McpToolCreator } from './mcpSdk';
 
 /**
  * Apply a static property to an object.

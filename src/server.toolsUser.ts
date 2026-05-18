@@ -1,7 +1,7 @@
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, isAbsolute, resolve } from 'node:path';
 import { isPath, isPlainObject, isReferenceLike, isUrl } from './server.helpers';
-import { type McpTool } from './server';
+import { type McpTool } from './mcpSdk';
 import { type GlobalOptions } from './options';
 import { memo } from './server.caching';
 import { DEFAULT_OPTIONS } from './options.defaults';

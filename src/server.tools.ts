@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { z } from 'zod';
 import { type AppSession, type GlobalOptions } from './options';
-import { type McpToolCreator } from './server';
+import { type McpToolCreator } from './mcpSdk';
 import { log, formatUnknownError } from './logger';
 import {
   awaitIpc,

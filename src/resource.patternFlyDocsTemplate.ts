@@ -3,7 +3,7 @@ import {
   type CompleteResourceTemplateCallback
 } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js';
-import { type McpResource } from './server';
+import { type McpResource } from './mcpSdk';
 import { processDocsFunction } from './server.getResources';
 import { stringJoin } from './server.helpers';
 import { assertInput, assertInputStringLength } from './server.assertions';

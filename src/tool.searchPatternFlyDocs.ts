@@ -1,6 +1,6 @@
 import { ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
-import { type McpTool } from './server';
+import { type McpTool } from './mcpSdk';
 import { stringJoin } from './server.helpers';
 import { assertInput, assertInputStringLength, assertInputStringNumberEnumLike } from './server.assertions';
 import { getOptions } from './options.context';

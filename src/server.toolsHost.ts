@@ -7,7 +7,7 @@ import {
 import { resolveExternalCreators } from './server.toolsHostCreator';
 import { DEFAULT_OPTIONS } from './options.defaults';
 import { type ToolOptions } from './options.tools';
-import { type McpTool, type McpToolCreator } from './server';
+import { type McpTool, type McpToolCreator } from './mcpSdk';
 import {
   isZodRawShape,
   isZodSchema,
