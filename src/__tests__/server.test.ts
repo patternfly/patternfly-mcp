@@ -377,4 +377,25 @@ describe('registerServerResources', () => {
     expect(mockCallback).toHaveBeenCalledWith('arg1');
     expect(result).toEqual({ contents: [{ uri: 'test://uri', text: 'content' }] });
   });
+
+  it('should handle errors during resource registration', async () => {
+    const mockRegisterResource = jest.spyOn(mcpSdk, 'registerResource');
+    const resourceCreator = () => [
+      'failResource',
+      'test://uri',
+      { mimeType: 'text/plain' },
+      jest.fn()
+    ];
+
+    mockRegisterResource.mockImplementation(() => {
+      throw new Error('Registration failed');
+    });
+
+    await registerServerResources([resourceCreator as any], mockServer);
+
+    expect(MockLog.error).toHaveBeenCalledWith(
+      expect.stringContaining('Failed to register resource "failResource":'),
+      expect.any(Error)
+    );
+  });
 });
