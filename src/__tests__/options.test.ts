@@ -55,6 +55,18 @@ describe('parseCliOptions', () => {
     {
       description: 'with --tool',
       args: ['node', 'script.js', '--tool', 'my-tool', '--tool', 'my-other-tool']
+    },
+    {
+      description: 'with --plugin-isolation strict',
+      args: ['node', 'script.js', '--plugin-isolation', 'STRICT']
+    },
+    {
+      description: 'with --plugin-isolation none',
+      args: ['node', 'script.js', '--plugin-isolation', 'none']
+    },
+    {
+      description: 'with --plugin-isolation undefined',
+      args: ['node', 'script.js', '--plugin-isolation', '--verbose']
     }
   ])('should attempt to parse args $description', ({ args = [] }) => {
     process.argv = args;

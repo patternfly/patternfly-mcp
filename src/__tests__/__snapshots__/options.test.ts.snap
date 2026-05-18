@@ -184,6 +184,69 @@ exports[`parseCliOptions should attempt to parse args with --log-stderr flag and
 }
 `;
 
+exports[`parseCliOptions should attempt to parse args with --plugin-isolation none 1`] = `
+{
+  "http": {},
+  "isHttp": false,
+  "logging": {
+    "level": "info",
+    "logger": "@patternfly/patternfly-mcp",
+    "protocol": false,
+    "stderr": false,
+    "transport": "stdio",
+  },
+  "modeOptions": {
+    "cli": {},
+    "programmatic": {},
+    "test": {},
+  },
+  "pluginIsolation": "none",
+  "toolModules": [],
+}
+`;
+
+exports[`parseCliOptions should attempt to parse args with --plugin-isolation strict 1`] = `
+{
+  "http": {},
+  "isHttp": false,
+  "logging": {
+    "level": "info",
+    "logger": "@patternfly/patternfly-mcp",
+    "protocol": false,
+    "stderr": false,
+    "transport": "stdio",
+  },
+  "modeOptions": {
+    "cli": {},
+    "programmatic": {},
+    "test": {},
+  },
+  "pluginIsolation": "strict",
+  "toolModules": [],
+}
+`;
+
+exports[`parseCliOptions should attempt to parse args with --plugin-isolation undefined 1`] = `
+{
+  "http": {},
+  "isHttp": false,
+  "logging": {
+    "level": "debug",
+    "logger": "@patternfly/patternfly-mcp",
+    "protocol": false,
+    "stderr": false,
+    "transport": "stdio",
+  },
+  "modeOptions": {
+    "cli": {},
+    "programmatic": {},
+    "test": {},
+  },
+  "pluginIsolation": undefined,
+  "toolModules": [],
+}
+`;
+
 exports[`parseCliOptions should attempt to parse args with --tool 1`] = `
 {
   "http": {},
