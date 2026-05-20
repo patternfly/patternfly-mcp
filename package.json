@@ -65,12 +65,12 @@
     "zod": "4.3.6"
   },
   "devDependencies": {
-    "@cdcabrera/eslint-config-toolkit": "^0.5.2",
+    "@cdcabrera/eslint-config-toolkit": "^0.5.3",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.6.0",
     "@types/semver": "7.7.1",
-    "@typescript-eslint/eslint-plugin": "^8.59.1",
-    "@typescript-eslint/parser": "^8.59.1",
+    "@typescript-eslint/eslint-plugin": "^8.59.2",
+    "@typescript-eslint/parser": "^8.59.2",
     "changelog-light": "^3.0.8",
     "cspell": "^9.7.0",
     "eslint": "^9.39.4",
@@ -81,7 +81,7 @@
     "ts-node": "^10.1.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.59.1"
+    "typescript-eslint": "^8.59.2"
   },
   "engines": {
     "node": ">=20.0.0"
