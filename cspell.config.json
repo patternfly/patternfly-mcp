@@ -12,10 +12,12 @@
     "onsessioninitialized",
     "onsessionclosed",
     "patternfly",
+    "prefault",
     "rereview",
     "rsort",
     "sparkline",
     "streamable",
+    "treeify",
     "unrepresentable",
     "unsub"
   ]

@@ -19,6 +19,7 @@ Agent-specific guidelines for the PatternFly MCP project, optimized for machine 
 ### Skills
 
 - [Add docs links](./skills/add-docs-links/SKILL.md) - Add documentation links to `src/docs.json` in a structured way (format, duplicate check, URL confirmation, tests)
+- [Review Zod integration](./skills/review-zod-integration/SKILL.md) - Review Zod dependency bumps, map release notes to PF MCP, run tests, write `reports/YYYYMMDD-HHMMSS-zod-{semver}-update-report.md` (UTC)
 
 **Note:** `guidelines/skills/` is the canonical location for skills. Repo symlinks point here so agents can discover them: `.agents/skills` (Cursor), `.claude/skills` (Claude). The `.agent/` directory (no “s”) is reserved for each developer’s local work and is off limits—do not use it for shared skills or guidelines.
 
@@ -36,6 +37,7 @@ Agents should use these phrases as signals to consult specific documentation and
 | **"review development guide"**      | Review `docs/development.md` for CLI, API, and plugin authoring.                                                                                       |
 | **"create an example tool plugin"** | Review `guidelines/agent_coding.md`, `docs/development.md`, `docs/examples/*`, and `src/*` for context, coding standards, and existing example formats. |
 | **"add documentation links"** / **"add doc entries"** / **"register docs"** / **"update docs.json"** / **"contribute to docs.json"** | Follow `guidelines/skills/add-docs-links/SKILL.md`: docs.json format, duplicate check, raw URL confirmation, then run unit tests and update meta. |
+| **"review zod"** / **"zod upgrade"** / **"zod integration review"** / **"zod update report"** | Follow `guidelines/skills/review-zod-integration/SKILL.md`: release notes vs codebase, tests, report at `reports/YYYYMMDD-HHMMSS-zod-{semver}-update-report.md` (UTC). |
 | **"troubleshoot server"** / **"debug server"** | Review `docs/usage.md#troubleshooting` and the PatternFly MCP server resource `patternfly://context` |
 
 ## Guidelines Processing Order
