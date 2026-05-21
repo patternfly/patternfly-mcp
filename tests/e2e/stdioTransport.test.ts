@@ -443,7 +443,7 @@ describe('Tools', () => {
 
   afterEach(async () => CLIENT.stop());
 
-  itSkip(envNodeVersion >= 22)('should access new tools', async () => {
+  it('should access new tools', async () => {
     const req = {
       method: 'tools/list',
       params: {}
@@ -461,18 +461,7 @@ describe('Tools', () => {
     expect(names).toContain('echo_createMcp_tool');
   });
 
-  itSkip(envNodeVersion <= 20)('should fail to access a new tool', async () => {
-    const req = {
-      method: 'tools/list',
-      params: {}
-    };
-
-    await CLIENT.send(req);
-
-    expect(CLIENT.logs().join(',')).toContain('External tool plugins require Node >= 22; skipping file-based tools.');
-  });
-
-  itSkip(envNodeVersion >= 22).each([
+  it.each([
     {
       description: 'echo basic tool',
       name: 'echo_basic_tool',
@@ -496,30 +485,5 @@ describe('Tools', () => {
 
     expect(resp.result).toMatchSnapshot();
     expect(resp.result.isError).toBeUndefined();
-  });
-
-  itSkip(envNodeVersion <= 20).each([
-    {
-      description: 'echo basic tool',
-      name: 'echo_basic_tool',
-      args: { type: 'echo', lorem: 'ipsum', dolor: 'sit amet' }
-    },
-    {
-      description: 'echo create MCP tool',
-      name: 'echo_createMcp_tool',
-      args: { type: 'echo', lorem: 'ipsum', dolor: 'sit amet' }
-    }
-  ])('should fail to interact with a tool, $description', async ({ name, args }) => {
-    const req = {
-      method: 'tools/call',
-      params: {
-        name,
-        arguments: args
-      }
-    };
-
-    const resp: any = await CLIENT.send(req);
-
-    expect(resp.result.isError).toBe(true);
   });
 });

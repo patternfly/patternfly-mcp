@@ -700,10 +700,10 @@ describe('composeTools', () => {
       expectedModuleCount: 5
     },
     {
-      description: 'file package creators, Node.js 20',
-      nodeVersion: 20,
+      description: 'file package creators, Node.js 22',
+      nodeVersion: 22,
       modules: ['file:///test/module.js', '@patternfly/tools'],
-      expectedModuleCount: 3
+      expectedModuleCount: 5
     },
     {
       description: 'file package creators, Node.js 24',
@@ -756,8 +756,8 @@ describe('composeTools', () => {
       expectedModuleCount: 6
     },
     {
-      description: 'inline and file package creators, duplicates, Node.js 20',
-      nodeVersion: 20,
+      description: 'inline and file package creators, duplicates, Node.js 22',
+      nodeVersion: 22,
       modules: [
         { name: '@patternfly/tools', description: 'lorem ipsum', inputSchema: {}, handler: () => {} },
         { name: 'dolor', description: 'sit amet', inputSchema: z.object({}), handler: () => {} },
@@ -765,7 +765,7 @@ describe('composeTools', () => {
         '@patternfly/tools',
         'DOLOR   '
       ],
-      expectedModuleCount: 5
+      expectedModuleCount: 6
     }
   ])('should attempt to setup creators, $description', async ({ modules, nodeVersion, expectedModuleCount }) => {
     const mockChild = {

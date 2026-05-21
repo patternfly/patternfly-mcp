@@ -52,7 +52,7 @@ const run = async (): Promise<void> => {
     } else {
       // Everything else
       error = new Error(
-        `Node.js version ${envNodeMajorVersion} found but ${appMinNodeMajorVersion} or higher is required. Update Node.js and try again.`
+        `Node.js version ${envNodeMajorVersion} found but ${appMinNodeMajorVersion} or higher is required. Update Node.js or pin to an earlier PatternFly MCP version for compatibility and try again.`
       );
     }
 

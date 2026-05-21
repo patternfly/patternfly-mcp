@@ -7,7 +7,7 @@ It is intended to be extensible to meet the needs of different teams and project
 [Read more about our roadmap and how we've structured the server in our architecture docs](./docs/architecture.md).
 
 ## Requirements
-- [Node.js 20+](https://nodejs.org/)
+- [Node.js 22+](https://nodejs.org/)
 - NPM (or equivalent package manager)
 
 ## Quick start
@@ -17,6 +17,8 @@ The PatternFly MCP Server supports multiple configurations; see the [usage docum
 ### For integrated use with an IDE
 
 #### Set a basic MCP configuration
+
+> Unable to update to the required Node.js version? [See pinned MCP configuration examples for earlier Node.js versions.](./docs/usage.md#pinned-mcp-package-version)
 
 Minimal configuration
 ```json
