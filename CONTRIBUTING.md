@@ -1,195 +1,172 @@
-# Contributing
-Interested in contributing to the project? Review the following guidelines and our [planned architecture](./docs/architecture.md) to make sure
-your contribution is aligned with the project's goals.
+# Contributing to PatternFly MCP
 
-## Development
+Welcome! Our goal is to make PatternFly documentation and components easily accessible to AI agents and developers everywhere.
 
-### Environment setup
+Review these guidelines and our [planned architecture](./docs/architecture.md), [security policy](./SECURITY.md), and [governance policy](./GOVERNANCE.md) to ensure your contribution aligns with the project's goals.
+
+> **Project State**: We've passed our `1.0.0` stable release, but we haven't hit our "feature plateau" yet! We're still actively implementing core features, which is why alignment with our [planned architecture](./docs/architecture.md) and roadmap is helpful for all feature work.
+
+### Navigation
+
+- [Step 1: Start a Conversation](#step-1-start-a-conversation)
+- [Step 2: Setting Up Your Workspace](#step-2-setting-up-your-workspace)
+- [Step 3: Development & Testing](#step-3-development--testing)
+- [Step 4: Submitting Your Work](#step-4-submitting-your-work)
+- [The Gatekeeper & Review Process](#the-gatekeeper--review-process)
+- [Node.js Engine Bumps](#maintenance-nodejs-engine-bumps)
+- [AI Agent Guidance](#ai-agent)
+
+### How can I contribute?
+
+Code is only one way to contribute! Contributions can include:
+
+- **Planning & Feedback**: Opening an issue to propose an idea or helping us refine a roadmap item.
+- **Documentation**: Improving this repository's documentation or contributing to the [PatternFly Org documentation](https://github.com/patternfly/patternfly-org).
+- **AI Tooling**: Contributing specialized guidance or skills to the [AI-Helpers repository](https://github.com/patternfly/ai-helpers).
+- **Bug Reporting**: Think you found a bug? Open an issue so the whole community benefits.
+- **Community Support**: Helping other developers in issues or discussions.
+
+**First-time contributor?**
+The best way to start is by helping us plan! Review our open issues, join a conversation, or open a new issue to share how you're using PatternFly MCP. Helping us plan and share your use cases is the most effective way to ensure your idea is a valuable addition.
+
+---
+
+### Step 1: Start a Conversation
+
+In the new age of agentic coding where ideas can move fast, we strongly encourage opening a GitHub issue first. Since we are still building toward our feature plateau, this helps ensure your work aligns with the project's direction.
+
+Opening an issue first:
+1. **Starts the planning conversation**: Get feedback for your idea and effort before writing a single line of code.
+2. **Helps move PatternFly and the project forward collectively**: The community benefits when we can align your idea with our long-term roadmap.
+3. **Ensures architectural alignment**: Early feedback helps ensure your implementation fits within the project's modular goals, saving everyone time during review.
+
+Opening a PR without an issue has a higher likelihood of being flagged by automation, delayed for maintainer review, or potentially closed if it conflicts with the current roadmap.
+
+#### Just want to show us your work?
+If you're leveraging the GitHub PR to provide us with file diffs, you can achieve the same Git diff applied by PRs by simply using the GitHub link format and applying it to your issue:
+`https://github.com/patternfly/patternfly-mcp/compare/main...your-username:your-branch`
+
+#### Want the PatternFly MCP to access more documentation?
+Providing more documentation to the PatternFly MCP is what drives our unified library!
+
+We have a few simple guidelines to make sure your subject aligns with our intent:
+- **PatternFly Subject**: Added documentation should concern PatternFly as the primary subject.
+- **Security**: Documentation is whitelisted to specific domains. Updates require an issue first for security.
+- **Quality**: Resources should be production-ready and will be reviewed for quality and security.
+- **Tooling**: Use the [Update documentation SKILL](./guidelines/skills/add-docs-links/SKILL.md) to help update related files.
+
+---
+
+### Step 2: Setting Up Your Workspace
+
+> **Get a feature up and running. Try customizing the server!**
+> The PatternFly MCP server is designed to be customizable. You can [wrap it in your own application](./docs/development.md#programmatic-usage) or add [MCP tool plugins](./docs/development.md#mcp-tool-plugins).
 
 #### Tools
-- [Node.js](https://nodejs.org/en/download/package-manager)
+- [Node.js](https://nodejs.org/en/download/package-manager) (See [Engine Bumps](#maintenance-nodejs-engine-bumps) for version info)
 - NPM (or equivalent package manager)
 - Git configured with your GitHub account
 
-#### Project setup
-- Fork and clone the repository
-- Open your terminal, or equivalent, in the codebase context and run the following commands
+#### Environment Setup
+1. **Fork and clone** the repository.
+2. **Install dependencies**: `npm install`
+3. **Build and verify**: 
    ```bash
-   npm install
    npm run build
    npm test
    npm run test:integration
-   npm start
    ```
-  All tests should pass, and the application should start successfully with a confirmation message in the terminal.
+4. **Start the server**: `npm start`
+5. **Test with the inspector**: `npx -y @modelcontextprotocol/inspector node dist/cli.js`
 
-##### Windows and repository symlinks
+#### Windows and repository symlinks
+Some paths in this repo are **symbolic links**. On Windows:
+- **Enable Developer Mode** (Settings -> Privacy & security -> For developers).
+- **Clone with links enabled**: `git clone -c core.symlinks=true <repository-url>`.
+- If the links are already broken, delete the affected directories (e.g., `.agents/skills`) and re-clone with the setting above.
 
-Some paths in this repo are **symbolic links** so tools can reach shared skills without needing to host multiple versions of the same files. For example, `.agents/skills` and `.claude/skills` point at `guidelines/skills`. On **Windows**, Git may create **regular folders or files** instead of links, so these locations can look empty or broken.
+---
 
-**Before you clone the repository**
+### Step 3: Development & Testing
 
-- Turn on **Developer Mode** (Settings -> Privacy & security -> For developers). That usually lets Git create symlinks without running as Administrator.
-- Prefer cloning with links enabled, for example: `git clone -c core.symlinks=true <repository-url>`, or use **WSL** / **Git for Windows** with symlink support configured.
+#### Code Style & Conventions
+- **Naming**: Use `lowerCamelCase.dot.notation` (e.g., `server.http.ts`).
+- **Responsibility**: Functions should maintain a single responsibility.
+- **TypeScript**: Use `unknown` over `any` where possible. Avoid overly complex generics.
+- **Reuse**: Prioritize reusing existing functions over writing new ones for the same purpose.
 
-**If the repo is already on disk and the links are broken**
+#### Testing Procedures
+- **Unit Tests**: Located in `src/__tests__/*.test.ts`. Name tests after the file they verify (e.g., `server.ts` -> `server.test.ts`).
+- **E2E Tests**: Located in `tests/e2e/`. Run via `npm run test:integration`.
+- **Audit Tests**: Verify data integrity via `npm run test:audit`.
+- **Script Tests**: Verify GitHub Action scripts via `npm run test:scripts`.
 
-Turning on Developer Mode or Git symlink settings **does not always fix** paths Git has already created as ordinary files.
-- Delete the broken `.agents/skills` and `.claude/skills` entries, or remove the entire folder/directory and **clone again**
-- Then follow the **Before you clone the repository** steps above
+---
 
-> If you are unsure of any steps, please verify them with your IT or system administrator before proceeding.
+### Step 4: Submitting Your Work
 
-#### Development workflow
-- Make changes to the codebase
-- Run tests to verify your changes do not break existing functionality
-- Commit your changes and push them to your fork
-- Open a pull request
+#### The Contributor's Agreement
+By submitting a Pull Request, you acknowledge the following:
+_"I have read the contribution guidelines and fulfill them with this PR. I acknowledge that my PR will be reviewed for alignment with the project's quality, security, and architectural standards."_
 
-### Using Git
+#### Git Workflow
+1. **Fork** the repository.
+2. Create a **branch** on your fork.
+3. **Rebase** your branch against the `main` branch before committing work.
+4. Submit a **Pull Request** using the provided template towards the `main` branch.
 
-#### Workflow
-Our process follows the standard GitHub fork and pull request workflow.
+#### Conventional Commits
+We follow [Conventional Commits](https://www.conventionalcommits.org/) to provide a consistent history.
+**Format**: `<type>(<optional scope>): <issue> <description>`
+- **Types**: `feat`, `fix`, `chore`, `docs`, `refactor`, `test`.
+- **Issue**: Reference the related issue (e.g., `issue/123`, `PF-123` or `[your issue prefix]-123`).
+  - **Required**: `feat` commits require an issue link to pass validation.
+  - **Encouraged**: All other types are encouraged to include one for traceability.
+- **Description**: Keep the first line under **65 characters**. Issue numbers are excluded from this count.
 
-- Fork the repository
-- Create a branch for your changes
-- Submit a pull request towards the main repository default branch
+> **Note**: If your PR contains multiple commits, they will be squashed before merging to maintain a clean history.
 
-##### Main repository branches
-- The `main` branch currently represents both development and stable releases
+---
 
-> In the future, if there is an increase in contributions, we may consider implementing a `stable` branch.
->    - `main` would be the default branch for development and feature work rebased from `stable` after release.
->    - `stable` would be a branch used for stable releases/hashes, reference links, and only updated with release commits.
+### The Gatekeeper & Review Process
 
-#### Pull requests
+To help your contribution reach a "review-ready" state faster, we use an automated **Gatekeeper** workflow.
 
-Development pull requests (PRs) should be opened against the default branch.
+#### Helpful Automation
+The Gatekeeper provides immediate feedback in the workflow logs and PR comments. It helps us verify:
+- ✅ A PR is linked to a GitHub issue.
+- ✅ Commits follow the [Conventional Commits](#conventional-commits) format and length.
+- ✅ Code follows existing style, security, and architectural patterns.
+- ✅ Tests and linting pass successfully.
 
-> If your pull request work contains any of the following warning signs
->  - has no related issue
->  - ignores existing code style
->  - out-of-sync commits (not rebased against the default branch)
->  - poorly structured commits and messages
->  - any one commit relies on other commits to work (beyond "review requested updates")
->  - dramatic file restructures that attempt complex behavior
->  - missing, relaxed, or removed linting, typings, and tests
->  - overly complex TypeScript generics or generally over-the-top typings
->  - dramatic unit test snapshot updates
->  - affects any file not directly associated with the issue being resolved
->  - affects "many" files
->  - contains or is a minor grammatical fix
->
-> You will be asked to either:
->  - open an issue instead of a PR
->  - restructure your commits
->  - break the work into multiple pull requests
->  - close the PR (typically, a last resort)
+#### PR Labels
+The Gatekeeper uses the following labels to communicate status:
+- `bot:policy-ready`: All pre-checks passed! Your PR is ready for maintainer review.
+- `bot:policy-hold`: Triggered by a "Perfect Storm" of identified issues (e.g., simultaneously modifying core files, excessive scope, and changing PR templates). To resolve, please reduce the scope of your changes.
+- `bot:needs-cleanup`: Minor adjustments are needed (e.g., missing issue links, style violations, or failing tests).
+- `bot:needs-maintainer`: Security-sensitive changes detected (e.g., `.github`, `package-lock.json`, or `scripts/`) or an unexpected error occurred. A maintainer has been notified.
 
-#### Pull request commits, messaging
+---
 
-Your pull request should contain Git commit messaging that follows [conventional commit types](https://www.conventionalcommits.org/)
-to provide consistent history and help generate [CHANGELOG.md](./CHANGELOG.md) updates.
+### Maintenance: Node.js engine bumps
 
-Commit messages follow two basic guidelines:
-- No more than `65` characters for the first line.
-- Commit message formats follow the structure:
-  ```
-  <type>(<optional scope>): <description> (#PR_NUMBER)
-  ```
-  Where:
-  - **Type**: The type of work the commit resolves (e.g., `feat`, `fix`, `chore`, `docs`, `refactor`, `test`).
-  - **Scope**: The optional area of code affected (directory, filename, or concept).
-  - **Description**: What the commit work encompasses.
-  - **#PR_NUMBER**: The pull request number. Typically added automatically during merge/squash operations. Including it manually is optional. It can help with traceability during review.
+Node.js engine requirements are updated biannually (**Spring** and **Fall**) to ensure security and stability.
+- **Target**: Latest even-numbered (LTS/Stable) versions (e.g., 20, 22, 24).
+- **Criteria**: Update `package.json`, CI workflows, and documentation. Ensure all tests pass on the new target.
 
-> If your **pull request contains multiple commits**, they will be squashed into a single commit before merging, and the messaging
-> will be altered to reflect current guidelines.
+---
 
-#### Pull request test failures
-Before any review takes place, all tests should pass. You may be asked to update your pull request to resolve any failing tests
-before a review.
+### AI Agent
 
-> If you are unsure why your tests are failing, you should [review testing documentation](#testing).
+#### User section
+Trigger agent interaction with: **`review the repo guidelines`**.
+For detailed information, see [guidelines/README.md](./guidelines/README.md).
 
+#### Customizing Developer Experience
+You can customize your agent's behavior via the git-ignored `./.agent` directory in the root of the project.
 
-### Code style guidance and conventions
-Basic code style guidelines are generally enforced by ESLint, but there are additional guidelines.
-
-#### File structure
-- File names use lowerCamelCase and dot notation (e.g., `server.http.ts`, `server.logger.ts`).
-- Directory structure is organized by function, with all relevant files maintained in the `src` directory.
-
-#### Functionality, testing
-- Functions should attempt to maintain a single responsibility.
-- Function annotations follow a minimal JSDoc style; descriptions are encouraged.
-- Tests should focus on functionality.
-- Tests should not be written for external packages. That is the responsibility of the external package, or it shouldn't be used.
-
-#### TypeScript
-- Typings within the project may be generally loose for initial development but should be refined over time.
-- Typings exposed to consumers should always attempt to maintain consistency.
-- Typings for tests are less of a focus than functionality checks.
-
-### Testing
-Current testing is based on Jest.
-
-> A consideration for Vitest is being made for the near future after base functionality is complete.
-
-#### Unit tests
-
-Unit tests are located in the `__tests__` directory.
-
-#### E2E tests
-
-E2E tests are located in the root `./tests` directory.
-
-Contributors can run the MCP server in a specialized `test` mode against mock resources.
-
-```bash
-npm run test:integration
-```
-
-This mode leverages the `--mode test` and `--mode-test-url` flags to redirect resource lookups to a fixture server instead of live or local resources.
-
-## Maintenance: Node.js engine bumps
-
-The `Node.js` engine requirements are updated on a predictable biannual schedule to ensure the server remains secure, leverages modern runtime features, and provides stability for consumers.
-
-> Our engine requirements are intended to be the minimum to run the MCP server. They are not intended to be a maximum, as newer versions may introduce breaking changes or require additional configuration.
-
-### Schedule and process
-- **Timing**: Bumps are generally targeted for **Spring (April/May)** and **Fall (October/November)**, aligned with the [Node.js release schedule](https://nodejs.org/en/about/previous-releases) as versions enter or exit LTS.
-- **Security**: Out-of-band updates may be performed if critical security considerations arise.
-- **Version Targets**:
-  - Focus on the latest **even-numbered (LTS/Stable)** versions (e.g., bumping to 22, 24, or 26).
-  - GitHub Workflows should be updated to include the latest available even version.
-
-### Acceptance criteria for bumps
-- Update `package.json` engine requirements.
-- Update related GitHub Action workflows (CI/CD).
-- Update "Environmental Requirements" in documentation.
-- Ensure all tests pass on the new target version.
-
-## AI agent
-
-### User section
-
-Current agent interaction can be triggered with the chat command
-
-- **`review the repo guidelines`** - Your agent should attempt to scan common markdown files and the guidelines directory
-
-For detailed information on agent interaction, see [guidelines/README.md](./guidelines/README.md).
-
-#### Customizing developer experience
-
-As developers, we often have our own preferred workflows, and that includes working with AI agents. To that point, we've added agent guidance
-to allow customization for your work environment through a tool-agnostic git-ignored directory `./.agent` in the root of the project.
-
-#### Noting AI agent contributions
-
-Please reference [PatternFly's AI-assisted development guidelines](https://github.com/patternfly/.github/blob/main/CONTRIBUTING.md) for guidance on how to
-acknowledge AI agent contributions.
+#### Noting AI Agent Contributions
+Please reference [PatternFly's AI-assisted development guidelines](https://github.com/patternfly/.github/blob/main/CONTRIBUTING.md) for how to acknowledge AI agent contributions.
 
 ### Agent only
 Agents: This repository contains a hierarchical guideline system. Agents should review agent-only comment blocks.

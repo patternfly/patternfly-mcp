@@ -1,9 +1,12 @@
 {
   "language": "en",
   "words": [
+    "agentic",
+    "aiignore",
     "amet",
     "codemods",
     "ized",
+    "junie",
     "llms",
     "localappdata",
     "midrun",
@@ -12,11 +15,15 @@
     "onsessioninitialized",
     "onsessionclosed",
     "patternfly",
+    "precheck",
+    "prechecks",
     "rereview",
     "rsort",
+    "sandboxing",
     "sparkline",
     "streamable",
     "unrepresentable",
-    "unsub"
+    "unsub",
+    "untampered"
   ]
 }

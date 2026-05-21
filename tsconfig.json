@@ -21,7 +21,7 @@
     "resolveJsonModule": true,
     "noEmit": true,
     "stripInternal": true,
-    "rootDirs": ["./src", "./tests/e2e", "./tests/audit"],
+    "rootDirs": ["./src", "./tests/e2e", "./tests/audit", "./scripts", "./tests/scripts"],
     "paths": {
       "#docsCatalog": ["./src/docs.json"],
       "#toolsHost": ["./src/server.toolsHost.ts"]
@@ -29,6 +29,7 @@
   },
   "include": [
     "src/**/*",
+    "scripts/**/*",
     "tests/**/*",
     "jest.setupTests.ts",
     "jest.config.ts",

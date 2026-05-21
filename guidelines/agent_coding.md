@@ -16,7 +16,7 @@ See the [Guidelines Index](./README.md#guidelines-index) for all guidelines.
 
 ## 1. TypeScript Standards
 
-Adhere to the [TypeScript coding conventions](../CONTRIBUTING.md#typescript) established for the project.
+Adhere to the [TypeScript coding conventions](../CONTRIBUTING.md#step-3-development--testing) established for the project.
 
 ### Core Principles
 

@@ -16,15 +16,17 @@ See the [Guidelines Index](./README.md#guidelines-index) for a complete list of 
 
 ## 1. Test Structure and Organization
 
-Refer to [testing standards](../CONTRIBUTING.md#testing) for project-wide requirements.
+Refer to [testing procedures](../CONTRIBUTING.md#step-3-development--testing) for project-wide requirements.
 
 - **Unit Tests (`src/__tests__/*.test.ts`)**: Focus on individual module logic, helpers, and creator functions.
-- **E2E Tests (`tests/*.test.ts`)**: Validate full server lifecycle, transport (stdio/http), and tool/resource execution.
+- **E2E Tests (`tests/e2e/*.test.ts`)**: Validate full server lifecycle, transport (stdio/http), and tool/resource execution.
+- **Script Tests (`tests/scripts/*.test.ts`)**: Verify GitHub Action scripts and pre-check logic.
+- **Audit Tests (`tests/audit/*.test.ts`)**: Verify documentation links and resource integrity.
 - **Integration Tests (`npm run test:integration`)**: Verify interactions between server components.
 
 ## 2. Testing Principles
 
-- **Focus on Behavior**: Test what the user (MCP client) observes. Verify that tools return the expected content and errors. See [functionality and testing](../CONTRIBUTING.md#functionality-testing) guidance.
+- **Focus on Behavior**: Test what the user (MCP client) observes. Verify that tools return the expected content and errors. See [Step 3: Development & Testing](../CONTRIBUTING.md#step-3-development--testing) guidance.
 - **Pragmatic Typings**: Explicit `any` is allowed in tests to avoid over-modeling mocks and stubs. Avoid "type threading" in tests; do not attempt to perfectly type every mock. Focus on validating observable behavior. Use lightweight local type aliases if needed.
 - **Don't Test Dependencies**: Assume `@patternfly` packages and the MCP SDK work as intended. Test our integration and custom logic.
 - **Reproducers Required**: Every bug fix must include a test case that reproduces the issue and verifies the fix.
@@ -57,6 +59,30 @@ Refer to [testing standards](../CONTRIBUTING.md#testing) for project-wide requir
 ## 5. Execution
 
 - **Unit Tests**: `npm test`
-- **E2E/Integration**: `npm run test:integration`
+- **E2E Tests**: `npm run test:integration`
+- **Script Tests**: `npm run test:scripts`
+- **Audit Tests**: `npm run test:audit`
 - **Manual Verification**: Use the [MCP Inspector](../docs/development.md#testing-with-mcp-inspector) to manually verify tool and resource behavior.
 - **Coverage**: Ensure new logic is covered by at least one unit test.
+
+## 6. Script and Audit Testing
+
+### 6.1 Script Integrity
+
+Automation scripts in `scripts/` are critical to repository security. Changes to these scripts MUST be accompanied by updates to `tests/scripts/*.test.ts`.
+
+**Key areas to test**:
+- Label management logic.
+- Contributor and bot identification.
+- Failure fallback (📡 icon).
+- Mirroring via `core` summaries, notices, warnings, and workflow log alerts (fallback mechanism).
+- Informative error messaging.
+
+### 6.2 Data and Resource Audit
+
+The `test:audit` suite ensures the integrity of external documentation links and resource metadata in `src/docs.json`.
+
+**When to run**:
+- When adding new PatternFly documentation links
+- When updating whitelisted domains
+- As part of the daily security check

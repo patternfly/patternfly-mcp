@@ -36,7 +36,7 @@ export default {
   projects: [
     {
       displayName: 'unit',
-      roots: ['src'],
+      roots: ['<rootDir>/src'],
       testMatch: ['<rootDir>/src/**/*.test.ts'],
       setupFilesAfterEnv: ['<rootDir>/jest.setupTests.ts'],
       ...baseConfig,
@@ -64,7 +64,7 @@ export default {
     },
     {
       displayName: 'e2e',
-      roots: ['tests/e2e'],
+      roots: ['<rootDir>/tests/e2e'],
       testMatch: ['<rootDir>/tests/e2e/**/*.test.ts'],
       setupFilesAfterEnv: ['<rootDir>/tests/e2e/jest.setupTests.ts'],
       transformIgnorePatterns: [
@@ -74,8 +74,14 @@ export default {
     },
     {
       displayName: 'audit',
-      roots: ['tests/audit'],
+      roots: ['<rootDir>/tests/audit'],
       testMatch: ['<rootDir>/tests/audit/**/*.test.ts'],
+      ...baseConfig
+    },
+    {
+      displayName: 'scripts',
+      roots: ['<rootDir>/scripts', '<rootDir>/tests/scripts'],
+      testMatch: ['<rootDir>/tests/scripts/**/*.test.ts'],
       ...baseConfig
     }
   ]

@@ -6,6 +6,7 @@ about: Create a report to help us improve
 
 ## Description
 <!-- Provide a quick overview of the issue being raised. -->
+<!-- Link a Git diff with the format https://github.com/patternfly/patternfly-mcp/compare/main...your-username:your-branch -->
 
 ### Expected behavior
 <!-- Describe the expected behavior for the program. -->

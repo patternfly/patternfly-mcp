@@ -216,7 +216,7 @@ Run the appropriate command for your terminal:
 ### 3. Windows-Specific: Symbolic Links
 On Windows, folders such as `.agents/skills` and `.claude/skills` can look empty if **Git** created them as normal folders instead of **links** to `guidelines/skills`. This often happens because Developer Mode, or Git symlink support, hasn't been enabled.
 
-For detailed instructions on enabling and restoring symlinks, please refer to the **[Windows and repository symlinks section in CONTRIBUTING.md](../CONTRIBUTING.md#windows-and-repository-symlinks)**.
+For detailed instructions on enabling and restoring symlinks, please refer to the **[Windows and repository symlinks section in CONTRIBUTING.md](../CONTRIBUTING.md#step-2-setting-up-your-workspace)**.
 
 ### 4. Configuration Best Practices
 To ensure you stay up to date with the latest PatternFly documentation, use the `@latest` tag in your configuration:
