@@ -423,7 +423,7 @@ These terms describe **how tools and their related properties are represented** 
 
 ### General issues
 
-- **Server won't start**: Check Node.js version (requires Node.js >= 22 for tool plugins).
+- **Server won't start**: Check Node.js version (requires Node.js >= 22 to run the server).
 - **Missing tools/resources**: Verify the server started successfully and check logs with `--log-stderr`.
 - **Type errors**: Ensure TypeScript types are installed: `npm install --save-dev @types/node`
 

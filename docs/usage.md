@@ -105,10 +105,10 @@ Depending on your environment, you may have to delay updating to the minimum Nod
 
 #### When to choose `@latest` or a pinned version for configuration
 
-| Node.js version | Package spec                        | Feature notes                                                                                                          |
-|-----------------|-------------------------------------|------------------------------------------------------------------------------------------------------------------------|
-| **>=22**        | `@patternfly/patternfly-mcp@latest` | Newest PatternFly features and rules. Includes **enhanced security isolation** for custom tool plugins.                |
-| **>=20**        | `@patternfly/patternfly-mcp@1.1.0`  | Standard features and rules. Lacks **advanced tool isolation**; compatible with all default PatternFly configurations. |
+| Node.js version | Package spec                        | Feature notes                                                                                                      |
+|-----------------|-------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| **>=22**        | `@patternfly/patternfly-mcp@latest` | Newest PatternFly features and rules. Includes **enhanced security isolation** for custom tool plugins.            |
+| **>=20**        | `@patternfly/patternfly-mcp@1.1.0`  | Standard features and rules. Lacks **custom tool plugins**; compatible with all default PatternFly configurations. |
 
 ##### Node.js 20 compatible pin
 
