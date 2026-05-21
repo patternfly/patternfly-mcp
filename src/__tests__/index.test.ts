@@ -1,16 +1,19 @@
 import { main, start, type PfMcpOptions, type PfMcpCliOptions } from '../index';
-import { parseCliOptions, type GlobalOptions } from '../options';
+import { type GlobalOptions } from '../options';
+import { parseCliOptions, parseProgrammaticOptions } from '../options.parser';
 import { DEFAULT_OPTIONS } from '../options.defaults';
 import { getSessionOptions, runWithSession, setOptions } from '../options.context';
 import { runServer } from '../server';
 
 // Mock dependencies
 jest.mock('../options');
+jest.mock('../options.parser');
 jest.mock('../options.context');
 jest.mock('../server');
 jest.mock('../server.tools');
 
 const mockParseCliOptions = parseCliOptions as jest.MockedFunction<typeof parseCliOptions>;
+const mockParseProgrammaticOptions = parseProgrammaticOptions as jest.MockedFunction<typeof parseProgrammaticOptions>;
 const mockSetOptions = setOptions as jest.MockedFunction<typeof setOptions>;
 const mockRunServer = runServer as jest.MockedFunction<typeof runServer>;
 const mockGetSessionOptions = getSessionOptions as jest.MockedFunction<typeof getSessionOptions>;
@@ -36,7 +39,13 @@ describe('main', () => {
     mockParseCliOptions.mockImplementation(() => {
       callOrder.push('parse');
 
-      return { logging: defaultLogging } as PfMcpCliOptions;
+      return { options: { logging: defaultLogging }, experimentalOptions: [] } as any;
+    });
+
+    mockParseProgrammaticOptions.mockImplementation(() => {
+      callOrder.push('parse');
+
+      return { options: { logging: defaultLogging }, experimentalOptions: [] } as any;
     });
 
     mockSetOptions.mockImplementation(options => {
@@ -145,6 +154,9 @@ describe('main', () => {
   ])('should attempt to parse options, merge options, then run the server, $description', async ({ programmaticOptions, method }) => {
     await method(programmaticOptions as any);
 
+    expect(mockParseCliOptions).toHaveBeenCalledTimes(1);
+    expect(mockParseProgrammaticOptions).toHaveBeenCalledTimes(1);
+    expect(mockSetOptions).toHaveBeenCalledTimes(1);
     expect(callOrder).toEqual(expect.arrayContaining(['parse', 'set', 'run']));
   });
 });

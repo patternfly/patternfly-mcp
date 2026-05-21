@@ -1,4 +1,4 @@
-import { getNodeMajorVersion } from '../options.helpers';
+import { getNodeMajorVersion, kebabToCamel } from '../options.helpers';
 
 describe('getNodeMajorVersion', () => {
   it('should get the current Node.js version', () => {
@@ -44,5 +44,47 @@ describe('getNodeMajorVersion', () => {
     }
   ])('should handle, $description', ({ value, expected }) => {
     expect(getNodeMajorVersion(value as any)).toBe(expected);
+  });
+});
+
+describe('kebabToCamel', () => {
+  it.each([
+    {
+      description: 'a single word',
+      value: 'verbose',
+      expected: 'verbose'
+    },
+    {
+      description: 'a standard kebab-case string',
+      value: 'log-level',
+      expected: 'logLevel'
+    },
+    {
+      description: 'multiple hyphens',
+      value: 'experimental-plugin-isolation',
+      expected: 'experimentalPluginIsolation'
+    },
+    {
+      description: 'a leading hyphen',
+      value: '-experimental-prefix',
+      expected: 'ExperimentalPrefix'
+    },
+    {
+      description: 'a trailing hyphen',
+      value: 'verbose-',
+      expected: 'verbose'
+    },
+    {
+      description: 'consecutive hyphens',
+      value: 'foo--bar',
+      expected: 'fooBar'
+    },
+    {
+      description: 'an empty string',
+      value: '',
+      expected: ''
+    }
+  ])('should convert $description to camelCase', ({ value, expected }) => {
+    expect(kebabToCamel(value)).toBe(expected);
   });
 });

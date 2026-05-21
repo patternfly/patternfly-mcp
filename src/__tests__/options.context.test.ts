@@ -14,13 +14,33 @@ const MockMcpServer = McpServer as jest.MockedClass<typeof McpServer>;
 const MockStdioServerTransport = StdioServerTransport as jest.MockedClass<typeof StdioServerTransport>;
 
 describe('setOptions', () => {
+  it('should populate the experimental array when a registered option differs from default', () => {
+    const experimentalOptions = new Set<any>(['pluginIsolation']);
+    const options = setOptions({
+      pluginIsolation: 'none',
+      experimental: ['pluginIsolation']
+    }, { experimentalOptions });
+
+    expect(options.experimental).toContain('pluginIsolation');
+  });
+
+  it('should not populate the experimental array when options match defaults', () => {
+    const experimentalOptions = new Set<any>(['pluginIsolation']);
+    const options = setOptions({
+      pluginIsolation: DEFAULT_OPTIONS.pluginIsolation,
+      experimental: ['pluginIsolation']
+    }, { experimentalOptions });
+
+    expect(options.experimental).not.toContain('pluginIsolation');
+  });
+
   it('should ignore valid but incorrect options for merged options', () => {
     const updatedOptions = setOptions({
-      logging: 'oops' as any,
-      resourceMemoOptions: 'gotcha' as any,
-      toolMemoOptions: 'really?' as any,
-      pluginIsolation: 'fun' as any
-    });
+      logging: 'oops',
+      resourceMemoOptions: 'gotcha',
+      toolMemoOptions: 'really?',
+      pluginIsolation: 'fun'
+    } as any);
 
     expect(updatedOptions.logging.protocol).toBe(DEFAULT_OPTIONS.logging.protocol);
     expect(updatedOptions.resourceMemoOptions?.readFile?.expire).toBe(DEFAULT_OPTIONS.resourceMemoOptions?.readFile?.expire);
@@ -29,7 +49,7 @@ describe('setOptions', () => {
   });
 
   it('should ignore null/invalid nested overrides safely', () => {
-    const updatedOptions = setOptions({ logging: null as any, resourceMemoOptions: null as any, pluginIsolation: null as any });
+    const updatedOptions = setOptions({ logging: null, resourceMemoOptions: null, pluginIsolation: null } as any);
 
     expect(typeof updatedOptions.logging.protocol).toBe('boolean');
     expect(updatedOptions.logging.protocol).toBe(DEFAULT_OPTIONS.logging.protocol);

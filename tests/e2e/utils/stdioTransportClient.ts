@@ -5,7 +5,7 @@
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import { ResultSchema, LoggingMessageNotificationSchema, type LoggingLevel } from '@modelcontextprotocol/sdk/types.js';
-import { parseCliOptions } from '../../../src/options';
+import { parseCliOptions } from '../../../src/options.parser';
 
 export type { Request as RpcRequest } from '@modelcontextprotocol/sdk/types.js';
 
@@ -73,7 +73,7 @@ export const startServer = async ({
     }
   );
 
-  const parsedArgs = parseCliOptions(args);
+  const { options: parsedArgs } = parseCliOptions(args);
   const loggingArgs = parsedArgs?.logging || {};
 
   // Track whether we're intentionally closing the client
