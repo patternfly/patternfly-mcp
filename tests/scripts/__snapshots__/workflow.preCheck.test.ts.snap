@@ -1,0 +1,150 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`getPullRequest should resolve and aggregate PR metadata and resources: pr 1`] = `
+{
+  "author": "author1",
+  "authorRole": "MEMBER",
+  "authorType": "User",
+  "comments": [
+    "comment1",
+  ],
+  "description": "description",
+  "fileCount": 10,
+  "files": [
+    "file1",
+  ],
+}
+`;
+
+exports[`signatureScan should scan for signatures, "The Tell" 1`] = `
+{
+  "errors": [
+    "⚠️ Large number of file updates detected (20 files exceeds the 15 file limit). **Resolution:** Smaller PRs are easier to review and can lead to faster merges. Please split these changes into focused PRs, each addressing a single concern.",
+    "⚠️ Core file modifications detected (src/server.ts, tests/e2e/__snapshots__/stdioTransport.test.ts.snap). **Resolution:** Please link a related GitHub, or Jira, issue in your PR description. If no issue exists, please create an issue first so we can discuss alignment with our roadmap.",
+  ],
+  "hasFailed": false,
+  "hasTell": true,
+  "isAgentModified": false,
+  "isCoreModified": true,
+  "isExtraModified": false,
+  "isGenModified": true,
+  "isMaxFilesUpdated": true,
+  "isPrTemplateModified": true,
+  "isSecModified": false,
+}
+`;
+
+exports[`signatureScan should scan for signatures, agent modifications 1`] = `
+{
+  "errors": [
+    "⚠️ Agent guideline updates detected (.aiignore). **Resolution:** Please link a related GitHub, or Jira, issue in your PR description. Changes to shared guidelines require maintainer review for security and quality. ",
+  ],
+  "hasFailed": false,
+  "hasTell": false,
+  "isAgentModified": true,
+  "isCoreModified": false,
+  "isExtraModified": false,
+  "isGenModified": false,
+  "isMaxFilesUpdated": false,
+  "isPrTemplateModified": false,
+  "isSecModified": false,
+}
+`;
+
+exports[`signatureScan should scan for signatures, core modifications 1`] = `
+{
+  "errors": [
+    "⚠️ Core file modifications detected (src/server.ts). **Resolution:** Please link a related GitHub, or Jira, issue in your PR description. If no issue exists, please create an issue first so we can discuss alignment with our roadmap.",
+  ],
+  "hasFailed": false,
+  "hasTell": false,
+  "isAgentModified": false,
+  "isCoreModified": true,
+  "isExtraModified": false,
+  "isGenModified": false,
+  "isMaxFilesUpdated": false,
+  "isPrTemplateModified": false,
+  "isSecModified": false,
+}
+`;
+
+exports[`signatureScan should scan for signatures, extra/generated files 1`] = `
+{
+  "errors": [
+    "⚠️ New workflow file updates detected. These updates may be tailored to a specific workflow (scripts/__mocks__). **Resolution:** Please align with the project's existing code and testing style, and remove these changes to maintain consistency.",
+  ],
+  "hasFailed": false,
+  "hasTell": false,
+  "isAgentModified": false,
+  "isCoreModified": false,
+  "isExtraModified": true,
+  "isGenModified": false,
+  "isMaxFilesUpdated": false,
+  "isPrTemplateModified": false,
+  "isSecModified": false,
+}
+`;
+
+exports[`signatureScan should scan for signatures, missing template metadata 1`] = `
+{
+  "errors": [],
+  "hasFailed": false,
+  "hasTell": false,
+  "isAgentModified": false,
+  "isCoreModified": false,
+  "isExtraModified": false,
+  "isGenModified": false,
+  "isMaxFilesUpdated": false,
+  "isPrTemplateModified": true,
+  "isSecModified": false,
+}
+`;
+
+exports[`signatureScan should scan for signatures, security modifications 1`] = `
+{
+  "errors": [
+    "⚠️ Updates to security-sensitive files detected (.github/workflows/pr_precheck.yml). **Resolution:** These changes require a core contributor's security review. You can remove these changes or provide a clear explanation for these updates in your PR description.",
+  ],
+  "hasFailed": false,
+  "hasTell": false,
+  "isAgentModified": false,
+  "isCoreModified": false,
+  "isExtraModified": false,
+  "isGenModified": false,
+  "isMaxFilesUpdated": false,
+  "isPrTemplateModified": false,
+  "isSecModified": true,
+}
+`;
+
+exports[`signatureScan should scan for signatures, too many files 1`] = `
+{
+  "errors": [
+    "⚠️ Large number of file updates detected (16 files exceeds the 15 file limit). **Resolution:** Smaller PRs are easier to review and can lead to faster merges. Please split these changes into focused PRs, each addressing a single concern.",
+  ],
+  "hasFailed": false,
+  "hasTell": false,
+  "isAgentModified": false,
+  "isCoreModified": false,
+  "isExtraModified": false,
+  "isGenModified": false,
+  "isMaxFilesUpdated": true,
+  "isPrTemplateModified": false,
+  "isSecModified": false,
+}
+`;
+
+exports[`signatureScan should scan for signatures, valid PR 1`] = `
+{
+  "errors": [],
+  "hasFailed": false,
+  "hasTell": false,
+  "isAgentModified": false,
+  "isCoreModified": false,
+  "isExtraModified": false,
+  "isGenModified": false,
+  "isMaxFilesUpdated": false,
+  "isPrTemplateModified": false,
+  "isSecModified": false,
+}
+`;

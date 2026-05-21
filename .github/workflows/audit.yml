@@ -1,16 +1,21 @@
-name: Data Audit
+name: Security & Data Audit
 
 on:
   pull_request:
     paths:
       - 'src/docs.json'
+      - 'scripts/**'
+      - 'tests/scripts/**'
       - 'tests/audit/**'
+      - 'package.json'
+      - 'package-lock.json'
   schedule:
     - cron: '0 0 * * *' # Daily at midnight
   workflow_dispatch:
 
 jobs:
-  audit-links:
+  documentation-audit:
+    name: Documentation Audit
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -30,3 +35,37 @@ jobs:
           DOCS_AUDIT_MAX_TOTAL: ${{ github.event_name == 'schedule' && '0' || '50' }}
         # Advisories are non-blocking for PRs
         continue-on-error: ${{ github.event_name == 'pull_request' }}
+
+  dependency-audit:
+    name: Dependency Audit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v6.3.0
+        with:
+          node-version: 22.x
+          cache: npm
+      - name: Run npm audit
+        run: npm audit --omit-dev --audit-level=critical
+        # Advisories are non-blocking for PRs
+        continue-on-error: ${{ github.event_name == 'pull_request' }}
+
+  script-audit:
+    name: Script Audit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v6.3.0
+        with:
+          node-version: 22.x
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run script audit
+        run: npm run test:scripts
