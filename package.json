@@ -6,6 +6,7 @@
   "type": "module",
   "imports": {
     "~docsCatalog": "./src/docs.json",
+    "#buildDocs": "./dist/patternFly.buildDocs.js",
     "#toolsHost": "./dist/server.toolsHost.js"
   },
   "exports": {
@@ -27,6 +28,7 @@
   "scripts": {
     "build": "npm run build:clean; npm run test:types; pkgroll",
     "build:clean": "rm -rf dist",
+    "build:api": "node dist/cli.js --mode docs --log-stderr",
     "build:watch": "npm run build -- --watch",
     "release": "changelog --non-cc --link-url https://github.com/patternfly/patternfly-mcp.git",
     "start": "node dist/cli.js --log-stderr",
