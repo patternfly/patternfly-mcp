@@ -6,10 +6,12 @@ import { memo } from './server.caching';
  *
  * @interface ClosestSearchOptions
  *
+ * @property maxDistance - Maximum edit distance for a match. Generally, stick to values `<= 5` for meaningful results.
  * @property missingReturnValue - The value to return when no match is found.
  * @property normalizeFn - Function to normalize strings for comparison.
  */
 interface ClosestSearchOptions {
+  maxDistance?: number | undefined;
   missingReturnValue?: unknown;
   normalizeFn?: (str: unknown) => string;
 }
@@ -85,6 +87,20 @@ interface FuzzySearchOptions {
 }
 
 /**
+ * `distance` wrapper to calculate Levenshtein distance between two strings.
+ *
+ * @param a - First string to compare
+ * @param b - Second string to compare
+ * @returns Levenshtein distance between the two strings.
+ */
+const findDistance = (a: string, b: string) => distance(a, b);
+
+/**
+ * Memoized version of findDistance.
+ */
+findDistance.memo = memo(findDistance, { cacheLimit: 50 });
+
+/**
  * Internal lightweight normalization: coerce any value to string, trim, lowercase,
  * remove diacritics (a sign/accent character), squash separators.
  *
@@ -131,6 +147,7 @@ const findClosest = (
   query: unknown,
   items: unknown[] = [],
   {
+    maxDistance,
     missingReturnValue = null,
     normalizeFn = normalizeString.memo
   }: ClosestSearchOptions = {}
@@ -149,8 +166,23 @@ const findClosest = (
     return missingReturnValue;
   }
 
+  if (items[itemIndex] && typeof maxDistance === 'number') {
+    const dis = findDistance.memo(normalizedQuery, normalizedItems[itemIndex] as string);
+
+    if (dis <= maxDistance) {
+      return items[itemIndex];
+    } else {
+      return missingReturnValue;
+    }
+  }
+
   return items[itemIndex];
 };
+
+/**
+ * Memoized version of findClosest
+ */
+findClosest.memo = memo(findClosest);
 
 /**
  * Fuzzy search using fastest-levenshtein
@@ -232,7 +264,7 @@ const fuzzySearch = (
       Math.abs(normalizedItem.length - normalizedQuery.length) <= maxDistance
     ) {
       matchType = 'fuzzy';
-      editDistance = distance(normalizedItem, normalizedQuery);
+      editDistance = findDistance.memo(normalizedItem, normalizedQuery);
     }
 
     if (matchType === undefined) {
@@ -275,6 +307,7 @@ export {
   normalizeString,
   fuzzySearch,
   findClosest,
+  findDistance,
   type ClosestSearchOptions,
   type FuzzySearch,
   type FuzzySearchResult,

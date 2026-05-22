@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { type McpTool } from './mcpSdk';
 import { stringJoin } from './server.helpers';
 import { assertInput, assertInputStringLength, assertInputStringNumberEnumLike } from './server.assertions';
+import { findClosest } from './server.search';
 import { getOptions } from './options.context';
 import { searchPatternFly } from './patternFly.search';
 import { getPatternFlyMcpResources } from './patternFly.getResources';
@@ -39,7 +40,7 @@ const searchPatternFlyDocsTool = (options = getOptions()): McpTool => {
       });
     }
 
-    const { latestVersion } = await getPatternFlyMcpResources.memo();
+    const { keywordsIndex, latestVersion } = await getPatternFlyMcpResources.memo();
     const normalizedVersion = await normalizeEnumeratedPatternFlyVersion(version);
     const updatedVersion = normalizedVersion || latestVersion;
 
@@ -59,11 +60,16 @@ const searchPatternFlyDocsTool = (options = getOptions()): McpTool => {
     );
 
     if (!isSearchWildCardAll && searchResults.length === 0) {
+      const suggestion = findClosest.memo(searchQuery, keywordsIndex.toReversed(), { maxDistance: 5 });
+
       return {
         content: [{
           type: 'text',
-          text: stringJoin.newline(
-            `No PatternFly resources found matching "${searchQuery}"`,
+          text: stringJoin.newlineFiltered(
+            stringJoin.filtered(
+              `No PatternFly resources found matching "${searchQuery}".`,
+              suggestion && `Try a search for "${suggestion}".`
+            ),
             options.separator,
             '**Important**:',
             '  - Use a search all ("*") to find all available resources.'
@@ -107,14 +113,9 @@ const searchPatternFlyDocsTool = (options = getOptions()): McpTool => {
     }
 
     const results = parseResults.map((result, index) => {
-      const availableVersions = new Set<string>();
       const urlList = result.entries
         .filter(entry => entry.path)
-        .map(entry => {
-          availableVersions.add(entry.version);
-
-          return `      - [${entry.displayName} - (${entry.version}) - ${entry.description}](${entry.path})`;
-        });
+        .map(entry => `      - [${entry.displayName} - (${entry.version}) - ${entry.description}](${entry.path})`);
 
       const uri = result.uri;
       const uriSchemas = result.uriSchemas;
