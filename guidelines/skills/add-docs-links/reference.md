@@ -1,4 +1,4 @@
-# docs.json Reference
+# Add docs links — Reference (PatternFly MCP)
 
 ## File location
 

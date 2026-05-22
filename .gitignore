@@ -61,3 +61,6 @@ coverage/
 # agent
 .archive
 .agent
+reports/
+.output.txt
+poc/

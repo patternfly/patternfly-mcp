@@ -155,7 +155,7 @@ Centralized utilities in `server.helpers.ts`, `server.schema.ts`, and `server.ge
 - **Helpers**: Use `stringJoin.newline()`, `freezeObject()`, `timeoutFunction()`, and `mergeObjects()`.
 - **Schemas**: Use `normalizeInputSchema(schema)` to convert JSON Schema or Zod shapes into valid Zod instances.
 - **Type Guards**: Use `isPlainObject()`, `isZodSchema()`, and `isErrorLike()` for runtime narrowing.
-- **Zod Detection**: Robustly detect Zod schemas by checking for internal brands: `_def` for Zod v3 and `_zod` for Zod v4. Avoid relying solely on `parse()` or `safeParse()` methods.
+- **Zod Detection**: Robustly detect Zod schemas by checking for the public `.def` property (Zod v4+) or internal brands: `_zod` (v4) and `_def` (v3). Avoid relying solely on `parse()` or `safeParse()` methods.
 - **Immutability**: Options and Session objects are **frozen**; use `structuredClone()` before modification.
 
 ### 3.5 Validation and Sanitization

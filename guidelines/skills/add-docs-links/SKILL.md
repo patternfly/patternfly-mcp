@@ -7,7 +7,9 @@ description: Maintains the PatternFly MCP documentation catalog in src/docs.json
 
 ## When to use
 
-User wants to **add**, **change**, or **remove** rows in `src/docs.json`, or fix broken / unreachable catalog links. They may paste **any GitHub URL** (blob or raw); you convert blob → raw, pick refs, verify reachability, shape entries, update `meta` and `generated`, and run tests.
+- User wants to **add**, **change**, or **remove** rows in `src/docs.json`, or fix broken / unreachable catalog links
+- User provides a GitHub URL (blob or raw) to register in the catalog — convert blob → raw, pick refs, verify reachability, shape entries, update `meta` and `generated`, and run tests
+- User asks to update or fix `docs.json` entries, contribute to the docs catalog, or align with docs.json tests and CI audit
 
 For **edits or removals**: find the row by `path` and/or its `docs` key; update `meta` / `generated`; run tests. Same rules as adds: whitelist, unique `path`, and `src/__tests__/docs.json.test.ts` (including `baseHashes`).
 
@@ -20,7 +22,7 @@ For **edits or removals**: find the row by `path` and/or its `docs` key; update 
    - New ref for an existing repo: resolve SHA (e.g. commits API) or use a stable tag.
 
 2. **Whitelist**
-   - `path` must match `patternflyOptions.urlWhitelist` in `src/options.defaults.ts`. See [reference.md](reference.md#url-whitelist-allowed-domains). Use **https** only. Do not widen the whitelist in a catalog-only PR.
+   - `path` must match `patternflyOptions.urlWhitelist` in `src/options.defaults.ts`. See [reference.md — URL whitelist](reference.md#url-whitelist-allowed-domains). Use **https** only. Do not widen the whitelist in a catalog-only PR.
 
 3. **Reachability**
    - Response must be 2xx (e.g. `curl -sI -o /dev/null -w "%{http_code}" "<url>"`). If not, fix ref or path; do not add a dead link.
@@ -46,6 +48,10 @@ For **edits or removals**: find the row by `path` and/or its `docs` key; update 
    - If snapshots fail, update only where the catalog drives output (`docs.embedded`, `tool.patternFly*`, `resource.patternFlyDocs*`), e.g. scoped `npm test -- -u path/to/file.test.ts`.
 
 **CI:** `.github/workflows/audit.yml` on PRs that touch `src/docs.json` or `tests/audit/**`.
+
+## Additional resources
+
+- [reference.md](reference.md) — entry format, top-level structure, URL whitelist, duplicate check, ref lookup, unit test constraints, example entry
 
 ## Quick checks
 
