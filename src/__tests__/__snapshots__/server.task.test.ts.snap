@@ -1,0 +1,218 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`deferTask should cancel a task 1`] = `
+[
+  {
+    "type": "start",
+    "value": {
+      "controller": AbortController {},
+      "count": 1,
+      "isRunning": false,
+      "promise": Promise {},
+    },
+  },
+  {
+    "type": "run",
+    "value": {
+      "controller": AbortController {},
+      "count": 1,
+      "isRunning": false,
+      "promise": Promise {},
+    },
+  },
+]
+`;
+
+exports[`deferTask should enforce a timeout 1`] = `
+[
+  [
+    {
+      "type": "start",
+      "value": [Function],
+    },
+  ],
+  [
+    {
+      "type": "run",
+      "value": [Function],
+    },
+  ],
+  [
+    {
+      "type": "isRunning",
+      "value": [Function],
+    },
+  ],
+  [
+    {
+      "type": "run:error",
+      "value": [Function],
+    },
+  ],
+  [
+    {
+      "type": "isRunning",
+      "value": [Function],
+    },
+  ],
+]
+`;
+
+exports[`deferTask should enforce a timeout: handle 1`] = `
+{
+  "isRunning": [Function],
+  "start": [Function],
+  "stop": [Function],
+}
+`;
+
+exports[`deferTask should execute a task, async 1`] = `
+[
+  [
+    {
+      "type": "isRunning",
+      "value": [Function],
+    },
+  ],
+  [
+    {
+      "type": "start",
+      "value": [Function],
+    },
+  ],
+  [
+    {
+      "type": "run",
+      "value": [Function],
+    },
+  ],
+]
+`;
+
+exports[`deferTask should execute a task, async options 1`] = `
+[
+  [
+    {
+      "type": "isRunning",
+      "value": [Function],
+    },
+  ],
+  [
+    {
+      "type": "start",
+      "value": [Function],
+    },
+  ],
+  [
+    {
+      "type": "run",
+      "value": [Function],
+    },
+  ],
+  [
+    {
+      "type": "run",
+      "value": [Function],
+    },
+  ],
+  [
+    {
+      "type": "run",
+      "value": [Function],
+    },
+  ],
+]
+`;
+
+exports[`deferTask should execute a task, sync 1`] = `
+[
+  [
+    {
+      "type": "isRunning",
+      "value": [Function],
+    },
+  ],
+  [
+    {
+      "type": "start",
+      "value": [Function],
+    },
+  ],
+  [
+    {
+      "type": "run",
+      "value": [Function],
+    },
+  ],
+]
+`;
+
+exports[`deferTask should execute a task, sync options 1`] = `
+[
+  [
+    {
+      "type": "isRunning",
+      "value": [Function],
+    },
+  ],
+  [
+    {
+      "type": "start",
+      "value": [Function],
+    },
+  ],
+  [
+    {
+      "type": "run",
+      "value": [Function],
+    },
+  ],
+  [
+    {
+      "type": "run",
+      "value": [Function],
+    },
+  ],
+  [
+    {
+      "type": "run",
+      "value": [Function],
+    },
+  ],
+]
+`;
+
+exports[`deferTask should stop a task 1`] = `
+[
+  [
+    {
+      "type": "start",
+      "value": [Function],
+    },
+  ],
+  [
+    {
+      "type": "run",
+      "value": [Function],
+    },
+  ],
+  [
+    {
+      "type": "isRunning",
+      "value": [Function],
+    },
+  ],
+  [
+    {
+      "type": "stop",
+      "value": [Function],
+    },
+  ],
+  [
+    {
+      "type": "isRunning",
+      "value": [Function],
+    },
+  ],
+]
+`;

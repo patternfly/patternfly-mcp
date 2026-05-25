@@ -416,7 +416,7 @@ const runServer = async (options: ServerOptions = getOptions(), {
 
     running = true;
     log.info(`${options.name} server running on ${options.isHttp ? 'HTTP' : 'stdio'} transport`);
-    statsTracker.setStats(httpHandle);
+    statsTracker.startStats(httpHandle);
   } catch (error) {
     log.error(`Error creating ${options.name} server:`, error);
     throw error;
