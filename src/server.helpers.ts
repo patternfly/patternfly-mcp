@@ -183,19 +183,41 @@ const isAsync = (obj: unknown) => /^\[object (Async|AsyncFunction)]/.test(Object
 const isPromise = (obj: unknown) => /^\[object (Promise|Async|AsyncFunction)]/.test(Object.prototype.toString.call(obj));
 
 /**
- * Check if a value is a valid URL, URL-like.
+ * Check if a value is a URL object.
+ *
+ * Setting allowedProtocols to `undefined` or an empty array will allow all protocols.
+ *
+ * @param obj - The unknown value to check
+ * @param [options] - Options
+ * @param [options.allowedProtocols] - Array of allowed URL protocols. Default `undefined`.
+ * @returns `true` if the value is an instance of URL
+ */
+const isUrlObject = (obj: unknown, { allowedProtocols }: { allowedProtocols?: string[] | undefined } = {}): obj is URL => {
+  const isUrlObj = obj instanceof URL;
+  const isProtocolAvailable = Array.isArray(allowedProtocols) && allowedProtocols.length > 0;
+  const isUrlObjAndProtocolAllowed = isUrlObj && isProtocolAvailable && allowedProtocols?.includes(obj.protocol.slice(0, -1));
+
+  return (isUrlObj && !isProtocolAvailable) || isUrlObjAndProtocolAllowed;
+};
+
+/**
+ * Check if a value is a valid URL object, URL string, URL-like.
  *
  * @note URL-like validation can be updated to support more URL schemes (e.g. `blob:`).
  * Be aware this helper is used to gate-keep tools-as-plugins. Consider additions carefully
  * since they may fall outside our use cases.
  *
- * @param str - String to check
+ * @param str - String or object to check
  * @param [options] - Options
  * @param [options.allowedProtocols] - List of allowed URL protocols. Default: `['file', 'http', 'https', 'data', 'node']`
  * @param [options.isStrict] - If `true`, only strict URL validation is performed. Default: `true`
  * @returns `true` if the string is a valid URL, URL-like.
  */
 const isUrl = (str: unknown, { allowedProtocols = ['file', 'http', 'https', 'data', 'node'], isStrict = true } = {}) => {
+  if (isUrlObject(str, { allowedProtocols })) {
+    return true;
+  }
+
   if (typeof str !== 'string' || !str.trim()) {
     return false;
   }
@@ -374,9 +396,11 @@ const hashNormalizeValue = (value: unknown): unknown => {
  * Generate a consistent hash from a value
  *
  * @param anyValue - Value to hash
+ * @param [options] - Hash options
+ * @param [options.isLowercase] - If `true`, lowercase the stringified value before hashing. Default: `false`
  * @returns Hash string
  */
-const generateHash = (anyValue: unknown): string => {
+const generateHash = (anyValue: unknown, { isLowercase = false }: { isLowercase?: boolean } = {}): string => {
   const normalizeValue = (_key: string, value: unknown) => hashNormalizeValue(value);
   let stringify: string;
 
@@ -386,11 +410,15 @@ const generateHash = (anyValue: unknown): string => {
     stringify = `$error:${Object.prototype.toString.call(anyValue)}:${error}`;
   }
 
-  return hashCode(stringify);
+  return hashCode(isLowercase ? stringify.toLowerCase() : stringify);
 };
 
 /**
  * Check if a string URL matches a whitelist entry
+ *
+ * @note Avoid decoding the URL as it can introduce unnecessary security risks.
+ * The prefix checks must use the raw path, so percent-encoded slashes and
+ * similar sequences can't attempt to bypass the whitelist using decoding.
  *
  * @param url - string URL to check
  * @param {WhitelistUrl[]} whitelist - List of whitelist entries
@@ -466,6 +494,69 @@ const listIncrementalCombinations = (values: string[]): string[][] =>
   }, [[]] as string[][]);
 
 /**
+ * URL and URI parser with prefix/protocol support.
+ *
+ * @note Avoid decoding for paths for now. If it becomes necessary to use decoding,
+ * review adding a strict whitelist check before the decoding.
+ *
+ * @param url - URL or URI to parse
+ * @param [options] - Configuration options
+ * @param [options.prefix] - Optional filtering URL prefix sans-colon and slashes (e.g. "http" vs. "http://").
+ *     This will match against the provided URI. If the URI does not start with the prefix, `undefined` is returned.
+ * @param [options.normalizeSearchParamKeys=true] - If `true`, search param keys are normalized to lowercase. Default: `true`
+ * @param [options.isStrict] - If `true`, only strict URL and path validation is performed. Default: `true`
+ * @returns Parsed URI, or `undefined` if parsing fails.
+ */
+const parseUrl = (url: string, { prefix, normalizeSearchParamKeys = true, isStrict = true }: { prefix?: string, normalizeSearchParamKeys?: boolean, isStrict?: boolean } = {}) => {
+  const isPrefix = typeof prefix === 'string' && prefix.length > 0 && !prefix.includes(':') && !prefix.includes('/');
+  const opts = isPrefix ? { allowedProtocols: [prefix] } : {};
+  const isUri = isUrl(url, { ...opts, isStrict });
+
+  // Normalize search param keys into a plain object with original keys, or a plain object with lowercase keys.
+  const normalizeParamKeys = (searchParams: URLSearchParams) => {
+    if (normalizeSearchParamKeys) {
+      return Object.fromEntries(new URLSearchParams(
+        Array.from(searchParams, ([key, value]) => [key.toLowerCase(), value])
+      ));
+    }
+
+    return Object.fromEntries(searchParams);
+  };
+
+  if (isUri) {
+    try {
+      const updatedUrl = new URL(url);
+
+      return {
+        protocol: updatedUrl.protocol,
+        hostname: updatedUrl.hostname,
+        path: updatedUrl.pathname.replace(/^\//, ''),
+        params: normalizeParamKeys(updatedUrl.searchParams)
+      };
+    } catch {
+      return undefined;
+    }
+  }
+
+  if (isPrefix && isPath(url, { isStrict })) {
+    try {
+      const updatedUrl = new URL(`${prefix}://${url}`);
+
+      return {
+        protocol: updatedUrl.protocol,
+        hostname: updatedUrl.hostname,
+        path: updatedUrl.pathname.replace(/^\//, ''),
+        params: normalizeParamKeys(updatedUrl.searchParams)
+      };
+    } catch {
+      return undefined;
+    }
+  }
+
+  return undefined;
+};
+
+/**
  * Basic split for URIs to find base and search.
  *
  * @note We only support a single `{?...}` query segment. Using `{?a}{?b}{?c}` will fail. Make sure
@@ -537,17 +628,21 @@ stringJoin.newlineFiltered = (...args: unknown[]) => stringJoin(args, { sep: '\n
 
 /**
  * Construct a search/query string from an object of key-value pairs, optionally filtering out
- * specific values and adding a `?` prefix.
+ * specific values and adding a context-aware separator.
+ *
+ * @note This helper needs to migrate over to a "buildUrl" helper function. Patched to allow base
+ * detection for prefixes in the short-term.
  *
  * @param values - An object containing key-value pairs to be converted into a query string.
  * @param [options] - Configuration options for constructing the query string.
- * @param [options.filter=[undefined, null]] - Array of values to filter out from the key-value pairs.
- * @param [options.prefix=false] - Determines whether to prepend a "?" to the query string.
- * @returns The constructed query string, optionally prefixed with "?", or `undefined` if no valid key-value pairs remain.
+ * @param [options.filter=[undefined, null]] - Array of values to filter out.
+ * @param [options.prefix=false] - Whether to prepend a separator.
+ * @param [options.base=''] - The base URI to check for existing separators.
+ * @returns The constructed query string with the correct separator.
  */
 const buildSearchString = (
   values: Record<string, unknown>,
-  { filter = [undefined, null], prefix = false }: { filter?: unknown[], prefix?: boolean } = {}
+  { filter = [undefined, null], prefix = false, base = '' }: { filter?: unknown[], prefix?: boolean, base?: string | undefined } = {}
 ) => {
   if (!isPlainObject(values)) {
     return undefined;
@@ -565,8 +660,64 @@ const buildSearchString = (
 
   const entriesToString = entries.sort(([aKey], [bKey]) => aKey.localeCompare(bKey)).map(([key, value]) => [key, `${value}`]);
   const searchParams = new URLSearchParams(Object.fromEntries(entriesToString));
+  const searchString = searchParams.toString();
 
-  return prefix ? `?${searchParams.toString()}` : searchParams.toString();
+  if (prefix) {
+    const separator = base.includes('?') ? '&' : '?';
+
+    return `${separator}${searchString}`;
+  }
+
+  return searchString;
+};
+
+/**
+ * Create a customized error instance with a fallback message, options, and additional metadata, if provided.
+ *
+ * @note Leveraging {@link formatUnknownError} in the future is desired. We'll mark that as a future enhancement
+ * since it involves potentially creating a new file to avoid circular dependencies, like `server.error.ts`
+ *
+ * @template TMetadata A type extending `Record<string, unknown>`, representing additional metadata that can be assigned to the error.
+ * @param message - An error message, Error instance, or other value. If left `undefined`, the error message will be derived from the
+ *     `options.cause` or default to 'An error occurred'.
+ * @param options - An object containing options for the Error instance. Used for specifying a cause using `options.cause`.
+ * @param {TMetadata} metadata - An object containing additional metadata to attach to the error. Metadata object must be a plain object.
+ * @param [settings] - Additional function settings.
+ * @param [settings.fallbackMessage] - Fallback error message.
+ * @returns {Error & TMetadata} An error instance enhanced with the provided metadata and a processed error message.
+ */
+const createError = <TMetadata extends Record<string, unknown>>(
+  message: unknown | string | Error,
+  options: ErrorOptions,
+  metadata: TMetadata,
+  { fallbackMessage = 'An error occurred' }: { fallbackMessage?: string } = {}
+) => {
+  let updatedMessage: string = fallbackMessage;
+  let updatedOptions = options;
+
+  if (typeof message === 'string' && message.length > 0) {
+    updatedMessage = message;
+  } else if (message instanceof Error && message.message) {
+    updatedMessage = message.message;
+
+    if (!options?.cause && message.cause) {
+      updatedOptions = { ...options, cause: message.cause };
+    }
+  } else if (options?.cause instanceof Error && options.cause.message) {
+    updatedMessage = options.cause.message;
+
+    if (options.cause.cause) {
+      updatedOptions = { ...options, cause: options.cause.cause };
+    }
+  }
+
+  const err = new Error(updatedMessage, updatedOptions) as Error & TMetadata;
+
+  if (isPlainObject(metadata)) {
+    Object.assign(err, metadata);
+  }
+
+  return err;
 };
 
 /**
@@ -602,6 +753,7 @@ const timeoutFunction = async <TReturn>(
 
 export {
   buildSearchString,
+  createError,
   freezeObject,
   generateHash,
   hashCode,
@@ -613,10 +765,12 @@ export {
   isPromise,
   isReferenceLike,
   isUrl,
+  isUrlObject,
   isWhitelistedUrl,
   listAllCombinations,
   listIncrementalCombinations,
   mergeObjects,
+  parseUrl,
   portValid,
   splitUri,
   stringJoin,

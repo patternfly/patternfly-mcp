@@ -12,7 +12,19 @@ exports[`processDocsFunction should handle errors gracefully: errors 1`] = `
     "content": "❌ Failed to load bad-file.md: File not found",
     "isSuccess": false,
     "path": "bad-file.md",
-    "resolvedPath": undefined,
+    "resolvedPath": "/bad-file.md",
+  },
+]
+`;
+
+exports[`processDocsFunction should process local and remote inputs, de-duplicate with first metadata 1`] = `
+[
+  {
+    "content": "local file content",
+    "isSuccess": true,
+    "lorem": "ipsum",
+    "path": "file.md",
+    "resolvedPath": "/file.md",
   },
 ]
 `;
@@ -51,7 +63,7 @@ exports[`processDocsFunction should process local and remote inputs, files and U
 ]
 `;
 
-exports[`processDocsFunction should process local and remote inputs, filter empty strings 1`] = `
+exports[`processDocsFunction should process local and remote inputs, filter empty strings with varied input 1`] = `
 [
   {
     "content": "local file content",
@@ -68,23 +80,38 @@ exports[`processDocsFunction should process local and remote inputs, filter empt
 ]
 `;
 
+exports[`processDocsFunction should process local and remote inputs, metadata passthrough 1`] = `
+[
+  {
+    "content": "local file content",
+    "dolor": "sit",
+    "isSuccess": true,
+    "lorem": "ispum",
+    "path": "file.md",
+    "resolvedPath": "/file.md",
+  },
+]
+`;
+
 exports[`promiseQueue should execute promises in order: allSettled 1`] = `
 [
   {
     "status": "fulfilled",
     "value": {
       "content": "/dolor-sit.md",
+      "path": "dolor-sit.md",
       "resolvedPath": "/dolor-sit.md",
     },
   },
   {
-    "reason": "https://example.com/remote.md",
+    "reason": [Error: https://example.com/remote.md],
     "status": "rejected",
   },
   {
     "status": "fulfilled",
     "value": {
       "content": "/lorem-ipsum.md",
+      "path": "lorem-ipsum.md",
       "resolvedPath": "/lorem-ipsum.md",
     },
   },

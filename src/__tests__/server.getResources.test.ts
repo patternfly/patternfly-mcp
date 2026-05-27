@@ -320,6 +320,7 @@ describe('loadFileFetch', () => {
     expect(mockReadCall).toHaveBeenCalledTimes(expectedIsFetch ? 0 : 1);
     expect(result).toEqual({
       content: 'content',
+      path: expect.any(String),
       resolvedPath: expect.any(String)
     });
   });
@@ -374,8 +375,9 @@ describe('processDocsFunction', () => {
       fetchMemoHits: 1
     },
     {
-      description: 'filter empty strings',
+      description: 'filter empty strings with varied input',
       inputs: [
+        { doc: 'file.md' },
         'file.md',
         '',
         '   ',
@@ -383,6 +385,23 @@ describe('processDocsFunction', () => {
       ],
       options: {},
       fileMemoHits: 2
+    },
+    {
+      description: 'de-duplicate with first metadata',
+      inputs: [
+        { doc: 'file.md', lorem: 'ipsum' },
+        { doc: 'file.md', dolor: 'sit' }
+      ],
+      options: {},
+      fileMemoHits: 1
+    },
+    {
+      description: 'metadata passthrough',
+      inputs: [
+        { doc: 'file.md', lorem: 'ispum', dolor: 'sit' }
+      ],
+      options: {},
+      fileMemoHits: 1
     }
   ])('should process local and remote inputs, $description', async ({ inputs, options, fileMemoHits = 0, fetchMemoHits = 0 }) => {
     const result = await processDocsFunction(inputs, {
