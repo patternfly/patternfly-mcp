@@ -6,15 +6,39 @@ import { getOptions } from './options.context';
 import { DEFAULT_OPTIONS } from './options.defaults';
 import { memo } from './server.caching';
 import { normalizeString } from './server.search';
-import { isUrl, isPath } from './server.helpers';
+import { isUrl, isPath, createError } from './server.helpers';
 import { log, formatUnknownError } from './logger';
 
-interface ProcessedDoc {
+/**
+ * Represents a successful document processing attempt.
+ *
+ * @template T - Metadata that can be returned with the processed document.
+ */
+type ProcessedDocSuccess<T = Record<string, unknown>> = {
+  content: string;
+  path: string;
+  resolvedPath: string;
+  isSuccess: true;
+} & T;
+
+/**
+ * Represents a failed document processing attempt.
+ *
+ * @template T - Metadata that can be returned with the processed document.
+ */
+type ProcessedDocFailure<T = Record<string, unknown>> = {
   content: string;
   path: string | undefined;
   resolvedPath: string | undefined;
-  isSuccess: boolean;
-}
+  isSuccess: false;
+} & T;
+
+/**
+ * A processed document, either successful or failed.
+ *
+ * @template T - Metadata that can be returned with the processed document.
+ */
+type ProcessedDoc<T = Record<string, unknown>> = ProcessedDocSuccess<T> | ProcessedDocFailure<T>;
 
 /**
  * Match a dependency version against a list of supported versions.
@@ -225,25 +249,33 @@ const mockPathOrUrlFunction = async (pathOrUrl: string, options = getOptions()) 
  *
  * @param pathOrUrl - Path or URL to load. If it's a URL, it will be fetched with `timeout` and `error` handling.
  * @param options - Options
- * @returns Resolves to an object containing the loaded content and the resolved path.
+ * @returns Resolves to an object containing the loaded content, path, and the resolved path.
+ * @throws {Error} If the path cannot be accessed in the current mode. Includes `path` and `resolvedPath`
+ *     properties when available.
  */
 const loadFileFetch = async (pathOrUrl: string, options = getOptions()) => {
-  if (options.mode === 'test') {
-    const mockContent = await mockPathOrUrlFunction(pathOrUrl);
+  let updatedPathOrUrl = pathOrUrl;
 
-    return { content: mockContent, resolvedPath: pathOrUrl };
+  try {
+    if (options.mode === 'test') {
+      const mockContent = await mockPathOrUrlFunction(pathOrUrl);
+
+      return { content: mockContent, resolvedPath: updatedPathOrUrl, path: pathOrUrl };
+    }
+
+    updatedPathOrUrl = resolveLocalPathFunction(pathOrUrl);
+    let content;
+
+    if (isUrl(updatedPathOrUrl)) {
+      content = await fetchUrlFunction.memo(updatedPathOrUrl);
+    } else {
+      content = await readLocalFileFunction.memo(updatedPathOrUrl);
+    }
+
+    return { content, resolvedPath: updatedPathOrUrl, path: pathOrUrl };
+  } catch (error) {
+    throw createError(error, {}, { resolvedPath: updatedPathOrUrl, path: pathOrUrl });
   }
-
-  const updatedPathOrUrl = resolveLocalPathFunction(pathOrUrl);
-  let content;
-
-  if (isUrl(updatedPathOrUrl)) {
-    content = await fetchUrlFunction.memo(updatedPathOrUrl);
-  } else {
-    content = await readLocalFileFunction.memo(updatedPathOrUrl);
-  }
-
-  return { content, resolvedPath: updatedPathOrUrl };
 };
 
 /**
@@ -281,54 +313,83 @@ const promiseQueue = async (queue: string[], limit = 5) => {
 };
 
 /**
- * Normalize inputs, load all in parallel, and return a joined string.
+ * Normalize inputs, load all in parallel, and return per-doc results.
  *
- * @note Remember to limit the number of docs to load to avoid OOM.
+ * @note Remember:
+ * - To limit the number of docs to load to avoid OOM.
+ * - Deduplication of paths happens using `normalizeString.memo`. Original paths are
+ *     still used to fetch and are returned as part of the result.
+ *
+ * @template T - Metadata fields on `{ doc, ...metadata }` inputs, merged into each result.
  * @param inputs - List of paths or URLs to load
  * @param options - Optional options
- * @returns An array of loaded docs with content, path, resolvedPath, and isSuccess properties:
+ * @returns An array of {@link ProcessedDoc} entries:
  *   - `content` is the loaded content string.
  *   - `path` is the original input path or URL.
- *   - `resolvedPath` is the resolved path after normalization.
+ *   - `resolvedPath` is the resolved path after normalization, see {@link loadFileFetch}.
  *   - `isSuccess` is true if the doc was successfully loaded, false otherwise.
  */
-const processDocsFunction = async (
-  inputs: string[],
+const processDocsFunction = async <T extends Record<string, unknown> = Record<string, unknown>>(
+  inputs: (string | ({ doc: string } & T))[],
   options = getOptions()
-): Promise<ProcessedDoc[]> => {
-  const uniqueInputs = new Map(
-    inputs.map(input => [normalizeString.memo(input), input.trim()])
-  );
-  const list = Array.from(uniqueInputs.values()).slice(0, options.minMax.docsToLoad.max).filter(Boolean);
+): Promise<ProcessedDoc<Omit<T, 'doc'>>[]> => {
+  const normalizeInputs = inputs.map(input =>
+    (typeof input === 'string' ? { doc: input } : input) as { doc: string } & T);
+
+  const uniqueInputsMap = new Map<string, { doc: string } & T>();
+
+  for (const input of normalizeInputs) {
+    const trimmedDoc = input.doc.trim();
+
+    if (trimmedDoc) {
+      const normalizedPath = normalizeString.memo(trimmedDoc);
+
+      if (!uniqueInputsMap.has(normalizedPath)) {
+        uniqueInputsMap.set(normalizedPath, { ...input, doc: trimmedDoc });
+      }
+    }
+  }
+
+  const uniqueInputsList = Array.from(uniqueInputsMap.values()).slice(0, options.minMax.docsToLoad.max);
+  const list = uniqueInputsList.map(input => input.doc);
 
   const settled = await promiseQueue(list);
-  const docs: { content: string, path: string | undefined, resolvedPath: string | undefined, isSuccess: boolean }[] = [];
+  const docs: ProcessedDoc<Omit<T, 'doc'>>[] = [];
 
   settled.forEach((res, index) => {
-    const original = list[index];
-    let content;
-    let resolvedPath;
-    const path = original;
-    let isSuccess = false;
+    const originalInput = uniqueInputsList[index];
 
-    if (res.status === 'fulfilled') {
-      const { resolvedPath: docResolvedPath, content: docContent } = res.value;
-
-      resolvedPath = docResolvedPath;
-      content = docContent;
-      isSuccess = true;
-    } else {
-      const errorMessage = res.reason instanceof Error ? res.reason.message : String(res.reason);
-
-      content = `❌ Failed to load ${original}: ${errorMessage}`;
+    if (!originalInput) {
+      return;
     }
 
+    const { doc: originalPath, ...metadata } = originalInput;
+
+    if (res.status === 'fulfilled') {
+      docs.push({
+        ...(metadata as Omit<T, 'doc'>),
+        ...res.value,
+        isSuccess: true
+      });
+
+      return;
+    }
+
+    const reason: Error & { path?: string; resolvedPath?: string } = res.reason;
+    const error = reason instanceof Error ? reason : undefined;
+    const errorPath = error?.path || originalPath;
+    const errorResolvedPath = error?.resolvedPath || undefined;
+    const errorMessage = error?.message || String(reason);
+
     docs.push({
-      content,
-      path,
-      resolvedPath,
-      isSuccess
+      ...(metadata as Omit<T, 'doc'>),
+      content: `❌ Failed to load ${errorPath}: ${errorMessage}`,
+      path: errorPath,
+      resolvedPath: errorResolvedPath,
+      isSuccess: false
     });
+
+    log.debug(`Failed to load ${errorPath} from processing: ${formatUnknownError(errorMessage)}`);
   });
 
   return docs;
@@ -348,5 +409,7 @@ export {
   promiseQueue,
   readLocalFileFunction,
   resolveLocalPathFunction,
-  type ProcessedDoc
+  type ProcessedDoc,
+  type ProcessedDocSuccess,
+  type ProcessedDocFailure
 };
