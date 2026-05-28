@@ -77,6 +77,13 @@ describe('resourceCallback', () => {
         name: 'button',
         version: 'v6'
       }
+    },
+    {
+      description: 'with hashed button name',
+      variables: {
+        name: 'ffcfb1b9b852a17ccb5b2adc12e3edd4a4ee41cb',
+        version: 'v6'
+      }
     }
   ])('should attempt to return resource content, $description', async ({ variables }) => {
     const mockContent = '$schema';

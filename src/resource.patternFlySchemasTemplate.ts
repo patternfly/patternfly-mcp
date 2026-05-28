@@ -9,8 +9,7 @@ import { getOptions, runWithOptions } from './options.context';
 import { filterPatternFly } from './patternFly.search';
 import {
   getPatternFlyComponentSchema,
-  getPatternFlyMcpResources,
-  type PatternFlyComponentSchema
+  getPatternFlyMcpResources
 } from './patternFly.getResources';
 import { normalizeEnumeratedPatternFlyVersion } from './patternFly.helpers';
 import { uriCategoryComplete, uriVersionComplete } from './resource.patternFlyComponentsIndex';
@@ -97,26 +96,27 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
   const updatedVersion = normalizedVersion || latestSchemasVersion;
   const updatedName = name.trim();
 
-  const { byEntry } = await filterPatternFly.memo({
+  const { byResource } = await filterPatternFly.memo({
     version: updatedVersion,
     name: updatedName
   });
 
-  let result: PatternFlyComponentSchema | undefined;
-  const matchedSchemas: string[] = [];
+  const matchedResources = Array.from(byResource.values()).filter(res => res.isSchemasAvailable);
+  const schemaResults = [];
 
-  byEntry.forEach(result => {
-    if (result.uriSchemas) {
-      matchedSchemas.push(result.name);
+  for (const resource of matchedResources) {
+    const content = await getPatternFlyComponentSchema.memo(resource.name);
+
+    if (content) {
+      schemaResults.push({
+        uriSchemasId: resource.uriSchemasId as string,
+        content
+      });
     }
-  });
-
-  if (matchedSchemas[0]) {
-    result = await getPatternFlyComponentSchema.memo(matchedSchemas[0]);
   }
 
   assertInput(
-    matchedSchemas.length > 0 && result !== undefined,
+    schemaResults.length > 0,
     () => {
       let suggestionMessage = '';
 
@@ -129,13 +129,11 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
   );
 
   return {
-    contents: [
-      {
-        uri: passedUri?.toString(),
-        mimeType: 'application/json',
-        text: JSON.stringify(result, null, 2)
-      }
-    ]
+    contents: schemaResults.map(schema => ({
+      uri: schema.uriSchemasId,
+      mimeType: 'application/json',
+      text: JSON.stringify(schema.content, null, 2)
+    }))
   };
 };
 

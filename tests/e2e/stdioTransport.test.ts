@@ -209,6 +209,38 @@ describe('Builtin tools, STDIO', () => {
         'No PatternFly resources found matching "lorem ipsum dolor sit amet"',
         'Use a search all'
       ]
+    },
+    {
+      description: 'hash search query',
+      searchQuery: '19b2a9418c744e70da9e3dd0965d1948ec1ebbe4',
+      contains: [
+        'Showing 2 exact match',
+        '**button**'
+      ]
+    },
+    {
+      description: 'partial hash search query',
+      searchQuery: '19b2a',
+      contains: [
+        'No PatternFly resources found matching "19b2a"',
+        'Use a search all'
+      ]
+    },
+    {
+      description: 'uri search query',
+      searchQuery: 'patternfly://docs/19b2a9418c744e70da9e3dd0965d1948ec1ebbe4',
+      contains: [
+        'Showing 2 exact match',
+        '**button**'
+      ]
+    },
+    {
+      description: 'partial uri search query',
+      searchQuery: 'patternfly://docs/19b2a94',
+      contains: [
+        'No PatternFly resources found matching "patternfly://docs/19b2a94"',
+        'Use a search all'
+      ]
     }
   ])('should perform searchPatternFlyDocs: $description', async ({ searchQuery, version, contains }) => {
     const req = {
@@ -373,7 +405,7 @@ describe('Builtin resources, STDIO', () => {
     });
     const content = response?.result.contents[0];
 
-    expect(content.uri).toBe(uri);
+    expect(content.uri).toBe('patternfly://docs/19b2a9418c744e70da9e3dd0965d1948ec1ebbe4');
     expect(content.text).toContain('This is a test document for mocking remote HTTP requests');
   });
 

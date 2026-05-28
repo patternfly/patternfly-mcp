@@ -184,6 +184,11 @@ uriVersionComplete.memo = memo(uriVersionComplete);
 /**
  * Resource callback for the documentation index.
  *
+ * @note The callback response is a high-level index potentially grouping multiple "entries"
+ * by a single URI. This is an optimization already, but we can review moving responses over
+ * to using resource IDs instead of the current grouping uri mechanism IF we opt to review
+ * pagination.
+ *
  * @param passedUri - URI of the resource.
  * @param variables - Variables for the resource.
  * @param options - Global options
@@ -223,35 +228,23 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
 
   const updatedVersion = normalizedVersion || latestVersion;
 
-  const { byEntry } = await filterPatternFly.memo({
+  const { byResource } = await filterPatternFly.memo({
     version: updatedVersion,
     category,
     section
   });
 
-  // Group by URI
-  const groupedByUri = new Map<string, { name: string, version: string, categories: Set<string> }>();
+  // Generate the consolidated list, apply search/query string.
+  const docsIndex = Array.from(byResource.values())
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((resource, index) => {
+      const firstEntry = resource.entries[0];
+      const version = firstEntry?.version || updatedVersion;
+      const categories = new Set(resource.entries.map(entry => entry.displayCategory));
+      const categoryList = Array.from(categories).sort().join(', ');
+      const searchString = buildSearchString({ section, category }, { prefix: true, base: resource.uri });
 
-  byEntry.forEach(entry => {
-    if (!groupedByUri.has(entry.uri)) {
-      groupedByUri.set(entry.uri, {
-        name: entry.name,
-        version: entry.version,
-        categories: new Set([entry.displayCategory])
-      });
-    } else {
-      groupedByUri.get(entry.uri)?.categories.add(entry.displayCategory);
-    }
-  });
-
-  // Generate the consolidated list, apply search/query string
-  const docsIndex = Array.from(groupedByUri.entries())
-    .sort(([_aUri, aData], [_bUri, bData]) => aData.name.localeCompare(bData.name))
-    .map(([uri, data], index) => {
-      const categoryList = Array.from(data.categories).join(', ');
-      const searchString = buildSearchString({ section, category }, { prefix: true });
-
-      return `${index + 1}. [${data.name} - ${categoryList} (${data.version})](${uri}${searchString || ''})`;
+      return `${index + 1}. [${resource.name} - ${categoryList} (${version})](${resource.uri}${searchString || ''})`;
     });
 
   assertInput(

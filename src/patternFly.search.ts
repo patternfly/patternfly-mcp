@@ -1,4 +1,9 @@
-import { fuzzySearch, type FuzzySearch, type FuzzySearchResult } from './server.search';
+import {
+  fuzzySearch,
+  type FuzzySearch,
+  type FuzzySearchOptions,
+  type FuzzySearchResult
+} from './server.search';
 import { memo } from './server.caching';
 import { DEFAULT_OPTIONS } from './options.defaults';
 import {
@@ -26,13 +31,15 @@ type PatternFlyMcpResourceFilteredMetadata = Omit<PatternFlyMcpResourceMetadata,
  * @property [version] - PatternFly version to filter search results. Defaults to undefined for all versions.
  * @property [category] - Category to filter search results. Defaults to undefined for all categories.
  * @property [section] - Section to filter search results. Defaults to undefined for all sections.
- * @property [name] - Name to filter search results. Defaults to undefined for all names.
+ * @property [name] - Name, or hash id, to filter search results. Defaults to undefined for all names and IDs.
+ * @property [path] - Document path, or URI, to filter search results. Defaults to undefined for all paths and URIs.
  */
 interface FilterPatternFlyFilters {
   version?: string | undefined;
   category?: string | undefined;
   section?: string | undefined;
   name?: string | undefined;
+  path?: string | undefined;
 }
 
 /**
@@ -69,7 +76,7 @@ interface SearchPatternFlyResult extends FuzzySearchResult, PatternFlyMcpResourc
  * @interface SearchPatternFlyResults
  *
  * @property isSearchWildCardAll - Whether the search query matched all components
- * @property {SearchPatternFlyResult | undefined} firstExactMatch - First exact match within search results
+ * @property {SearchPatternFlyResult | undefined} firstExactMatch - `@deprecated Use exactMatches[0] or searchResults` Exact-ranked result
  * @property {SearchPatternFlyResult[]} exactMatches - Exact matches within search results
  * @property {SearchPatternFlyResult[]} remainingMatches - Contrast to `exactMatches`, the remaining matches within search results
  * @property {SearchPatternFlyResult[]} searchResults - All search results, exact and remaining matches
@@ -78,6 +85,7 @@ interface SearchPatternFlyResult extends FuzzySearchResult, PatternFlyMcpResourc
  */
 interface SearchPatternFlyResults {
   isSearchWildCardAll: boolean;
+  // @deprecated Use exactMatches[0] or searchResults
   firstExactMatch: SearchPatternFlyResult | undefined;
   exactMatches: SearchPatternFlyResult[];
   remainingMatches: SearchPatternFlyResult[];
@@ -162,10 +170,16 @@ const filterPatternFly = async (
       const matchesVersion = !updatedFilters.version || String(entry.version).toLowerCase() === updatedFilters.version;
       const matchesCategory = !updatedFilters.category || filterMatch(entry.category, updatedFilters.category);
       const matchesSection = !updatedFilters.section || filterMatch(entry.section, updatedFilters.section);
-      const matchesName = !updatedFilters.name || filterMatch(entry.name, updatedFilters.name);
+      const matchesPath = !updatedFilters.path || filterMatch(entry.path, updatedFilters.path) ||
+        filterMatch(entry.uriId, updatedFilters.path) || filterMatch(entry.uriSchemas, updatedFilters.path) ||
+        filterMatch(entry.uriSchemasId, updatedFilters.path) || filterMatch(entry.uri, updatedFilters.path);
+
+      // Filter order matters specific id -> group id -> group name
+      const matchesName = !updatedFilters.name || filterMatch(entry.id, updatedFilters.name) ||
+        filterMatch(entry.groupId, updatedFilters.name) || filterMatch(entry.name, updatedFilters.name);
 
       // Any missing filter registers as true. Only filters that are active run their check.
-      return matchesVersion && matchesCategory && matchesSection && matchesName;
+      return matchesVersion && matchesCategory && matchesSection && matchesPath && matchesName;
     });
 
     if (matchedEntries.length > 0) {
@@ -173,12 +187,14 @@ const filterPatternFly = async (
       const { versions, ...filteredResource } = resource;
       let versionContextualProperties = {};
 
-      // Apply version contextual properties, typically URIs
+      // Apply version contextual properties, typically group/resource related URIs.
       if (updatedFilters.version && versions?.[updatedFilters.version]) {
+        // General props version dependent
         versionContextualProperties = {
           isSchemasAvailable: versions[updatedFilters.version]?.isSchemasAvailable,
           uri: versions[updatedFilters.version]?.uri,
-          uriSchemas: versions[updatedFilters.version]?.uriSchemas
+          uriSchemas: versions[updatedFilters.version]?.uriSchemas,
+          uriSchemasId: versions[updatedFilters.version]?.uriSchemasId
         };
       }
 
@@ -223,7 +239,7 @@ filterPatternFly.memo = memo(filterPatternFly, DEFAULT_OPTIONS.resourceMemoOptio
  * @param [settings.maxResults] - Maximum number of results to return. Defaults to `10`.
  * @returns Object containing search results and matched URLs
  *   - `isSearchWildCardAll`: Whether the search query matched all resources
- *   - `firstExactMatch`: First exact match within search results
+ *   - `firstExactMatch`: `@deprecated` See {@link SearchPatternFlyResults#exactMatches} Exact-ranked result
  *   - `exactMatches`: Exact matches within search results
  *   - `remainingMatches`: Contrast to `exactMatches`, the remaining matches within search results
  *   - `searchResults`: All search results, exact and remaining matches
@@ -241,21 +257,33 @@ const searchPatternFly = async (searchQuery: unknown, filters?: FilterPatternFly
   const updatedFilters = filters || {};
   const isWildCardAll = coercedSearchQuery === '*' || coercedSearchQuery.toLowerCase() === 'all' || coercedSearchQuery === '';
   const isSearchWildCardAll = allowWildCardAll && isWildCardAll;
+  const pathMatchName = updatedResources.pathIndex?.get(coercedSearchQuery.toLowerCase());
+  const uriMatchName = updatedResources.uriIndex?.get(coercedSearchQuery.toLowerCase());
+  const hashMatchName = updatedResources.hashIndex?.get(coercedSearchQuery.toLowerCase());
   let search: FuzzySearch | undefined;
   let searchResults: FuzzySearchResult[] = [];
 
   // Perform wildcard all search or fuzzy search
   if (isSearchWildCardAll) {
     searchResults = updatedResources.keywordsIndex.map(name => ({ matchType: 'all', distance: 0, item: name } as FuzzySearchResult));
+  } else if (pathMatchName || uriMatchName || hashMatchName) {
+    searchResults = [
+      {
+        matchType: 'exact',
+        distance: 0,
+        item: pathMatchName || uriMatchName || hashMatchName
+      } as FuzzySearchResult
+    ];
   } else {
-    // Pass the original searchQuery, fuzzySearch has its own normalization.
-    search = fuzzySearch(searchQuery, updatedResources.keywordsIndex, {
+    const fuzzySearchSettings: FuzzySearchOptions = {
       maxDistance,
       maxResults,
       isFuzzyMatch: true,
       deduplicateByNormalized: true
-    });
+    };
 
+    // Pass the original searchQuery, fuzzySearch has its own normalization.
+    search = fuzzySearch(searchQuery, updatedResources.keywordsIndex, fuzzySearchSettings);
     searchResults = search.results;
   }
 
@@ -330,6 +358,7 @@ const searchPatternFly = async (searchQuery: unknown, filters?: FilterPatternFly
 
   return {
     isSearchWildCardAll,
+    // @deprecated firstExactMatch - Use exactMatches[0] or searchResults
     firstExactMatch: sortedExactMatches[0],
     exactMatches: sortedExactMatches.slice(0, maxResults),
     remainingMatches: (maxResults - exactMatches.length) < 0 ? [] : sortedRemainingMatches.slice(0, maxResults - exactMatches.length),

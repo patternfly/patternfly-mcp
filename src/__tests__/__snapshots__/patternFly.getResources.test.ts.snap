@@ -28,6 +28,8 @@ exports[`getPatternFlyMcpResources should return multiple organized facets: prop
   "keywordsIndex",
   "keywordsMap",
   "pathIndex",
+  "uriIndex",
+  "hashIndex",
   "byPath",
   "byUri",
   "byVersion",

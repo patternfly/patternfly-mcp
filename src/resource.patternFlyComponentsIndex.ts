@@ -159,15 +159,12 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
   const updatedVersion = normalizedVersion || latestVersion;
   const { byResource } = await filterPatternFly.memo({ version: updatedVersion, section, category });
 
-  const docsIndex = Array.from(byResource.entries())
-    .sort(([_aUri, aData], [_bUri, bData]) => aData.name.localeCompare(bData.name))
-    .map(([_name, data], index) => {
-      const searchString = buildSearchString({
-        version: updatedVersion,
-        category
-      }, { prefix: true });
+  const docsIndex = Array.from(byResource.values())
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((resource, index) => {
+      const searchString = buildSearchString({ category }, { prefix: true, base: resource.uri });
 
-      return `${index + 1}. [${data.name} (${updatedVersion})](${data.uri}${searchString || ''})`;
+      return `${index + 1}. [${resource.name} (${updatedVersion})](${resource.uri}${searchString || ''})`;
     });
 
   return {

@@ -111,17 +111,11 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
       version: updatedVersion
     });
 
-    const groupedByUri = new Map<string, { name: string, version: string }>();
-
-    byResource.forEach(resource => {
-      if (resource.uriSchemas) {
-        groupedByUri.set(resource.uriSchemas, { name: resource.name, version: updatedVersion });
-      }
-    });
-
-    docsIndex = Array.from(groupedByUri.entries())
-      .sort(([_aUri, aData], [_bUri, bData]) => aData.name.localeCompare(bData.name))
-      .map(([uri, data], index) => `${index + 1}. [${data.name} (${data.version})](${uri})`);
+    docsIndex = Array.from(byResource.values())
+      .filter(resource => resource.uriSchemas)
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((resource, index) =>
+        `${index + 1}. [${resource.name} (${updatedVersion})](${resource.uriSchemas})`);
   }
 
   assertInput(

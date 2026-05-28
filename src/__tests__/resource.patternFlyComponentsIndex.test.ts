@@ -55,7 +55,7 @@ describe('resourceCallback', () => {
       variables: {
         category: 'accessibility'
       },
-      expected: '?category=accessibility'
+      expected: 'category=accessibility'
     }
   ])('should return context content, $description', async ({ variables, expected }) => {
     const result = await resourceCallback(undefined as any, variables);

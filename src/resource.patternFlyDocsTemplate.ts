@@ -116,16 +116,25 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
     }
   );
 
-  const docResults = [];
   const docs = [];
 
   try {
-    const matchedUrls = byEntry.map(entry => entry.path).filter(Boolean);
+    const docPaths = byEntry
+      .filter(({ path }) => path)
+      .map(({ path, uriId }) => ({ doc: path, uri: uriId }));
 
-    if (matchedUrls.length > 0) {
-      const processedDocs = await processDocsFunction.memo(matchedUrls);
+    if (docPaths.length > 0) {
+      // `processDocsFunction` has de-dup docs baked in
+      const processedDocs = await processDocsFunction.memo(docPaths);
 
-      docs.push(...processedDocs);
+      // Failures are `log.debugged` in `processDocsFunction`.
+      for (const response of processedDocs) {
+        if (response.isSuccess) {
+          docs.push({
+            ...response
+          });
+        }
+      }
     }
   } catch (error) {
     throw new McpError(
@@ -149,26 +158,20 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
         suggestionMessage = ` Try using different parameters for ${variableList}.`;
       }
 
-      return `"${updatedName}" was found, but no documentation URLs are available for it.${suggestionMessage}`;
+      return `"${updatedName}" was found, but no documentation resources are available for it.${suggestionMessage}`;
     }
   );
 
-  for (const doc of docs) {
-    docResults.push(stringJoin.newline(
-      `# Documentation from ${doc.resolvedPath || doc.path}`,
-      '',
-      doc.content
-    ));
-  }
-
   return {
-    contents: [
-      {
-        uri: passedUri?.toString(),
-        mimeType: 'text/markdown',
-        text: docResults.join(options.separator)
-      }
-    ]
+    contents: docs.map(({ uri, path, resolvedPath, content }) => ({
+      uri,
+      mimeType: 'text/markdown',
+      text: stringJoin.newline(
+        `# Documentation from ${resolvedPath || path}`,
+        '',
+        content
+      )
+    }))
   };
 };
 
