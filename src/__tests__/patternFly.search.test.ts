@@ -168,14 +168,6 @@ describe('searchPatternFly', () => {
       expectedType: 'exact'
     },
     {
-      description: 'hash entry id with filter',
-      search: 'btn-v6-hash',
-      options: {},
-      expectedLength: 2,
-      expectedName: 'button',
-      expectedType: 'exact'
-    },
-    {
       description: 'hash entry id without filter',
       search: 'btn-v6-hash',
       options: {},
