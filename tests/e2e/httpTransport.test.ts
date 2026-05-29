@@ -229,6 +229,43 @@ describe('Builtin tools, HTTP transport', () => {
     contains.forEach(item => expect(text).toContain(item));
   });
 
+  it('should stay stable across repeated and concurrent sha1 searches', async () => {
+    const entryHash = '19b2a9418c744e70da9e3dd0965d1948ec1ebbe4';
+    const queries = [
+      entryHash,
+      `patternfly://docs/${entryHash}`,
+      entryHash
+    ];
+
+    const callSearch = (searchQuery: string) => CLIENT?.send({
+      method: 'tools/call',
+      params: {
+        name: 'searchPatternFlyDocs',
+        arguments: { searchQuery }
+      }
+    });
+
+    const serialResponses = await Promise.all(queries.map(query => callSearch(query)));
+
+    serialResponses.forEach(response => {
+      const text = response?.result?.content?.[0]?.text || '';
+
+      expect(text).toContain('Showing 1 exact match');
+      expect(text).toContain('**button**');
+    });
+
+    const concurrentResponses = await Promise.all(
+      Array.from({ length: 3 }, () => callSearch(entryHash))
+    );
+
+    concurrentResponses.forEach(response => {
+      const text = response?.result?.content?.[0]?.text || '';
+
+      expect(text).toContain('Showing 1 exact match');
+      expect(text).toContain('**button**');
+    });
+  });
+
   it('should return expected markdown structure for search results', async () => {
     const response = await CLIENT?.send({
       method: 'tools/call',

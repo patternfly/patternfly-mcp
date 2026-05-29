@@ -4,7 +4,7 @@
  * @note It's tempting to remove category and section names from this list, don't. Instead, the search
  * should be leveraging filters which allow for "section" and "category" specifically.
  */
-const INDEX_BLOCKLIST_WORDS = ['patternfly', 'component', 'components', 'documentation', 'example', 'examples'];
+const INDEX_BLOCKLIST_WORDS = ['patternfly', 'component', 'components', 'documentation', 'example', 'examples', 'view'];
 
 /**
  * Technical terms and acronyms that should be exempt from length and noise filtering.
