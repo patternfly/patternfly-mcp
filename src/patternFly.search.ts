@@ -351,10 +351,12 @@ filterPatternFly.memo = memo(filterPatternFly, {
  * pass; longer `searchFilters` lists are truncated from the front. Keep {@link SEARCH_FILTERS}
  * aligned with product priority — do not randomize pass order or truncation.
  *
- * @note **Memo split (read before changing this race).** {@link filterPatternFly.memo} is used for MCP
- * resource handlers and {@link searchPatternFly}'s non-dynamic path, but this function calls bare
- * {@link filterPatternFly} in the `Promise.any` race and in the catch fallback. That is intentional: perf
- * testing showed memo here was a net loss once cache-poison handling was included.
+ * @note **Memo split (read before changing this race).** This function is memoized externally
+ * via {@link dynamicFilterPatternFly.memo} (with `cacheErrors: false`), but its internal calls
+ * to {@link filterPatternFly} must remain bare primarily for performance but also to avoid dealing with
+ * cache poison and partial results or collisions across races. If you decide to ignore this warning and
+ * re-implement the memo internally, inside `promise.any`, you'll need to pass
+ * `_passId keyHash + cacheErrors: false + signalError`.
  *
  * @note **Do not drop `filterPatternFly.memo` into `Promise.any` or the fallback without the guards
  * below.** Parallel passes share filters/maps but differ by abort timing; memoizing naively caches partial
@@ -444,7 +446,7 @@ const dynamicFilterPatternFly = async (
   };
 
   try {
-    // See dynamicFilterPatternFly @note — do not memoize here without _passId keyHash + cacheErrors: false + signalError.
+    // Inner passes should remain non-memoized for performance see @note above
     return await Promise.any([
       ...filtersToTry.map(filter =>
         passFail(filterPatternFly({ ...filters, [filter]: searchQuery }, mcpResources, settings))),
@@ -460,8 +462,15 @@ const dynamicFilterPatternFly = async (
 
 /**
  * Memoized version of dynamicFilterPatternFly
+ *
+ * @note `cacheErrors: false` so a rejected fallback doesn't stick. This aligns with
+ * {@link filterPatternFly.memo}. Parallel pass poison is avoided by calling bare
+ * {@link filterPatternFly} inside the race, not by this outer memo setting alone.
  */
-dynamicFilterPatternFly.memo = memo(dynamicFilterPatternFly, DEFAULT_OPTIONS.resourceMemoOptions.default);
+dynamicFilterPatternFly.memo = memo(dynamicFilterPatternFly, {
+  ...DEFAULT_OPTIONS.resourceMemoOptions.default,
+  cacheErrors: false
+});
 
 /**
  * Search for PatternFly component documentation URLs using fuzzy search.

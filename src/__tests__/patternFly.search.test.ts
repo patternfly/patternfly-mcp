@@ -379,6 +379,62 @@ describe('dynamicFilterPatternFly', () => {
 
     expect(result.byEntry.map(entry => entry.name)).toEqual(['button', 'button', 'modal', 'card']);
   });
+
+  it('should cache by searchQuery, filters, and map', async () => {
+    const mockResource = new Map([
+      ['modal', {
+        entries: [
+          { name: 'modal', section: 'components', category: 'view', version: 'v6' }
+        ]
+      }]
+    ]);
+
+    const first = dynamicFilterPatternFly.memo('modal', {}, mockResource as any);
+    const second = dynamicFilterPatternFly.memo('modal', {}, mockResource as any);
+
+    expect(first).toBe(second);
+
+    await expect(first).resolves.toMatchObject({
+      byEntry: expect.arrayContaining([
+        expect.objectContaining({ name: 'modal' })
+      ])
+    });
+  });
+
+  it('should not keep rejected fallback failures in cache', async () => {
+    const mockResource = new Map([
+      ['modal', {
+        entries: [
+          { name: 'modal', section: 'components', category: 'view', version: 'v6' }
+        ]
+      }]
+    ]);
+    let resourceLoads = 0;
+
+    // Represents the number of filters and fallback.
+    const failThroughLoad = 7;
+    const flakyMcpResources = {
+      then(onFulfilled?: (value: any) => any, onRejected?: (reason: any) => any) {
+        resourceLoads += 1;
+
+        if (resourceLoads <= failThroughLoad) {
+          return Promise.reject(new Error('Failed to load')).then(onFulfilled, onRejected);
+        }
+
+        return Promise.resolve(mockResource).then(onFulfilled, onRejected);
+      }
+    };
+
+    await expect(dynamicFilterPatternFly.memo('modal', {}, flakyMcpResources as any))
+      .rejects.toThrow('Failed to load');
+
+    await expect(dynamicFilterPatternFly.memo('modal', {}, flakyMcpResources as any))
+      .resolves.toMatchObject({
+        byEntry: expect.arrayContaining([
+          expect.objectContaining({ name: 'modal' })
+        ])
+      });
+  });
 });
 
 describe('searchPatternFly', () => {
