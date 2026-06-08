@@ -131,7 +131,7 @@ const searchPatternFlyTool = (options = getOptions()): McpTool => {
         }
       });
 
-      if (!result.entries) {
+      if (!result.entries.length) {
         return;
       }
 
