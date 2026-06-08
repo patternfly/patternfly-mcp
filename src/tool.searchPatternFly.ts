@@ -65,13 +65,14 @@ const searchPatternFlyTool = (options = getOptions()): McpTool => {
     );
 
     if (!isSearchWildCardAll && searchResults.length === 0) {
-      const hint = findClosest.memo(searchQuery, keywordsIndex.toReversed(), { maxDistance: 5 }) || '';
+      const hint = findClosest.memo(searchQuery, keywordsIndex.toReversed(), { maxDistance: 5 });
 
       return {
         content: [{
           type: 'text',
-          text: stringJoin.newlineFiltered(
-            `No PatternFly resources found matching "${searchQuery}". ${hint}`
+          text: stringJoin.filtered(
+            `No PatternFly resources found matching "${searchQuery}".`,
+            hint && `Try a search for "${hint}".`
           )
         }]
       };
