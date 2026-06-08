@@ -1,14 +1,14 @@
+import { ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js';
 import {
-  ResourceTemplate,
-  type CompleteResourceTemplateCallback
-} from '@modelcontextprotocol/sdk/server/mcp.js';
-import { type McpResource } from './mcpSdk';
+  type McpResource,
+  type McpResourceListResult,
+  type McpResourceMetadataComplete
+} from './mcpSdk';
 import { memo } from './server.caching';
 import { stringJoin } from './server.helpers';
 import { assertInput, assertInputStringLength } from './server.assertions';
 import { getOptions, runWithOptions } from './options.context';
 import { getPatternFlyMcpResources } from './patternFly.getResources';
-import { type PatternFlyListResourceResult } from './resource.patternFlyDocsIndex';
 import { normalizeEnumeratedPatternFlyVersion } from './patternFly.helpers';
 import { filterPatternFly } from './patternFly.search';
 import { uriCategoryComplete, uriVersionComplete } from './resource.patternFlyComponentsIndex';
@@ -40,11 +40,11 @@ const CONFIG = {
 /**
  * List resources callback for the URI template.
  *
- * @returns {Promise<PatternFlyListResourceResult>} The list of available resources.
+ * @returns The list of available resources.
  */
 const listResources = async () => {
   const { availableSchemasVersions, byVersionComponentNames } = await getPatternFlyMcpResources.memo();
-  const resources: PatternFlyListResourceResult[] = [];
+  const resources: McpResourceListResult[] = [];
 
   Array.from(byVersionComponentNames)
     .filter(([version]) => availableSchemasVersions.includes(version))
@@ -160,7 +160,7 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
 const patternFlySchemasIndexResource = (options = getOptions()): McpResource => {
   const list = async () => runWithOptions(options, async () => listResources.memo());
 
-  const complete: { [callback: string]: CompleteResourceTemplateCallback } = {
+  const complete: { [callback: string]: McpResourceMetadataComplete } = {
     category: async (...args) => runWithOptions(options, async () => uriCategoryComplete.memo(...args)),
     version: async (...args) => runWithOptions(options, async () => uriVersionComplete.memo(...args))
   };

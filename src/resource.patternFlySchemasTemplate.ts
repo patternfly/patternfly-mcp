@@ -1,8 +1,9 @@
+import { ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js';
 import {
-  ResourceTemplate,
-  type CompleteResourceTemplateCallback
-} from '@modelcontextprotocol/sdk/server/mcp.js';
-import { type McpResource } from './mcpSdk';
+  type McpResource,
+  type McpResourceMetadataComplete,
+  type McpResourceMetadataCompleteMemo
+} from './mcpSdk';
 import { memo } from './server.caching';
 import { assertInput, assertInputStringLength } from './server.assertions';
 import { getOptions, runWithOptions } from './options.context';
@@ -13,7 +14,6 @@ import {
 } from './patternFly.getResources';
 import { normalizeEnumeratedPatternFlyVersion } from './patternFly.helpers';
 import { uriCategoryComplete, uriVersionComplete } from './resource.patternFlyComponentsIndex';
-import { type ExtendedCompleteResourceTemplateCallback } from './resource.patternFlyDocsIndex';
 import { paramCompletion } from './resource.helpers';
 
 /**
@@ -47,7 +47,7 @@ const CONFIG = {
  * @param context - The completion context.
  * @returns The list of available names.
  */
-const uriNameComplete: ExtendedCompleteResourceTemplateCallback = async (name: string, context) => {
+const uriNameComplete: McpResourceMetadataCompleteMemo = async (name: string, context) => {
   const { version, category } = context?.arguments || {};
   const section = 'components';
   const { names } = await paramCompletion({ category, name, section, version });
@@ -149,7 +149,7 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
 const patternFlySchemasTemplateResource = (options = getOptions()): McpResource => {
   const list = undefined;
 
-  const complete: { [callback: string]: CompleteResourceTemplateCallback } = {
+  const complete: { [callback: string]: McpResourceMetadataComplete } = {
     category: async (...args) => runWithOptions(options, async () => uriCategoryComplete.memo(...args)),
     name: async (...args) => runWithOptions(options, async () => uriNameComplete.memo(...args)),
     version: async (...args) => runWithOptions(options, async () => uriVersionComplete.memo(...args))

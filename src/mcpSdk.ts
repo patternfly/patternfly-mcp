@@ -76,6 +76,24 @@ interface McpResourceMetadataMetaConfig {
 }
 
 /**
+ * Complete callback for MCP resource templates.
+ *
+ * @note Use {@link McpResourceMetadataCompleteMemo} for memoized use.
+ */
+type McpResourceMetadataComplete = CompleteResourceTemplateCallback;
+
+/**
+ * Complete callback with memoization for MCP resource templates.
+ *
+ * The structure can provide:
+ * - A `CompleteResourceTemplateCallback` directly.
+ * - A function property requiring a `memo` property containing a memoized version of the callback.
+ *
+ * @note Use {@link McpResourceMetadataComplete} for non-memoized use.
+ */
+type McpResourceMetadataCompleteMemo = { memo: CompleteResourceTemplateCallback } & CompleteResourceTemplateCallback;
+
+/**
  * A resource metadata configuration for the MCP server.
  *
  * @property registerAllSearchCombinations - Whether to register all search combinations for the resource.
@@ -87,9 +105,26 @@ interface McpResourceMetadata {
   registerAllSearchCombinations?: boolean | undefined;
   metaConfig?: McpResourceMetadataMetaConfig;
   complete?: {
-    [key: string]: CompleteResourceTemplateCallback;
+    [callback: string]: McpResourceMetadataCompleteMemo | McpResourceMetadataComplete;
   } | undefined;
   [key: string]: unknown;
+}
+
+/**
+ * List resources result type.
+ *
+ * @note This is temporary until MCP SDK exports ListResourcesResult.
+ *
+ * @property uri - The fully qualified URI of the resource.
+ * @property name - A human-readable name for the resource.
+ * @property [mimeType] - The MIME type of the content.
+ * @property [description] - A brief hint for the model.
+ */
+interface McpResourceListResult {
+  uri: string;
+  name: string;
+  mimeType?: string;
+  description?: string;
 }
 
 /**
@@ -231,8 +266,11 @@ export {
   registerResource,
   type McpTool,
   type McpToolCreator,
+  type McpResourceListResult,
   type McpResourceMetadataMetaConfig,
   type McpResourceMetadata,
+  type McpResourceMetadataComplete,
+  type McpResourceMetadataCompleteMemo,
   type McpResource,
   type McpResourceCreator
 };

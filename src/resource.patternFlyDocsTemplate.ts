@@ -1,9 +1,6 @@
-import {
-  ResourceTemplate,
-  type CompleteResourceTemplateCallback
-} from '@modelcontextprotocol/sdk/server/mcp.js';
+import { ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js';
-import { type McpResource } from './mcpSdk';
+import { type McpResource, type McpResourceMetadataComplete } from './mcpSdk';
 import { processDocsFunction } from './server.getResources';
 import { stringJoin } from './server.helpers';
 import { assertInput, assertInputStringLength } from './server.assertions';
@@ -184,7 +181,7 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
 const patternFlyDocsTemplateResource = (options = getOptions()): McpResource => {
   const list = undefined;
 
-  const complete: { [callback: string]: CompleteResourceTemplateCallback } = {
+  const complete: { [callback: string]: McpResourceMetadataComplete } = {
     category: async (...args) => runWithOptions(options, async () => uriCategoryComplete.memo(...args)),
     name: async (...args) => runWithOptions(options, async () => uriNameComplete.memo(...args)),
     section: async (...args) => runWithOptions(options, async () => uriSectionComplete.memo(...args)),
