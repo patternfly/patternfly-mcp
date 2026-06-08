@@ -135,8 +135,6 @@ interface LoggingOptions {
  * @interface MinMax
  *
  * @property urlString Minimum and maximum length for URL strings.
- * @property resourceSearches Minimum and maximum number of resource results for searches.
- * @property sha1Hex Minimum and maximum length for SHA-1 hex strings.
  * @property toolSearches Minimum and maximum number of tool results for searches.
  * @property inputStrings Minimum and maximum length for input strings.
  * @property docsToLoad Minimum and maximum number of docs to load.
@@ -325,9 +323,6 @@ const HTTP_OPTIONS: HttpOptions = {
 
 /**
  * Minimum and maximum ranges for various options.
- *
- * @note For resourceSearches you still have to take into account that for every result
- * there could be multiple resources.
  */
 const MIN_MAX: MinMax = {
   urlString: {
