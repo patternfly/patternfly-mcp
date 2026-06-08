@@ -224,6 +224,9 @@ const parseCliOptions = (
           }
         }
         break;
+      case '--context-management':
+        result.contextManagement = true;
+        break;
     }
   };
 

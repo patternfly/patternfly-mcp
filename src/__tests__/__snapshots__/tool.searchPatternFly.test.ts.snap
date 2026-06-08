@@ -1,0 +1,79 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`searchPatternFlyTool should have a consistent return structure: structure 1`] = `
+{
+  "callback": [Function],
+  "name": "searchPatternFly",
+  "schema": true,
+}
+`;
+
+exports[`searchPatternFlyTool, callback should have a specific markdown format: Button 1`] = `
+[
+  {
+    "text": "# Search results for PatternFly version "v6" and "button".
+Found 2 collections with 5 related resources. Use the attached resources to access and read full content.",
+    "type": "text",
+  },
+  {
+    "description": "A resource collection series for Button",
+    "groupId": "123456",
+    "mimeType": "text/markdown",
+    "name": "Button (Collection)",
+    "type": "resource_link",
+    "uri": "patternfly://docs/123456",
+  },
+  {
+    "description": "Design Guidelines",
+    "groupId": "123456",
+    "mimeType": "text/markdown",
+    "name": "Button - Design (v6)",
+    "type": "resource_link",
+    "uri": "patternfly://docs/34567b",
+  },
+  {
+    "description": "Component JSON schema with property definitions for Button.",
+    "groupId": "123456",
+    "mimeType": "text/markdown",
+    "name": "Button - JSON Schema (v6)",
+    "type": "resource_link",
+    "uri": "patternfly://schemas/67b890",
+  },
+  {
+    "description": "A resource collection series for Lorem Button",
+    "groupId": "654321",
+    "mimeType": "text/markdown",
+    "name": "Lorem Button (Collection)",
+    "type": "resource_link",
+    "uri": "patternfly://docs/654321",
+  },
+  {
+    "description": "Design Guidelines",
+    "groupId": "654321",
+    "mimeType": "text/markdown",
+    "name": "Lorem Button - Design (v6)",
+    "type": "resource_link",
+    "uri": "patternfly://docs/e34567",
+  },
+  {
+    "description": "Design Guidelines",
+    "groupId": "654321",
+    "mimeType": "text/markdown",
+    "name": "Lorem Button - Guidelines (v6)",
+    "type": "resource_link",
+    "uri": "patternfly://docs/34567",
+  },
+  {
+    "description": "Component JSON schema with property definitions for Lorem Button.",
+    "groupId": "654321",
+    "mimeType": "text/markdown",
+    "name": "Lorem Button - JSON Schema (v6)",
+    "type": "resource_link",
+    "uri": "patternfly://schemas/678e90",
+  },
+]
+`;
+
+exports[`searchPatternFlyTool, callback should parse parameters, exact match 1`] = `"# Search results for PatternFly version "v6" and "button"."`;
+
+exports[`searchPatternFlyTool, callback should parse parameters, wildcard search 1`] = `"# Search results for PatternFly version "v6" and "all" resources."`;

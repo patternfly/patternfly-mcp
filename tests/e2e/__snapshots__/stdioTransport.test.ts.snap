@@ -181,6 +181,8 @@ exports[`Logging should allow setting logging options, stderr 1`] = `
 ]
 `;
 
+exports[`Logging should allow setting logging options, with experimental flag set 1`] = `[]`;
+
 exports[`Logging should allow setting logging options, with log level filtering 1`] = `[]`;
 
 exports[`Logging should allow setting logging options, with mcp protocol 1`] = `

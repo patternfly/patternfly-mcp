@@ -5,6 +5,7 @@ Complete guide to using the PatternFly MCP Server for development including CLI 
 **Development:**
 - [CLI usage](#cli-usage)
 - [Programmatic usage](#programmatic-usage)
+- [Experimental settings](./experimental.md)
 - [MCP tool plugins](#mcp-tool-plugins)
 - [Initial troubleshooting](#initial-troubleshooting)
 - [Project maintenance](#project-maintenance)
@@ -36,7 +37,7 @@ Complete guide to using the PatternFly MCP Server for development including CLI 
 - **Programmatic API** - The server can also be used programmatically with options. See [Programmatic usage](#programmatic-usage) for more details.
 - **Tool plugins** - The server can load external tool plugins at startup. See [MCP tool plugins](#mcp-tool-plugins) for more details.
 - **Test Mode** - When `--mode test` is used, the server redirects resource requests to the URL provided by `--mode-test-url`, enabling E2E testing without local filesystem access.
-- **Experimental options** - When an option is registered as experimental, use `--experimental-<lorem-ipsum>` on the CLI; for programmatic options use `experimental<LoremIpsum>`.
+- **Experimental options** - Opt-in flags use `--experimental-<name>` on the CLI and `experimental<Name>` programmatically. See [Experimental settings](./experimental.md) for the current list, examples, and lifecycle notes.
 
 ### Basic use scenarios
 
@@ -122,7 +123,7 @@ The `start()` function accepts an optional `PfMcpOptions` object for programmati
 | `docsPaths`                | `string[]`                               | Whitelist of local documentation directories resolved by `documentation:` slug. When empty (default), the slug is dormant. | `[]`             |
 
 #### Notes
-- **Experimental options** - When an option is registered as experimental use `experimental<LoremIpsum>` for programmatic options; for CLI options use `--experimental-<lorem-ipsum>`.
+- **Experimental options** - Opt-in flags use `experimental<Name>` programmatically and `--experimental-<name>` on the CLI. See [Experimental settings](./experimental.md) for the current list and configuration examples.
 
 #### Example usage
 

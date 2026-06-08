@@ -242,7 +242,10 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
           .optional().describe(`Filter results by a specific PatternFly version (e.g. ${options.patternflyOptions.availableSearchVersions.map(value => `"${value}"`).join(', ')})`)
       }
     },
-    callback
+    callback,
+    {
+      shouldRegister: opts => opts.contextManagement === false || opts.contextManagement === undefined
+    }
   ];
 };
 
