@@ -17,7 +17,15 @@ jest.mock('@modelcontextprotocol/sdk/server/mcp.js', () => {
   };
 });
 jest.mock('@modelcontextprotocol/sdk/server/stdio.js');
-jest.mock('../logger');
+jest.mock('../logger', () => ({
+  log: {
+    warn: jest.fn(),
+    error: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn()
+  },
+  formatUnknownError: jest.fn((error: unknown) => error)
+}));
 jest.mock('../server.logger', () => ({
   createServerLogger: {
     memo: jest.fn().mockImplementation(() => {})
@@ -356,6 +364,41 @@ describe('registerServerTools', () => {
       expect.any(Error)
     );
   });
+
+  it('should skip registration if shouldRegister returns false', async () => {
+    const mockToolCreator = () => [
+      'test-tool',
+      { description: 'A test tool', inputSchema: z.object({ key: z.string() }) },
+      jest.fn(),
+      { shouldRegister: jest.fn().mockResolvedValue(false) }
+    ];
+
+    mockServer.registerTool.mockReturnValue(undefined);
+
+    await registerServerTools([mockToolCreator as any], mockServer);
+
+    expect(mockServer.registerTool).not.toHaveBeenCalled();
+    expect(MockLog.debug).toHaveBeenCalledWith('Skipping tool registration: test-tool');
+  });
+
+  it('should log error and skip registration if shouldRegister throws an exception', async () => {
+    const mockToolCreator = jest.fn(() => [
+      'test-tool',
+      { description: 'A test tool', inputSchema: z.object({ key: z.string() }) },
+      jest.fn(),
+      { shouldRegister: jest.fn().mockRejectedValue(new Error('Bad config check')) }
+    ]);
+
+    mockServer.registerTool.mockReturnValue(undefined);
+
+    await registerServerTools([mockToolCreator as any], mockServer);
+
+    expect(mockServer.registerTool).not.toHaveBeenCalled();
+    expect(MockLog.error).toHaveBeenCalledWith(
+      'Error executing shouldRegister for tool test-tool',
+      expect.any(Object)
+    );
+  });
 });
 
 describe('registerServerResources', () => {
@@ -420,6 +463,47 @@ describe('registerServerResources', () => {
     expect(MockLog.error).toHaveBeenCalledWith(
       expect.stringContaining('Failed to register resource "failResource":'),
       expect.any(Error)
+    );
+  });
+
+  it('should skip registration if shouldRegister returns false', async () => {
+    const mockRegisterResource = jest.spyOn(mcpSdk, 'registerResource');
+    const mockResourceCreator = jest.fn(() => [
+      'test-resource',
+      'uri',
+      {},
+      jest.fn(),
+      undefined,
+      { shouldRegister: jest.fn().mockResolvedValue(false) }
+    ]);
+
+    mockRegisterResource.mockReturnValue(undefined);
+
+    await registerServerResources([mockResourceCreator as any], mockServer);
+
+    expect(mockRegisterResource).not.toHaveBeenCalled();
+    expect(MockLog.debug).toHaveBeenCalledWith('Skipping resource registration: test-resource');
+  });
+
+  it('should log error and skip registration if shouldRegister throws an exception', async () => {
+    const mockRegisterResource = jest.spyOn(mcpSdk, 'registerResource');
+    const mockResourceCreator = jest.fn(() => [
+      'test-resource',
+      'uri',
+      {},
+      jest.fn(),
+      undefined,
+      { shouldRegister: jest.fn().mockRejectedValue(new Error('Bad config check')) }
+    ]);
+
+    mockRegisterResource.mockReturnValue(undefined);
+
+    await registerServerResources([mockResourceCreator as any], mockServer);
+
+    expect(mockRegisterResource).not.toHaveBeenCalled();
+    expect(MockLog.error).toHaveBeenCalledWith(
+      'Error executing shouldRegister for resource test-resource',
+      expect.any(Object)
     );
   });
 });

@@ -10,7 +10,7 @@ import {
 import { setMetaResources } from './server.resourceMeta';
 import { startHttpTransport, type HttpServerHandle } from './server.http';
 import { memo } from './server.caching';
-import { log, type LogEvent } from './logger';
+import { formatUnknownError, log, type LogEvent } from './logger';
 import { createServerLogger } from './server.logger';
 import { composeTools, sendToolsHostShutdown } from './server.tools';
 import { composeResources } from './server.resources';
@@ -117,7 +117,24 @@ interface ServerInstance {
  */
 const registerServerResources = async (resources: McpResourceCreator[], server: McpServer, options = getOptions(), session = getSessionOptions()) => {
   for (const resourceCreator of resources) {
-    const [name, uri, config, callback, metadata] = resourceCreator(options);
+    const [name, uri, config, callback, metadata, _config] = resourceCreator(options);
+
+    const shouldRegister = _config?.shouldRegister;
+
+    if (shouldRegister) {
+      let status = false;
+
+      try {
+        status = await shouldRegister(options);
+      } catch (error) {
+        log.error(`Error executing shouldRegister for resource ${name}`, formatUnknownError(error));
+      }
+
+      if (!status) {
+        log.debug(`Skipping resource registration: ${name}`);
+        continue;
+      }
+    }
 
     try {
       registerResource(server, name, uri, config, (...args: unknown[]) =>
@@ -156,7 +173,23 @@ const registerServerResources = async (resources: McpResourceCreator[], server: 
  */
 const registerServerTools = async (tools: McpToolCreator[], server: McpServer, options = getOptions(), session = getSessionOptions()) => {
   for (const toolCreator of tools) {
-    const [name, schema, callback] = toolCreator(options);
+    const [name, schema, callback, _config] = toolCreator(options);
+    const shouldRegister = _config?.shouldRegister;
+
+    if (shouldRegister) {
+      let status = false;
+
+      try {
+        status = await shouldRegister(options);
+      } catch (error) {
+        log.error(`Error executing shouldRegister for tool ${name}`, formatUnknownError(error));
+      }
+
+      if (!status) {
+        log.debug(`Skipping tool registration: ${name}`);
+        continue;
+      }
+    }
 
     // Do NOT normalize schemas here. This is by design and is a fallback check for malformed schemas.
     const isZod = isZodSchema(schema?.inputSchema) || isZodRawShape(schema?.inputSchema);
