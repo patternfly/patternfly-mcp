@@ -476,6 +476,10 @@ describe('Logging', () => {
     {
       description: 'with mcp protocol',
       args: ['--log-protocol']
+    },
+    {
+      description: 'with experimental flag set',
+      args: ['--experimental-context-management']
     }
   ])('should allow setting logging options, $description', async ({ args }) => {
     const serverArgs = [...args];
@@ -554,5 +558,66 @@ describe('Tools', () => {
 
     expect(resp.result).toMatchSnapshot();
     expect(resp.result.isError).toBeUndefined();
+  });
+});
+
+describe('token-saver mode', () => {
+  let CLIENT: StdioTransportClient;
+
+  beforeAll(async () => {
+    CLIENT = await startServer({
+      args: ['--experimental-context-management']
+    });
+  });
+
+  afterAll(async () => {
+    if (CLIENT) {
+      await CLIENT.close();
+    }
+  });
+
+  it('should only expose searchPatternFly tool', async () => {
+    const response = await CLIENT.send({
+      method: 'tools/list',
+      params: {}
+    });
+    const tools = response?.result?.tools || [];
+    const toolNames = tools.map((tool: any) => tool.name);
+
+    expect(toolNames).toEqual(['searchPatternFly']);
+  });
+
+  it('should return McpResource links from searchPatternFly', async () => {
+    const response = await CLIENT.send({
+      method: 'tools/call',
+      params: {
+        name: 'searchPatternFly',
+        arguments: {
+          query: 'Button'
+        }
+      }
+    });
+
+    const [summary, ...resources] = response?.result?.content || [];
+
+    expect(summary.type).toBe('text');
+
+    resources.forEach((item: any) => {
+      expect(item.type).toBe('resource_link');
+      expect(item.uri).toMatch(/^patternfly:\/\/(docs|schemas)\//);
+    });
+
+    const link = resources.find((item: any) => item.uri.startsWith('patternfly://docs/') && !item.name.includes('Collection'));
+
+    expect(link).toBeDefined();
+
+    // Verify we can read the resource using the discovered ID
+    const readResponse = await CLIENT.send({
+      method: 'resources/read',
+      params: { uri: link.uri }
+    });
+
+    expect(readResponse.result.contents[0].text).toBeDefined();
+    expect(readResponse.result.contents[0].uri).toBe(link.uri);
   });
 });

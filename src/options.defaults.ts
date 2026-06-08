@@ -10,6 +10,9 @@ import { getNodeMajorVersion } from './options.helpers';
  * @interface DefaultOptions
  *
  * @template TLogOptions The logging options type, defaulting to LoggingOptions.
+ * @property contextManagement - Strategy for managing agent context and response sizes, primarily within MCP tools.
+ *    - 'false': Default standard text-heavy responses.
+ *    - 'true': High-efficiency mode for MCP tools, using McpResource links.
  * @property contextPath - Current working directory.
  * @property contextUrl - Current working directory URL.
  * @property docsPaths - List of allowed local documentation directories handled by `docsPathSlug`
@@ -49,6 +52,7 @@ import { getNodeMajorVersion } from './options.helpers';
  * @property xhrFetch - XHR and Fetch options.
  */
 interface DefaultOptions<TLogOptions = LoggingOptions> {
+  contextManagement: boolean;
   contextPath: string;
   contextUrl: string;
   docsPaths: string[];
@@ -131,7 +135,9 @@ interface LoggingOptions {
  * @interface MinMax
  *
  * @property urlString Minimum and maximum length for URL strings.
- * @property toolSearches Minimum and maximum number of tool searches.
+ * @property resourceSearches Minimum and maximum number of resource results for searches.
+ * @property sha1Hex Minimum and maximum length for SHA-1 hex strings.
+ * @property toolSearches Minimum and maximum number of tool results for searches.
  * @property inputStrings Minimum and maximum length for input strings.
  * @property docsToLoad Minimum and maximum number of docs to load.
  */
@@ -319,6 +325,9 @@ const HTTP_OPTIONS: HttpOptions = {
 
 /**
  * Minimum and maximum ranges for various options.
+ *
+ * @note For resourceSearches you still have to take into account that for every result
+ * there could be multiple resources.
  */
 const MIN_MAX: MinMax = {
   urlString: {
@@ -498,6 +507,7 @@ const PLUGIN_ISOLATION: DefaultOptions['pluginIsolation'][] = ['none', 'strict']
  * @type {DefaultOptions} Default options object.
  */
 const DEFAULT_OPTIONS: DefaultOptions = {
+  contextManagement: false,
   contextPath: (process.env.NODE_ENV === 'local' && '/') || resolve(process.cwd()),
   contextUrl: pathToFileURL((process.env.NODE_ENV === 'local' && '/') || resolve(process.cwd())).href,
   docsPaths: [],

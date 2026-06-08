@@ -90,13 +90,13 @@ describe('runServer', () => {
   it.each([
     {
       description: 'use default tools, stdio',
-      options: { name: 'test-server-1', version: '1.0.0' },
+      options: { name: 'test-server-1', version: '1.0.0', contextManagement: undefined },
       tools: undefined,
       transportMethod: MockStdioServerTransport
     },
     {
       description: 'use default tools, http',
-      options: { name: 'test-server-2', version: '1.0.0', isHttp: true },
+      options: { name: 'test-server-2', version: '1.0.0', isHttp: true, contextManagement: false },
       tools: undefined,
       transportMethod: MockStartHttpTransport
     },

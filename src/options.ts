@@ -86,7 +86,8 @@ const SET_OPTIONS = {
   docsPaths: defineOption({ cli: false })<DefaultOptions['docsPaths']>(),
   name: defineOption({ cli: false })<string>(),
   toolModules: defineOption({ cli: true })<DefaultOptions['toolModules']>(),
-  version: defineOption({ cli: false })<string>()
+  version: defineOption({ cli: false })<string>(),
+  contextManagement: defineOption({ cli: true, experimental: true })<DefaultOptions['contextManagement']>()
 } as const;
 
 /**
