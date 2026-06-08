@@ -1,8 +1,10 @@
+import { ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js';
 import {
-  ResourceTemplate,
-  type CompleteResourceTemplateCallback
-} from '@modelcontextprotocol/sdk/server/mcp.js';
-import { type McpResource } from './mcpSdk';
+  type McpResource,
+  type McpResourceListResult,
+  type McpResourceMetadataComplete,
+  type McpResourceMetadataCompleteMemo
+} from './mcpSdk';
 import { memo } from './server.caching';
 import { buildSearchString, stringJoin } from './server.helpers';
 import { assertInput, assertInputStringLength } from './server.assertions';
@@ -11,31 +13,6 @@ import { getPatternFlyMcpResources } from './patternFly.getResources';
 import { normalizeEnumeratedPatternFlyVersion } from './patternFly.helpers';
 import { filterPatternFly } from './patternFly.search';
 import { paramCompletion } from './resource.helpers';
-
-/**
- * Extended callback type that combines the `CompleteResourceTemplateCallback` type
- * and an additional `memo` property.
- *
- * @extends CompleteResourceTemplateCallback
- */
-type ExtendedCompleteResourceTemplateCallback = { memo: CompleteResourceTemplateCallback } & CompleteResourceTemplateCallback;
-
-/**
- * List resources result type.
- *
- * @note This is temporary until MCP SDK exports ListResourcesResult.
- *
- * @property uri - The fully qualified URI of the resource.
- * @property name - A human-readable name for the resource.
- * @property [mimeType] - The MIME type of the content.
- * @property [description] - A brief hint for the model.
- */
-type PatternFlyListResourceResult = {
-  uri: string;
-  name: string;
-  mimeType?: string;
-  description?: string;
-};
 
 /**
  * Name of the resource.
@@ -66,11 +43,11 @@ const CONFIG = {
  *
  * @note It's important to keep lists focused and concise, avoid listing all resources.
  *
- * @returns {Promise<PatternFlyListResourceResult>} The list of available resources.
+ * @returns The list of available resources.
  */
 const listResources = async () => {
   const { availableVersions, byVersion } = await getPatternFlyMcpResources.memo();
-  const resources: PatternFlyListResourceResult[] = [];
+  const resources: McpResourceListResult[] = [];
 
   Object.entries(byVersion)
     .filter(([version]) => availableVersions.includes(version))
@@ -112,7 +89,7 @@ listResources.memo = memo(listResources);
  * @param context - The completion context.
  * @returns The list of available names.
  */
-const uriNameComplete: ExtendedCompleteResourceTemplateCallback = async (name: string, context) => {
+const uriNameComplete: McpResourceMetadataCompleteMemo = async (name: string, context) => {
   const { version, category, section } = context?.arguments || {};
   const { names } = await paramCompletion({ category, name, section, version });
 
@@ -131,7 +108,7 @@ uriNameComplete.memo = memo(uriNameComplete);
  * @param context - The completion context containing arguments for the URI template.
  * @returns The list of available categories, or an empty list.
  */
-const uriCategoryComplete: ExtendedCompleteResourceTemplateCallback = async (category: string, context) => {
+const uriCategoryComplete: McpResourceMetadataCompleteMemo = async (category: string, context) => {
   const { version, section, name } = context?.arguments || {};
   const { categories } = await paramCompletion({ category, name, section, version });
 
@@ -150,7 +127,7 @@ uriCategoryComplete.memo = memo(uriCategoryComplete);
  * @param context - The completion context containing arguments for the URI template.
  * @returns The list of available sections, or an empty list.
  */
-const uriSectionComplete: ExtendedCompleteResourceTemplateCallback = async (section: string, context) => {
+const uriSectionComplete: McpResourceMetadataCompleteMemo = async (section: string, context) => {
   const { version, category, name } = context?.arguments || {};
   const { sections } = await paramCompletion({ category, name, section, version });
 
@@ -169,7 +146,7 @@ uriSectionComplete.memo = memo(uriSectionComplete);
  * @param context - The completion context containing arguments for the URI template.
  * @returns The list of available versions, or an empty list.
  */
-const uriVersionComplete: ExtendedCompleteResourceTemplateCallback = async (version: string, context) => {
+const uriVersionComplete: McpResourceMetadataCompleteMemo = async (version: string, context) => {
   const { section, category, name } = context?.arguments || {};
   const { versions } = await paramCompletion({ category, name, section, version });
 
@@ -295,7 +272,7 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
 const patternFlyDocsIndexResource = (options = getOptions()): McpResource => {
   const list = async () => runWithOptions(options, async () => listResources.memo());
 
-  const complete: { [callback: string]: CompleteResourceTemplateCallback } = {
+  const complete: { [callback: string]: McpResourceMetadataComplete } = {
     category: async (...args) => runWithOptions(options, async () => uriCategoryComplete.memo(...args)),
     section: async (...args) => runWithOptions(options, async () => uriSectionComplete.memo(...args)),
     version: async (...args) => runWithOptions(options, async () => uriVersionComplete.memo(...args))
@@ -335,7 +312,5 @@ export {
   NAME,
   URI_TEMPLATE,
   URI_DESCRIPTION,
-  CONFIG,
-  type ExtendedCompleteResourceTemplateCallback,
-  type PatternFlyListResourceResult
+  CONFIG
 };
