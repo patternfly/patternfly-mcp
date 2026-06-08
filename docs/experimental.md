@@ -22,9 +22,9 @@ Using an experimental flag without the `experimental` prefix (CLI or programmati
 
 ## Index
 
-| Internal name       | CLI flag                            | Programmatic option             | Status          |
-|---------------------|-------------------------------------|---------------------------------|-----------------|
-| `contextManagement` | `--experimental-context-management` | `experimentalContextManagement` | experimental    |
+| Internal name       | CLI flag                            | Programmatic option             | Value type  |
+|---------------------|-------------------------------------|---------------------------------|-------------|
+| `contextManagement` | `--experimental-context-management` | `experimentalContextManagement` | `boolean`   |
 
 ---
 
