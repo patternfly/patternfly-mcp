@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generated": "2026-06-12T18:05:38.705Z",
+  "generated": "2026-06-12T19:52:22.185Z",
   "meta": {
     "totalEntries": 132,
     "totalDocs": 326,
@@ -20,7 +20,7 @@
       },
       {
         "displayName": "Red Hat AI design language",
-        "description": "A guide that outlines the design language that should guide the implementation and communication of AI-enabled features at Red Hat, inlcuding common design patterns to follow in your UIs. Many of the linked resources require a Red Hat login.",
+        "description": "A guide that outlines the design language that should guide the implementation and communication of AI-enabled features at Red Hat, including common design patterns to follow in your UIs. Many of the linked resources require a Red Hat login.",
         "pathSlug": "ai-design-language",
         "section": "ai",
         "category": "design-guidelines",
