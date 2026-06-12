@@ -75,7 +75,7 @@
     "cspell": "^9.7.0",
     "eslint": "^9.39.4",
     "jest": "^30.4.2",
-    "pkgroll": "^2.27.0",
+    "pkgroll": "^2.27.1",
     "ts-jest": "29.4.4",
     "ts-jest-mock-import-meta": "^1.3.2",
     "ts-node": "^10.1.0",
