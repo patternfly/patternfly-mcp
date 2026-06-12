@@ -1,9 +1,9 @@
 {
   "version": "1",
-  "generated": "2026-06-12T19:52:22.185Z",
+  "generated": "2026-06-12T20:19:28.177Z",
   "meta": {
-    "totalEntries": 132,
-    "totalDocs": 326,
+    "totalEntries": 134,
+    "totalDocs": 328,
     "source": "patternfly-mcp-internal"
   },
   "docs": {
@@ -975,6 +975,18 @@
         "version": "v6"
       }
     ],
+    "ColorsForCharts": [
+      {
+        "displayName": "Colors for charts",
+        "description": "To create well-designed charts, you typically need to use multiple colors to best communicate your data.",
+        "pathSlug": "colors-for-charts",
+        "section": "charts",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/ec02b437ec72b6e4cc4e28524516288f4acf9fdf/packages/documentation-site/patternfly-docs/content/components/charts/colors-for-charts/colors-for-charts.md",
+        "version": "v6"
+      }
+    ],
     "Content": [
       {
         "displayName": "Content",
@@ -1478,6 +1490,18 @@
         "category": "development-guidelines",
         "source": "github",
         "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/aa2766e8d9cb2bc08c13e41106d75c9829bc001f/docs/README.md",
+        "version": "v6"
+      }
+    ],
+    "GlassModeHandbook": [
+      {
+        "displayName": "Glass mode handbook",
+        "description": "Glass mode is a contrast mode option that can be manually enabled in both our Default and Project Felt themes.",
+        "pathSlug": "glass-mode-handbook",
+        "section": "foundations-and-styles",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/ec02b437ec72b6e4cc4e28524516288f4acf9fdf/packages/documentation-site/patternfly-docs/content/foundations-and-styles/styles/theming/glass-mode-handbook.md",
         "version": "v6"
       }
     ],
