@@ -25,7 +25,7 @@ your contribution is aligned with the project's goals.
 
 ##### Windows and repository symlinks
 
-Some paths in this repo are **symbolic links** so tools can reach shared skills without needing to host multiple versions of the same files. For example, `.agents/skills` and `.claude/skills` point at `guidelines/skills`. On **Windows**, Git may create **regular folders or files** instead of links, so these locations can look empty or broken.
+Some paths in this repo are **symbolic links** so tools can reach shared skills without needing to host multiple versions of the same files. For example, `.agents/skills` and `.claude/skills` point to `guidelines/skills`. On **Windows**, Git may create **regular folders or files** instead of links, so these locations can look empty or broken.
 
 **Before you clone the repository**
 
@@ -35,7 +35,7 @@ Some paths in this repo are **symbolic links** so tools can reach shared skills 
 **If the repo is already on disk and the links are broken**
 
 Turning on Developer Mode or Git symlink settings **does not always fix** paths Git has already created as ordinary files.
-- Delete the broken `.agents/skills` and `.claude/skills` entries, or remove the entire folder/directory and **clone again**
+- Delete the broken `.agents/skills` and `.claude/skills` entries, or remove the entire folder/directory and **clone again**.
 - Then follow the **Before you clone the repository** steps above
 
 > If you are unsure of any steps, please verify them with your IT or system administrator before proceeding.
@@ -56,7 +56,7 @@ Our process follows the standard GitHub fork and pull request workflow.
 - Submit a pull request towards the main repository default branch
 
 ##### Main repository branches
-- The `main` branch currently represents both development and stable releases
+- The `main` branch currently represents both development and stable releases.
 
 > In the future, if there is an increase in contributions, we may consider implementing a `stable` branch.
 >    - `main` would be the default branch for development and feature work rebased from `stable` after release.
@@ -65,6 +65,10 @@ Our process follows the standard GitHub fork and pull request workflow.
 #### Pull requests
 
 Development pull requests (PRs) should be opened against the default branch.
+
+Before opening a PR:
+- Updates to MCP architecture, resources, prompts, and tools require an issue being opened first.
+- Review existing issues and PRs for confirmation that the work isn't already in progress.
 
 > If your pull request work contains any of the following warning signs
 >  - has no related issue
@@ -77,7 +81,7 @@ Development pull requests (PRs) should be opened against the default branch.
 >  - overly complex TypeScript generics or generally over-the-top typings
 >  - dramatic unit test snapshot updates
 >  - affects any file not directly associated with the issue being resolved
->  - affects "many" files
+>  - affects "many" files (more than 15 files)
 >  - contains or is a minor grammatical fix
 >
 > You will be asked to either:
@@ -184,7 +188,7 @@ For detailed information on agent interaction, see [guidelines/README.md](./guid
 #### Customizing developer experience
 
 As developers, we often have our own preferred workflows, and that includes working with AI agents. To that point, we've added agent guidance
-to allow customization for your work environment through a tool-agnostic git-ignored directory `./.agent` in the root of the project.
+to allow customization for your work environment through a tool-agnostic gitignored directory `./.agent` in the root of the project.
 
 #### Noting AI agent contributions
 
