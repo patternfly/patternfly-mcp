@@ -56,7 +56,7 @@ The project follows a plugin-based architecture focused on stability and extensi
 All tools and resources MUST follow the **Creator Pattern** for dependency injection and testability.
 
 - **Structure**: Creator functions accept an optional `options` parameter (defaults to `getOptions()`) and return a tool/resource tuple.
-- **Options Hybrid Approach**: Environment-dependent helpers should accept an optional `options` parameter that defaults to `getOptions()`. This allows for explicit dependency injection in tests while maintaining ergonomics via `AsyncLocalStorage` in production. Pure transforms should remain option-agnostic.
+- **Options Injection Pattern**: Environment-dependent helpers should accept an optional `options` parameter that defaults to `getOptions()`. This allows for explicit dependency injection in tests while maintaining ergonomics via `AsyncLocalStorage` in production. Pure transforms should remain option-agnostic.
 - **Internal Tools**: `(options = getOptions()): McpTool` -> Returns `[name, schema, handler]`.
 - **Internal Resources**: `(options = getOptions()): McpResource` -> Returns `[name, uri, config, handler]`.
 - **External Tool Plugins**: Authored using the `createMcpTool` helper with an object configuration, exported as `default`.

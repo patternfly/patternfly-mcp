@@ -19,7 +19,7 @@ See the [Guidelines Index](./README.md#guidelines-index) for a complete list of 
 Refer to [testing standards](../CONTRIBUTING.md#testing) for project-wide requirements.
 
 - **Unit Tests (`src/__tests__/*.test.ts`)**: Focus on individual module logic, helpers, and creator functions.
-- **E2E Tests (`tests/*.test.ts`)**: Validate full server lifecycle, transport (stdio/http), and tool/resource execution.
+- **E2E Tests (`tests/e2e/*.test.ts`)**: Validate full server lifecycle, transport (stdio/http), and tool/resource execution.
 - **Integration Tests (`npm run test:integration`)**: Verify interactions between server components.
 
 ## 2. Testing Principles
