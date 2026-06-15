@@ -18,18 +18,19 @@
 
 ## Key files
 
-| File | Zod role |
-|------|----------|
-| `src/server.schema.ts` | `isZodSchema`, `isZodRawShape`, `jsonSchemaToZod`, `normalizeInputSchema`, `zodToJsonSchema`; v3 `_def` / v4 `_zod` detection |
-| `src/server.tools.ts` | `z.looseObject({})` Tools Host fallback |
-| `src/server.toolsHost.ts` | Normalize plugin schemas; manifest JSON Schema via `zodToJsonSchema` |
-| `src/server.toolsUser.ts` | `normalizeInputSchema` for inline/static tools |
-| `src/options.assertions.ts` | `z.array(z.string().url().refine(...))` |
-| `src/tool.patternFlyDocs.ts` | Raw Zod shape (`z.array`, `z.string`, `z.enum`, `.optional()`) |
-| `src/tool.searchPatternFlyDocs.ts` | Same |
-| `src/__tests__/server.schema.test.ts` | Conversion tests + `toJSONSchema` snapshots |
-| `docs/development.md` | Plugin/tool schema terminology |
-| `guidelines/agent_coding.md` | Zod detection guidance |
+| File                                  | Zod role                                                                                                                      |
+|---------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
+| `src/server.schema.ts`                | `isZodSchema`, `isZodRawShape`, `jsonSchemaToZod`, `normalizeInputSchema`, `zodToJsonSchema`; v3 `_def` / v4 `_zod` detection |
+| `src/server.tools.ts`                 | `z.looseObject({})` Tools Host fallback                                                                                       |
+| `src/server.toolsHost.ts`             | Normalize plugin schemas; manifest JSON Schema via `zodToJsonSchema`                                                          |
+| `src/server.toolsUser.ts`             | `normalizeInputSchema` for inline/static tools                                                                                |
+| `src/options.assertions.ts`           | `z.array(z.string().url().refine(...))`                                                                                       |
+| `src/tool.patternFlyDocs.ts`          | Raw Zod shape (`z.array`, `z.string`, `z.enum`, `.optional()`)                                                                |
+| `src/tool.searchPatternFlyDocs.ts`    | Same                                                                                                                          |
+| `src/tool.searchPatternFly.ts`        | Same (experimental context-management search tool)                                                                            |
+| `src/__tests__/server.schema.test.ts` | Conversion tests + `toJSONSchema` snapshots                                                                                   |
+| `docs/development.md`                 | Plugin/tool schema terminology                                                                                                |
+| `guidelines/agent_coding.md`          | Zod detection guidance                                                                                                        |
 
 ## Grep patterns
 

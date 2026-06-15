@@ -108,9 +108,13 @@ main();
 
 For comprehensive usage, development, and project state [read the docs](./docs/README.md).
 
-- **Architecture**: Learn about our [hybrid documentation concept and data sources](./docs/architecture.md#data-sources-and-integrations).
+- **Architecture**: Learn about our [library synchronization concept and data sources](./docs/architecture.md#data-sources-and-integrations).
 - **Usage**: Detailed guide on [built-in tools, resources, and troubleshooting for general use](./docs/usage.md).
 - **Development**: Reference for [CLI options and tool plugins](./docs/development.md).
+
+## Security & Governance
+
+See [SECURITY.md](./SECURITY.md) for vulnerability reporting and [GOVERNANCE.md](./GOVERNANCE.md) for how contributions are reviewed.
 
 ## Contributing
 

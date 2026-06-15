@@ -102,7 +102,7 @@ Most MCP clients use JSON configuration to specify how the server is started. Be
 
 Depending on your environment, you may have to delay updating to the minimum Node.js version required by the server. If you are unable to upgrade your Node.js version and must remain on a previous Node.js version, you can pin your MCP configuration to the last compatible version of the server.
 
-> **Note**: Currently, pinning to an older PatternFly MCP version means you will not receive updated documentation or new features until you "update" your pinned version. In the future, pinning a version may still make an allowance for documentation updates. [See our planned architecture.](./architecture.md#hybrid-documentation-in-progress) 
+> **Note**: Currently, pinning to an older PatternFly MCP version means you will not receive updated documentation or new features until you "update" your pinned version. In the future, pinning a version may still make an allowance for documentation updates. [See our planned architecture.](./architecture.md#library-synchronization-in-progress) 
 
 #### When to choose `@latest` or a pinned version for configuration
 
