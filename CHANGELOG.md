@@ -1,6 +1,48 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.0.0](https://github.com/patternfly/patternfly-mcp/compare/c3a6d9340df21a5d07f16e98d3cfae6ca8525c3e...e9b0086aa7ea1f54ae0ec7c957bf4d1b9af555a1) (2026-06-15)
+★ **HIGHLIGHTS**
+* Context management, a refined token-optimized MCP tool that turns the two existing MCP tools into a single MCP tool called `searchPatternFly`. This work is an architecture gateway to even more token optimizations planned for version `2.x.x` and `experimental` settings. [Learn how to activate context management](https://github.com/patternfly/patternfly-mcp/tree/e9b0086aa7ea1f54ae0ec7c957bf4d1b9af555a1/docs/experimental.md#contextmanagement)
+* Multiple behind-the-scenes optimizations and refactors, like parallel search filtering and registering experimental options, to keep the MCP stable and running smoothly.
+
+⚠ **BREAKING CHANGES**
+* Node.js 20 support has been removed. Either [pin the existing PatternFly MCP package to continue using Node.js 20](https://github.com/patternfly/patternfly-mcp/tree/e9b0086aa7ea1f54ae0ec7c957bf4d1b9af555a1/docs/usage.md#pinned-mcp-package-version) or move to using Node.js 22 for version `2.0.0`. [Why Node.js 20 was dropped, see our planned architecture](https://github.com/patternfly/patternfly-mcp/tree/e9b0086aa7ea1f54ae0ec7c957bf4d1b9af555a1/docs/architecture.md#planned-features-and-integrations).
+* Programmatic use server options are now limited. Previously, any server options field could be supplied programmatically. Extra keys are simply ignored now. [See the refined options](https://github.com/patternfly/patternfly-mcp/tree/e9b0086aa7ea1f54ae0ec7c957bf4d1b9af555a1/docs/development.md#server-configuration-options).
+
+### Features
+* **tools** pf-4120 resource optimized searchPatternFly ([#211](https://github.com/patternfly/patternfly-mcp/pull/211)) ([f7eeb96](https://github.com/patternfly/patternfly-mcp/commit/f7eeb96bfaa2f682649900c27cff07ac7dc1652c))
+* **tools,resources** pf-4120 conditional registration ([#215](https://github.com/patternfly/patternfly-mcp/pull/215)) ([b2e0f44](https://github.com/patternfly/patternfly-mcp/commit/b2e0f448593a6af4501d027dc7f937c338f95182))
+* **search** pf-4120 parallel result filtering ([#210](https://github.com/patternfly/patternfly-mcp/pull/210)) ([c604bcc](https://github.com/patternfly/patternfly-mcp/commit/c604bcc57191b828caecdda9b174aa55d3274952))
+* **skills** pf-4236 zod integration reports ([#206](https://github.com/patternfly/patternfly-mcp/pull/206)) ([fea5c19](https://github.com/patternfly/patternfly-mcp/commit/fea5c195c4bafb4f824c3d236d30bee2230f06dd))
+* ⚠ **options** pf-4119 programmatic, CLI, experimental registry ([#200](https://github.com/patternfly/patternfly-mcp/pull/200)) ([0a3420d](https://github.com/patternfly/patternfly-mcp/commit/0a3420da0b9668316dcf1dec4614799b8cb468cb))
+
+### Documentation
+*  pf-4128 governance, security policies ([#221](https://github.com/patternfly/patternfly-mcp/pull/221)) ([e9b0086](https://github.com/patternfly/patternfly-mcp/commit/e9b0086aa7ea1f54ae0ec7c957bf4d1b9af555a1))
+
+### Code Refactoring
+* **docs** pf-3874 pf release updates ([#219](https://github.com/patternfly/patternfly-mcp/pull/219)) ([41e31c9](https://github.com/patternfly/patternfly-mcp/commit/41e31c98d4cea679c36d6ced4d16f735fd487432))
+* **tools** pf-3836 allow search by uri, hash, path ([#207](https://github.com/patternfly/patternfly-mcp/pull/207)) ([88f8ede](https://github.com/patternfly/patternfly-mcp/commit/88f8eded4d3121fe2e53d417f01460b986d15376))
+* **server** pf-3836 processDocsFunction, metadata, errors ([#209](https://github.com/patternfly/patternfly-mcp/pull/209)) ([20faaba](https://github.com/patternfly/patternfly-mcp/commit/20faabab21dbaff107833950ed61732a4f98f9ac))
+* **typings** pf-4119 rename, deprecate cli options ([#199](https://github.com/patternfly/patternfly-mcp/pull/199)) ([ad97803](https://github.com/patternfly/patternfly-mcp/commit/ad9780305e5a1125ce73681a324c8f83ce95165e))
+* **mcpSdk,server** pf-3836 sdk related typings ([#198](https://github.com/patternfly/patternfly-mcp/pull/198)) ([50ebb04](https://github.com/patternfly/patternfly-mcp/commit/50ebb040b6b2803317412587247495b45f31c7be))
+* **server** pf-3836 colocate register tools, resources ([#197](https://github.com/patternfly/patternfly-mcp/pull/197)) ([7318252](https://github.com/patternfly/patternfly-mcp/commit/73182520c0461740a1b43a3bb3846b072f335aa3))
+* **options** pf-4119 plugin isolation list ([#196](https://github.com/patternfly/patternfly-mcp/pull/196)) ([bb557ee](https://github.com/patternfly/patternfly-mcp/commit/bb557ee7d9874db9c41ae701bdd6b6842c9f1958))
+
+### Builds
+* **deps** lock update ([#220](https://github.com/patternfly/patternfly-mcp/pull/220)) ([81dc3f7](https://github.com/patternfly/patternfly-mcp/commit/81dc3f76ad3a58912c22d61540b64d0a237ff654))
+* **deps-dev** bump pkgroll from 2.27.0 to 2.27.1 ([#217](https://github.com/patternfly/patternfly-mcp/pull/217)) ([6a5aa7b](https://github.com/patternfly/patternfly-mcp/commit/6a5aa7b3e21b57dc4183ba2d99cc38c23e70e9a9))
+* **deps** bump semver from 7.8.0 to 7.8.1 ([#218](https://github.com/patternfly/patternfly-mcp/pull/218)) ([9639c72](https://github.com/patternfly/patternfly-mcp/commit/9639c727079ff38af94dfecd7c25e9d4e7120480))
+* **deps-dev** bump dev group with 7 updates ([#214](https://github.com/patternfly/patternfly-mcp/pull/214)) ([af3f33d](https://github.com/patternfly/patternfly-mcp/commit/af3f33d7ec3d5b91c2499f95419e6e4767c32d2b))
+* **deps** bump actions/setup-node from 6.3.0 to 6.4.0 ([#213](https://github.com/patternfly/patternfly-mcp/pull/213)) ([0b16801](https://github.com/patternfly/patternfly-mcp/commit/0b1680171217a0e2f239b48561e6e6af78188e51))
+* **deps** bump semver from 7.7.4 to 7.8.0 ([#208](https://github.com/patternfly/patternfly-mcp/pull/208)) ([69a0d13](https://github.com/patternfly/patternfly-mcp/commit/69a0d13967d30994f69587208f505003df7d0daa))
+* **deps** bump zod from 4.3.6 to 4.4.3 ([#202](https://github.com/patternfly/patternfly-mcp/pull/202)) ([fce59ff](https://github.com/patternfly/patternfly-mcp/commit/fce59ff827f46c0006db8eea7bc5ca732a5e2dd0))
+* ⚠ **node.js** pf-3843 remove 20 support ([#169](https://github.com/patternfly/patternfly-mcp/pull/169)) ([589a390](https://github.com/patternfly/patternfly-mcp/commit/589a390bc9a329321c59e3e4b98c4b13fffb25a5))
+* **deps-dev** bump the dev group with 3 updates ([#195](https://github.com/patternfly/patternfly-mcp/pull/195)) ([88e5122](https://github.com/patternfly/patternfly-mcp/commit/88e5122ef76ae3efd6f53ac94308c2dbf10d5810))
+
+### Bug Fixes
+*  pf-4120 central mcp sdk typings ([#216](https://github.com/patternfly/patternfly-mcp/pull/216)) ([05053d7](https://github.com/patternfly/patternfly-mcp/commit/05053d71b3b83dcec174aec161ab8bdce0e6071c))
+
 ## [1.1.0](https://github.com/patternfly/patternfly-mcp/compare/362dd7f7439ba94617b0739dc9591fba115913d6...de4fbe8501faa2e26e000d206a05c87f190f64d9) (2026-05-11)
 
 
