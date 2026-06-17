@@ -153,12 +153,13 @@ const searchPatternFlyDocsTool = (options = getOptions()): McpTool => {
       description: `Search PatternFly resources and get component names with documentation and guidance URLs. Supports case-insensitive partial and all ("*") matches.
 
       **Usage**:
-        1. Input a "searchQuery" to find PatternFly documentation and guideline URLs, and component names.
-        2. Use the returned resource names OR URLs OR version with the "usePatternFlyDocs" tool to get markdown documentation, guidelines, and component JSON schemas.
+        1. Input a "searchQuery" to find PatternFly documentation and guideline URLs, resource URIs, and component names.
+        2. Use the returned resource names OR URLs OR URIs OR version with the "usePatternFlyDocs" tool to get markdown documentation, guidelines, and component JSON schemas.
 
       **Returns**:
         - Component and resource names that can be used with "usePatternFlyDocs"
         - Documentation and guideline URLs that can be used with "usePatternFlyDocs"
+        - Resource URIs that can be used with "usePatternFlyDocs" or directly as MCP resources
       `,
       inputSchema: {
         searchQuery: z.string()

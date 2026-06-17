@@ -131,7 +131,15 @@ const searchPatternFlyTool = (options = getOptions()): McpTool => {
         }
       });
 
-      if (!result.entries.length) {
+      /**
+       * FIXME: Schemas are intended to be part of collections. We're temporarily expanding our limit condition
+       * to include `!result.entries.some(entry => Boolean(entry.path)` to make sure if a collection only has JSON
+       * schemas available, the "collection" doesn't appear; this is specifically to work with the current MCP
+       * resource structure. In the future when we've focused our MCP resources down to "collections" and
+       * "records" we would review dropping this part of the check and allow a "collection" grouping to appear
+       * if all it had were JSON schemas.
+       */
+      if (!result.entries.length || !result.entries.some(entry => Boolean(entry.path))) {
         return;
       }
 

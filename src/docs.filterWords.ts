@@ -12,7 +12,7 @@ const INDEX_BLOCKLIST_WORDS = ['patternfly', 'component', 'components', 'documen
  * @note If "AI" starts producing noisy or overly broad matches in search, remove it from this
  * list and consider adding it to the noise words or blocklist.
  */
-const INDEX_EXCEPTION_WORDS = ['cli', 'css', 'ai', 'rtl', 'ltr'];
+const INDEX_EXCEPTION_WORDS = ['cli', 'css', 'ai', 'rtl', 'ltr', 'theming'];
 
 /**
  * Noise words that are common and do not add significant value to search results.

@@ -143,5 +143,7 @@ describe('searchPatternFlyDocsTool, callback', () => {
     const result = await callback({ searchQuery: 'button' });
 
     expect(result.content).toMatchSnapshot('Button');
+    expect(result.content[0].text).toContain('patternfly://docs/button');
+    expect(result.content[0].text).toContain('patternfly://schemas/button');
   });
 });

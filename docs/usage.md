@@ -18,7 +18,9 @@ Core server tools provide a resource library for PatternFly. They are extensible
 
 ### Tool: searchPatternFlyDocs
 
-Use this to search for PatternFly documentation URLs and component names. Accepts partial string matches or `*` to list all available components. From the content, you can select specific URLs and component names to use with `usePatternFlyDocs`.
+Use this to search for PatternFly documentation URLs, `patternfly://` resource URIs, and component names. Accepts partial string matches or `*` to list all available components. From the content, you can select specific URLs, URIs, and component names to use with `usePatternFlyDocs`.
+
+> **Transitional URI support**: The default tools also return and accept `patternfly://` URIs for compatibility. Using and passing URIs through these tools is supported as a compatibility bridge for the intended workflow; see [experimental context management](./experimental.md#contextmanagement) for details on the transitional allowance for older clients.
 
 **Parameters:**
 - `searchQuery`: `string` (required) - Full or partial component name to search for (e.g., "button", "table", "*" for all components)
@@ -37,8 +39,10 @@ Fetch full documentation and component JSON schemas for specific PatternFly URLs
 > **Feature**: This tool automatically detects if a URL belongs to a component (or if a "name" is provided) and appends its machine-readable JSON schema (props, types, validation) to the response, combining human-readable documentation with technical specifications.
 
 **Parameters:** _Parameters are mutually exclusive. Provide either `name` OR `urlList`, not both._
-- `name`: `string` (optional) - The name of the PatternFly component (e.g., "Button", "Modal"). **Recommended** for known component lookups.
-- `urlList`: `string[]` (optional) - A list of specific documentation URLs discovered via `searchPatternFlyDocs` (max 15 at a time).
+- `name`: `string` (optional) - A PatternFly component or resource name (e.g., `"Button"`, `"Modal"`), or a `patternfly://` URI (e.g., `"patternfly://docs/button"`). Names are **recommended** for known component lookups.
+- `urlList`: `string[]` (optional) - A list of documentation URLs and/or `patternfly://` URIs from `searchPatternFlyDocs` (max 15 at a time).
+
+> **Transitional URI support**: Prefer reading `patternfly://` URIs with MCP `resources/read` when your client supports it. Passing URIs through this tool is supported as a compatibility bridge for the intended workflow; see [experimental context management](./experimental.md#contextmanagement) for details on the transitional allowance for older clients.
 
 **Example with name:**
 ```json
