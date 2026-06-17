@@ -12,6 +12,10 @@ import { normalizeEnumeratedPatternFlyVersion } from './patternFly.helpers';
 /**
  * searchPatternFlyDocs tool function
  *
+ * @note Currently, we are purposefully not updating the descriptions around lines 126 - 150 on
+ * the use of URIs. During low-level auditing, the model actually performed better with limited
+ * choices in responses. We'll review this periodically.
+ *
  * Searches for PatternFly component documentation URLs using fuzzy search.
  * Returns URLs only (does not fetch content). Use usePatternFlyDocs to fetch the actual content.
  *
