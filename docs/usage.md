@@ -34,7 +34,7 @@ Use this to search for PatternFly documentation URLs, `patternfly://` resource U
 
 ### Tool: usePatternFlyDocs
 
-Fetch full documentation and component JSON schemas for specific PatternFly URLs or component names.
+Fetch full documentation and component JSON schemas for specific PatternFly URLs, `patternfly://` URIs, or component names.
 
 > **Feature**: This tool automatically detects if a URL belongs to a component (or if a "name" is provided) and appends its machine-readable JSON schema (props, types, validation) to the response, combining human-readable documentation with technical specifications.
 
