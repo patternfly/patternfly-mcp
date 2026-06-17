@@ -33,7 +33,7 @@ ipsum documentation content
 
 ---
 
-# Component Schema for button (v6) 
+# Component Schema for Button (v6)
 This machine-readable JSON schema defines the component's props, types, and validation rules.
 \`\`\`json
 {

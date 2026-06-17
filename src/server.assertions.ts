@@ -1,6 +1,11 @@
 import assert from 'node:assert';
 import { ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js';
-import { isWhitelistedUrl, stringJoin } from './server.helpers';
+import {
+  isUrl,
+  isWhitelistedUrl,
+  stringJoin
+} from './server.helpers';
+import { isPatternFlyUri } from './patternFly.support';
 import { DEFAULT_OPTIONS, type WhitelistUrl } from './options.defaults';
 
 /**
@@ -160,8 +165,13 @@ function assertInputUrlWhiteListed(
 
   updatedInput.forEach(url => {
     const isRemote = typeof url === 'string' && allowedProtocols.some(protocol => url.startsWith(protocol));
+    const isPfUri = isPatternFlyUri(url);
 
-    if (isRemote && !isWhitelistedUrl(url, whitelist, { allowedProtocols })) {
+    if (isRemote) {
+      if (!isWhitelistedUrl(url, whitelist, { allowedProtocols })) {
+        invalidUrls.push(url);
+      }
+    } else if (isUrl(url, { isStrict: false }) && !isPfUri) {
       invalidUrls.push(url);
     }
   });

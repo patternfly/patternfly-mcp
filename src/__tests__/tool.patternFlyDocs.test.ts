@@ -4,6 +4,7 @@ import { getPatternFlyComponentSchema, getPatternFlyMcpResources, setCategoryDis
 import { searchPatternFly } from '../patternFly.search';
 import { isPlainObject } from '../server.helpers';
 import { usePatternFlyDocsTool } from '../tool.patternFlyDocs';
+import { DEFAULT_OPTIONS } from '../options.defaults';
 
 // Mock dependencies
 jest.mock('../server.getResources');
@@ -17,6 +18,7 @@ const mockProcessDocs = processDocsFunction as jest.MockedFunction<typeof proces
 const mockComponentSchema = getPatternFlyComponentSchema as jest.MockedFunction<typeof getPatternFlyComponentSchema>;
 const mockGetResources = getPatternFlyMcpResources as jest.MockedFunction<typeof getPatternFlyMcpResources>;
 const mockSearch = searchPatternFly as jest.MockedFunction<typeof searchPatternFly>;
+const mockSchema = getPatternFlyComponentSchema as jest.MockedFunction<typeof getPatternFlyComponentSchema>;
 const mockSetCategoryLabel = setCategoryDisplayLabel as jest.MockedFunction<typeof setCategoryDisplayLabel>;
 
 describe('usePatternFlyDocsTool', () => {
@@ -175,5 +177,51 @@ describe('usePatternFlyDocsTool, callback', () => {
     const result = await callback({ name: 'button' });
 
     expect(result.content).toMatchSnapshot('Button');
+  });
+
+  it('usePatternFlyDocs resolves patternfly:// URIs in name', async () => {
+    mockSearch.mockResolvedValue({
+      exactMatches: [{
+        name: 'ToolbarFilter',
+        isSchemasAvailable: true,
+        entries: [{ name: 'ToolbarFilter', version: 'v6', path: '' }]
+      }],
+      searchResults: []
+    } as any);
+
+    mockSchema.mockResolvedValue({
+      name: 'ToolbarFilter',
+      schema: { type: 'object' }
+    } as any);
+
+    mockProcessDocs.mockResolvedValue([]);
+
+    const [_name, _schema, callback] = usePatternFlyDocsTool(DEFAULT_OPTIONS);
+    const result = await callback({ name: 'patternfly://docs/ToolbarFilter' }) as any;
+
+    expect(result.content[0].text).toContain('Component Schema for ToolbarFilter');
+  });
+
+  it('usePatternFlyDocs resolves patternfly:// URIs in urlList', async () => {
+    mockSearch.mockResolvedValue({
+      exactMatches: [{
+        name: 'ToolbarFilter',
+        isSchemasAvailable: true,
+        entries: [{ name: 'ToolbarFilter', version: 'v6', path: '' }]
+      }],
+      searchResults: []
+    } as any);
+
+    mockSchema.mockResolvedValue({
+      name: 'ToolbarFilter',
+      schema: { type: 'object' }
+    } as any);
+
+    mockProcessDocs.mockResolvedValue([]);
+
+    const [_name, _schema, callback] = usePatternFlyDocsTool(DEFAULT_OPTIONS);
+    const result = await callback({ urlList: ['patternfly://docs/ToolbarFilter'] }) as any;
+
+    expect(result.content[0].text).toContain('Component Schema for ToolbarFilter');
   });
 });

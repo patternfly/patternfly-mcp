@@ -36,10 +36,14 @@ Context management (also called **token-saver mode**) switches the server from t
 
 | Mode                    | Registered tools                                      | Typical workflow                                                                 |
 |-------------------------|-------------------------------------------------------|----------------------------------------------------------------------------------|
-| **Default** _(off)_     | `searchPatternFlyDocs`, `usePatternFlyDocs`           | Search returns text with URLs and names; fetch content with `usePatternFlyDocs`. |
+| **Default** _(off)_     | `searchPatternFlyDocs`, `usePatternFlyDocs`           | Search returns text with URLs, names, and URIs; fetch content with `usePatternFlyDocs`. |
 | **Context management**  | `searchPatternFly` only                               | Search returns `resource_link` items; read content with `resources/read`.        |
 
 Built-in MCP resources (`patternfly://docs/...`, `patternfly://schemas/...`, indexes, and `patternfly://context`) remain available in both modes.
+
+> **Important!**
+>
+> In **default** mode, `searchPatternFlyDocs` returns and `usePatternFlyDocs` accepts `patternfly://` URIs. This is a compatibility bridge for limited MCP clients. This is a transitional allowance: context management is the architecture the PatternFly MCP tools are moving towards, where URIs are returned as links and read through MCP resources. However, this does not mean the older technique of returning Markdown will go away; there is still a possible future where the PatternFly MCP retains the older Markdown response techniques to purposefully support limited and agentless MCP clients.
 
 ### Tool: searchPatternFly
 

@@ -140,8 +140,10 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
     );
   }
 
+  const hasSchemas = byEntry.some(entry => entry.uriSchemasId);
+
   assertInput(
-    docs.length > 0,
+    docs.length > 0 || hasSchemas,
     () => {
       let suggestionMessage = '';
 
@@ -158,6 +160,16 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
       return `"${updatedName}" was found, but no documentation resources are available for it.${suggestionMessage}`;
     }
   );
+
+  if (docs.length === 0 && hasSchemas) {
+    return {
+      contents: byEntry.filter(entry => entry.uriSchemasId).map(entry => ({
+        uri: entry.uriId,
+        mimeType: 'text/markdown',
+        text: `# ${entry.displayName}\n\nNo documentation is available for this component. But a [JSON schema is available](${entry.uriSchemasId}).`
+      }))
+    };
+  }
 
   return {
     contents: docs.map(({ uri, path, resolvedPath, content }) => ({
