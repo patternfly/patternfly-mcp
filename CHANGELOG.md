@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.0.1](https://github.com/patternfly/patternfly-mcp/compare/2bea4e09d959849f767bd3b9983fbf9a91768690...c3bda3321eb77ddeff829f47af191c04f523872f) (2026-06-17)
+
+
+### Bug Fixes
+* **tools** pf-3836 strict url validation and pf uris ([#227](https://github.com/patternfly/patternfly-mcp/pull/227)) ([c3bda33](https://github.com/patternfly/patternfly-mcp/commit/c3bda3321eb77ddeff829f47af191c04f523872f))
+
 ## [2.0.0](https://github.com/patternfly/patternfly-mcp/compare/c3a6d9340df21a5d07f16e98d3cfae6ca8525c3e...e9b0086aa7ea1f54ae0ec7c957bf4d1b9af555a1) (2026-06-15)
 ★ **HIGHLIGHTS**
 * Context management, a refined token-optimized MCP tool that turns the two existing MCP tools into a single MCP tool called `searchPatternFly`. This work is an architecture gateway to even more token optimizations planned for version `2.x.x` and `experimental` settings. [Learn how to activate context management](https://github.com/patternfly/patternfly-mcp/tree/e9b0086aa7ea1f54ae0ec7c957bf4d1b9af555a1/docs/experimental.md#contextmanagement)
