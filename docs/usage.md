@@ -20,7 +20,7 @@ Core server tools provide a resource library for PatternFly. They are extensible
 
 Use this to search for PatternFly documentation URLs, `patternfly://` resource URIs, and component names. Accepts partial string matches or `*` to list all available components. From the content, you can select specific URLs, URIs, and component names to use with `usePatternFlyDocs`.
 
-> **Transitional URI support**: The default tools also return and accept `patternfly://` URIs for compatibility. Using and passing URIs through these tools is supported as a compatibility bridge for the intended workflow; see [experimental context management](./experimental.md#contextmanagement) for details on the transitional allowance for older clients.
+> **Transitional URI support**: The default tools also return and accept `patternfly://` URIs for compatibility. Using and passing URIs through these tools is supported as a compatibility bridge for the intended workflow; see [experimental context management](./experimental.md#contextmanagement) for details on the transitional allowance for limited MCP clients.
 
 **Parameters:**
 - `searchQuery`: `string` (required) - Full or partial component name to search for (e.g., "button", "table", "*" for all components)
@@ -42,7 +42,7 @@ Fetch full documentation and component JSON schemas for specific PatternFly URLs
 - `name`: `string` (optional) - A PatternFly component or resource name (e.g., `"Button"`, `"Modal"`), or a `patternfly://` URI (e.g., `"patternfly://docs/button"`). Names are **recommended** for known component lookups.
 - `urlList`: `string[]` (optional) - A list of documentation URLs and/or `patternfly://` URIs from `searchPatternFlyDocs` (max 15 at a time).
 
-> **Transitional URI support**: Prefer reading `patternfly://` URIs with MCP `resources/read` when your client supports it. Passing URIs through this tool is supported as a compatibility bridge for the intended workflow; see [experimental context management](./experimental.md#contextmanagement) for details on the transitional allowance for older clients.
+> **Transitional URI support**: Prefer reading `patternfly://` URIs with MCP `resources/read` when your client supports it. Passing URIs through this tool is supported as a compatibility bridge for the intended workflow; see [experimental context management](./experimental.md#contextmanagement) for details on the transitional allowance for limited MCP clients.
 
 **Example with name:**
 ```json
