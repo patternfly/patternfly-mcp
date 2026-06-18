@@ -69,8 +69,8 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^25.9.1",
     "@types/semver": "7.7.1",
-    "@typescript-eslint/eslint-plugin": "^8.60.0",
-    "@typescript-eslint/parser": "^8.60.0",
+    "@typescript-eslint/eslint-plugin": "^8.60.1",
+    "@typescript-eslint/parser": "^8.60.1",
     "changelog-light": "^3.0.8",
     "cspell": "^9.7.0",
     "eslint": "^9.39.4",
@@ -79,9 +79,9 @@
     "ts-jest": "29.4.4",
     "ts-jest-mock-import-meta": "^1.3.2",
     "ts-node": "^10.1.0",
-    "tsx": "^4.22.3",
+    "tsx": "^4.22.4",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.60.0"
+    "typescript-eslint": "^8.60.1"
   },
   "engines": {
     "node": ">=22.0.0"
