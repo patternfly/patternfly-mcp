@@ -11,7 +11,7 @@ export type { Request as RpcRequest } from '@modelcontextprotocol/sdk/types.js';
 
 export interface StartOptions {
   command?: string;
-  serverPath?: string;
+  serverPath?: string | undefined;
   args?: string[];
   env?: Record<string, string | undefined>;
 }
@@ -57,7 +57,7 @@ export const startServer = async ({
   // Set stderr to 'pipe' so we can handle server logs separately from JSON-RPC messages
   const transport = new StdioClientTransport({
     command,
-    args: [serverPath, '--mode', 'test', ...args],
+    args: !serverPath ? [...args] : [serverPath, '--mode', 'test', ...args],
     env: { ...process.env, ...env } as any,
     stderr: 'pipe' // Pipe stderr so server logs don't interfere with JSON-RPC on stdout
   });

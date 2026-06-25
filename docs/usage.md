@@ -6,6 +6,7 @@ A comprehensive guide to PatternFly MCP Server tools, resources, and configurati
 - [Built-in tools](#built-in-tools)
 - [Built-in resources](#built-in-resources)
 - [MCP client configuration](#mcp-client-configuration)
+- [Running via container](#running-via-container-podman)
 - [Custom MCP tool plugins](#custom-mcp-tool-plugins)
 - [Experimental settings](./experimental.md)
 - [Troubleshooting](#troubleshooting)
@@ -199,6 +200,125 @@ Depending on your environment, you may have to delay updating to the minimum Nod
   }
 }
 ```
+
+### Running via container (podman)
+
+The server can also be launched from a container image instead of `npx`. This is useful when you want a pinned, sandboxed runtime that doesn't depend on the host's Node.js installation. Running with an MCP client spawns `podman` (or `docker`) instead of `npx`.
+
+> **Prerequisites:**
+> Podman is the supported container runtime for PatternFly MCP. We recommend [Podman Desktop](https://podman-desktop.io/downloads) or [Podman](https://podman.io/).
+>
+> We make a minimal effort to support Docker, and additional configuration may be required.
+
+#### Build the image locally
+
+From the repository root:
+
+```bash
+bash ./scripts/container.build.sh
+```
+
+or using Node.js and NPM:
+
+```sh
+npm run container:build
+```
+
+This produces the following images:
+- `localhost/patternfly-mcp:<version>`,
+- `localhost/patternfly-mcp:<version>-node24`,
+- `localhost/patternfly-mcp:sha-<short>`
+- `localhost/patternfly-mcp:latest`.
+
+You can confirm by running `$ podman images` from the terminal. View the [Containerfile](../Containerfile) for the image definition.
+
+#### Running your local image, MCP client configuration
+
+```json
+{
+  "mcpServers": {
+    "patternfly-mcp": {
+      "command": "podman",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "--userns=keep-id",
+        "--security-opt=no-new-privileges",
+        "--cap-drop=ALL",
+        "localhost/patternfly-mcp:latest",
+        "--log-stderr"
+      ],
+      "description": "PatternFly rules and documentation (local container)"
+    }
+  }
+}
+```
+
+> **Important**:
+> - `-i` (interactive stdin) is **required** for stdio MCP. Do **not** pass `-t`. Anything appended after the image name is forwarded verbatim to the CLI, so every flag (`--verbose`, `--http`, `--port`, `--tool`, ...) works without rebuilding.
+> - If you're attempting to run the same configuration with Docker, you'll need to make at least two adjustments:
+>    - replace `"command": "podman"` with `"command": "docker"`
+>    - and remove the `--userns=keep-id` flag
+
+#### Smoke test
+
+```bash
+podman run --rm --entrypoint node localhost/patternfly-mcp:latest -e "console.log(process.versions.node)"  # -> 24.x
+```
+
+#### Running in HTTP transport mode
+
+The image's `ENTRYPOINT` forwards every argument straight to the CLI, so HTTP mode works against the **same image** with no rebuild — just publish a port and pass `--http --port`.
+
+```bash
+podman run --rm \
+  --userns=keep-id \
+  --security-opt=no-new-privileges \
+  --cap-drop=ALL \
+  --read-only \
+  --tmpfs /tmp:rw,size=64m \
+  -p 3030:8080 \
+  localhost/patternfly-mcp:latest \
+  --http \
+  --port 8080 \
+  --allowed-origins "http://127.0.0.1:3030" \
+  --allowed-hosts  "127.0.0.1" \
+  --log-stderr
+```
+
+Notes:
+- `-p <host>:<container>` publishes the port. The container-side port (`8080` above) must match `--port`. The host-side port is whatever you want clients to connect to.
+- `8080` inside the container matches the port the UBI Node.js base already advertises via `EXPOSE`, and a non-root user can bind it without extra capabilities.
+- `-i` (interactive stdin) is **not** required in HTTP mode and is omitted here.
+- `--allowed-origins` and `--allowed-hosts` are required guardrails when the server is reachable beyond stdio; set them explicitly.
+- `--read-only` is safe today because the server writes nothing to the rootfs (only `/tmp`, which is a tmpfs). When the persistent SQLite cache lands, you will need to either drop `--read-only` or mount a writable volume for the cache directory.
+- TLS is out of scope for the image itself. For anything beyond `localhost`, terminate TLS at a reverse proxy (Caddy, nginx, an OpenShift route, etc.).
+
+##### MCP client configuration (HTTP)
+
+HTTP MCP clients connect via URL rather than spawning a process. Start the container separately (e.g. with the command above, `podman-compose`, or a systemd unit) and point the client at the published host port:
+
+```json
+{
+  "mcpServers": {
+    "patternfly-mcp": {
+      "url": "http://localhost:3030",
+      "description": "PatternFly rules and documentation (HTTP transport, containerized)"
+    }
+  }
+}
+```
+
+> Stdio-only MCP clients should keep using the [stdio container configuration above](#running-your-local-image-mcp-client-configuration); the HTTP form requires a client that supports HTTP/SSE MCP transports.
+
+##### Verify it's listening
+
+```bash
+curl -sS -i http://localhost:3030/ | head -20
+```
+
+`--log-stderr` will print the registered routes at startup, which is the easiest way to confirm the server bound the expected port.
 
 ## Custom MCP tool plugins
 

@@ -3,6 +3,7 @@
   "words": [
     "amet",
     "codemods",
+    "containerfile",
     "deprioritized",
     "ized",
     "llms",
@@ -16,13 +17,17 @@
     "prefault",
     "rereview",
     "rescan",
+    "rootfs",
     "rsort",
+    "sandboxed",
     "sandboxing",
     "sparkline",
     "streamable",
+    "tmpfs",
     "treeify",
     "unrepresentable",
     "unsub",
-    "untampered"
+    "untampered",
+    "userns"
   ]
 }

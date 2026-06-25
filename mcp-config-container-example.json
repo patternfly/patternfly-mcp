@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "patternfly-mcp": {
+      "command": "podman",
+      "args": [
+        "run", "--rm", "-i",
+        "--userns=keep-id",
+        "--security-opt=no-new-privileges",
+        "--cap-drop=ALL",
+        "localhost/patternfly-mcp:latest",
+        "--log-stderr"
+      ],
+      "description": "PatternFly rules and documentation (local container)"
+    }
+  }
+}
