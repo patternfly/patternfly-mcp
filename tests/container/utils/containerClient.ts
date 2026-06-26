@@ -10,11 +10,7 @@ interface StartOptions {
 /**
  * Resolves which container engine to use.
  *
- * 1. If the `CONTAINER_ENGINE` environment variable is set, its value is returned.
- * 2. If the `CONTAINER_ENGINE` environment variable is not set, it searches for common
- *    container engines like `podman` and `docker`. If one of these engines is available
- *    (found in the system's PATH), its name is returned.
- * 3. If no container engine is detected or available, the function returns `undefined`.
+ * Probes `podman` first, then `docker` on the system's PATH.
  *
  * @returns The resolved container engine name or `undefined` if none is found.
  */
