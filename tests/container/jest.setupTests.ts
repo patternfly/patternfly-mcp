@@ -1,4 +1,4 @@
-// Shared helpers for audit Jest tests
+// Shared helpers for container Jest tests
 
 declare global {
   var describeSkip: (check: unknown) => typeof describe | typeof describe.skip;
