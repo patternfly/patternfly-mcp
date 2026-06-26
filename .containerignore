@@ -1,0 +1,8 @@
+# Ignore everything by default
+*
+
+# Allowlist only the files and directories required for the build context
+!package.json
+!package-lock.json
+!tsconfig.json
+!src/

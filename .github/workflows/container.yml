@@ -1,0 +1,32 @@
+name: Container
+
+on:
+  pull_request:
+    paths:
+      - '.containerignore'
+      - 'Containerfile'
+      - 'scripts/container.*'
+      - 'tests/container/**'
+      - 'package.json'
+      - 'package-lock.json'
+  workflow_dispatch:
+
+jobs:
+  container-audit:
+    name: Container Audit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v6.4.0
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run container audit
+        run: npm run test:audit-container
+        # Advisories are non-blocking for PRs
+        continue-on-error: ${{ github.event_name == 'pull_request' }}
