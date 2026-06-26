@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Build the PatternFly MCP container image locally from the repository's
-# Containerfile. Podman is the primary, supported runtime; Docker is
-# detected as a fallback only if Podman is not installed.
+# Containerfile. podman is the primary, supported runtime; Docker is
+# detected as a fallback only if podman is not installed.
 #
 # Produces four tags under the `${IMAGE}` repository:
 #   - ${IMAGE}:<semver>           (from package.json#version)
@@ -36,7 +36,7 @@
   elif [ "$(command -v docker)" ]; then
     ENGINE="docker"
   else
-    echo 'Error: Podman and Docker not found.' >&2
+    echo 'Error: podman and Docker not found.' >&2
     exit 1
   fi
 

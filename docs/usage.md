@@ -206,7 +206,7 @@ Depending on your environment, you may have to delay updating to the minimum Nod
 The server can also be launched from a container image instead of `npx`. This is useful when you want a pinned, sandboxed runtime that doesn't depend on the host's Node.js installation. Running with an MCP client spawns `podman` (or `docker`) instead of `npx`.
 
 > **Prerequisites:**
-> Podman is the supported container runtime for PatternFly MCP. We recommend [Podman Desktop](https://podman-desktop.io/downloads) or [Podman](https://podman.io/).
+> `podman` is the supported container runtime for PatternFly MCP. We recommend [podman desktop](https://podman-desktop.io/downloads) or [podman](https://podman.io/).
 >
 > We make a minimal effort to support Docker, and additional configuration may be required.
 
@@ -239,11 +239,13 @@ You can confirm by running `$ podman images` from the terminal. View the [Contai
   "mcpServers": {
     "patternfly-mcp": {
       "command": "podman",
+      "env": {
+        "PODMAN_USERNS": "keep-id"
+      },
       "args": [
         "run",
         "--rm",
         "-i",
-        "--userns=keep-id",
         "--security-opt=no-new-privileges",
         "--cap-drop=ALL",
         "localhost/patternfly-mcp:latest",
@@ -257,9 +259,9 @@ You can confirm by running `$ podman images` from the terminal. View the [Contai
 
 > **Important**:
 > - `-i` (interactive stdin) is **required** for stdio MCP. Do **not** pass `-t`. Anything appended after the image name is forwarded verbatim to the CLI, so every flag (`--verbose`, `--http`, `--port`, `--tool`, ...) works without rebuilding.
-> - If you're attempting to run the same configuration with Docker, you'll need to make at least two adjustments:
->    - replace `"command": "podman"` with `"command": "docker"`
->    - and remove the `--userns=keep-id` flag
+> - If you're attempting to run the same configuration with Docker, you'll need to make at least one adjustment:
+>    - Replace `"command": "podman"` with `"command": "docker"`.
+> - For Docker compatibility, we leverage the `PODMAN_USERNS` environment variable to map the container user to your host user. If you come across the `--userns=keep-id` flag, and you are using Docker, remove it.
 
 #### Smoke test
 

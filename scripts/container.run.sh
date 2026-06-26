@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Run the PatternFly MCP container image locally as a stdio MCP server.
-# Podman is the primary, supported runtime; Docker is detected as a
-# fallback only if Podman is not installed.
+# podman is the primary, supported runtime; Docker is detected as a
+# fallback only if podman is not installed.
 #
 # All arguments passed to this script are forwarded verbatim to the CLI
 # inside the container, so every flag (`--verbose`, `--http`, `--port`,
@@ -10,7 +10,8 @@
 # Runtime posture (hardened by default):
 #   - `--rm`                          remove the container on exit
 #   - `-i` (no `-t`)                  REQUIRED for stdio MCP; do NOT add `-t`
-#   - `--userns=keep-id`              map the container user to the host user
+#   - `--userns=keep-id`              map the container user to the host
+#                                     user (`podman` specific)
 #   - `--security-opt=no-new-privileges`  block privilege escalation
 #   - `--cap-drop=ALL`                drop all Linux capabilities
 #   - `--read-only`                   read-only rootfs (server writes nothing
@@ -20,6 +21,10 @@
 # Usage:
 #   ./scripts/container.run.sh [<cli flags>]
 #   IMAGE=localhost/patternfly-mcp:latest ./scripts/container.run.sh --verbose --log-stderr
+#
+# Note:
+#   Since `--userns=keep-id` is `podman` specific, for compatibility with
+#   Docker, we leverage an env value `export PODMAN_USERNS=keep-id`.
 #
 # Environment:
 #   IMAGE  Fully qualified image reference (with tag). Defaults to
@@ -40,10 +45,11 @@
   # neither runtime is available, fail with a clear error.
   if [ "$(command -v podman)" ]; then
     ENGINE="podman"
+    export PODMAN_USERNS="keep-id"
   elif [ "$(command -v docker)" ]; then
     ENGINE="docker"
   else
-    echo 'Error: Podman and Docker not found.' >&2
+    echo 'Error: podman and Docker not found.' >&2
     exit 1
   fi
 
@@ -53,7 +59,6 @@
   # are delivered directly to the container runtime, which forwards them to
   # the server process for a clean shutdown.
   exec "$ENGINE" run --rm -i \
-    --userns=keep-id \
     --security-opt=no-new-privileges \
     --cap-drop=ALL \
     --read-only \

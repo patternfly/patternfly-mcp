@@ -2,9 +2,11 @@
   "mcpServers": {
     "patternfly-mcp": {
       "command": "podman",
+      "env": {
+        "PODMAN_USERNS": "keep-id"
+      },
       "args": [
         "run", "--rm", "-i",
-        "--userns=keep-id",
         "--security-opt=no-new-privileges",
         "--cap-drop=ALL",
         "localhost/patternfly-mcp:latest",

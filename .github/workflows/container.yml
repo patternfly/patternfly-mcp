@@ -3,6 +3,9 @@ name: Container
 on:
   pull_request:
     paths:
+      - '.containerignore',
+      - 'Containerfile',
+      - 'scripts/container.*'
       - 'tests/container/**'
       - 'package.json'
       - 'package-lock.json'

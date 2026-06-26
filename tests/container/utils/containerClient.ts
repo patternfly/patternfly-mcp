@@ -44,6 +44,9 @@ const buildImage = async (engine: 'podman' | 'docker', image: string) => {
 /**
  * Start the container and return a client for interacting with it.
  *
+ * @note We use the `PODMAN_USERNS` environment variable instead of
+ * the direct flag `--userns=keep-id` for Docker compatibility.
+ *
  * @param options - Server configuration options
  * @param options.engine - Container engine to use (e.g., 'podman', 'docker').
  * @param options.args - Additional args to pass to the container.
@@ -63,7 +66,6 @@ const startContainer = async ({
     'run',
     '--rm',
     '-i',
-    '--userns=keep-id',
     '--security-opt=no-new-privileges',
     '--cap-drop=ALL',
     image,
@@ -82,7 +84,8 @@ const startContainer = async ({
   return startServer({
     command: engine,
     serverPath: '',
-    args: updatedArgs
+    args: updatedArgs,
+    ...((engine === 'podman' && { env: { PODMAN_USERNS: 'keep-id' } }) || {})
   });
 };
 
