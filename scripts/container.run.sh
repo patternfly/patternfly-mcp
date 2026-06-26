@@ -49,7 +49,7 @@
   elif [ "$(command -v docker)" ]; then
     ENGINE="docker"
   else
-    echo 'Error: podman and Docker not found.' >&2
+    echo 'Error: "podman" and "docker" not found.' >&2
     exit 1
   fi
 

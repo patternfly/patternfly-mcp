@@ -3,8 +3,8 @@ name: Container
 on:
   pull_request:
     paths:
-      - '.containerignore',
-      - 'Containerfile',
+      - '.containerignore'
+      - 'Containerfile'
       - 'scripts/container.*'
       - 'tests/container/**'
       - 'package.json'

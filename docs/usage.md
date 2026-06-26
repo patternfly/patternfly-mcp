@@ -261,7 +261,7 @@ You can confirm by running `$ podman images` from the terminal. View the [Contai
 > - `-i` (interactive stdin) is **required** for stdio MCP. Do **not** pass `-t`. Anything appended after the image name is forwarded verbatim to the CLI, so every flag (`--verbose`, `--http`, `--port`, `--tool`, ...) works without rebuilding.
 > - If you're attempting to run the same configuration with Docker, you'll need to make at least one adjustment:
 >    - Replace `"command": "podman"` with `"command": "docker"`.
-> - For Docker compatibility, we leverage the `PODMAN_USERNS` environment variable to map the container user to your host user. If you come across the `--userns=keep-id` flag, and you are using Docker, remove it.
+> - On podman, `PODMAN_USERNS` replaces `--userns=keep-id`. If you come across the `--userns=keep-id` flag, and you are using Docker, remove it.
 
 #### Smoke test
 
