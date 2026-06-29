@@ -9,7 +9,7 @@ import {
 } from './options';
 import {
   DEFAULT_OPTIONS,
-  LOG_BASENAME,
+  CHANNEL_BASENAME,
   MODE_LEVELS,
   PLUGIN_ISOLATION,
   type LoggingSession,
@@ -37,11 +37,15 @@ const getPublicSessionHash = (sessionId: string): string =>
 /**
  * Initialize and return session data.
  *
+ * @note Potential breaking change: Channel names now include `mode`. Consumers
+ * who leverage the logging callback, from server core, remain unaffected.
+ *
  * @returns {AppSession} Immutable session with a session ID and channel name.
  */
 const initializeSession = (): AppSession => {
+  const { mode } = getOptions();
   const sessionId = (process.env.NODE_ENV === 'local' && '1234d567-1ce9-123d-1413-a1234e56c789') || randomUUID();
-  const channelName = `${LOG_BASENAME}:${sessionId}`;
+  const channelName = `${CHANNEL_BASENAME}:${mode}:log:${sessionId}`;
   const publicSessionId = getPublicSessionHash(sessionId);
 
   return freezeObject({ sessionId, channelName, publicSessionId });
@@ -181,17 +185,23 @@ const getLoggerOptions = (session = getSessionOptions()): LoggingSession => {
 /**
  * Get stat channel options from the current context.
  *
+ * @note Potential breaking change: Channel names now include `mode`. Consumers
+ * who leverage the stat's callback, from server core, remain unaffected.
+ *
  * @param {AppSession} [options] - Session options to use in context.
  * @returns {StatsSession} Stats options from context.
  */
 const getStatsOptions = (options = getSessionOptions()): StatsSession => {
-  const base = getOptions().stats;
+  const { stats: base, mode } = getOptions();
   const publicSessionId = options.publicSessionId;
-  const health = `pf-mcp:stats:health:${publicSessionId}`;
-  const session = `pf-mcp:stats:session:${publicSessionId}`;
-  const transport = `pf-mcp:stats:transport:${publicSessionId}`;
-  const traffic = `pf-mcp:stats:traffic:${publicSessionId}`;
-  const channels = { health, transport, traffic, session };
+  const channel = (type: string) => `${CHANNEL_BASENAME}:${mode}:stats:${type}:${publicSessionId}`;
+
+  const channels = {
+    health: channel('health'),
+    transport: channel('transport'),
+    traffic: channel('traffic'),
+    session: channel('session')
+  };
 
   return { ...base, publicSessionId, channels };
 };
