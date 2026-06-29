@@ -37,6 +37,11 @@ const getPublicSessionHash = (sessionId: string): string =>
 /**
  * Initialize and return session data.
  *
+ * @note Potential breaking change with the move to using `mode` in channel names.
+ * However, the session ID shifts, so we're unclear why someone would be using
+ * the whole channel name, plus there's a provided callback associated with
+ * logging. We'll note the update in release notes.
+ *
  * @returns {AppSession} Immutable session with a session ID and channel name.
  */
 const initializeSession = (): AppSession => {
@@ -181,6 +186,11 @@ const getLoggerOptions = (session = getSessionOptions()): LoggingSession => {
 
 /**
  * Get stat channel options from the current context.
+ *
+ * @note Potential breaking change with the move to using `mode` in channel names.
+ * However, the session ID shifts, so we're unclear why someone would be using
+ * the whole channel name, plus there's a provided callback associated with
+ * stats. We'll note the update in release notes.
  *
  * @param {AppSession} [options] - Session options to use in context.
  * @returns {StatsSession} Stats options from context.
