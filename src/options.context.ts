@@ -188,11 +188,14 @@ const getLoggerOptions = (session = getSessionOptions()): LoggingSession => {
 const getStatsOptions = (options = getSessionOptions()): StatsSession => {
   const { stats: base, mode } = getOptions();
   const publicSessionId = options.publicSessionId;
-  const health = `${CHANNEL_BASENAME}:${mode}:stats:health:${publicSessionId}`;
-  const session = `${CHANNEL_BASENAME}:${mode}:stats:session:${publicSessionId}`;
-  const transport = `${CHANNEL_BASENAME}:${mode}:stats:transport:${publicSessionId}`;
-  const traffic = `${CHANNEL_BASENAME}:${mode}:stats:traffic:${publicSessionId}`;
-  const channels = { health, transport, traffic, session };
+  const channel = (type: string) => `${CHANNEL_BASENAME}:${mode}:stats:${type}:${publicSessionId}`;
+
+  const channels = {
+    health: channel('health'),
+    transport: channel('transport'),
+    traffic: channel('traffic'),
+    session: channel('session')
+  };
 
   return { ...base, publicSessionId, channels };
 };
