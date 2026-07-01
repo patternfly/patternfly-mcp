@@ -13,11 +13,9 @@ describe('healthReport', () => {
 
     channel.subscribe(handler);
 
-    const report = healthReport(statsOptions);
+    healthReport(statsOptions);
 
     expect(Object.keys(handler.mock.calls[0][0])).toEqual(expect.arrayContaining(['timestamp', 'type', 'memory', 'uptime']));
-
-    clearTimeout(report);
   });
 });
 
@@ -50,11 +48,9 @@ describe('transportReport', () => {
 
     channel.subscribe(handler);
 
-    const report = transportReport({ httpPort: 9999 }, statsOptions);
+    transportReport({ httpPort: 9999 }, statsOptions);
 
     expect(Object.keys(handler.mock.calls[0][0])).toEqual(expect.arrayContaining(['timestamp', 'type', 'method', 'port']));
-
-    clearTimeout(report);
   });
 });
 
@@ -69,11 +65,11 @@ describe('createServerStats', () => {
     jest.useRealTimers();
   });
 
-  it('should resolve stats promise after setStats is called', async () => {
+  it('should resolve stats promise after startStats is called', async () => {
     const tracker = createServerStats(statsOptions, { isHttp: true } as any);
     const httpHandle = { port: 9999, close: jest.fn() };
 
-    tracker.setStats(httpHandle as any);
+    tracker.startStats(httpHandle as any);
 
     const stats = await tracker.getStats();
 
@@ -83,12 +79,13 @@ describe('createServerStats', () => {
     tracker.unsubscribe();
   });
 
-  it('should correctly clean up timers on unsubscribe', () => {
-    const tracker = createServerStats();
-    const spy = jest.spyOn(global, 'clearTimeout');
+  it('should correctly clean up timers on unsubscribe', async () => {
+    const tracker = createServerStats(statsOptions);
 
-    tracker.unsubscribe();
+    tracker.startStats();
+    const results = await tracker.unsubscribe();
 
-    expect(spy).toHaveBeenCalledTimes(1);
+    expect(results).toHaveLength(2);
+    expect(results.every(result => result.status === 'fulfilled')).toBe(true);
   });
 });

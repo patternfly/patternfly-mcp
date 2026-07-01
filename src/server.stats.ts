@@ -4,7 +4,8 @@ import {
 } from './options.context';
 import { type HttpServerHandle } from './server.http';
 import { publish, type StatReport } from './stats';
-import { type StatsSession } from './options.defaults';
+import { DEFAULT_OPTIONS, type StatsSession } from './options.defaults';
+import { deferTask, type DeferTaskHandle } from './server.task';
 
 /**
  * Transport-specific telemetry report.
@@ -40,18 +41,23 @@ interface Stats {
  * Reports server health metrics (e.g., memory usage and uptime).
  *
  * @param statsOptions - Session-specific stats options.
- * @returns {NodeJS.Timeout} Timer handle for the recurring health report.
  */
 const healthReport = (statsOptions: StatsSession) => {
   publish('health', {
     memory: process.memoryUsage(),
     uptime: process.uptime()
-  });
-
-  return setTimeout(() => {
-    healthReport(statsOptions);
-  }, statsOptions?.reportIntervalMs.health).unref();
+  }, statsOptions);
 };
+
+/**
+ * Task for `healthReport`.
+ *
+ * @note `undefined` repeat means the task will run indefinitely.
+ */
+healthReport.deferTask = deferTask(healthReport, {
+  intervalMs: DEFAULT_OPTIONS.stats.reportIntervalMs.health,
+  repeat: undefined
+});
 
 /**
  * Creates a server stats report object.
@@ -82,35 +88,41 @@ const statsReport = ({ httpPort }: { httpPort?: number | undefined } = {}, stats
  * @param params - Report parameters.
  * @param params.httpPort - HTTP server port if available.
  * @param statsOptions - Session-specific stats options.
- * @returns {NodeJS.Timeout} Timer handle for the recurring transport report.
  */
-const transportReport = ({ httpPort }: { httpPort?: number | undefined } = {}, statsOptions: StatsSession) => {
+const transportReport = (
+  { httpPort }: { httpPort?: number | undefined } = {},
+  statsOptions: StatsSession
+) => {
   publish('transport', {
     method: httpPort ? 'http' : 'stdio',
     port: httpPort
-  });
-
-  return setTimeout(() => {
-    transportReport({ httpPort }, statsOptions);
-  }, statsOptions?.reportIntervalMs.transport).unref();
+  }, statsOptions);
 };
 
 /**
- * Creates a telemetry tracker for a server instance.
+ * Task for `transportReport`.
  *
- * - Starts the health report timer.
+ * @note `undefined` repeat means the task will run indefinitely.
+ */
+transportReport.deferTask = deferTask(transportReport, {
+  intervalMs: DEFAULT_OPTIONS.stats.reportIntervalMs.transport,
+  repeat: undefined
+});
+
+/**
+ * Creates a telemetry tracker for a server instance.
  *
  * @param {StatsSession} [statsOptions] - Session-specific stats options.
  * @param {GlobalOptions} [options] - Global server options.
  * @returns - An object with methods to manage server telemetry:
  *  - `getStats`: Resolve server stats and channel IDs.
- *  - `setStats`: Uses the HTTP server handle and starts the transport report timer.
+ *  - `startStats`: Start health and transport report timers.
  *  - `unsubscribe`: Cleans up timers and resources.
  */
 const createServerStats = (statsOptions = getStatsOptions(), options = getOptions()) => {
-  // Start the health report
-  const healthTimer = healthReport(statsOptions);
-  let transportTimer: NodeJS.Timeout | undefined;
+  let healthTask: DeferTaskHandle<void>;
+  let transportTask: DeferTaskHandle<void> | undefined;
+
   let resolveStatsPromise: (value: Stats) => void;
 
   const statsPromise: Promise<Stats> = new Promise(resolve => {
@@ -127,19 +139,22 @@ const createServerStats = (statsOptions = getStatsOptions(), options = getOption
     getStats: (): Promise<Stats> => statsPromise,
 
     /**
-     * Uses the HTTP server handle and starts the transport report timer.
+     * Starts health and transport report timers and resolves stats.
      *
      * @param {HttpServerHandle} [httpHandle] - Handle for the HTTP server if available.
      */
-    setStats: (httpHandle?: HttpServerHandle | null) => {
-      if (transportTimer) {
-        clearTimeout(transportTimer);
-      }
-
+    startStats: (httpHandle?: HttpServerHandle | null) => {
       const httpPort = options.isHttp ? httpHandle?.port : undefined;
       const stats = statsReport({ httpPort }, statsOptions);
 
-      transportTimer = transportReport({ httpPort }, statsOptions);
+      // Start the health report. Defining repeat as undefined keeps the loop infinite.
+      healthTask = healthReport.deferTask(statsOptions);
+
+      // Start the transport report. Defining repeat as undefined keeps the loop infinite.
+      transportTask = transportReport.deferTask({ httpPort }, statsOptions);
+
+      void healthTask.start();
+      void transportTask.start();
 
       resolveStatsPromise(stats);
     },
@@ -147,13 +162,7 @@ const createServerStats = (statsOptions = getStatsOptions(), options = getOption
     /**
      * Cleans up timers and resources.
      */
-    unsubscribe: () => {
-      if (transportTimer) {
-        clearTimeout(transportTimer);
-      }
-
-      clearTimeout(healthTimer);
-    }
+    unsubscribe: async () => Promise.allSettled([healthTask?.stop(), transportTask?.stop()])
   };
 };
 
