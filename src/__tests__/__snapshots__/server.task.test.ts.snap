@@ -3,6 +3,15 @@
 exports[`deferTask should cancel a task 1`] = `
 [
   {
+    "type": "isRunning",
+    "value": {
+      "controller": AbortController {},
+      "count": 1,
+      "isRunning": false,
+      "promise": Promise {},
+    },
+  },
+  {
     "type": "start",
     "value": {
       "controller": AbortController {},
@@ -25,6 +34,12 @@ exports[`deferTask should cancel a task 1`] = `
 
 exports[`deferTask should enforce a timeout 1`] = `
 [
+  [
+    {
+      "type": "isRunning",
+      "value": [Function],
+    },
+  ],
   [
     {
       "type": "start",
@@ -70,12 +85,6 @@ exports[`deferTask should execute a task, async 1`] = `
 [
   [
     {
-      "type": "isRunning",
-      "value": [Function],
-    },
-  ],
-  [
-    {
       "type": "start",
       "value": [Function],
     },
@@ -91,12 +100,6 @@ exports[`deferTask should execute a task, async 1`] = `
 
 exports[`deferTask should execute a task, async options 1`] = `
 [
-  [
-    {
-      "type": "isRunning",
-      "value": [Function],
-    },
-  ],
   [
     {
       "type": "start",
@@ -128,12 +131,6 @@ exports[`deferTask should execute a task, sync 1`] = `
 [
   [
     {
-      "type": "isRunning",
-      "value": [Function],
-    },
-  ],
-  [
-    {
       "type": "start",
       "value": [Function],
     },
@@ -149,12 +146,6 @@ exports[`deferTask should execute a task, sync 1`] = `
 
 exports[`deferTask should execute a task, sync options 1`] = `
 [
-  [
-    {
-      "type": "isRunning",
-      "value": [Function],
-    },
-  ],
   [
     {
       "type": "start",
@@ -184,6 +175,12 @@ exports[`deferTask should execute a task, sync options 1`] = `
 
 exports[`deferTask should stop a task 1`] = `
 [
+  [
+    {
+      "type": "isRunning",
+      "value": [Function],
+    },
+  ],
   [
     {
       "type": "start",

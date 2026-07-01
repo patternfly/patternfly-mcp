@@ -38,7 +38,8 @@ interface DeferTaskHandle<TReturn> {
  *     disables the cutoff. (default `undefined`)
  * @property {DeferTaskDebugHandler} [debug] - Debug callback for lifecycle events.
  *     See {@link deferTask}.
- * @property [intervalMs] - Max time for a single execution. (default `1000`)
+ * @property [intervalMs] - Max time for both per-execution timeout AND
+ *     the randomized base delay between repetitions. (default `1000`)
  * @property [repeat] - Number of loops. (default `1`)
  * @property [errorMessage] - Custom error for timeouts. (default `'Task timed out'`)
  */
@@ -104,6 +105,13 @@ const delay = ({ ms, signal }: { ms: number; signal?: AbortSignal | undefined })
  *   `start`, `run`, `run:stopped`, `run:error`, `run:cancel`, `stop`, `stop:error`,
  *   `isRunning`. `info.value` is a thunk returning a snapshot of internal state.
  *
+ * @note Repeating loops should yield between iterations (this implementation uses
+ * `await delay(intervalMs)`). This interval serves as both the per-execution
+ * timeout and as part of a randomized base delay before the next loop. Do not
+ * recurse or loop back immediately after a fast synchronous execution when repeat
+ * is unlimited (resource exhaustion).
+ *
+ *
  * @template TArgs Tuple of arguments forwarded to `func` on each execution.
  * @template TReturn Resolved value type of `func`.
  *
@@ -155,7 +163,7 @@ const deferTask = <TArgs extends unknown[], TReturn>(
       promise?: Promise<TReturn | undefined> | undefined;
       controller?: AbortController | undefined;
     } = {
-      isRunning: true,
+      isRunning: false,
       count: 0,
       promise: undefined,
       controller: undefined

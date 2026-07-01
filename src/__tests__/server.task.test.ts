@@ -37,8 +37,6 @@ describe('deferTask', () => {
   ])('should execute a task, $description', async ({ mockFunc, options, expected }) => {
     const debug = jest.fn();
     const handle = deferTask(mockFunc, { debug, intervalMs: 10, ...options })();
-
-    handle.isRunning();
     const resultPromise = handle.start();
 
     if (options?.repeat) {
@@ -59,6 +57,7 @@ describe('deferTask', () => {
     const mockFunc = jest.fn().mockReturnValue('stopped');
     const handle = deferTask(mockFunc, { debug: mockDebug, repeat: 5, intervalMs: 100 })();
 
+    expect(handle.isRunning()).toBe(false);
     handle.start();
     expect(handle.isRunning()).toBe(true);
 
@@ -73,6 +72,8 @@ describe('deferTask', () => {
     const mockDebug = jest.fn();
     const mockFunc = jest.fn().mockReturnValue('lorem ipsum');
     const handle = deferTask(mockFunc, { debug: mockDebug, repeat: 3, cancelMs: 100, intervalMs: 110 })();
+
+    expect(handle.isRunning()).toBe(false);
 
     await Promise.allSettled([
       handle.start(),
@@ -90,6 +91,7 @@ describe('deferTask', () => {
     const mockFunc = jest.fn().mockImplementation(() => new Promise(resolve => setTimeout(resolve, 500)));
     const handle = deferTask(mockFunc, { debug: mockDebug, intervalMs: 100, errorMessage: 'Too slow' })();
 
+    expect(handle.isRunning()).toBe(false);
     const result = handle.start();
 
     expect(handle.isRunning()).toBe(true);
