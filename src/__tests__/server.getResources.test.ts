@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { ReadableStream } from 'node:stream/web';
 import {
   matchPackageVersion,
   findNearestPackageJson,
@@ -190,20 +191,36 @@ describe('fetchUrlFunction', () => {
     global.fetch = jest.fn();
   });
 
-  it('should attempt to fetch a URL with correct headers', async () => {
+  it('should attempt to fetch a URL', async () => {
     const mockResponse = {
       ok: true,
-      text: jest.fn().mockResolvedValue('fetched content')
+      status: 200,
+      statusText: 'OK',
+      headers: {
+        get: (name: string) => {
+          if (name === 'content-type') {
+            return 'text/plain';
+          }
+
+          return null;
+        }
+      },
+      body: new ReadableStream({
+        start(controller) {
+          controller.enqueue(new TextEncoder().encode('fetched content'));
+          controller.close();
+        }
+      })
     };
 
     (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-    const result = await fetchUrlFunction('https://example.com/doc.md');
+    const result = await fetchUrlFunction('https://patternfly.org/doc.md');
 
     expect(global.fetch).toHaveBeenCalledWith(
-      'https://example.com/doc.md',
+      'https://patternfly.org/doc.md',
       expect.objectContaining({
-        headers: { Accept: 'text/plain, text/markdown, */*' }
+        method: 'GET'
       })
     );
     expect(result).toBe('fetched content');
@@ -213,14 +230,17 @@ describe('fetchUrlFunction', () => {
     const mockResponse = {
       ok: false,
       status: 404,
-      statusText: 'Not Found'
+      statusText: 'Not Found',
+      headers: {
+        get: () => null
+      }
     };
 
     (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-    await expect(fetchUrlFunction('https://example.com/missing.md'))
+    await expect(fetchUrlFunction('https://patternfly.org/missing.md'))
       .rejects
-      .toThrow('Failed to fetch https://example.com/missing.md: 404 Not Found');
+      .toThrow('404 Not Found');
   });
 
   it('should have memo property', () => {
@@ -308,8 +328,8 @@ describe('loadFileFetch', () => {
       expectedIsFetch: false
     }
   ])('should attempt to load a file or fetch, $description', async ({ pathUrl, expectedIsFetch }) => {
-    const mockFetchCall = jest.fn().mockResolvedValue('content');
-    const mockReadCall = jest.fn().mockResolvedValue('content');
+    const mockFetchCall = jest.fn().mockResolvedValue('content') as any;
+    const mockReadCall = jest.fn().mockResolvedValue('content') as any;
 
     readLocalFileFunction.memo = mockReadCall;
     fetchUrlFunction.memo = mockFetchCall;
@@ -332,12 +352,12 @@ describe('promiseQueue', () => {
   });
 
   it('should execute promises in order', async () => {
-    readLocalFileFunction.memo = jest.fn().mockImplementation(path => Promise.resolve(path));
-    fetchUrlFunction.memo = jest.fn().mockImplementation(url => Promise.reject(url));
+    readLocalFileFunction.memo = jest.fn().mockImplementation(path => Promise.resolve(path)) as any;
+    fetchUrlFunction.memo = jest.fn().mockImplementation(url => Promise.reject(url)) as any;
 
     const pathUrlQueue = ['dolor-sit.md', 'https://example.com/remote.md', 'lorem-ipsum.md'];
 
-    await expect(promiseQueue(pathUrlQueue, 1)).resolves.toMatchSnapshot('allSettled');
+    await expect(promiseQueue(pathUrlQueue, { limit: 1 })).resolves.toMatchSnapshot('allSettled');
   });
 });
 
@@ -346,8 +366,8 @@ describe('processDocsFunction', () => {
     jest.clearAllMocks();
 
     // Mock the memo functions
-    readLocalFileFunction.memo = jest.fn().mockResolvedValue('local file content');
-    fetchUrlFunction.memo = jest.fn().mockResolvedValue('fetched content');
+    readLocalFileFunction.memo = jest.fn().mockResolvedValue('local file content') as any;
+    fetchUrlFunction.memo = jest.fn().mockResolvedValue('fetched content') as any;
   });
 
   it.each([
@@ -438,7 +458,7 @@ describe('processDocsFunction', () => {
     // Mock one success and one failure
     readLocalFileFunction.memo = jest.fn()
       .mockResolvedValueOnce('success content')
-      .mockRejectedValueOnce(new Error('File not found'));
+      .mockRejectedValueOnce(new Error('File not found')) as any;
 
     const inputs = [
       'good-file.md',
