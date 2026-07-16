@@ -124,6 +124,15 @@ export const startServer = async ({
   const stderrLogs: string[] = [];
   let logBuffer = '';
 
+  /*
+   * Log streaming, partials are unavoidable. `stderr` gives us bytes, not lines.
+   * The returned `\n` from the writer is the only "line done" signal. We could attempt
+   * to wait for the `\n` and only return full completions, but we've opted to return
+   * the partials as they arrive. Basically, if you attempt to `equal` a log instead of
+   * using `contains` or `includes`, the test may fail, and you'll be disappointed.
+   *
+   * Subject to change; for now partials are returned as-is.
+   */
   if (transport.stderr) {
     transport.stderr.on('data', (data: Buffer) => {
       logBuffer += data.toString();
