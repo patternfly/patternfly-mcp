@@ -59,7 +59,7 @@ Each object in `docs.<Key>[]`:
 
 ## URL whitelist (allowed domains)
 
-Defined in `src/options.defaults.ts` → `patternflyOptions.urlWhitelist`. Used when validating/fetching paths.
+Defined in `src/options.defaults.ts` → `whitelist.urls`. Used when validating/fetching paths.
 
 - **Prefixes:** `https://patternfly.org`, `https://github.com/patternfly`, `https://raw.githubusercontent.com/patternfly`
 - **`docs.json`:** use **https** only.
