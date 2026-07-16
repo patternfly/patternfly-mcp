@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { mcpAssert } from './server.assertions';
+import { mcpAssert, type AssertCodeOrError } from './server.assertions';
 
 /**
  * Validates that each URL in the provided list uses one of the allowed schemes.
@@ -7,10 +7,18 @@ import { mcpAssert } from './server.assertions';
  * @param urls - The list of URLs to be validated.
  * @param protocols - Allowed scheme names (e.g. `['http', 'https']`). Each URL’s scheme is compared
  *   after normalizing to include a trailing colon (e.g. `http` matches `http:`).
+ * @param [options] - Validation options
+ * @param [options.codeOrError] - Thrown error code when validation fails OR a function that returns an
+ *     error. Defaults to `ErrorCode.InvalidParams`.
  *
  * @throws {Error} Throws an error if any URL does not use one of the specified protocols.
+ * @throws Error When `codeOrError` is provided an error factory.
  */
-const assertProtocol = (urls: string[], protocols: string[]) => {
+const assertProtocol = (
+  urls: string[],
+  protocols: string[],
+  { codeOrError }: { codeOrError?: AssertCodeOrError } = {}
+) => {
   const validate = z.array(
     z.string().url().refine(
       url => {
@@ -36,7 +44,8 @@ const assertProtocol = (urls: string[], protocols: string[]) => {
 
   mcpAssert(
     result.success,
-    () => `Invalid URL protocol configuration: ${result.error?.message || urls.map(url => url.slice(0, 50)).join(', ')}`
+    () => `Invalid URL protocol configuration: ${result.error?.message || urls.map(url => url.slice(0, 50)).join(', ')}`,
+    codeOrError
   );
 };
 
