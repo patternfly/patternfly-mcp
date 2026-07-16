@@ -122,10 +122,17 @@ export const startServer = async ({
   // Access stderr stream if available. stderr is used to prevent logs from interfering with JSON-RPC parsing
   // Collect server stderr logs
   const stderrLogs: string[] = [];
+  let logBuffer = '';
 
   if (transport.stderr) {
     transport.stderr.on('data', (data: Buffer) => {
-      stderrLogs.push(data.toString());
+      logBuffer += data.toString();
+      const lines = logBuffer.split('\n');
+
+      logBuffer = lines.pop() || '';
+      for (const line of lines) {
+        stderrLogs.push(`${line}\n`);
+      }
     });
   }
 
@@ -234,9 +241,13 @@ export const startServer = async ({
 
     logs: () => [
       ...stderrLogs,
+      ...(logBuffer ? [logBuffer] : []),
       ...protocolLogs
     ],
-    stderrLogs: () => stderrLogs.slice(),
+    stderrLogs: () => [
+      ...stderrLogs,
+      ...(logBuffer ? [logBuffer] : [])
+    ],
     protocolLogs: () => protocolLogs.slice(),
     stop,
     close: stop // Alias for stop, align with the http transport client
