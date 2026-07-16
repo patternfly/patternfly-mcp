@@ -291,8 +291,8 @@ type WhitelistUrl = `${'http' | 'https'}://${string}`;
  * Central outbound-URL policy.
  *
  * @note Any code that fetches a remote URL; PatternFly docs,
- * `setFetch`, resource loaders; must validate against this
- * list via `assertInputUrlWhiteListed`.
+ * resource loaders; must validate against this list via
+ * `assertInputUrlWhiteListed`.
  *
  * @property urls Allowed URL prefixes (scheme + host [+ path]).
  * @property protocols Allowed URL protocols.
