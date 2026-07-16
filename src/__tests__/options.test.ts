@@ -44,4 +44,3 @@ describe('SET_OPTIONS', () => {
     }
   });
 });
-

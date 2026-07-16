@@ -49,6 +49,7 @@ import { getNodeMajorVersion } from './options.helpers';
  *     registered with the server.
  * @property urlRegex - Regular expression pattern for URL matching.
  * @property version - Version of the package.
+ * @property whitelist - Central outbound-URL policy options.
  * @property xhrFetch - XHR and Fetch options.
  */
 interface DefaultOptions<TLogOptions = LoggingOptions> {
@@ -84,6 +85,7 @@ interface DefaultOptions<TLogOptions = LoggingOptions> {
   toolModules: ToolModule | ToolModule[];
   urlRegex: RegExp;
   version: string;
+  whitelist: WhitelistOptions;
   xhrFetch: XhrFetchOptions;
 }
 
@@ -174,11 +176,6 @@ interface ModeOptions {
 }
 
 /**
- * A string that must start with a valid protocol.
- */
-type WhitelistUrl = `${'http' | 'https'}://${string}`;
-
-/**
  * PatternFly-specific options.
  *
  * @property availableResourceVersions List of available PatternFly resource versions to the MCP server.
@@ -192,8 +189,6 @@ type WhitelistUrl = `${'http' | 'https'}://${string}`;
  * @property default.versionStrategy Strategy to use when multiple PatternFly versions are detected.
  *    - 'highest': Use the highest major version found.
  *    - 'lowest': Use the lowest major version found.
- * @property {WhitelistUrl[]} urlWhitelist List of allowed URLs to fetch PatternFly resources from.
- * @property urlWhitelistProtocols List of allowed URL protocols to validate against when fetching PatternFly resources.
  */
 interface PatternFlyOptions {
   availableResourceVersions: ('6.0.0')[];
@@ -205,9 +200,7 @@ interface PatternFlyOptions {
     latestSchemasVersion: 'v6';
     versionWhitelist: string[];
     versionStrategy: 'highest' | 'lowest';
-  },
-  urlWhitelist: WhitelistUrl[];
-  urlWhitelistProtocols: string[];
+  }
 }
 
 /**
@@ -287,6 +280,26 @@ type StatsChannels = {
 interface StatsSession extends StatsOptions {
   readonly publicSessionId: string;
   channels: StatsChannels
+}
+
+/**
+ * A string that must start with a valid protocol.
+ */
+type WhitelistUrl = `${'http' | 'https'}://${string}`;
+
+/**
+ * Central outbound-URL policy.
+ *
+ * @note Any code that fetches a remote URL; PatternFly docs,
+ * resource loaders; must validate against this list via
+ * `assertInputUrlWhiteListed`.
+ *
+ * @property urls Allowed URL prefixes (scheme + host [+ path]).
+ * @property protocols Allowed URL protocols.
+ */
+interface WhitelistOptions {
+  urls: WhitelistUrl[];
+  protocols: ('http' | 'https')[];
 }
 
 /**
@@ -438,6 +451,18 @@ const STATS_OPTIONS: StatsOptions = {
 };
 
 /**
+ * Central outbound-URL policy. Single source of truth on `DefaultOptions.whitelist`.
+ */
+const WHITELIST_OPTIONS: WhitelistOptions = {
+  urls: [
+    'https://patternfly.org',
+    'https://github.com/patternfly',
+    'https://raw.githubusercontent.com/patternfly'
+  ],
+  protocols: ['http', 'https']
+};
+
+/**
  * Default XHR and Fetch options.
  */
 const XHR_FETCH_OPTIONS: XhrFetchOptions = {
@@ -465,13 +490,7 @@ const PATTERNFLY_OPTIONS: PatternFlyOptions = {
       '@patternfly/patternfly'
     ],
     versionStrategy: 'highest'
-  },
-  urlWhitelist: [
-    'https://patternfly.org',
-    'https://github.com/patternfly',
-    'https://raw.githubusercontent.com/patternfly'
-  ],
-  urlWhitelistProtocols: ['http', 'https']
+  }
 };
 
 /**
@@ -534,6 +553,7 @@ const DEFAULT_OPTIONS: DefaultOptions = {
   separator: DEFAULT_SEPARATOR,
   urlRegex: URL_REGEX,
   version: (process.env.NODE_ENV === 'local' && '0.0.0') || packageJson.version,
+  whitelist: WHITELIST_OPTIONS,
   xhrFetch: XHR_FETCH_OPTIONS
 };
 
@@ -554,6 +574,7 @@ export {
   type ServerInstanceOptions,
   type StatsSession,
   type ToolModule,
+  type WhitelistOptions,
   type WhitelistUrl,
   type XhrFetchOptions
 };

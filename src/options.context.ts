@@ -121,7 +121,7 @@ const setOptions = (
 ): GlobalOptions => {
   const base = mergeObjects(DEFAULT_OPTIONS as GlobalOptions, options, { allowNullValues: false, allowUndefinedValues: false });
 
-  assertProtocol(base.patternflyOptions.urlWhitelist, base.patternflyOptions.urlWhitelistProtocols);
+  assertProtocol(base.whitelist.urls, base.whitelist.protocols);
 
   const baseLogging = isPlainObject(base.logging) ? base.logging : DEFAULT_OPTIONS.logging;
   const basePluginIsolation = PLUGIN_ISOLATION.includes(base.pluginIsolation) ? base.pluginIsolation : DEFAULT_OPTIONS.pluginIsolation;

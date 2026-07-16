@@ -72,15 +72,6 @@ exports[`options defaults should return specific properties: defaults 1`] = `
         "@patternfly/patternfly",
       ],
     },
-    "urlWhitelist": [
-      "https://patternfly.org",
-      "https://github.com/patternfly",
-      "https://raw.githubusercontent.com/patternfly",
-    ],
-    "urlWhitelistProtocols": [
-      "http",
-      "https",
-    ],
   },
   "pluginHost": {
     "gracePeriodMs": 2000,
@@ -141,6 +132,17 @@ exports[`options defaults should return specific properties: defaults 1`] = `
   "toolModules": [],
   "urlRegex": /\\^\\(https\\?:\\)\\\\/\\\\//i,
   "version": "0.0.0",
+  "whitelist": {
+    "protocols": [
+      "http",
+      "https",
+    ],
+    "urls": [
+      "https://patternfly.org",
+      "https://github.com/patternfly",
+      "https://raw.githubusercontent.com/patternfly",
+    ],
+  },
   "xhrFetch": {
     "timeoutMs": 15000,
   },

@@ -22,7 +22,7 @@ For **edits or removals**: find the row by `path` and/or its `docs` key; update 
    - New ref for an existing repo: resolve SHA (e.g. commits API) or use a stable tag.
 
 2. **Whitelist**
-   - `path` must match `patternflyOptions.urlWhitelist` in `src/options.defaults.ts`. See [reference.md — URL whitelist](reference.md#url-whitelist-allowed-domains). Use **https** only. Do not widen the whitelist in a catalog-only PR.
+   - `path` must match `whitelist.urls` in `src/options.defaults.ts`. See [reference.md — URL whitelist](reference.md#url-whitelist-allowed-domains). Use **https** only. Do not widen the whitelist in a catalog-only PR.
 
 3. **Reachability**
    - Response must be 2xx (e.g. `curl -sI -o /dev/null -w "%{http_code}" "<url>"`). If not, fix ref or path; do not add a dead link.
