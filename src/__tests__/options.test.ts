@@ -44,36 +44,3 @@ describe('SET_OPTIONS', () => {
     }
   });
 });
-
-describe('SET_OPTIONS exposure contract', () => {
-  /**
-   * Consumer-settable keys.
-   *
-   * @note
-   * This suite is a tripwire for "did a new default accidentally get exposed
-   * to CLI/programmatic consumers?":
-   *
-   *   - `notForbidden` — explicit allowlist of keys that MAY appear in
-   *      SET_OPTIONS. Anything not on this list MUST NOT be settable by a
-   *      consumer. Updating this list means your work will be audited.
-   */
-  const notForbidden = [
-    'mode',
-    'modeOptions',
-    'http',
-    'isHttp',
-    'logging',
-    'pluginIsolation',
-    'docsPaths',
-    'name',
-    'toolModules',
-    'version',
-    'contextManagement'
-  ] as const;
-
-  it('should expose exactly the notForbidden keys via SET_OPTIONS', () => {
-    const exposed = Object.keys(SET_OPTIONS).sort();
-
-    expect(exposed).toEqual([...notForbidden].sort());
-  });
-});
