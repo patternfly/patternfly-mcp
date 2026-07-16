@@ -293,6 +293,31 @@ describe('assertInputStringNumberEnumLike', () => {
 describe('assertInputUrlWhiteListed', () => {
   it.each([
     {
+      description: 'empty string',
+      input: '',
+      compare: ['https://patternfly.org']
+    },
+    {
+      description: 'undefined',
+      input: undefined,
+      compare: ['https://patternfly.org']
+    },
+    {
+      description: 'null',
+      input: null,
+      compare: ['https://patternfly.org']
+    },
+    {
+      description: 'number',
+      input: 1,
+      compare: ['https://patternfly.org']
+    },
+    {
+      description: 'string',
+      input: 'lorem ipsum',
+      compare: ['https://patternfly.org']
+    },
+    {
       description: 'URL and display name',
       input: 'https://github.com/patternfly',
       compare: ['https://patternfly.org'],
@@ -322,7 +347,7 @@ describe('assertInputUrlWhiteListed', () => {
     const errorMessage = 'Lorem ipsum error message for validation.';
 
     expect(() => assertInputUrlWhiteListed(
-      'https://github.com/patternfly',
+      false,
       ['http://patternfly.org'],
       { message: errorMessage, codeOrError: (message, cause) => new Error(`Custom: ${message}`, { cause }) }
     )).toThrow(`Custom: ${errorMessage}`);

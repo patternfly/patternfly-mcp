@@ -233,10 +233,16 @@ function assertInputUrlWhiteListed(
     const isPfUri = isPatternFlyUri(url);
 
     if (isRemote) {
+      // Dive into condition to avoid flipping else
       if (!isWhitelistedUrl(url, whitelist, { allowedProtocols })) {
         invalidUrls.push(url);
       }
-    } else if (isUrl(url, { isStrict: false }) && !isPfUri) {
+    } else if (isUrl(url, { isStrict: false })) {
+      // Dive into condition to avoid flipping else
+      if (!isPfUri) {
+        invalidUrls.push(url);
+      }
+    } else {
       invalidUrls.push(url);
     }
   });
