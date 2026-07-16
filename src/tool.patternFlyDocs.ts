@@ -55,7 +55,7 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
       if (options.mode !== 'test') {
         assertInputUrlWhiteListed(
           urlList,
-          options.patternflyOptions.urlWhitelist,
+          options.whitelist.urls,
           { inputDisplayName: 'urlList' }
         );
       }

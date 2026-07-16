@@ -156,7 +156,7 @@ function assertInputStringNumberEnumLike(
 function assertInputUrlWhiteListed(
   input: unknown,
   whitelist: WhitelistUrl[],
-  { allowedProtocols = DEFAULT_OPTIONS.patternflyOptions.urlWhitelistProtocols, inputDisplayName, message, urlDisplayMaxLength = 50 }: {
+  { allowedProtocols = DEFAULT_OPTIONS.whitelist.protocols, inputDisplayName, message, urlDisplayMaxLength = 50 }: {
     allowedProtocols?: string[]; inputDisplayName?: string; message?: string; urlDisplayMaxLength?: number
   } = {}
 ): asserts input is string | string[] {

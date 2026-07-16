@@ -72,15 +72,6 @@ exports[`options defaults should return specific properties: defaults 1`] = `
         "@patternfly/patternfly",
       ],
     },
-    "urlWhitelist": [
-      "https://patternfly.org",
-      "https://github.com/patternfly",
-      "https://raw.githubusercontent.com/patternfly",
-    ],
-    "urlWhitelistProtocols": [
-      "http",
-      "https",
-    ],
   },
   "pluginHost": {
     "gracePeriodMs": 2000,

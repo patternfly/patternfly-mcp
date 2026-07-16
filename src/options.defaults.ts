@@ -189,8 +189,6 @@ interface ModeOptions {
  * @property default.versionStrategy Strategy to use when multiple PatternFly versions are detected.
  *    - 'highest': Use the highest major version found.
  *    - 'lowest': Use the lowest major version found.
- * @property {WhitelistUrl[]} urlWhitelist List of allowed URLs to fetch PatternFly resources from.
- * @property urlWhitelistProtocols List of allowed URL protocols to validate against when fetching PatternFly resources.
  */
 interface PatternFlyOptions {
   availableResourceVersions: ('6.0.0')[];
@@ -202,9 +200,7 @@ interface PatternFlyOptions {
     latestSchemasVersion: 'v6';
     versionWhitelist: string[];
     versionStrategy: 'highest' | 'lowest';
-  },
-  urlWhitelist: WhitelistUrl[];
-  urlWhitelistProtocols: string[];
+  }
 }
 
 /**
@@ -303,7 +299,7 @@ type WhitelistUrl = `${'http' | 'https'}://${string}`;
  */
 interface WhitelistOptions {
   urls: WhitelistUrl[];
-  protocols: string[];
+  protocols: ('http' | 'https')[];
 }
 
 /**
@@ -455,7 +451,7 @@ const STATS_OPTIONS: StatsOptions = {
 };
 
 /**
- * Central whitelist. Spread into downstream consumers.
+ * Central outbound-URL policy. Single source of truth on `DefaultOptions.whitelist`.
  */
 const WHITELIST_OPTIONS: WhitelistOptions = {
   urls: [
@@ -494,9 +490,7 @@ const PATTERNFLY_OPTIONS: PatternFlyOptions = {
       '@patternfly/patternfly'
     ],
     versionStrategy: 'highest'
-  },
-  urlWhitelist: [...WHITELIST_OPTIONS.urls],
-  urlWhitelistProtocols: [...WHITELIST_OPTIONS.protocols]
+  }
 };
 
 /**
