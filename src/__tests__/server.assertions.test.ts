@@ -3,7 +3,8 @@ import {
   assertInputString,
   assertInputStringLength,
   assertInputStringArrayEntryLength,
-  assertInputStringNumberEnumLike
+  assertInputStringNumberEnumLike,
+  assertInputUrlWhiteListed
 } from '../server.assertions';
 
 describe('assertInput', () => {
@@ -31,6 +32,16 @@ describe('assertInput', () => {
 
   it('should pass for a valid input', () => {
     expect(() => assertInput('dolor'.length > 1, 'Lorem Ipsum')).not.toThrow();
+  });
+
+  it('should allow custom errors when provided', () => {
+    const errorMessage = 'Lorem ipsum error message for validation.';
+
+    expect(() => assertInput(
+      false,
+      errorMessage,
+      (message, cause) => new Error(`Custom: ${message}`, { cause })
+    )).toThrow(`Custom: ${errorMessage}`);
   });
 });
 
@@ -62,6 +73,15 @@ describe('assertInputString', () => {
 
   it('should pass for a valid string', () => {
     expect(() => assertInputString('dolor')).not.toThrow();
+  });
+
+  it('should allow custom errors when provided', () => {
+    const errorMessage = 'Lorem ipsum error message for validation.';
+
+    expect(() => assertInputString(
+      false,
+      { message: errorMessage, codeOrError: (message, cause) => new Error(`Custom: ${message}`, { cause }) }
+    )).toThrow(`Custom: ${errorMessage}`);
   });
 });
 
@@ -120,6 +140,15 @@ describe('assertInputStringLength', () => {
   it('should pass for a valid string within range', () => {
     expect(() => assertInputStringLength('dolor', { min: 1, max: 10 })).not.toThrow();
   });
+
+  it('should allow custom errors when provided', () => {
+    const errorMessage = 'Lorem ipsum error message for validation.';
+
+    expect(() => assertInputStringLength(
+      false,
+      { min: 1, max: 10, message: errorMessage, codeOrError: (message, cause) => new Error(`Custom: ${message}`, { cause }) }
+    )).toThrow(`Custom: ${errorMessage}`);
+  });
 });
 
 describe('assertInputStringArrayEntryLength', () => {
@@ -176,6 +205,15 @@ describe('assertInputStringArrayEntryLength', () => {
 
   it('should pass for a valid array of strings', () => {
     expect(() => assertInputStringArrayEntryLength(['dolor'], { min: 1, max: 10 })).not.toThrow();
+  });
+
+  it('should allow custom errors when provided', () => {
+    const errorMessage = 'Lorem ipsum error message for validation.';
+
+    expect(() => assertInputStringArrayEntryLength(
+      false,
+      { min: 1, max: 10, message: errorMessage, codeOrError: (message, cause) => new Error(`Custom: ${message}`, { cause }) }
+    )).toThrow(`Custom: ${errorMessage}`);
   });
 });
 
@@ -239,5 +277,54 @@ describe('assertInputStringNumberEnumLike', () => {
 
   it('should pass for a valid value in enum-like array', () => {
     expect(() => assertInputStringNumberEnumLike('dolor', ['dolor'])).not.toThrow();
+  });
+
+  it('should allow custom errors when provided', () => {
+    const errorMessage = 'Lorem ipsum error message for validation.';
+
+    expect(() => assertInputStringNumberEnumLike(
+      false,
+      ['dolor'],
+      { message: errorMessage, codeOrError: (message, cause) => new Error(`Custom: ${message}`, { cause }) }
+    )).toThrow(`Custom: ${errorMessage}`);
+  });
+});
+
+describe('assertInputUrlWhiteListed', () => {
+  it.each([
+    {
+      description: 'URL and display name',
+      input: 'https://github.com/patternfly',
+      compare: ['https://patternfly.org'],
+      options: { inputDisplayName: 'lorem ipsum' }
+    },
+    {
+      description: 'URL and description',
+      input: 'https://github.com/patternfly',
+      compare: ['https://patternfly.org'],
+      options: { message: 'dolor sit amet, consectetur adipiscing elit.' }
+    }
+  ])('should throw an error for validation, $description', ({ input, compare, options }) => {
+    const errorMessage = options?.message || `"${options?.inputDisplayName || 'URL input'}" must be within the whitelisted URLs`;
+
+    expect(() => assertInputUrlWhiteListed(
+      input,
+      compare as any,
+      { ...options }
+    )).toThrow(errorMessage);
+  });
+
+  it('should pass for a valid value in a whitelist array', () => {
+    expect(() => assertInputUrlWhiteListed('https://patternfly.org', ['https://patternfly.org'])).not.toThrow();
+  });
+
+  it('should allow custom errors when provided', () => {
+    const errorMessage = 'Lorem ipsum error message for validation.';
+
+    expect(() => assertInputUrlWhiteListed(
+      'https://github.com/patternfly',
+      ['http://patternfly.org'],
+      { message: errorMessage, codeOrError: (message, cause) => new Error(`Custom: ${message}`, { cause }) }
+    )).toThrow(`Custom: ${errorMessage}`);
   });
 });
