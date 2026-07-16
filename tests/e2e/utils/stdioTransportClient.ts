@@ -122,10 +122,26 @@ export const startServer = async ({
   // Access stderr stream if available. stderr is used to prevent logs from interfering with JSON-RPC parsing
   // Collect server stderr logs
   const stderrLogs: string[] = [];
+  let logBuffer = '';
 
+  /*
+   * Log streaming, partials are unavoidable. `stderr` gives us bytes, not lines.
+   * The returned `\n` from the writer is the only "line done" signal. We could attempt
+   * to wait for the `\n` and only return full completions, but we've opted to return
+   * the partials as they arrive. Basically, if you attempt to `equal` a log instead of
+   * using `contains` or `includes`, the test may fail, and you'll be disappointed.
+   *
+   * Subject to change; for now partials are returned as-is.
+   */
   if (transport.stderr) {
     transport.stderr.on('data', (data: Buffer) => {
-      stderrLogs.push(data.toString());
+      logBuffer += data.toString();
+      const lines = logBuffer.split('\n');
+
+      logBuffer = lines.pop() || '';
+      for (const line of lines) {
+        stderrLogs.push(`${line}\n`);
+      }
     });
   }
 
@@ -234,9 +250,13 @@ export const startServer = async ({
 
     logs: () => [
       ...stderrLogs,
+      ...(logBuffer ? [logBuffer] : []),
       ...protocolLogs
     ],
-    stderrLogs: () => stderrLogs.slice(),
+    stderrLogs: () => [
+      ...stderrLogs,
+      ...(logBuffer ? [logBuffer] : [])
+    ],
     protocolLogs: () => protocolLogs.slice(),
     stop,
     close: stop // Alias for stop, align with the http transport client
