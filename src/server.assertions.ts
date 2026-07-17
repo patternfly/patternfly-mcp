@@ -230,7 +230,6 @@ function assertInputUrlWhiteListed(
 
   updatedInput.forEach(url => {
     const isRemote = typeof url === 'string' && allowedProtocols.some(protocol => url.startsWith(protocol));
-    const isPfUri = isPatternFlyUri(url);
 
     if (isRemote) {
       // Dive into condition to avoid flipping else
@@ -239,7 +238,7 @@ function assertInputUrlWhiteListed(
       }
     } else if (isUrl(url, { isStrict: false })) {
       // Dive into condition to avoid flipping else
-      if (!isPfUri) {
+      if (!isPatternFlyUri(url)) {
         invalidUrls.push(url);
       }
     } else {
