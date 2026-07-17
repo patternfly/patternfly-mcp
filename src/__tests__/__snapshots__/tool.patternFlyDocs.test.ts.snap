@@ -12,8 +12,6 @@ exports[`usePatternFlyDocsTool, callback should attempt to parse parameters, mul
 
 exports[`usePatternFlyDocsTool, callback should attempt to parse parameters, single file, mock path 1`] = `"# Content for components/button.md"`;
 
-exports[`usePatternFlyDocsTool, callback should attempt to parse parameters, with invalid urlList 1`] = `"# Content for invalid-path"`;
-
 exports[`usePatternFlyDocsTool, callback should attempt to parse parameters, with name and actual path 1`] = `"# Content for documentation:chatbot/README.md"`;
 
 exports[`usePatternFlyDocsTool, callback should have a specific markdown format: Button 1`] = `

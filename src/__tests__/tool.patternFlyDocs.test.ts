@@ -64,7 +64,7 @@ describe('usePatternFlyDocsTool, callback', () => {
         path: 'components/button.md',
         content: 'single documentation content'
       },
-      urlList: ['components/button.md']
+      urlList: ['https://www.patternfly.org/components/button.md']
     },
     {
       description: 'multiple files, mock paths',
@@ -72,15 +72,11 @@ describe('usePatternFlyDocsTool, callback', () => {
         path: 'components/button.md',
         content: 'combined documentation content'
       },
-      urlList: ['components/button.md', 'components/card.md', 'components/table.md']
-    },
-    {
-      description: 'with invalid urlList',
-      processedValue: {
-        path: 'invalid-path',
-        content: 'Failed to load'
-      },
-      urlList: ['invalid-url']
+      urlList: [
+        'https://www.patternfly.org/components/button.md',
+        'https://www.patternfly.org/components/card.md',
+        'https://www.patternfly.org/components/table.md'
+      ]
     },
     {
       description: 'with name and actual path',
