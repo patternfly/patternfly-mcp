@@ -1,6 +1,36 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.1.0](https://github.com/patternfly/patternfly-mcp/compare/3f168697b386921faf1703c8befe09459721a1a8...a67ace72f75be5badfc9e510871c03ca1cf498a6) (2026-07-20)
+
+
+### Tests
+*  pf-4387 stdio client logging flake ([#253](https://github.com/patternfly/patternfly-mcp/pull/253)) ([9175e06](https://github.com/patternfly/patternfly-mcp/commit/9175e065b0b154f06d76ae795933b610f6443d3f))
+
+### Features
+*  pf-4298 build, run container ([#231](https://github.com/patternfly/patternfly-mcp/pull/231)) ([c207c42](https://github.com/patternfly/patternfly-mcp/commit/c207c4262c928df8b921d7fd77d3c302bc6a59ef))
+
+### Code Refactoring
+* **assertions** pf-4387 allow codes, errors for assertions ([#252](https://github.com/patternfly/patternfly-mcp/pull/252)) ([93efa31](https://github.com/patternfly/patternfly-mcp/commit/93efa31605f6b7af1cf76620651ad2cdf701e05d))
+* **options** pf-4387 centralize url whitelist ([#254](https://github.com/patternfly/patternfly-mcp/pull/254)) ([b87aeae](https://github.com/patternfly/patternfly-mcp/commit/b87aeae95701a30aae88c8e8f24e60fedd6775a6))
+* **options** pf-3874 log to channel basename ([#233](https://github.com/patternfly/patternfly-mcp/pull/233)) ([2659a24](https://github.com/patternfly/patternfly-mcp/commit/2659a2456c5f8d781d19e43f7a8cd5d9f07a8024))
+
+### Builds
+* **deps** lock update ([#257](https://github.com/patternfly/patternfly-mcp/pull/257)) ([a67ace7](https://github.com/patternfly/patternfly-mcp/commit/a67ace72f75be5badfc9e510871c03ca1cf498a6))
+* **deps** bump semver from 7.8.4 to 7.8.5 ([#245](https://github.com/patternfly/patternfly-mcp/pull/245)) ([8dcadfb](https://github.com/patternfly/patternfly-mcp/commit/8dcadfb9ce5e401c7fb305d41e72c6f58220bc21))
+* **deps-dev** bump dev group with 3 updates ([#244](https://github.com/patternfly/patternfly-mcp/pull/244)) ([9aebad4](https://github.com/patternfly/patternfly-mcp/commit/9aebad40787b33dac0437a9cbd08fca787e12d62))
+* **deps** bump actions/checkout from 6 to 7 ([#235](https://github.com/patternfly/patternfly-mcp/pull/235)) ([4c35c79](https://github.com/patternfly/patternfly-mcp/commit/4c35c79cc8fb415d23e35a80f2ab49a915316baa))
+* **deps-dev** bump eslint from 9.39.4 to 10.5.0 ([#237](https://github.com/patternfly/patternfly-mcp/pull/237)) ([c51fcd0](https://github.com/patternfly/patternfly-mcp/commit/c51fcd01025c512a0652c3c0cfb6bd49ed9e3f8c))
+* **deps-dev** bump dev group with 3 updates ([#236](https://github.com/patternfly/patternfly-mcp/pull/236)) ([3190577](https://github.com/patternfly/patternfly-mcp/commit/3190577893b1a125551260d036c21a506df8aa5f))
+* **deps-dev** bump dev group with 4 updates ([#229](https://github.com/patternfly/patternfly-mcp/pull/229)) ([0379f61](https://github.com/patternfly/patternfly-mcp/commit/0379f6127322f25fd138cb28421d250745110fff))
+* **deps** bump semver from 7.8.1 to 7.8.4 ([#230](https://github.com/patternfly/patternfly-mcp/pull/230)) ([8d64d23](https://github.com/patternfly/patternfly-mcp/commit/8d64d2312f1aadc47d810f2db252f5b827e34100))
+* **deps-dev** bump cspell from 9.7.0 to 10.0.1 ([#226](https://github.com/patternfly/patternfly-mcp/pull/226)) ([818016b](https://github.com/patternfly/patternfly-mcp/commit/818016b71b625bf85f6e652a80895446ef3330cc))
+* **deps-dev** bump dev group with 4 updates ([#225](https://github.com/patternfly/patternfly-mcp/pull/225)) ([576d996](https://github.com/patternfly/patternfly-mcp/commit/576d99636dbea2b5768a90698747f59ea2edf823))
+
+### Bug Fixes
+* **assertions** pf-4387 block non-urls ([#255](https://github.com/patternfly/patternfly-mcp/pull/255)) ([441b1a1](https://github.com/patternfly/patternfly-mcp/commit/441b1a13948b8d957ed055f316e53c477a4d5055))
+* **stats** pf-3874 move to managed task handler ([#234](https://github.com/patternfly/patternfly-mcp/pull/234)) ([8cddf8c](https://github.com/patternfly/patternfly-mcp/commit/8cddf8c53b9b00f95e83535b5d6ca5984878eee3))
+
 ## [2.0.1](https://github.com/patternfly/patternfly-mcp/compare/2bea4e09d959849f767bd3b9983fbf9a91768690...c3bda3321eb77ddeff829f47af191c04f523872f) (2026-06-17)
 
 
