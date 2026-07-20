@@ -666,6 +666,10 @@ const setFetch = (options = getOptions()): SetFetch => {
 
 export {
   decodeStream,
+  isBinaryMime,
+  isJsonMime,
+  isTextMime,
+  normalizeMime,
   parsePayload,
   preflight,
   setFetch,
