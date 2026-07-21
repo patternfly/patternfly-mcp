@@ -47,6 +47,25 @@ type OnMemoCacheHandler<TReturn = unknown> = (cache: MemoCacheHandlerResponse<TR
 type MemoDebugHandler<TReturn = unknown> = (info: { type: string; value: unknown; cache: MemoCache<TReturn> }) => void;
 
 /**
+ * notifyCacheChange handler options.
+ *
+ * @template TReturn Return type of the memoized function.
+ *
+ * @property {MemoCache<TReturn>} all - Full cache reflecting the current state before the change.
+ * @property {MemoCache<TReturn>} remaining - Cache items that remain after the change.
+ * @property {MemoCache<TReturn>} removed - Cache items that were removed as a result of the change.
+ * @property {OnMemoCacheHandler<TReturn> | undefined} handler - Optional handler function to be invoked for the cache change.
+ * @property handlerDescription - Optional descriptive about the handler, typically for logging or debugging purposes.
+ */
+type MemoNotifyCacheChangeOptions<TReturn = unknown> = {
+  all: MemoCache<TReturn>;
+  remaining: MemoCache<TReturn>;
+  removed: MemoCache<TReturn>;
+  handler: OnMemoCacheHandler<TReturn> | undefined;
+  handlerDescription: string | undefined;
+};
+
+/**
  * Memo configuration options.
  *
  * @template TReturn Return type of the memoized function.
@@ -57,6 +76,7 @@ type MemoDebugHandler<TReturn = unknown> = (info: { type: string; value: unknown
  * @property {MemoDebugHandler<TReturn>} [debug] Debug callback function
  * @property [expire] Expandable milliseconds until cache expires
  * @property [keyHash] Function to generate a predictable hash key from the provided arguments. Defaults to internal `generateHash`.
+ * @property {OnMemoCacheHandler<TReturn>} [onCacheClear] Callback when cache entries are cleared.
  * @property {OnMemoCacheHandler<TReturn>} [onCacheExpire] Callback when cache expires. Only fires when the `expire` option is set.
  * @property {OnMemoCacheHandler<TReturn>} [onCacheRollout] Callback when cache entries are rolled off due to cache limit.
  */
@@ -66,9 +86,19 @@ interface MemoOptions<TArgs extends unknown[] = unknown[], TReturn = unknown> {
   debug?: MemoDebugHandler<TReturn>;
   expire?: number;
   keyHash?: (args: Readonly<TArgs>, ..._forbidRest: never[]) => unknown;
+  onCacheClear?: OnMemoCacheHandler<TReturn>;
   onCacheExpire?: OnMemoCacheHandler<TReturn>;
   onCacheRollout?: OnMemoCacheHandler<TReturn>;
 }
+
+/**
+ * Return type of `memoize`.
+ *
+ * @property clear Clear all cache entries.
+ */
+type MemoReturn<TArgs extends unknown[] = unknown[], TReturn = unknown> = ((...args: TArgs) => TReturn) & {
+  clear: () => boolean;
+};
 
 /**
  * Simple argument-based memoize with adjustable cache limit, and extendable cache expire.
@@ -96,10 +126,11 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
     debug = () => {},
     expire,
     keyHash = generateHash,
+    onCacheClear,
     onCacheExpire,
     onCacheRollout
   }: MemoOptions<TArgs, TReturn> = {}
-): (...args: TArgs) => TReturn => {
+): MemoReturn<TArgs, TReturn> => {
   const isCacheErrors = Boolean(cacheErrors);
   const isFuncPromise = isPromise(func);
   const isOnCacheExpirePromise = isPromise(onCacheExpire);
@@ -111,11 +142,50 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
     return keyHash.call(null, value);
   };
 
+  /**
+   * Notify callback handlers.
+   *
+   * @template TReturn - See {@link MemoCache}
+   * @param params - Passed parameters.
+   * @param {MemoCache<TReturn>} params.all - The current state of the entire memoized cache.
+   * @param {MemoCache<TReturn>} params.remaining - A subset of items that have not been removed from the cache.
+   * @param {MemoCache<TReturn>} params.removed - A subset of items that have been removed from the cache.
+   * @param {OnMemoCacheHandler<TReturn>|undefined} params.handler - See {@link OnMemoCacheHandler}
+   * @param {string|undefined} params.handlerDescription - A description of the handler.
+   */
+  const notifyCacheChange = ({
+    all, remaining, removed, handler, handlerDescription
+  }: MemoNotifyCacheChangeOptions<TReturn>) => {
+    if (!handler) {
+      return;
+    }
+
+    const errorDesc = handlerDescription ? `: ${handlerDescription}` : '';
+    const payload: MemoCacheHandlerResponse<TReturn> = {
+      all,
+      remaining,
+      removed
+    };
+
+    if (isPromise(handler)) {
+      Promise.resolve(handler(payload)).catch(error => log.error(`Memoized handler error${errorDesc}`, error));
+    } else if (typeof handler === 'function') {
+      try {
+        handler(payload);
+      } catch (error) {
+        log.error(`Memoized function error${errorDesc}`, error);
+      }
+    }
+  };
+
+  /**
+   * Memoized function.
+   */
   const ized = function () {
     const cache: MemoCache<TReturn> = [];
     let timeout: NodeJS.Timeout | undefined;
 
-    return (...args: TArgs): TReturn => {
+    const memoized = (...args: TArgs): TReturn => {
       const isMemo = cacheLimit > 0;
 
       if (typeof updatedExpire === 'number') {
@@ -131,17 +201,13 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
               }
             });
 
-            const cacheEntries = { remaining: [], removed: allCacheEntries, all: allCacheEntries };
-
-            if (isOnCacheExpirePromise) {
-              Promise.resolve(onCacheExpire?.(cacheEntries)).catch(error => log.error('onCacheExpire handler error', error));
-            } else {
-              try {
-                onCacheExpire?.(cacheEntries);
-              } catch (error) {
-                log.error('Memoized function error (uncached)', error);
-              }
-            }
+            notifyCacheChange({
+              all: allCacheEntries,
+              remaining: [],
+              removed: allCacheEntries,
+              handler: onCacheExpire,
+              handlerDescription: 'onCacheExpire callback'
+            });
           }
 
           cache.length = 0;
@@ -214,17 +280,14 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
 
             if (removedCacheEntries.length > 0) {
               const remainingCacheEntries = allCacheEntries.slice(0, cacheLimit);
-              const cacheEntries = { remaining: remainingCacheEntries, removed: removedCacheEntries, all: allCacheEntries };
 
-              if (isOnCacheRolloutPromise) {
-                Promise.resolve(onCacheRollout?.(cacheEntries)).catch(error => log.error('onCacheRollout handler error', error));
-              } else {
-                try {
-                  onCacheRollout?.(cacheEntries);
-                } catch (error) {
-                  log.error('Memoized function error (rolled out)', error);
-                }
-              }
+              notifyCacheChange({
+                all: allCacheEntries,
+                remaining: remainingCacheEntries,
+                removed: removedCacheEntries,
+                handler: onCacheRollout,
+                handlerDescription: 'onCacheRollout callback'
+              });
             }
           }
 
@@ -258,9 +321,61 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
 
       return cachedValue;
     };
+
+    /**
+     * Clear all memoized cache entries.
+     *
+     * @returns A `boolean` indicating if the cache was cleared.
+     */
+    memoized.clear = () => {
+      const allBefore = [...cache];
+
+      if (allBefore.length === 0) {
+        return false;
+      }
+
+      const allCacheEntries: Array<TReturn> = [];
+
+      cache.forEach((entry, index) => {
+        if (index % 2 === 0) {
+          allCacheEntries.push(cache[index + 1] as TReturn);
+        }
+      });
+
+      clearTimeout(timeout);
+      timeout = undefined;
+      cache.length = 0;
+
+      debug({
+        type: 'memo clear',
+        value: undefined,
+        cache: [...cache]
+      });
+
+      notifyCacheChange({
+        all: allCacheEntries,
+        remaining: [],
+        removed: allCacheEntries,
+        handler: onCacheClear,
+        handlerDescription: 'onCacheClear callback'
+      });
+
+      return allCacheEntries.length > 0;
+    };
+
+    return memoized;
   };
 
   return ized();
 };
 
-export { memo, type MemoCacheHandlerResponse, type MemoDebugHandler, type MemoCache, type OnMemoCacheHandler, type MemoOptions };
+export {
+  memo,
+  type MemoCacheHandlerResponse,
+  type MemoDebugHandler,
+  type MemoCache,
+  type MemoNotifyCacheChangeOptions,
+  type MemoOptions,
+  type MemoReturn,
+  type OnMemoCacheHandler
+};

@@ -14,7 +14,7 @@ jest.mock('../server.getResources', () => ({
   }
 }));
 
-const mockReadLocalFile = readLocalFileFunction.memo as jest.Mock;
+const mockReadLocalFile = readLocalFileFunction.memo as any as jest.Mock;
 
 describe('findClosestPatternFlyVersion', () => {
   it('should provide a temporary closest version that always returns the latest version', async () => {

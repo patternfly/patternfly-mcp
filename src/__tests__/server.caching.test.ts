@@ -362,4 +362,55 @@ describe('memo', () => {
     await expect(updateLog(log)).resolves.toMatchSnapshot('sync');
     await expect(updateLog(logAsync)).resolves.toMatchSnapshot('async');
   });
+
+  it('should handle clear() without callback', () => {
+    const mockDebug = jest.fn();
+    const options = { cacheLimit: 1, debug: mockDebug };
+    const memoized = memo((val: number) => val + Math.floor(Math.random() * 2), options);
+
+    expect(memoized(1)).toBe(memoized(1));
+    memoized.clear();
+
+    expect(mockDebug).toHaveBeenCalledWith({
+      type: 'memo clear',
+      value: undefined,
+      cache: []
+    });
+  });
+
+  it('should handle clear() with a callback', () => {
+    const mockDebug = jest.fn();
+    const mockCallback = jest.fn();
+    const options = { cacheLimit: 1, debug: mockDebug, onCacheClear: mockCallback };
+    const memoized = memo((val: number) => val + Math.floor(Math.random() * 2), options);
+
+    expect(memoized(2)).toBe(memoized(2));
+    memoized.clear();
+
+    expect(mockDebug).toHaveBeenCalledWith({
+      type: 'memo clear',
+      value: undefined,
+      cache: []
+    });
+
+    const payload = mockCallback.mock.calls[0][0];
+
+    expect(payload.all).toHaveLength(1);
+    expect(payload.removed).toHaveLength(1);
+    expect(payload.remaining).toHaveLength(0);
+  });
+
+  it('should cancel pending expire timeout on clear()', () => {
+    const mockOnCacheExpire = jest.fn();
+    const mockOnCacheClear = jest.fn();
+    const options = { expire: 50, cacheLimit: 1, onCacheClear: mockOnCacheClear, onCacheExpire: mockOnCacheExpire };
+    const memoized = memo((val: number) => val + Math.floor(Math.random() * 2), options);
+
+    expect(memoized(3)).toBe(memoized(3));
+    memoized.clear();
+
+    jest.advanceTimersByTime(100);
+    expect(mockOnCacheClear).toHaveBeenCalledTimes(1);
+    expect(mockOnCacheExpire).not.toHaveBeenCalled();
+  });
 });
