@@ -2,7 +2,9 @@
 All notable changes to this project will be documented in this file.
 
 ## [2.1.0](https://github.com/patternfly/patternfly-mcp/compare/3f168697b386921faf1703c8befe09459721a1a8...a67ace72f75be5badfc9e510871c03ca1cf498a6) (2026-07-20)
-
+⚠ **Potential breaking changes**
+* Diagnostic channel names for logging and stats now include a `mode` prefix. This affects programmatic server implementations that manually parse channel names. See [#233](https://github.com/patternfly/patternfly-mcp/pull/233).
+* Moved URL whitelist and protocols from `patternflyOptions` to a new top-level object. This may affect maintainers using internal programmatic defaults. See [#254](https://github.com/patternfly/patternfly-mcp/pull/254).
 
 ### Tests
 *  pf-4387 stdio client logging flake ([#253](https://github.com/patternfly/patternfly-mcp/pull/253)) ([9175e06](https://github.com/patternfly/patternfly-mcp/commit/9175e065b0b154f06d76ae795933b610f6443d3f))
