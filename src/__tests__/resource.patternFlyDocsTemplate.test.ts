@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { ReadableStream } from 'node:stream/web';
 import { McpError } from '@modelcontextprotocol/sdk/types.js';
 import {
   patternFlyDocsTemplateResource,
@@ -76,7 +77,17 @@ describe('resourceCallback', () => {
     mockReadFile.mockResolvedValue(mockContent);
     mockFetch.mockResolvedValue({
       ok: true,
-      text: () => mockContent
+      status: 200,
+      statusText: 'OK',
+      headers: {
+        get: (name: string) => (name === 'content-type' ? 'text/plain' : null)
+      },
+      body: new ReadableStream({
+        start(controller) {
+          controller.enqueue(new TextEncoder().encode(mockContent));
+          controller.close();
+        }
+      })
     } as any);
 
     const result = await resourceCallback(
@@ -151,7 +162,17 @@ describe('resourceCallback', () => {
     mockReadFile.mockResolvedValue(mockContent);
     mockFetch.mockResolvedValue({
       ok: true,
-      text: () => mockContent
+      status: 200,
+      statusText: 'OK',
+      headers: {
+        get: (name: string) => (name === 'content-type' ? 'text/plain' : null)
+      },
+      body: new ReadableStream({
+        start(controller) {
+          controller.enqueue(new TextEncoder().encode(mockContent));
+          controller.close();
+        }
+      })
     } as any);
 
     const uri = new URL('patternfly://docs/test');

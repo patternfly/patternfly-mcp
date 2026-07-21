@@ -106,7 +106,6 @@ describe('Builtin tools, HTTP transport', () => {
   });
 
   it('should concatenate headers and separator with two remote files', async () => {
-    const CLIENT = await startServer({ http: { port: 0 } });
     const req = {
       jsonrpc: '2.0',
       id: 1,
@@ -122,12 +121,11 @@ describe('Builtin tools, HTTP transport', () => {
       }
     } as RpcRequest;
 
-    const response = await CLIENT.send(req);
+    const response = await CLIENT?.send(req);
     const text = response?.result?.content?.[0]?.text || '';
 
     expect(text.includes('This is a test document for mocking')).toBe(true);
     expect(text).toMatchSnapshot();
-    await CLIENT.close();
   });
 
   it.each([

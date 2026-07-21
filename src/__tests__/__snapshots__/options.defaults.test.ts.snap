@@ -144,6 +144,9 @@ exports[`options defaults should return specific properties: defaults 1`] = `
     ],
   },
   "xhrFetch": {
+    "allowBinary": false,
+    "maxSizeBytes": 5242880,
+    "preflightHead": false,
     "timeoutMs": 15000,
   },
 }
