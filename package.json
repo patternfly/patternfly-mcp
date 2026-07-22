@@ -68,7 +68,7 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@cdcabrera/eslint-config-toolkit": "^0.5.3",
+    "@cdcabrera/eslint-config-toolkit": "^1.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^26.1.0",
     "@types/semver": "7.7.1",
