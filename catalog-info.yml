@@ -1,0 +1,50 @@
+apiVersion: mcp/v1beta1
+kind: MCPServer
+metadata:
+  name: patternfly-mcp
+  title: PatternFly MCP Server
+  description: >
+    A production-ready Model Context Protocol (MCP) server that aggregates and
+    serves the PatternFly design system. It provides comprehensive access to
+    design guidelines, accessibility standards, and UX patterns, alongside
+    React component documentation and design tokens. It utilizes an automated
+    discovery mechanism to consume structured content from across the PatternFly
+    ecosystem and Red Hat's public data sources.
+  tags:
+    - mcp
+    - design-system
+    - accessibility
+    - ux
+    - design-guidelines
+    - patternfly
+    - design-tokens
+    - react
+    - documentation
+    - data-aggregation
+  annotations:
+    backstage.io/source-location: url:https://github.com/patternfly/patternfly-mcp
+    data.sources.discovery.docs.redhat.com/url: https://github.com/patternfly/patternfly-mcp/tree/main/docs
+spec:
+  type: remote
+  lifecycle: ga
+  owner: group:redhat/public-data-team
+  primitives:
+    - type: tool
+      name: aggregated-data-query
+      description: Search and retrieve PatternFly design guidelines, accessibility standards, example patterns, and technical component documentation.
+    - type: tool
+      name: aggregated-data-access
+      description: Access and consume structured PatternFly data, including design specifications, usage guidelines, and component properties.
+    - type: resource
+      name: processed-data-records
+      description: Detailed markdown records and JSON schemas for PatternFly design guidelines, accessibility standards, and components.
+    - type: resource
+      name: processed-data-collections
+      description: Organized collections of PatternFly resources, categorized by design patterns, guidelines, and component types.
+  packages:
+    - type: npm
+      registry_name: registry.npmjs.org
+      name: "@patternfly/patternfly-mcp"
+  remotes:
+    - type: streamable-http
+      url: https://main.patternfly-org.pages.dev/api # Public static data endpoint
