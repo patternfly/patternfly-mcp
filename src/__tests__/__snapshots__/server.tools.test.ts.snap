@@ -16,22 +16,14 @@ exports[`composeTools should attempt to setup creators, file package creators 1`
 
 exports[`composeTools should attempt to setup creators, file package creators, Node.js 22 1`] = `
 {
-  "log": [
-    [
-      "Existing Tools Host session detected test-session-id. Shutting down the existing host before creating a new one.",
-    ],
-  ],
+  "log": [],
   "toolsCount": 5,
 }
 `;
 
 exports[`composeTools should attempt to setup creators, file package creators, Node.js 24 1`] = `
 {
-  "log": [
-    [
-      "Existing Tools Host session detected test-session-id. Shutting down the existing host before creating a new one.",
-    ],
-  ],
+  "log": [],
   "toolsCount": 5,
 }
 `;
@@ -39,9 +31,6 @@ exports[`composeTools should attempt to setup creators, file package creators, N
 exports[`composeTools should attempt to setup creators, file package creators, Node.js undefined 1`] = `
 {
   "log": [
-    [
-      "Existing Tools Host session detected test-session-id. Shutting down the existing host before creating a new one.",
-    ],
     [
       "External tool plugins require Node >= 22; skipping file-based tools.",
     ],
@@ -54,9 +43,6 @@ exports[`composeTools should attempt to setup creators, file package duplicate c
 {
   "log": [
     [
-      "Existing Tools Host session detected test-session-id. Shutting down the existing host before creating a new one.",
-    ],
-    [
       "Skipping tool plugin "@patternfly/tools" – name already used by built-in/inline tool.",
     ],
   ],
@@ -66,11 +52,7 @@ exports[`composeTools should attempt to setup creators, file package duplicate c
 
 exports[`composeTools should attempt to setup creators, inline and file package creators 1`] = `
 {
-  "log": [
-    [
-      "Existing Tools Host session detected test-session-id. Shutting down the existing host before creating a new one.",
-    ],
-  ],
+  "log": [],
   "toolsCount": 7,
 }
 `;
@@ -78,9 +60,6 @@ exports[`composeTools should attempt to setup creators, inline and file package 
 exports[`composeTools should attempt to setup creators, inline and file package creators duplicate builtin creators 1`] = `
 {
   "log": [
-    [
-      "Existing Tools Host session detected test-session-id. Shutting down the existing host before creating a new one.",
-    ],
     [
       "Skipping inline tool "loremipsum" because a tool with the same name is already provided (built-in or earlier).",
     ],
@@ -96,9 +75,6 @@ exports[`composeTools should attempt to setup creators, inline and file package 
 {
   "log": [
     [
-      "Existing Tools Host session detected test-session-id. Shutting down the existing host before creating a new one.",
-    ],
-    [
       "Skipping tool plugin "@patternfly/tools" – name already used by built-in/inline tool.",
     ],
     [
@@ -112,9 +88,6 @@ exports[`composeTools should attempt to setup creators, inline and file package 
 exports[`composeTools should attempt to setup creators, inline and file package creators, duplicates, Node.js 22 1`] = `
 {
   "log": [
-    [
-      "Existing Tools Host session detected test-session-id. Shutting down the existing host before creating a new one.",
-    ],
     [
       "Skipping tool plugin "@patternfly/tools" – name already used by built-in/inline tool.",
     ],
@@ -175,7 +148,7 @@ exports[`composeTools should return default creators on tools host error 1`] = `
 {
   "log": [
     [
-      "Failed to start Tools Host; skipping externals and continuing with built-ins/inline. undefined",
+      "Failed to start Tools Host; skipping externals and continuing with built-ins/inline. Error: Mock spawn failure",
     ],
   ],
   "toolsCount": 3,
@@ -410,54 +383,54 @@ exports[`logWarningsErrors should log warnings and errors, with warnings only 1`
 
 exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false with error: handler 1`] = `[Error: Error message]`;
 
-exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false with error: send 1`] = `
+exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false with error: request 1`] = `
 [
   [
-    undefined,
     {
       "args": {
         "loremIpsum": 7,
       },
-      "id": "id-1",
       "t": "invoke",
       "toolId": "loremIpsum",
     },
+    "invoke:result",
+    10,
   ],
 ]
 `;
 
 exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false with full error: handler 1`] = `[Error: Error message]`;
 
-exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false with full error: send 1`] = `
+exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false with full error: request 1`] = `
 [
   [
-    undefined,
     {
       "args": {
         "loremIpsum": 7,
       },
-      "id": "id-1",
       "t": "invoke",
       "toolId": "loremIpsum",
     },
+    "invoke:result",
+    10,
   ],
 ]
 `;
 
 exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false: handler 1`] = `[Error: Tool invocation failed]`;
 
-exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false: send 1`] = `
+exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false: request 1`] = `
 [
   [
-    undefined,
     {
       "args": {
         "loremIpsum": 7,
       },
-      "id": "id-1",
       "t": "invoke",
       "toolId": "loremIpsum",
     },
+    "invoke:result",
+    10,
   ],
 ]
 `;
@@ -577,97 +550,62 @@ exports[`makeProxyCreators should attempt to return proxy creators, a function w
 }
 `;
 
-exports[`sendToolsHostShutdown should attempt force shutdown of child and fail NaN`] = `
-[
-  [
-    "Failed to send shutdown signal to Tools Host child process: Error: Mock send failure",
-  ],
-  [
-    "Failed to force-kill Tools Host child process: Error: Mock failed to kill child process",
-  ],
-  [
-    "Failed to close Tools Host stderr reader: Error: Mock close failure 1",
-  ],
-  [
-    "Slow shutdown response. Primary fallback force-killing Tools Host child process.",
-  ],
-]
-`;
-
 exports[`spawnToolsHost attempt to spawn the Tools Host, with no pluginIsolation, node 24: spawn 1`] = `
 {
-  "spawn": [
-    [
-      "/mock/path/to/toolsHost.js",
-    ],
-    {
-      "stdio": [
-        "ignore",
-        "pipe",
-        "pipe",
-        "ipc",
-      ],
+  "spawnConfig": {
+    "enableStderrDebug": [Function],
+    "importSpecifier": "#toolsHost",
+    "isolation": {
+      "fsReadAllowlist": [],
+      "mode": "none",
+      "nodeVersion": 24,
     },
-  ],
+    "label": "Tools Host",
+  },
 }
 `;
 
 exports[`spawnToolsHost attempt to spawn the Tools Host, with strict pluginIsolation, node 22: spawn 1`] = `
 {
-  "spawn": [
-    [
-      "--experimental-permission",
-      "--allow-fs-read=/",
-      "--allow-fs-read=/mock/path/to",
-      "/mock/path/to/toolsHost.js",
-    ],
-    {
-      "stdio": [
-        "ignore",
-        "pipe",
-        "pipe",
-        "ipc",
-      ],
+  "spawnConfig": {
+    "enableStderrDebug": [Function],
+    "importSpecifier": "#toolsHost",
+    "isolation": {
+      "fsReadAllowlist": [],
+      "mode": "strict",
+      "nodeVersion": 22,
     },
-  ],
+    "label": "Tools Host",
+  },
 }
 `;
 
 exports[`spawnToolsHost attempt to spawn the Tools Host, with strict pluginIsolation, node 24: spawn 1`] = `
 {
-  "spawn": [
-    [
-      "--permission",
-      "--allow-fs-read=/",
-      "--allow-fs-read=/mock/path/to",
-      "/mock/path/to/toolsHost.js",
-    ],
-    {
-      "stdio": [
-        "ignore",
-        "pipe",
-        "pipe",
-        "ipc",
-      ],
+  "spawnConfig": {
+    "enableStderrDebug": [Function],
+    "importSpecifier": "#toolsHost",
+    "isolation": {
+      "fsReadAllowlist": [],
+      "mode": "strict",
+      "nodeVersion": 24,
     },
-  ],
+    "label": "Tools Host",
+  },
 }
 `;
 
 exports[`spawnToolsHost attempt to spawn the Tools Host, with undefined pluginIsolation, node 22: spawn 1`] = `
 {
-  "spawn": [
-    [
-      "/mock/path/to/toolsHost.js",
-    ],
-    {
-      "stdio": [
-        "ignore",
-        "pipe",
-        "pipe",
-        "ipc",
-      ],
+  "spawnConfig": {
+    "enableStderrDebug": [Function],
+    "importSpecifier": "#toolsHost",
+    "isolation": {
+      "fsReadAllowlist": [],
+      "mode": "none",
+      "nodeVersion": 22,
     },
-  ],
+    "label": "Tools Host",
+  },
 }
 `;

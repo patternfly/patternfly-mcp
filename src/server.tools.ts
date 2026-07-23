@@ -1,21 +1,15 @@
-import { spawn, type ChildProcess } from 'node:child_process';
-import { realpathSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
+import { type ChildProcess } from 'node:child_process';
 import { z } from 'zod';
 import { type AppSession, type GlobalOptions } from './options';
 import { type McpToolCreator } from './mcpSdk';
 import { log, formatUnknownError } from './logger';
+import { type ToolDescriptor, type IpcResponse } from './server.toolsIpc';
 import {
-  awaitIpc,
-  send,
-  makeId,
-  isHelloAck,
-  isLoadAck,
-  isManifestResult,
-  isInvokeResult,
-  type ToolDescriptor
-} from './server.toolsIpc';
+  spawnChildProcess,
+  shutdownChildProcess,
+  activeChildrenBySession,
+  type ChildHandle
+} from './server.process';
 import { getOptions, getSessionOptions } from './options.context';
 import { setToolOptions } from './options.tools';
 import { normalizeTools, sanitizeStaticToolName, type NormalizedToolEntry } from './server.toolsUser';
@@ -24,20 +18,11 @@ import { jsonSchemaToZod, normalizeInputSchema } from './server.schema';
 /**
  * Handle for a spawned Tools Host process.
  *
- * @property child - Child process
  * @property tools - Array of tool descriptors from `tools/list`
- * @property closeStderr - Optional function to close stderr reader
  */
-type HostHandle = {
-  child: ChildProcess;
+type HostHandle = ChildHandle & {
   tools: ToolDescriptor[];
-  closeStderr?: () => void;
 };
-
-/**
- * Map of active Tools Hosts per session.
- */
-const activeHostsBySession = new Map<string, HostHandle>();
 
 /**
  * Get a set of tool names from the builtin creators.
@@ -234,92 +219,44 @@ const debugChild = (child: ChildProcess, { sessionId } = getSessionOptions()) =>
 const spawnToolsHost = async (
   options: GlobalOptions = getOptions()
 ): Promise<HostHandle> => {
-  const { nodeVersion, pluginIsolation, pluginHost } = options || {};
+  const { pluginIsolation, pluginHost, nodeVersion } = options || {};
   const { loadTimeoutMs, invokeTimeoutMs } = pluginHost || {};
-  const nodeArgs: string[] = [];
-  let updatedEntry: string | undefined = undefined;
-
-  try {
-    const entryUrl = import.meta.resolve('#toolsHost');
-
-    updatedEntry = fileURLToPath(entryUrl);
-  } catch (error) {
-    log.debug(`Failed to import.meta.resolve Tools Host entry '#toolsHost': ${formatUnknownError(error)}`);
-
-    if (process.env.NODE_ENV === 'local') {
-      updatedEntry = '/mock/path/to/toolsHost.js';
-    }
-  }
-
-  if (updatedEntry === undefined) {
-    throw new Error(`Failed to resolve Tools Host entry '#toolsHost'.`);
-  }
-
-  // Deny network and fs write by omission
-  if (pluginIsolation === 'strict') {
-    // Node 24+ moves to using the "--permission" flag instead of "--experimental-permission"
-    const permissionFlag = nodeVersion >= 24 ? '--permission' : '--experimental-permission';
-
-    nodeArgs.push(permissionFlag);
-
-    // 1) Gather directories (project, plugin modules, and the host entry's dir)
-    const allowSet = new Set<string>(computeFsReadAllowlist());
-
-    allowSet.add(dirname(updatedEntry));
-
-    // 2) Normalize to real absolute paths to avoid symlink mismatches
-    // Using top-level import instead of dynamic import for better performance
-    const allowList = [...allowSet]
-      .map(dir => {
-        try {
-          return realpathSync(dir);
-        } catch {
-          return dir;
-        }
-      })
-      .filter(Boolean);
-
-    // 3) Pass one --allow-fs-read per directory (more robust than a single comma-separated flag)
-    for (const dir of allowList) {
-      nodeArgs.push(`--allow-fs-read=${dir}`);
-    }
-
-    // Optional debug to verify exactly what the child gets
-    log.debug(`Tools Host allow-fs-read flags: ${allowList.map(dir => `--allow-fs-read=${dir}`).join(' ')}`);
-    log.debug(`Tools Host permission flag: ${permissionFlag}`);
-  }
 
   // Pre-compute file and package tool modules before spawning to reduce latency
   const filePackageToolModules = getFilePackageToolModules() || [];
-
-  const child: ChildProcess = spawn(process.execPath, [...nodeArgs, updatedEntry], {
-    stdio: ['ignore', 'pipe', 'pipe', 'ipc']
-  });
-
-  const closeStderr = debugChild(child);
-
-  // hello
-  send(child, { t: 'hello', id: makeId() });
-  await awaitIpc(child, isHelloAck, loadTimeoutMs);
-
-  // load
-  const loadId = makeId();
-
-  // Pass a focused set of tool options to the host. Avoid the full options object.
   const toolOptions = setToolOptions(options);
 
-  send(child, { t: 'load', id: loadId, specs: filePackageToolModules, invokeTimeoutMs, toolOptions });
-  const loadAck = await awaitIpc(child, isLoadAck(loadId), loadTimeoutMs);
+  const handle = spawnChildProcess({
+    importSpecifier: '#toolsHost',
+    label: 'Tools Host',
+    isolation: {
+      mode: pluginIsolation === 'strict' ? 'strict' : 'none',
+      nodeVersion,
+      fsReadAllowlist: computeFsReadAllowlist()
+    },
+    enableStderrDebug: child => debugChild(child)
+  });
+
+  // hello
+  await handle.request({ t: 'hello' }, 'hello:ack', loadTimeoutMs);
+
+  // load
+  const loadAck = await handle.request<Extract<IpcResponse, { t: 'load:ack' }>>(
+    { t: 'load', specs: filePackageToolModules, invokeTimeoutMs, toolOptions },
+    'load:ack',
+    loadTimeoutMs
+  );
 
   logWarningsErrors(loadAck);
 
   // manifest
-  const manifestRequestId = makeId();
+  const manifest = await handle.request<Extract<IpcResponse, { t: 'manifest:result' }>>(
+    { t: 'manifest:get' },
+    'manifest:result',
+    loadTimeoutMs
+  );
 
-  send(child, { t: 'manifest:get', id: manifestRequestId });
-  const manifest = await awaitIpc(child, isManifestResult(manifestRequestId), loadTimeoutMs);
-
-  return { child, tools: manifest.tools as ToolDescriptor[], closeStderr };
+  return { ...handle, tools: manifest.tools as ToolDescriptor[] };
 };
 
 /**
@@ -377,13 +314,9 @@ const makeProxyCreators = (
   };
 
   const handler = async (args: unknown) => {
-    const requestId = makeId();
-
-    send(handle.child, { t: 'invoke', id: requestId, toolId: tool.id, args });
-
-    const response = await awaitIpc(
-      handle.child,
-      isInvokeResult(requestId),
+    const response = await handle.request<Extract<IpcResponse, { t: 'invoke:result' }>>(
+      { t: 'invoke', toolId: tool.id, args },
+      'invoke:result',
       invokeTimeoutMs
     );
 
@@ -401,7 +334,9 @@ const makeProxyCreators = (
         invocationError.code = response.error?.code;
       }
 
-      invocationError.details = response.error?.details || (response as any).error?.cause?.details;
+      const errorCause = response.error?.cause as { details?: unknown } | undefined;
+
+      invocationError.details = response.error?.details || errorCause?.details;
       throw invocationError;
     }
 
@@ -426,101 +361,12 @@ const sendToolsHostShutdown = async (
   { pluginHost }: GlobalOptions = getOptions(),
   { sessionId }: AppSession = getSessionOptions()
 ): Promise<void> => {
-  const handle = activeHostsBySession.get(sessionId);
+  const handle = activeChildrenBySession.get(sessionId) as HostHandle | undefined;
 
-  if (!handle) {
-    return;
-  }
-
-  const gracePeriodMs = Math.max(0, Number(pluginHost?.gracePeriodMs) || 0);
-  const fallbackGracePeriodMs = gracePeriodMs + 200;
-
-  const child = handle.child;
-  let resolved = false;
-  let forceKillPrimary: NodeJS.Timeout | undefined;
-  let forceKillSecondary: NodeJS.Timeout | undefined;
-  let resolveIt: ((value: PromiseLike<void> | void) => void) | undefined;
-
-  // Attempt exit, disconnect, then remove from activeHostsBySession and finally resolve
-  const shutdownChild = () => {
-    if (resolved) {
-      return;
-    }
-
-    resolved = true;
-    child.off('exit', shutdownChild);
-    child.off('disconnect', shutdownChild);
-
-    if (forceKillPrimary) {
-      clearTimeout(forceKillPrimary);
-    }
-
-    if (forceKillSecondary) {
-      clearTimeout(forceKillSecondary);
-    }
-
-    try {
-      (handle as any).closeStderr();
-      log.info('Tools Host stderr reader closed.');
-    } catch (error) {
-      log.error(`Failed to close Tools Host stderr reader: ${formatUnknownError(error)}`);
-    }
-
-    const confirmHandle = activeHostsBySession.get(sessionId);
-
-    if (confirmHandle?.child === child) {
-      activeHostsBySession.delete(sessionId);
-    }
-
-    resolveIt?.();
-  };
-
-  // Forced shutdown.
-  const sigkillChild = (isSecondaryFallback: boolean = false) => {
-    try {
-      if (!child?.killed) {
-        log.warn(
-          `${
-            (resolved && 'Already attempted shutdown.') || 'Slow shutdown response.'
-          } ${
-            (isSecondaryFallback && 'Secondary') || 'Primary'
-          } fallback force-killing Tools Host child process.`
-        );
-        child.kill('SIGKILL');
-      }
-    } catch (error) {
-      log.error(`Failed to force-kill Tools Host child process: ${formatUnknownError(error)}`);
-    }
-  };
-
-  // Start the shutdown process
-  await new Promise<void>(resolve => {
-    resolveIt = resolve;
-    // Send a shutdown signal to child. We try/catch in case the process is already dead, and
-    // since we're still following it up with a graceful shutdown, then force-kill.
-    try {
-      send(child, { t: 'shutdown', id: makeId() });
-    } catch (error) {
-      log.error(`Failed to send shutdown signal to Tools Host child process: ${formatUnknownError(error)}`);
-    }
-
-    // Set primary timeout for force shutdown
-    forceKillPrimary = setTimeout(() => {
-      sigkillChild();
-      shutdownChild();
-    }, gracePeriodMs);
-    forceKillPrimary?.unref?.();
-
-    // Set fallback timeout for force shutdown
-    forceKillSecondary = setTimeout(() => {
-      sigkillChild(true);
-      shutdownChild();
-    }, fallbackGracePeriodMs);
-    forceKillSecondary?.unref?.();
-
-    // Set up exit/disconnect handlers to resolve
-    child.once('exit', shutdownChild);
-    child.once('disconnect', shutdownChild);
+  await shutdownChildProcess(handle, {
+    gracePeriodMs: Math.max(0, Number(pluginHost?.gracePeriodMs) || 0),
+    sessionId,
+    label: 'Tools Host'
   });
 };
 
@@ -542,7 +388,7 @@ const composeTools = async (
   { toolModules, nodeVersion, contextUrl, contextPath }: GlobalOptions = getOptions(),
   { sessionId }: AppSession = getSessionOptions()
 ): Promise<McpToolCreator[]> => {
-  const existingSession = activeHostsBySession.get(sessionId);
+  const existingSession = activeChildrenBySession.get(sessionId);
 
   if (existingSession) {
     log.warn(`Existing Tools Host session detected ${sessionId}. Shutting down the existing host before creating a new one.`);
@@ -605,17 +451,17 @@ const composeTools = async (
       return;
     }
 
-    const current = activeHostsBySession.get(sessionId);
+    const current = activeChildrenBySession.get(sessionId);
 
     if (current && current.child === host.child) {
       try {
-        (host as any).closeStderr();
+        host.closeStderr();
         log.info('Tools Host stderr reader closed.');
       } catch (error) {
         log.error(`Failed to close Tools Host stderr reader: ${formatUnknownError(error)}`);
       }
 
-      activeHostsBySession.delete(sessionId);
+      activeChildrenBySession.delete(sessionId);
     }
 
     host.child.off('exit', onChildExitOrDisconnect);
@@ -646,7 +492,7 @@ const composeTools = async (
     const proxiedCreators = makeProxyCreators(filteredHandle);
 
     // Associate the spawned host with the current session
-    activeHostsBySession.set(sessionId, host);
+    activeChildrenBySession.set(sessionId, host);
 
     host.child.once('exit', onChildExitOrDisconnect);
     host.child.once('disconnect', onChildExitOrDisconnect);
