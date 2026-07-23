@@ -1,5 +1,4 @@
 import { resolve } from 'node:path';
-import { spawn } from 'node:child_process';
 import { z } from 'zod';
 import { log } from '../logger';
 import {
@@ -13,11 +12,19 @@ import {
   sendToolsHostShutdown,
   composeTools
 } from '../server.tools';
-import { awaitIpc, makeId, send } from '../server.toolsIpc';
+import { spawnChildProcess, shutdownChildProcess, activeChildrenBySession } from '../server.process';
+import { getOptions, getSessionOptions } from '../options.context';
 import { isZodSchema } from '../server.schema';
 
-jest.mock('node:child_process', () => ({
-  spawn: jest.fn()
+jest.mock('../server.process', () => ({
+  spawnChildProcess: jest.fn(),
+  shutdownChildProcess: jest.fn().mockResolvedValue(undefined),
+  activeChildrenBySession: new Map()
+}));
+
+jest.mock('../options.context', () => ({
+  getOptions: jest.fn(),
+  getSessionOptions: jest.fn()
 }));
 
 jest.mock('../logger', () => ({
@@ -28,16 +35,6 @@ jest.mock('../logger', () => ({
     debug: jest.fn()
   },
   formatUnknownError: jest.fn((error: unknown) => String(error))
-}));
-
-jest.mock('../server.toolsIpc', () => ({
-  send: jest.fn(),
-  awaitIpc: jest.fn(),
-  makeId: jest.fn(() => 'id-1'),
-  isHelloAck: jest.fn((msg: any) => msg?.t === 'hello:ack'),
-  isInvokeResult: jest.fn((msg: any) => msg?.t === 'invoke:result'),
-  isLoadAck: jest.fn((id: string) => (msg: any) => msg?.t === 'load:ack' && msg?.id === id),
-  isManifestResult: jest.fn((id: string) => (msg: any) => msg?.t === 'manifest:result' && msg?.id === id)
 }));
 
 describe('getBuiltInToolNames', () => {
@@ -245,10 +242,7 @@ describe('debugChild', () => {
 });
 
 describe('spawnToolsHost', () => {
-  const MockSpawn = jest.mocked(spawn);
-  const MockAwaitIpc = jest.mocked(awaitIpc);
-  const MockSend = jest.mocked(send);
-  const MockMakeId = jest.mocked(makeId);
+  const MockSpawnChildProcess = jest.mocked(spawnChildProcess);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -272,46 +266,47 @@ describe('spawnToolsHost', () => {
       options: { nodeVersion: 24, pluginIsolation: 'strict' }
     }
   ])('attempt to spawn the Tools Host, $description', async ({ options }) => {
-    const updatedOptions = { pluginHost: { loadTimeoutMs: 10, invokeTimeoutMs: 10 }, ...options };
+    const updatedOptions = { toolModules: [], pluginHost: { loadTimeoutMs: 10, invokeTimeoutMs: 10 }, ...options };
     const mockPid = 123;
     const mockTools = [{ name: 'alphaTool' }, { name: 'betaTool' }];
+    const mockRequest = jest.fn()
+      .mockResolvedValueOnce({ t: 'hello:ack', id: 'id-1' })
+      .mockResolvedValueOnce({ t: 'load:ack', id: 'id-1', warnings: [], errors: [] })
+      .mockResolvedValueOnce({ t: 'manifest:result', id: 'id-1', tools: mockTools });
 
-    MockSpawn.mockReturnValue({
-      pid: mockPid
+    MockSpawnChildProcess.mockReturnValue({
+      child: { pid: mockPid } as any,
+      request: mockRequest,
+      closeStderr: jest.fn()
     } as any);
 
-    MockAwaitIpc
-      .mockResolvedValueOnce({ t: 'hello:ack', id: 'id-1' } as any)
-      .mockResolvedValueOnce({ t: 'load:ack', id: 'id-1', warnings: [], errors: [] } as any)
-      .mockResolvedValueOnce({ t: 'manifest:result', id: 'id-1', tools: mockTools } as any);
+    // Ensure internal calls get the right options
+    jest.mocked(getOptions).mockReturnValue(updatedOptions as any);
 
     const result = await spawnToolsHost(updatedOptions as any);
 
     expect(result.child.pid).toBe(mockPid);
     expect(result.tools).toEqual(mockTools);
-    expect(MockMakeId).toHaveBeenCalledTimes(3);
-    expect(MockSend).toHaveBeenCalledTimes(3);
+    expect(mockRequest).toHaveBeenCalledTimes(3);
 
     expect({
-      spawn: MockSpawn.mock.calls?.[0]?.slice?.(1)
+      spawnConfig: MockSpawnChildProcess.mock.calls?.[0]?.[0]
     }).toMatchSnapshot('spawn');
   });
 
-  it('should throw when resolve fails', async () => {
-    process.env.NODE_ENV = '__test__';
+  it('should throw when spawn fails', async () => {
+    jest.mocked(getOptions).mockReturnValue({ toolModules: [], pluginHost: {} } as any);
+    MockSpawnChildProcess.mockImplementationOnce(() => {
+      throw new Error('Failed to resolve Tools Host entry \'#toolsHost\'.');
+    });
 
     await expect(
       spawnToolsHost({ nodeVersion: 24, pluginIsolation: 'strict', pluginHost: {} } as any)
     ).rejects.toThrow(/Failed to resolve Tools Host/);
-
-    process.env.NODE_ENV = 'local';
   });
 });
 
 describe('makeProxyCreators', () => {
-  const MockAwaitIpc = jest.mocked(awaitIpc);
-  const MockSend = jest.mocked(send);
-  const MockMakeId = jest.mocked(makeId);
   const MockLog = jest.mocked(log);
 
   beforeEach(() => {
@@ -448,11 +443,10 @@ describe('makeProxyCreators', () => {
       }
     ];
 
-    MockMakeId.mockReturnValue('id-1' as any);
-    MockAwaitIpc
-      .mockResolvedValueOnce({ t: 'invoke:result', id: 'id-1', ...response } as any);
+    const mockRequest = jest.fn().mockResolvedValueOnce({ t: 'invoke:result', ...response });
+    const mockHandle = { tools, request: mockRequest, child: { pid: 123 } };
 
-    const proxies = makeProxyCreators({ tools } as any, { pluginHost: { invokeTimeoutMs: 10 } } as any);
+    const proxies = makeProxyCreators(mockHandle as any, { pluginHost: { invokeTimeoutMs: 10 } } as any);
     const [_name, _schema, handler]: any = proxies.map(proxy => {
       const [name, { description, inputSchema, ...rest }, handler] = proxy();
 
@@ -464,156 +458,41 @@ describe('makeProxyCreators', () => {
     })[0];
 
     await expect(handler({ loremIpsum: 7 })).rejects.toMatchSnapshot('handler');
-    expect(MockSend.mock.calls).toMatchSnapshot('send');
+    expect(mockRequest).toHaveBeenCalledTimes(1);
+    expect(mockRequest.mock.calls).toMatchSnapshot('request');
   });
 });
 
 describe('sendToolsHostShutdown', () => {
-  const MockLog = jest.mocked(log);
-  const MockSend = jest.mocked(send);
-  let mapGetSpy: jest.SpyInstance;
-  let mapDeleteSpy: jest.SpyInstance;
+  const MockShutdownChildProcess = jest.mocked(shutdownChildProcess);
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.useFakeTimers();
-    mapGetSpy = jest.spyOn(Map.prototype, 'get');
-    mapDeleteSpy = jest.spyOn(Map.prototype, 'delete');
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
-    mapGetSpy.mockRestore();
-    mapDeleteSpy.mockRestore();
   });
 
   it('should attempt graceful shutdown of child', async () => {
-    const onceHandlers: Record<string, any> = {};
-    const child = {
-      kill: jest.fn(),
-      killed: false,
-      once: jest.fn((event: string, handler: any) => {
-        onceHandlers[event] = handler;
-      }),
-      off: jest.fn(),
-      stderr: {
-        on: jest.fn(),
-        off: jest.fn()
-      }
-    };
+    const child = { pid: 123 };
     const handle = { child, closeStderr: jest.fn() };
     const sessionId = 'test-session-id';
 
-    mapGetSpy.mockReturnValue(handle);
+    activeChildrenBySession.set(sessionId, handle as any);
 
-    const promise = sendToolsHostShutdown({ pluginHost: { gracePeriodMs: 10 } } as any, { sessionId } as any);
+    await sendToolsHostShutdown({ pluginHost: { gracePeriodMs: 10 } } as any, { sessionId } as any);
 
-    onceHandlers['disconnect']();
-
-    await promise;
-
-    expect(MockSend).toHaveBeenCalledTimes(1);
-    expect(child.once).toHaveBeenCalledTimes(2);
-    expect(child.off).toHaveBeenCalledWith('exit', onceHandlers['exit']);
-    expect(child.off).toHaveBeenCalledWith('disconnect', onceHandlers['disconnect']);
-    expect(handle.closeStderr).toHaveBeenCalledTimes(1);
-    expect(mapDeleteSpy).toHaveBeenCalledWith(sessionId);
-
-    jest.advanceTimersByTime(220);
-    expect(child.kill).not.toHaveBeenCalled();
-  });
-
-  it('should attempt force shutdown of child', async () => {
-    const child = {
-      // eslint-disable-next-line func-names
-      kill: jest.fn(function (this: any) {
-        this.killed = true;
-
-        return true;
-      }),
-      killed: false,
-      once: jest.fn(),
-      off: jest.fn(),
-      stderr: {
-        on: jest.fn(),
-        off: jest.fn()
-      }
-    };
-    const handle = { child, closeStderr: jest.fn() };
-    const sessionId = 'test-session-id';
-
-    mapGetSpy.mockReturnValue(handle);
-
-    const promise = sendToolsHostShutdown({ pluginHost: { gracePeriodMs: 10 } } as any, { sessionId } as any);
-
-    jest.advanceTimersByTime(20);
-    await promise;
-
-    jest.advanceTimersByTime(220);
-
-    expect(MockSend).toHaveBeenCalledTimes(1);
-    expect(child.once).toHaveBeenCalledTimes(2);
-    expect(child.kill).toHaveBeenCalledTimes(1);
-    expect(child.kill).toHaveBeenCalledWith('SIGKILL');
-    expect(child.killed).toBe(true);
-    expect(child.off).toHaveBeenCalledTimes(2);
-    expect(handle.closeStderr).toHaveBeenCalledTimes(1);
-    expect(mapDeleteSpy).toHaveBeenCalledWith(sessionId);
-  });
-
-  it('should attempt force shutdown of child and fail', async () => {
-    const child = {
-      kill: jest.fn()
-        .mockImplementationOnce(() => {
-          throw new Error('Mock failed to kill child process');
-        })
-        // eslint-disable-next-line func-names
-        .mockImplementationOnce(function (this: any) {
-          this.killed = true;
-
-          return true;
-        }),
-      killed: false,
-      once: jest.fn(),
-      off: jest.fn(),
-      stderr: {
-        on: jest.fn(),
-        off: jest.fn()
-      }
-    };
-    const handle = {
-      child,
-      closeStderr: jest.fn()
-        .mockImplementationOnce(() => {
-          throw new Error('Mock close failure 1');
-        })
-        .mockImplementationOnce(() => {})
-    };
-    const sessionId = 'test-session-id';
-
-    MockSend.mockImplementationOnce(() => {
-      throw new Error('Mock send failure');
+    expect(MockShutdownChildProcess).toHaveBeenCalledTimes(1);
+    expect(MockShutdownChildProcess).toHaveBeenCalledWith(handle, {
+      gracePeriodMs: 10,
+      sessionId,
+      label: 'Tools Host'
     });
-
-    mapGetSpy.mockReturnValue(handle);
-
-    const promise = sendToolsHostShutdown({ pluginHost: { gracePeriodMs: 10 } } as any, { sessionId } as any);
-
-    jest.advanceTimersByTime(10);
-    await promise;
-
-    jest.advanceTimersByTime(220);
-
-    expect(child.kill).toHaveBeenCalledWith('SIGKILL');
-    expect(child.killed).toBe(false);
-    expect([...MockLog.error.mock.calls, ...MockLog.warn.mock.calls, ...MockLog.info.mock.calls]).toMatchSnapshot();
   });
 });
 
 describe('composeTools', () => {
-  const MockSpawn = jest.mocked(spawn);
-  const MockAwaitIpc = jest.mocked(awaitIpc);
+  const MockSpawnChildProcess = jest.mocked(spawnChildProcess);
   const MockLog = jest.mocked(log);
+  const MockGetOptions = jest.mocked(getOptions);
+  const MockGetSessionOptions = jest.mocked(getSessionOptions);
 
   // Mock default creators
   const loremIpsum = () => ['loremIpsum', { description: 'lorem ipsum', inputSchema: z.object({}) }, () => {}];
@@ -626,10 +505,9 @@ describe('composeTools', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.resetAllMocks();
-  });
-
-  afterAll(() => {
+    activeChildrenBySession.clear();
+    MockGetOptions.mockReturnValue({ toolModules: [], pluginHost: { loadTimeoutMs: 10, invokeTimeoutMs: 10 } } as any);
+    MockGetSessionOptions.mockReturnValue({ sessionId: 'test-session-id' } as any);
   });
 
   it.each([
@@ -779,16 +657,24 @@ describe('composeTools', () => {
 
     const sessionId = 'test-session-id';
 
-    MockSpawn.mockReturnValueOnce(mockChild as any);
+    const mockRequest = jest.fn()
+      .mockResolvedValueOnce({ t: 'hello:ack', id: 'id-1' })
+      .mockResolvedValueOnce({ t: 'load:ack', id: 'id-1', warnings: [], errors: [] })
+      .mockResolvedValueOnce({ t: 'manifest:result', id: 'id-1', tools: mockFilePackageTools });
 
-    MockAwaitIpc
-      .mockResolvedValueOnce({ t: 'hello:ack', id: 'id-1' } as any)
-      .mockResolvedValueOnce({ t: 'load:ack', id: 'id-1', warnings: [], errors: [] } as any)
-      .mockResolvedValueOnce({ t: 'manifest:result', id: 'id-1', tools: mockFilePackageTools } as any);
+    MockSpawnChildProcess.mockReturnValue({
+      child: mockChild as any,
+      request: mockRequest,
+      closeStderr: jest.fn()
+    } as any);
 
     const defaultCreators: any[] = [loremIpsum, dolorSitAmet, consecteturAdipiscingElit];
     const globalOptions: any = { toolModules: filePackageToolModules, nodeVersion, contextUrl: 'file:///test/path', contextPath: '/test/path' };
     const sessionOptions: any = { sessionId };
+
+    // Ensure getOptions returns what's expected for internal calls
+    MockGetOptions.mockReturnValue(globalOptions);
+
     const tools = await composeTools(defaultCreators, globalOptions, sessionOptions);
 
     expect(tools.length).toBe(expectedModuleCount);
@@ -805,34 +691,36 @@ describe('composeTools', () => {
       once: jest.fn((event: string, handler: any) => {
         onceHandlers[event] = handler;
       }),
-      off: jest.fn(),
-      stderr: {
-        on: jest.fn(),
-        off: jest.fn()
-      }
+      off: jest.fn()
     };
     const filePackageToolModules: any[] = ['file:///test/module.js', '@patternfly/woot'];
     const mockFilePackageTools = filePackageToolModules.map(tool => ({ name: tool, description: tool, inputSchema: {}, source: tool }));
     const sessionId = 'test-session-id';
 
-    MockSpawn.mockReturnValueOnce(mockChild as any);
+    const mockRequest = jest.fn()
+      .mockResolvedValueOnce({ t: 'hello:ack', id: 'id-1' })
+      .mockResolvedValueOnce({ t: 'load:ack', id: 'id-1', warnings: [], errors: [] })
+      .mockResolvedValueOnce({ t: 'manifest:result', id: 'id-1', tools: mockFilePackageTools });
 
-    MockAwaitIpc
-      .mockResolvedValueOnce({ t: 'hello:ack', id: 'id-1' } as any)
-      .mockResolvedValueOnce({ t: 'load:ack', id: 'id-1', warnings: [], errors: [] } as any)
-      .mockResolvedValueOnce({ t: 'manifest:result', id: 'id-1', tools: mockFilePackageTools } as any);
+    MockSpawnChildProcess.mockReturnValue({
+      child: mockChild as any,
+      request: mockRequest,
+      closeStderr: jest.fn()
+    } as any);
 
     const defaultCreators: any[] = [loremIpsum, dolorSitAmet, consecteturAdipiscingElit];
     const globalOptions: any = { toolModules: filePackageToolModules, nodeVersion: 22, contextUrl: 'file:///test/path', contextPath: '/test/path' };
     const sessionOptions: any = { sessionId };
 
+    MockGetOptions.mockReturnValue(globalOptions);
+
     await composeTools(defaultCreators, globalOptions, sessionOptions);
 
-    onceHandlers['disconnect']();
+    if (onceHandlers['disconnect']) {
+      onceHandlers['disconnect']();
+    }
 
     expect(mockChild.once).toHaveBeenCalledTimes(2);
-    expect(mockChild.stderr.on).toHaveBeenCalledWith('data', expect.any(Function));
-    expect(mockChild.stderr.off).toHaveBeenCalledWith('data', expect.any(Function));
     expect(mockChild.off).toHaveBeenCalledWith('exit', onceHandlers['exit']);
     expect(mockChild.off).toHaveBeenCalledWith('disconnect', onceHandlers['disconnect']);
   });
@@ -842,7 +730,7 @@ describe('composeTools', () => {
 
     const sessionId = 'test-session-id';
 
-    MockSpawn.mockImplementationOnce(() => {
+    MockSpawnChildProcess.mockImplementationOnce(() => {
       throw new Error('Mock spawn failure');
     });
 
