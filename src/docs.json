@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generated": "2026-07-28T04:54:52.729Z",
+  "generated": "2026-07-28T18:53:01.848Z",
   "meta": {
     "totalEntries": 137,
     "totalDocs": 341,
@@ -111,16 +111,6 @@
     ],
     "AIHelpers": [
       {
-        "displayName": "AI skills for PatternFly and UXD teams",
-        "description": "The official PatternFly and UXD AI Helpers repository, an agent marketplace. Find agent skills and plugins.",
-        "pathSlug": "uxd-ai-helpers-readme",
-        "section": "components",
-        "category": "design-guidelines",
-        "source": "github",
-        "path": "https://raw.githubusercontent.com/rh-uxd/ai-helpers/34913b0c96df0eaf10597717827bb62272726571/README.md",
-        "version": "v6"
-      },
-      {
         "displayName": "AI Helpers, an agent marketplace for skills",
         "description": "Find available PatternFly agent skills and plugins, and guidelines for AI workflows.",
         "pathSlug": "ai-helpers-readme",
@@ -141,16 +131,6 @@
         "version": "v6"
       },
       {
-        "displayName": "UXD AI Helpers contributing skills",
-        "description": "How to propose and land agent skills in the UXD and PatternFly AI Helpers repository (structure, review, and conventions).",
-        "pathSlug": "uxd-ai-helpers-contributing-skills",
-        "section": "components",
-        "category": "design-guidelines",
-        "source": "github",
-        "path": "https://raw.githubusercontent.com/rh-uxd/ai-helpers/34913b0c96df0eaf10597717827bb62272726571/CONTRIBUTING-SKILLS.md",
-        "version": "v6"
-      },
-      {
         "displayName": "AI Helpers contributing skills",
         "description": "How to propose and land agent skills in the PatternFly AI Helpers repository (structure, review, and conventions).",
         "pathSlug": "ai-helpers-contributing-skills",
@@ -161,16 +141,6 @@
         "version": "v6"
       },
       {
-        "displayName": "UXD AI Helpers contributing",
-        "description": "General contribution guide for UXD and PatternFly AI Helpers repository (issues, PRs, and repo workflow).",
-        "pathSlug": "uxd-ai-helpers-contributing",
-        "section": "components",
-        "category": "design-guidelines",
-        "source": "github",
-        "path": "https://raw.githubusercontent.com/rh-uxd/ai-helpers/34913b0c96df0eaf10597717827bb62272726571/CONTRIBUTING.md",
-        "version": "v6"
-      },
-      {
         "displayName": "AI Helpers contributing",
         "description": "General contribution guide for the PatternFly AI Helpers repository (issues, PRs, and repo workflow).",
         "pathSlug": "ai-helpers-contributing",
@@ -178,6 +148,36 @@
         "category": "development-guidelines",
         "source": "github",
         "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/f7f8160c3f28b0bc7f64181d9466a425ac8329fc/CONTRIBUTING.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "AI skills for PatternFly and UXD teams",
+        "description": "The official PatternFly and UXD AI Helpers repository, an agent marketplace. Find agent skills and plugins.",
+        "pathSlug": "uxd-ai-helpers-readme",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/rh-uxd/ai-helpers/34913b0c96df0eaf10597717827bb62272726571/README.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "UXD AI Helpers contributing skills",
+        "description": "How to propose and land agent skills in the UXD and PatternFly AI Helpers repository (structure, review, and conventions).",
+        "pathSlug": "uxd-ai-helpers-contributing-skills",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/rh-uxd/ai-helpers/34913b0c96df0eaf10597717827bb62272726571/CONTRIBUTING-SKILLS.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "UXD AI Helpers contributing",
+        "description": "General contribution guide for UXD and PatternFly AI Helpers repository (issues, PRs, and repo workflow).",
+        "pathSlug": "uxd-ai-helpers-contributing",
+        "section": "components",
+        "category": "design-guidelines",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/rh-uxd/ai-helpers/34913b0c96df0eaf10597717827bb62272726571/CONTRIBUTING.md",
         "version": "v6"
       },
       {
@@ -773,16 +773,6 @@
         "version": "v6"
       },
       {
-        "displayName": "Cli Writing",
-        "description": "Writing for command-line interface (CLI) output.",
-        "pathSlug": "cli-writing",
-        "section": "content-design",
-        "category": "writing-guides",
-        "source": "github",
-        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/957756128e8ddfc4be5db49e72312a2c43b9d220/packages/documentation-site/patternfly-docs/content/content-design/writing-guides/cli-writing.md",
-        "version": "v6"
-      },
-      {
         "displayName": "PatternFly CLI",
         "description": "The official PatternFly CLI repository covering installation, commands, and usage. Features include project scaffolding commands, code modification, and task runners.",
         "pathSlug": "patternfly-cli",
@@ -800,6 +790,16 @@
         "category": "development-guidelines",
         "source": "github",
         "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/957756128e8ddfc4be5db49e72312a2c43b9d220/packages/documentation-site/patternfly-docs/content/AI/patternfly-cli.md",
+        "version": "v6"
+      },
+      {
+        "displayName": "Cli Writing",
+        "description": "Writing for command-line interface (CLI) output.",
+        "pathSlug": "cli-writing",
+        "section": "content-design",
+        "category": "writing-guides",
+        "source": "github",
+        "path": "https://raw.githubusercontent.com/patternfly/patternfly-org/957756128e8ddfc4be5db49e72312a2c43b9d220/packages/documentation-site/patternfly-docs/content/content-design/writing-guides/cli-writing.md",
         "version": "v6"
       }
     ],
