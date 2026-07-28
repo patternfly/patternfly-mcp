@@ -228,7 +228,7 @@ describe('Builtin tools, HTTP transport', () => {
   });
 
   it('should stay stable across repeated and concurrent sha1 searches', async () => {
-    const entryHash = '28e31b4f384f696c82fa8dc0ab258827fefcca9f';
+    const entryHash = '3ca3928cad9f1dba8587c6080d2c213283f09260';
     const queries = [
       entryHash,
       `patternfly://docs/${entryHash}`,
@@ -411,7 +411,7 @@ describe('Builtin resources, HTTP transport', () => {
     });
     const content = response?.result.contents[0];
 
-    expect(content.uri).toBe('patternfly://docs/28e31b4f384f696c82fa8dc0ab258827fefcca9f');
+    expect(content.uri).toBe('patternfly://docs/3ca3928cad9f1dba8587c6080d2c213283f09260');
     expect(content.text).toContain('This is a test document for mocking remote HTTP requests');
   });
 

@@ -52,7 +52,7 @@ Each object in `docs.<Key>[]`:
 
 **Pinned refs:** A SHA (or stable tag) fixes content for that URL until you bump it deliberately. Moving branch heads can change or break files without notice.
 
-**`baseHashes`:** The test counts distinct ref segments per `patternfly/<repo>` on raw URLs. The allowed total is **only** in `src/__tests__/docs.json.test.ts` (`baseHashes`, `expect(baseHashes.size)`). Reuse an existing ref per repo when you can; if you add a **new** `patternfly/<repo>`, update that test and mention it in the PR.
+**`baseHashes`:** The test counts distinct ref segments on raw URLs (`patternfly/<repo>` and `rh-uxd/<repo>`). The allowed total is **only** in `src/__tests__/docs.json.test.ts`: keep `expect(baseHashes.size)` in sync with the **Repository Breakdown** comment table (row count / **Total** unique refs, and per-ref **Count** / grand total docs). Reuse an existing ref per repo when you can; if you add a **new** owner/repo or ref, update that test (assertion + table) and mention it in the PR.
 
 - Example: `https://raw.githubusercontent.com/patternfly/patternfly-org/2d5fec39ddb8aa32ce78c9a63cdfc1653692b193/packages/documentation-site/patternfly-docs/content/components/about-modal/about-modal.md`
 - **Whitelist:** [URL whitelist](#url-whitelist-allowed-domains) below.
@@ -83,7 +83,7 @@ From `src/__tests__/docs.json.test.ts`:
 1. No duplicate `path` values.
 2. `meta.totalEntries` === number of keys in `docs`.
 3. `meta.totalDocs` === total entries in all arrays.
-4. **`baseHashes`:** see `path (raw URL)` above—single source of truth is that test file.
+4. **`baseHashes`:** see `path (raw URL)` above—update `expect(baseHashes.size)` and the Repository Breakdown table together; that test file is the single source of truth.
 
 ## Example new entry
 

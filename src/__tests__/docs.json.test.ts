@@ -37,8 +37,8 @@ describe('docs.json', () => {
 
           if (entry.path.includes('documentation:')) {
             baseHashes.add('documentation:');
-          } else if (/^https:\/\/raw\.githubusercontent\.com\/patternfly\/[a-zA-Z0-9-]+\//.test(entry.path)) {
-            baseHashes.add(entry.path.split(/\/patternfly\/[a-zA-Z0-9-]+\//)[1]?.split('/')[0]);
+          } else if (/^https:\/\/raw\.githubusercontent\.com\/(?:patternfly|rh-uxd)\/[a-zA-Z0-9-]+\//.test(entry.path)) {
+            baseHashes.add(entry.path.split(/\/(?:patternfly|rh-uxd)\/[a-zA-Z0-9-]+\//)[1]?.split('/')[0]);
           } else {
             baseHashes.add(`new-resource-${entry.path}`);
           }
@@ -65,27 +65,28 @@ describe('docs.json', () => {
 
     /**
      * Confirm we have limited hashes, avoid variation within pf versions
-     * If this increases, hashes need to be realigned. Do not randomly change this value.
-     * If you are updating `docs.json` with an agent confirm altering this value is acceptable
-     * when you open your MR/PR. You may be asked to change your git hash to one of the
-     * existing values and keep this value the same.
-     * 1 (v6 org) + 1 (v6 react) + 1 (v5 org) + 1 (codemods) + 2 (ai-helpers) + 1 (patternfly-cli) + 1 (patternfly-mcp) + 1 (patternfly-elements)
+     * If this increases, hashes need to be realigned. Do not randomly change the total value.
+     * If you are updating `docs.json` with an agent confirm altering the total value is
+     * acceptable. When you open your MR/PR, you may be asked to change your git hash to one
+     * of the existing table hash values and upddate the totals.
      *
      * Repository Breakdown
      *
      * | Repository | Hash / Branch | Count | Type |
      * |---|---|---|---|
-     * | ai-helpers | aa2766e8d9cb2bc08c13e41106d75c9829bc001f | 17 | **Primary** |
-     * | ai-helpers | b54c797ced725d1d77f446478b7ff271d73eb499 | 3 | One-off |
-     * | patternfly-cli | 027ae7b29de80e328613566ca4fd2897e0c3a770 | 1 | One-off |
+     * | ai-helpers | f7f8160c3f28b0bc7f64181d9466a425ac8329fc | 20 | **Primary** |
+     * | uxd-ai-helpers | 34913b0c96df0eaf10597717827bb62272726571 | 6 | **Primary** |
+     * | patternfly-cli | ce032cd16ddb90c540cb4f18c6830e190cd9e3e9 | 1 | One-off |
      * | patternfly-elements | 402b3b0e7ed73cb2aa21531e0eab4216c2211212 | 1 | One-off |
-     * | patternfly-mcp | f7eeb96bfaa2f682649900c27cff07ac7dc1652c | 5 | One-off |
-     * | patternfly-org | ec02b437ec72b6e4cc4e28524516288f4acf9fdf | 197 | **Primary** |
+     * | patternfly-mcp | 4e1cd7c636f6ac17c851f54a920549e5377f3809 | 5 | One-off |
+     * | patternfly-org | 957756128e8ddfc4be5db49e72312a2c43b9d220 | 203 | **Primary** |
+     * | patternfly-org | ec02b437ec72b6e4cc4e28524516288f4acf9fdf | 1 | One-off |
      * | patternfly-org | v5 | 1 | One-off |
-     * | patternfly-react | bdfc2b184addc9c760b9010039249bbb3c72e75e | 100 | **Primary** |
+     * | patternfly-react | 6f2385bbcc03de22a7ae8be506481e1b4d653200 | 100 | **Primary** |
      * | pf-codemods | 63df51df5cc6af2f3d83de4c0991c9e65625675f | 3 | One-off |
+     * | **Total** | **10 unique refs** | **341** | |
      */
-    expect(baseHashes.size).toBe(9);
+    expect(baseHashes.size).toBe(10);
 
     /**
      * Confirm total docs count matches metadata
