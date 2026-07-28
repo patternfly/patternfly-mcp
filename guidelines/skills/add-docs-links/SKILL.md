@@ -11,14 +11,14 @@ description: Maintains the PatternFly MCP documentation catalog in src/docs.json
 - User provides a GitHub URL (blob or raw) to register in the catalog — convert blob → raw, pick refs, verify reachability, shape entries, update `meta` and `generated`, and run tests
 - User asks to update or fix `docs.json` entries, contribute to the docs catalog, or align with docs.json tests and CI audit
 
-For **edits or removals**: find the row by `path` and/or its `docs` key; update `meta` / `generated`; run tests. Same rules as adds: whitelist, unique `path`, and `src/__tests__/docs.json.test.ts` (including `baseHashes`).
+For **edits or removals**: find the row by `path` and/or its `docs` key; update `meta` / `generated`; run tests. Same rules as adds: whitelist, unique `path`, and `src/__tests__/docs.json.test.ts` (including `baseHashes` and the Repository Breakdown table when refs change).
 
 ## Workflow
 
 1. **Resolve raw URL and ref**
    - Map the link to `owner/repo` and file path; build **raw** `https://raw.githubusercontent.com/{owner}/{repo}/{ref}/{file}`.
    - Prefer the **same `ref`** already used in `docs.json` for that `patternfly/<repo>` (copy from an existing `path`).
-   - **New** `patternfly/<repo>`: after you add URLs, `docs.json.test.ts` may need `expect(baseHashes.size)` updated—open that file; do not guess a number from this skill.
+   - **New** `patternfly/<repo>` (or new ref / `rh-uxd/<repo>`): after you add URLs, open `docs.json.test.ts` and update `expect(baseHashes.size)` **and** the Repository Breakdown table (including the **Total** row)—do not guess counts from this skill.
    - New ref for an existing repo: resolve SHA (e.g. commits API) or use a stable tag.
 
 2. **Whitelist**
@@ -60,5 +60,5 @@ For **edits or removals**: find the row by `path` and/or its `docs` key; update 
 - [ ] No duplicate `path`.
 - [ ] New **keys** at **end** of `docs`; new **array rows** at **end** of the target array.
 - [ ] `meta` and `generated` updated.
-- [ ] New `patternfly/<repo>`: `docs.json.test.ts` `baseHashes` expectation still matches.
+- [ ] New repo/ref: `docs.json.test.ts` `baseHashes` size **and** Repository Breakdown table (Total row) still match.
 - [ ] Tests pass; snapshots updated only if catalog-driven output changed.
