@@ -8,6 +8,7 @@ import {
   send,
   makeId,
   matchResponse,
+  serializeError,
   type ProcessRequest,
   type ProcessResponse,
   type SerializedError
@@ -179,26 +180,34 @@ const spawnChildProcess = (config: SpawnConfig): ChildHandle => {
       rejectSendFailure = reject;
     });
 
+    // Reconstruct a rich Error preserving stack/code/cause/details from any error-like value.
+    // Mirrors the SerializedError → Error mapping used in the pending branch so send-side
+    // failures surface the same diagnostic shape as remote (child-side) failures.
+    const reconstructError = (message: string, errorValue?: SerializedError): Error => {
+      const settledError = new Error(message, {
+        cause: errorValue?.cause
+      }) as Error & { code?: string; details?: unknown };
+
+      if (errorValue?.stack) {
+        settledError.stack = errorValue.stack;
+      }
+
+      if (errorValue?.code) {
+        settledError.code = errorValue.code;
+      }
+
+      if (errorValue?.details) {
+        settledError.details = errorValue.details;
+      }
+
+      return settledError;
+    };
+
     const pending = awaitIpc<T>(child, matcher, timeoutMs).then(message => {
       if ((message as ProcessResponse)?.t === errorType) {
         const errorValue = (message as { error?: SerializedError })?.error;
-        const settledError = new Error(errorValue?.message || 'Child process handler error', {
-          cause: errorValue?.cause
-        }) as Error & { code?: string; details?: unknown };
 
-        if (errorValue?.stack) {
-          settledError.stack = errorValue.stack;
-        }
-
-        if (errorValue?.code) {
-          settledError.code = errorValue.code;
-        }
-
-        if (errorValue?.details) {
-          settledError.details = errorValue.details;
-        }
-
-        throw settledError;
+        throw reconstructError(errorValue?.message || 'Child process handler error', errorValue);
       }
 
       return message;
@@ -211,8 +220,13 @@ const spawnChildProcess = (config: SpawnConfig): ChildHandle => {
         log.debug(`IPC send returned false. Failed to send IPC request '${req.t}' (id=${id}); channel closed.`);
       }
     } catch (error) {
+      const errorMessage = `Failed to send IPC request '${req.t}' (id=${id}): ${formatUnknownError(error)}`;
+
+      log.error(errorMessage);
+      const serialized = serializeError(error);
+
       rejectSendFailure?.(
-        new Error(`Failed to send IPC request '${req.t}' (id=${id}): ${formatUnknownError(error)}`, { cause: error })
+        reconstructError(errorMessage, { ...serialized, cause: serialized.cause || error })
       );
     }
 
