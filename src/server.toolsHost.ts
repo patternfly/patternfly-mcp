@@ -1,9 +1,10 @@
 import {
   type IpcRequest,
   type ToolDescriptor,
-  type SerializedError,
   makeId
 } from './server.toolsIpc';
+import { serializeError, type SerializedError } from './server.processIpc';
+import { createProcessHost, type HostContext } from './server.processHost';
 import { resolveExternalCreators } from './server.toolsHostCreator';
 import { DEFAULT_OPTIONS } from './options.defaults';
 import { type ToolOptions } from './options.tools';
@@ -17,29 +18,14 @@ import {
 import { isPlainObject } from './server.helpers';
 
 /**
- * SubType of IpcRequest for "hello" requests.
- */
-type HelloRequest = Extract<IpcRequest, { t: 'hello' }>;
-
-/**
  * SubType of IpcRequest for "load" requests.
  */
 type LoadRequest = Extract<IpcRequest, { t: 'load' }>;
 
 /**
- * SubType of IpcRequest for "manifest:get" requests.
- */
-type ManifestGetRequest = Extract<IpcRequest, { t: 'manifest:get' }>;
-
-/**
  * SubType of IpcRequest for "invoke" requests.
  */
 type InvokeRequest = Extract<IpcRequest, { t: 'invoke' }>;
-
-/**
- * SubType of IpcRequest for "shutdown" requests.
- */
-type ShutdownRequest = Extract<IpcRequest, { t: 'shutdown' }>;
 
 /**
  * State object for the tools host.
@@ -61,24 +47,6 @@ const createHostState = (invokeTimeoutMs = DEFAULT_OPTIONS.pluginHost.invokeTime
   descriptors: [],
   invokeTimeoutMs
 });
-
-/**
- * Serialize an error value into a structured object.
- *
- * @param errorValue - Error-like value to serialize.
- * @returns {SerializedError} - Serialized error object.
- */
-const serializeError = (errorValue: unknown) => {
-  const err = errorValue as SerializedError | undefined;
-
-  return {
-    message: err?.message || String(errorValue),
-    stack: err?.stack,
-    code: err?.code,
-    details: err?.details,
-    cause: err?.cause
-  };
-};
 
 /**
  * Result of `normalizeCreatorSchema`.
@@ -260,40 +228,6 @@ const performLoad = async (request: LoadRequest): Promise<HostState & { warnings
 };
 
 /**
- * Acknowledge a hello request.
- *
- * @param request
- */
-const requestHello = (request: HelloRequest) => {
-  process.send?.({ t: 'hello:ack', id: request.id });
-};
-
-/**
- * Load tools from the provided list of module specifiers.
- *
- * @param {LoadRequest} request - Load request object.
- * @param warningsErrors
- * @param warningsErrors.warnings - List of warnings generated during tool loading.
- * @param warningsErrors.errors - List of errors generated during tool loading.
- */
-const requestLoad = (
-  request: LoadRequest,
-  { warnings = [], errors = [] }: { warnings?: string[]; errors?: string[] } = {}
-) => {
-  process.send?.({ t: 'load:ack', id: request.id, warnings, errors });
-};
-
-/**
- * Respond to a manifest request with a list of available tools.
- *
- * @param {HostState} state
- * @param {ManifestGetRequest} request
- */
-const requestManifestGet = (state: HostState, request: ManifestGetRequest) => {
-  process.send?.({ t: 'manifest:result', id: request.id, tools: state.descriptors });
-};
-
-/**
  * Invoke a realized tool by id. Validates arguments against the in-memory Zod schema.
  *
  * @example
@@ -302,12 +236,13 @@ const requestManifestGet = (state: HostState, request: ManifestGetRequest) => {
  *
  * @param {HostState} state
  * @param {InvokeRequest} request
+ * @param {HostContext} ctx
  */
-const requestInvoke = async (state: HostState, request: InvokeRequest) => {
+const requestInvoke = async (state: HostState, request: InvokeRequest, ctx: HostContext) => {
   const tool = state.toolMap.get(request.toolId);
 
   if (!tool) {
-    process.send?.({
+    ctx.send({
       t: 'invoke:result',
       id: request.id,
       ok: false,
@@ -326,7 +261,7 @@ const requestInvoke = async (state: HostState, request: InvokeRequest) => {
 
     settled = true;
 
-    process.send?.({
+    ctx.send({
       t: 'invoke:result',
       id: request.id,
       ok: false,
@@ -376,13 +311,13 @@ const requestInvoke = async (state: HostState, request: InvokeRequest) => {
     if (!settled) {
       settled = true;
       clearTimeout(timer);
-      process.send?.({ t: 'invoke:result', id: request.id, ok: true, result });
+      ctx.send({ t: 'invoke:result', id: request.id, ok: true, result });
     }
   } catch (error) {
     if (!settled) {
       settled = true;
       clearTimeout(timer);
-      process.send?.({
+      ctx.send({
         t: 'invoke:result',
         id: request.id,
         ok: false,
@@ -393,165 +328,39 @@ const requestInvoke = async (state: HostState, request: InvokeRequest) => {
 };
 
 /**
- * Handle shutdown requests.
- *
- * @param request
+ * Create the Tools Host: a generic child-process host wired with the tool handlers.
+ * Built-in `hello`/`shutdown` handlers come from `createProcessHost`.
  */
-const requestShutdown = (request: ShutdownRequest) => {
-  process.send?.({ t: 'shutdown:ack', id: request.id });
-  process.exit(0);
-};
-
-/**
- * Fallback handler for unhandled errors.
- *
- * @param {IpcRequest} request - Original IPC request object.
- * @param {Error} error - Failed request error object
- *
- * Attempt to send a structured message back to the IPC channel. The message includes:
- * - Type of response ('invoke:result').
- * - Request identifier, or 'n/a' if the request ID is unavailable.
- * - Operation status (`ok: false`).
- * - Serialized error object.
- *
- * Any issues during this process (e.g., if `process.send` is unavailable) fail silently.
- */
-const requestFallback = (request: IpcRequest, error: Error) => {
-  try {
-    process.send?.({
-      t: 'invoke:result',
-      id: request?.id || 'n/a',
-      ok: false,
-      error: serializeError(error)
-    });
-  } catch {}
-};
-
-/**
- * Initializes and sets up handlers for incoming IPC (Inter-Process Communication) messages.
- *
- * @returns Function to remove IPC message listeners.
- */
-const setHandlers = () => {
+const createToolsHost = () => {
   let state: HostState = createHostState();
 
-  /**
-   * Load tools from the provided list of module specifiers. Splits out warnings/errors
-   * before updating state.
-   *
-   * @param {LoadRequest} request
-   */
-  const onRequestLoad = async (request: LoadRequest) => {
-    const loaded = await performLoad(request);
+  return createProcessHost({
+    load: async (request, ctx) => {
+      const loaded = await performLoad(request as LoadRequest);
 
-    state = {
-      toolMap: loaded.toolMap,
-      descriptors: loaded.descriptors,
-      invokeTimeoutMs: loaded.invokeTimeoutMs
-    };
+      state = {
+        toolMap: loaded.toolMap,
+        descriptors: loaded.descriptors,
+        invokeTimeoutMs: loaded.invokeTimeoutMs
+      };
 
-    requestLoad(request, { warnings: loaded.warnings, errors: loaded.errors });
-  };
-
-  /**
-   * Handle incoming IPC (Inter-Process Communication) messages.
-   *
-   * Process the request and execute the corresponding handler function for each type. A fallback handler
-   * is triggered on error.
-   *
-   * @param {IpcRequest} request - The IPC request object containing the type of request and associated data.
-   * @throws {Error} - Any error, pass the request through the fallback handler.
-   *
-   * @remarks
-   * Supported request types:
-   * - 'hello': Trigger the `requestHello` handler.
-   * - 'load': Trigger the `requestLoad` handler.
-   * - 'manifest:get': Trigger the `requestManifestGet` handler.
-   * - 'invoke': Trigger the asynchronous `requestInvoke` handler.
-   * - 'shutdown': Trigger the `requestShutdown` handler.
-   */
-  const handlerMessage = async (request: IpcRequest) => {
-    try {
-      switch (request.t) {
-        case 'hello':
-          requestHello(request);
-          break;
-
-        case 'load':
-          await onRequestLoad(request);
-          break;
-
-        case 'manifest:get':
-          requestManifestGet(state, request);
-          break;
-
-        case 'invoke': {
-          await requestInvoke(state, request);
-          break;
-        }
-        case 'shutdown': {
-          requestShutdown(request);
-          break;
-        }
-      }
-    } catch (error) {
-      requestFallback(request, error as Error);
+      ctx.send({ t: 'load:ack', id: request.id, warnings: loaded.warnings, errors: loaded.errors });
+    },
+    'manifest:get': (request, ctx) => {
+      ctx.send({ t: 'manifest:result', id: request.id, tools: state.descriptors });
+    },
+    invoke: async (request, ctx) => {
+      await requestInvoke(state, request as InvokeRequest, ctx);
     }
-  };
-
-  /**
-   * Listen for incoming IPC messages.
-   */
-  process.on('message', handlerMessage);
-
-  /**
-   * Handle process disconnects.
-   */
-  const handlerDisconnect = () => {
-    process.exit(0);
-  };
-
-  /**
-   * Handle process disconnects.
-   */
-  process.on('disconnect', handlerDisconnect);
-
-  // Expose the router for bootstrapping.
-  return handlerMessage;
+  });
 };
 
-/**
- * Lazy initialize for IPC (Inter-Process Communication) handlers.
- *
- * This is a one-shot process: the first message received will remove itself then
- * trigger the real handler setup.
- *
- * @param {IpcRequest} first
- */
-const bootstrapMessage = (first: IpcRequest) => {
-  // Detach bootstrap to avoid duplicate delivery
-  process.off('message', bootstrapMessage);
-
-  // Install real handlers and get a reference to the router
-  const route = setHandlers();
-
-  // Route the very first message through the same code path the real handler uses
-  // Use void to fire-and-forget async operations to avoid blocking
-  void route(first);
-};
-
-if (process.send) {
-  process.on('message', bootstrapMessage);
-}
+// createProcessHost internally guards on `process.send`, so this is safe at module load.
+createToolsHost();
 
 export {
   normalizeCreatorSchema,
   performLoad,
-  requestHello,
-  requestLoad,
-  requestManifestGet,
   requestInvoke,
-  requestShutdown,
-  requestFallback,
-  setHandlers
+  createToolsHost
 };
