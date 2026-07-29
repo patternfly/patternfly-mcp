@@ -1,6 +1,21 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.2.0](https://github.com/patternfly/patternfly-mcp/compare/4e1cd7c636f6ac17c851f54a920549e5377f3809...36caaa960f706744f733d00a5686c17d2f6a6c4a) (2026-07-28)
+
+
+### Features
+*  pf-4387 enhance memo, add clear cache method ([#249](https://github.com/patternfly/patternfly-mcp/pull/249)) ([4e6eabe](https://github.com/patternfly/patternfly-mcp/commit/4e6eabed9318e6482bfceef5a03bca83d56ef134))
+*  pf-4387 expand and enhance fetch ([#248](https://github.com/patternfly/patternfly-mcp/pull/248)) ([17a2fe3](https://github.com/patternfly/patternfly-mcp/commit/17a2fe3a1cee86d86f63ce6a93e56d04b05c68cc))
+
+### Code Refactoring
+* **docs** release updates, uxd ai helpers ([#263](https://github.com/patternfly/patternfly-mcp/pull/263)) ([36caaa9](https://github.com/patternfly/patternfly-mcp/commit/36caaa960f706744f733d00a5686c17d2f6a6c4a))
+
+### Builds
+* **deps-dev** bump @cdcabrera/eslint-config-toolkit ([#260](https://github.com/patternfly/patternfly-mcp/pull/260)) ([b1de9df](https://github.com/patternfly/patternfly-mcp/commit/b1de9dfa92d12fdd9802d0d9f8438a7dbee8d105))
+* **deps-dev** bump @types/node from 25.9.3 to 26.1.0 ([#251](https://github.com/patternfly/patternfly-mcp/pull/251)) ([5830236](https://github.com/patternfly/patternfly-mcp/commit/5830236c35c9fc86332a0a5e17ff89dd21cf60a4))
+* **deps-dev** bump dev group with 5 updates ([#256](https://github.com/patternfly/patternfly-mcp/pull/256)) ([c345713](https://github.com/patternfly/patternfly-mcp/commit/c345713ba13316d0c502ea79ad4a0407efb26e45))
+
 ## [2.1.0](https://github.com/patternfly/patternfly-mcp/compare/3f168697b386921faf1703c8befe09459721a1a8...a67ace72f75be5badfc9e510871c03ca1cf498a6) (2026-07-20)
 ⚠ **Potential breaking changes**
 * Diagnostic channel names for logging and stats now include a `mode` prefix. This affects programmatic server implementations that manually parse channel names. See [#233](https://github.com/patternfly/patternfly-mcp/pull/233).
