@@ -217,7 +217,7 @@ const spawnChildProcess = (config: SpawnConfig): ChildHandle => {
       const ok = send(child, { ...req, id } as ProcessRequest);
 
       if (!ok) {
-        log.debug(`IPC send returned false. Failed to send IPC request '${req.t}' (id=${id}); channel closed.`);
+        throw new Error('IPC send returned false; exiting early.');
       }
     } catch (error) {
       const errorMessage = `Failed to send IPC request '${req.t}' (id=${id}): ${formatUnknownError(error)}`;

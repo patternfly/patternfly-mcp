@@ -158,7 +158,7 @@ describe('spawnChildProcess request', () => {
   const makeIpcChild = () => {
     const messageHandlers: Array<(m: any) => void> = [];
     const child: any = {
-      send: jest.fn(),
+      send: jest.fn().mockReturnValue(true),
       on: jest.fn((event: string, handler: any) => {
         if (event === 'message') {
           messageHandlers.push(handler);
@@ -221,5 +221,39 @@ describe('spawnChildProcess request', () => {
     }));
 
     await expect(pending).rejects.toThrow('handler lorem ipsum');
+  });
+
+  it('should reject immediately when send returns false', async () => {
+    const { child } = makeIpcChild();
+
+    // immediately send false
+    child.send.mockReturnValue(false);
+    (spawn as jest.Mock).mockReturnValue(child);
+
+    const { request } = spawnChildProcess({ importSpecifier: '#host', entry: '/abs/host.js' });
+    const pending = request({ t: 'hello' }, 'hello:ack', 1000);
+
+    await expect(pending).rejects.toMatchObject({
+      message: expect.stringContaining("Failed to send IPC request 'hello'"),
+      cause: expect.objectContaining({ message: 'IPC send returned false; exiting early.' })
+    });
+  });
+
+  it('should reject immediately when send throws an error', async () => {
+    const { child } = makeIpcChild();
+
+    // immediately send false
+    child.send.mockImplementation(() => {
+      throw new Error('dolor sit');
+    });
+    (spawn as jest.Mock).mockReturnValue(child);
+
+    const { request } = spawnChildProcess({ importSpecifier: '#host', entry: '/abs/host.js' });
+    const pending = request({ t: 'hello' }, 'hello:ack', 1000);
+
+    await expect(pending).rejects.toMatchObject({
+      message: expect.stringContaining("Failed to send IPC request 'hello'"),
+      cause: expect.objectContaining({ message: 'dolor sit' })
+    });
   });
 });
