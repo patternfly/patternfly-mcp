@@ -217,9 +217,9 @@ describe('spawnChildProcess request', () => {
       t: 'load:error',
       id: sentId,
       ok: false,
-      error: { message: 'handler boom', code: 'E_BOOM' }
+      error: { message: 'handler lorem ipsum', code: 'E_LOREM_IPSUM' }
     }));
 
-    await expect(pending).rejects.toThrow('handler boom');
+    await expect(pending).rejects.toThrow('handler lorem ipsum');
   });
 });

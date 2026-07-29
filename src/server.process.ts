@@ -171,6 +171,14 @@ const spawnChildProcess = (config: SpawnConfig): ChildHandle => {
     // promptly rather than waiting for the timeout.
     const matcher = (message: any): message is T => matchOk(message) || matchErr(message);
 
+    // Deferred rejection channel for early send-side failures (throw or send()===false).
+    // Race against awaitIpc ensures the caller sees a prompt rejection instead
+    // of waiting for an IPC timeout since the channel is already broken.
+    let rejectSendFailure: ((error: Error) => void) | undefined;
+    const sendFailure = new Promise<never>((_resolve, reject) => {
+      rejectSendFailure = reject;
+    });
+
     const pending = awaitIpc<T>(child, matcher, timeoutMs).then(message => {
       if ((message as ProcessResponse)?.t === errorType) {
         const errorValue = (message as { error?: SerializedError })?.error;
@@ -196,9 +204,19 @@ const spawnChildProcess = (config: SpawnConfig): ChildHandle => {
       return message;
     });
 
-    send(child, { ...req, id } as ProcessRequest);
+    try {
+      const ok = send(child, { ...req, id } as ProcessRequest);
 
-    return pending;
+      if (!ok) {
+        log.debug(`IPC send returned false. Failed to send IPC request '${req.t}' (id=${id}); channel closed.`);
+      }
+    } catch (error) {
+      rejectSendFailure?.(
+        new Error(`Failed to send IPC request '${req.t}' (id=${id}): ${formatUnknownError(error)}`, { cause: error })
+      );
+    }
+
+    return Promise.race([pending, sendFailure]) as Promise<T>;
   };
 
   return { child, closeStderr, request };
