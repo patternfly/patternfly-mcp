@@ -24,8 +24,12 @@ metadata:
   annotations:
     backstage.io/source-location: url:https://github.com/patternfly/patternfly-mcp
     data.sources.discovery.docs.redhat.com/url: https://github.com/patternfly/patternfly-mcp/tree/main/docs
+  links:
+    - title: PatternFly MCP Server
+      url: https://github.com/patternfly/patternfly-mcp
+      icon: github
 spec:
-  type: remote
+  type: local
   lifecycle: ga
   owner: group:redhat/uxd-team
   primitives:
@@ -45,6 +49,3 @@ spec:
     - type: npm
       registry_name: registry.npmjs.org
       name: "@patternfly/patternfly-mcp"
-  remotes:
-    - type: streamable-http
-      url: https://main.patternfly-org.pages.dev/api # Public static data endpoint
