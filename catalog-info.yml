@@ -27,7 +27,7 @@ metadata:
 spec:
   type: remote
   lifecycle: ga
-  owner: group:redhat/uxd
+  owner: group:redhat/uxd-team
   primitives:
     - type: tool
       name: aggregated-data-query
