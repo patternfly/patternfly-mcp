@@ -25,7 +25,7 @@ metadata:
     backstage.io/source-location: url:https://github.com/patternfly/patternfly-mcp
     data.sources.discovery.docs.redhat.com/url: https://github.com/patternfly/patternfly-mcp/tree/main/docs
   links:
-    - title: PatternFly MCP
+    - title: PatternFly MCP Server
       url: https://github.com/patternfly/patternfly-mcp
       icon: github
 spec:
