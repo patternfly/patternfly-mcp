@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`patternFlySchemasCollection should match snapshot for schema collection result 1`] = `
+{
+  "records": [
+    {
+      "data": {
+        "button": [
+          {
+            "category": "react",
+            "description": "PatternFly React component: Button",
+            "displayName": "Button",
+            "isSchemasAvailable": true,
+            "pathSlug": "schemas-button",
+            "section": "components",
+            "version": "v6",
+          },
+        ],
+      },
+      "id": "schema::button",
+      "sourceId": "button",
+      "sourceType": "package",
+    },
+    {
+      "data": {
+        "card": [
+          {
+            "category": "react",
+            "description": "PatternFly React component: Card",
+            "displayName": "Card",
+            "isSchemasAvailable": true,
+            "pathSlug": "schemas-card",
+            "section": "components",
+            "version": "v6",
+          },
+        ],
+      },
+      "id": "schema::card",
+      "sourceId": "card",
+      "sourceType": "package",
+    },
+    {
+      "data": {
+        "table": [
+          {
+            "category": "react",
+            "description": "PatternFly React component: table",
+            "displayName": "Table",
+            "isSchemasAvailable": false,
+            "pathSlug": "schemas-table",
+            "section": "components",
+            "version": "v6",
+          },
+        ],
+      },
+      "id": "schema::table",
+      "sourceId": "table",
+      "sourceType": "package",
+    },
+  ],
+}
+`;

@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`composeCollections should match snapshot for composed collection creators 1`] = `
+[
+  {
+    "config": {
+      "_isInternal": true,
+      "isRequired": false,
+    },
+    "name": "snap-collection",
+  },
+]
+`;

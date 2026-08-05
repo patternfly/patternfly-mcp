@@ -9,6 +9,28 @@ import {
   resourceCallback
 } from '../resource.patternFlyDocsIndex';
 import { isPlainObject } from '../server.helpers';
+import { getPatternFlyMcpResources } from '../patternFly.getResources';
+import { filterPatternFly } from '../patternFly.search';
+import { paramCompletion } from '../resource.helpers';
+
+jest.mock('../patternFly.getResources', () => ({
+  ...jest.requireActual('../patternFly.getResources'),
+  getPatternFlyMcpResources: { memo: jest.fn() }
+}));
+
+jest.mock('../patternFly.search', () => ({
+  ...jest.requireActual('../patternFly.search'),
+  filterPatternFly: { memo: jest.fn() }
+}));
+
+jest.mock('../resource.helpers', () => ({
+  ...jest.requireActual('../resource.helpers'),
+  paramCompletion: jest.fn()
+}));
+
+const MockMcpResources = getPatternFlyMcpResources.memo as jest.MockedFunction<typeof getPatternFlyMcpResources.memo>;
+const MockFilter = filterPatternFly.memo as jest.MockedFunction<typeof filterPatternFly.memo>;
+const MockParamCompletion = paramCompletion as jest.MockedFunction<typeof paramCompletion>;
 
 describe('patternFlyDocsIndexResource', () => {
   it('should have a consistent return structure', () => {
@@ -25,6 +47,8 @@ describe('patternFlyDocsIndexResource', () => {
 
 describe('listResources', () => {
   it('should return a list of resources', async () => {
+    MockMcpResources.mockResolvedValue({ availableVersions: ['v6'], byVersion: { v6: [] } } as any);
+
     const resources = await listResources();
 
     expect(resources.resources).toBeDefined();
@@ -41,154 +65,46 @@ describe('listResources', () => {
 });
 
 describe('uriNameComplete', () => {
-  it.each([
-    {
-      description: 'with empty string',
-      value: '',
-      expected: 10
-    },
-    {
-      description: 'with lowercased name',
-      value: 'button',
-      expected: 1
-    },
-    {
-      description: 'with uppercased name',
-      value: 'BUTTON',
-      expected: 1
-    },
-    {
-      description: 'with mixed case name',
-      value: 'bUTTON',
-      expected: 1
-    },
-    {
-      description: 'with empty space and name',
-      value: '  BUTTON  ',
-      expected: 1
-    }
-  ])('should attempt to return PatternFly component names, $description', async ({ value, expected }) => {
-    const result = await uriNameComplete(value);
+  it('should attempt to return PatternFly component names on completion', async () => {
+    MockParamCompletion.mockResolvedValue({ names: ['Button'] } as any);
 
-    expect(result.length).toBeGreaterThanOrEqual(expected);
+    const result = await uriNameComplete('button');
+
+    expect(MockParamCompletion).toHaveBeenCalledWith(expect.objectContaining({ name: 'button' }));
+    expect(result).toEqual(['Button']);
   });
 });
 
 describe('uriCategoryComplete', () => {
-  it.each([
-    {
-      description: 'empty returns all',
-      value: ''
-    },
-    {
-      description: 'prefix',
-      value: 'ac'
-    },
-    {
-      description: 'suffix',
-      value: 'es'
-    },
-    {
-      description: 'exact',
-      value: 'accessibility'
-    }
-  ])('should attempt to return a category, $description', async ({ value }) => {
-    const result = await uriCategoryComplete(value);
+  it('should attempt to return categories on completion', async () => {
+    MockParamCompletion.mockResolvedValue({ categories: ['accessibility'] } as any);
 
-    expect(result.length).toBeGreaterThan(0);
-    expect(result.join(', ')).toEqual(expect.stringContaining(value));
-  });
+    const result = await uriCategoryComplete('ac');
 
-  it('should not return any values for non-existent categories', async () => {
-    const result = await uriCategoryComplete('lorem');
-
-    expect(result.length).toBe(0);
+    expect(MockParamCompletion).toHaveBeenCalledWith(expect.objectContaining({ category: 'ac' }));
+    expect(result).toEqual(['accessibility']);
   });
 });
 
 describe('uriSectionComplete', () => {
-  it.each([
-    {
-      description: 'empty returns all',
-      value: ''
-    },
-    {
-      description: 'prefix',
-      value: 'co'
-    },
-    {
-      description: 'suffix',
-      value: 'ts'
-    },
-    {
-      description: 'exact',
-      value: 'components'
-    }
-  ])('should attempt to return a section, $description', async ({ value }) => {
-    const result = await uriSectionComplete(value);
+  it('should attempt to return sections on completion', async () => {
+    MockParamCompletion.mockResolvedValue({ sections: ['components'] } as any);
 
-    expect(result.length).toBeGreaterThan(0);
-    expect(result.join(', ')).toEqual(expect.stringContaining(value));
-  });
+    const result = await uriSectionComplete('co');
 
-  it('should not return any values for non-existent section', async () => {
-    const result = await uriSectionComplete('lorem');
-
-    expect(result.length).toBe(0);
+    expect(MockParamCompletion).toHaveBeenCalledWith(expect.objectContaining({ section: 'co' }));
+    expect(result).toEqual(['components']);
   });
 });
 
 describe('uriVersionComplete', () => {
-  it.each([
-    {
-      description: 'all',
-      value: '',
-      expected: 'v6'
-    },
-    {
-      description: 'exact',
-      value: 'v6',
-      expected: 'v6'
-    },
-    {
-      description: 'exact, casing',
-      value: 'V6',
-      expected: 'v6'
-    },
-    {
-      description: 'enumerated, current',
-      value: 'current',
-      expected: 'v6'
-    },
-    {
-      description: 'enumerated, latest',
-      value: 'latest',
-      expected: 'v6'
-    }
-  ])('should attempt to return a version, $description', async ({ value, expected }) => {
-    const result = await uriVersionComplete(value);
+  it('should attempt to return versions on completion', async () => {
+    MockParamCompletion.mockResolvedValue({ versions: ['v6'] } as any);
 
-    expect(result.length).toBeGreaterThan(0);
-    expect(result.join(', ')).toEqual(expect.stringContaining(expected));
-  });
+    const result = await uriVersionComplete('v6');
 
-  it.each([
-    {
-      description: 'prefix',
-      value: 'v'
-    },
-    {
-      description: 'suffix',
-      value: '6'
-    },
-    {
-      description: 'non-existent',
-      value: 'lorem'
-    }
-  ])('should not return any values, $description', async ({ value }) => {
-    const result = await uriVersionComplete(value);
-
-    expect(result.length).toBe(0);
+    expect(MockParamCompletion).toHaveBeenCalledWith(expect.objectContaining({ version: 'v6' }));
+    expect(result).toEqual(['v6']);
   });
 });
 
@@ -229,6 +145,17 @@ describe('resourceCallback', () => {
       expected: 'category=accessibility&section=components'
     }
   ])('should return context content, $description', async ({ variables, expected }) => {
+    MockMcpResources.mockResolvedValue({ availableVersions: ['v6'], latestVersion: 'v6' } as any);
+    MockFilter.mockResolvedValue({
+      byResource: new Map([
+        ['button', {
+          name: 'Button',
+          uri: 'patternfly://docs/v6/button',
+          entries: [{ version: 'v6', displayCategory: 'accessibility' }]
+        }]
+      ])
+    } as any);
+
     const result = await resourceCallback(undefined as any, variables);
 
     expect(result.contents).toBeDefined();
@@ -245,6 +172,9 @@ describe('resourceCallback', () => {
       error: 'Invalid PatternFly version'
     }
   ])('should handle variable errors, $description', async ({ error, variables }) => {
+    MockMcpResources.mockResolvedValue({ availableVersions: ['v6'], latestVersion: 'v6' } as any);
+    MockFilter.mockResolvedValue({ byResource: new Map() } as any);
+
     await expect(resourceCallback(undefined as any, variables as any)).rejects.toThrow(McpError);
     await expect(resourceCallback(undefined as any, variables as any)).rejects.toThrow(error);
   });

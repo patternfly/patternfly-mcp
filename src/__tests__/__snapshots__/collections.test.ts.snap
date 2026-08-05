@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`registerCollections should call onSettle with all results (fulfilled and rejected) 1`] = `
+{
+  "fulfilled": [
+    {
+      "records": [
+        {
+          "id": "1",
+        },
+      ],
+    },
+  ],
+  "rejected": [
+    {
+      "name": "c2",
+      "reason": [Error: Fail],
+    },
+  ],
+  "settled": [
+    {
+      "name": "c1",
+      "reason": null,
+      "status": "fulfilled",
+      "value": {
+        "records": [
+          {
+            "id": "1",
+          },
+        ],
+      },
+    },
+    {
+      "name": "c2",
+      "reason": [Error: Fail],
+      "status": "rejected",
+      "value": null,
+    },
+  ],
+}
+`;

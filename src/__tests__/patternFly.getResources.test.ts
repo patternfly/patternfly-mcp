@@ -3,10 +3,77 @@ import {
   getPatternFlyComponentSchema,
   getPatternFlyComponentNames,
   mutateKeyWordsMap,
-  getPatternFlyMcpResources
+  getPatternFlyMcpResources,
+  setPatternFlyCollection
 } from '../patternFly.getResources';
 
+jest.mock('@patternfly/patternfly-component-schemas/json', () => ({
+  getComponentSchema: jest.fn().mockResolvedValue({
+    name: 'Button',
+    props: {
+      children: {
+        type: 'node',
+        required: false,
+        description: 'Content rendered inside the button.'
+      }
+    }
+  }),
+  componentNames: ['Button']
+}));
+
 describe('setCategoryDisplayLabel', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  beforeAll(async () => {
+    // Inject mock collections to ensure tests are isolated and don't rely on filesystem
+    await setPatternFlyCollection('patternfly-docs', {
+      records: [
+        {
+          id: 'docs::button',
+          sourceId: 'button',
+          sourceType: 'local',
+          data: {
+            button: [
+              {
+                displayName: 'Button',
+                description: 'Button description',
+                pathSlug: 'button',
+                section: 'components',
+                category: 'react',
+                path: 'https://www.patternfly.org/v6/components/button',
+                version: 'v6'
+              }
+            ]
+          }
+        }
+      ]
+    });
+
+    await setPatternFlyCollection('patternfly-component-schemas', {
+      records: [
+        {
+          id: 'schema::button',
+          sourceId: 'button',
+          sourceType: 'package',
+          data: {
+            button: [
+              {
+                displayName: 'Button',
+                description: 'PatternFly React component: Button',
+                pathSlug: 'schemas-button',
+                category: 'react',
+                section: 'components',
+                version: 'v6',
+                isSchemasAvailable: true
+              }
+            ]
+          }
+        }
+      ]
+    });
+  });
   it.each([
     {
       description: 'empty string',
