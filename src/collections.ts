@@ -39,6 +39,9 @@ interface McpCollectionResult {
 /**
  * Standardized Tuple-based Record Source.
  *
+ * @note `priority` and `group` are future properties being considered in the related
+ * collection work as a way to sort and override collections.
+ *
  * 0. `name` `{string}`: Unique identifier/name
  * 1. `handler` `{Function}`: callback function accepting an optional argument
  * 2. `_config` `{Object}`: Application level record source configuration. Unavailable to
@@ -55,7 +58,9 @@ type McpCollection = [
   handler: (arg?: unknown) => McpCollectionResult | Promise<McpCollectionResult>,
   _config?: {
     runInChildProcess?: boolean | ((options?: GlobalOptions) => boolean | Promise<boolean>);
+    // priority?: number;
     isRequired?: boolean;
+    // group?: string;
     _isInternal?: boolean;
   }
 ];

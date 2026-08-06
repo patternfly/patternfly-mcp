@@ -34,6 +34,7 @@ const patternFlySchemasCollection = (): McpCollection => {
               pathSlug: `schemas-${normalizedName}`,
               category: 'react',
               section: 'components',
+              source: 'schemas',
               version: latestSchemasVersion,
               isSchemasAvailable: true
             }
@@ -56,6 +57,7 @@ const patternFlySchemasCollection = (): McpCollection => {
             pathSlug: 'schemas-table',
             category: 'react',
             section: 'components',
+            source: 'schemas',
             version: latestSchemasVersion,
             isSchemasAvailable: false
           }]

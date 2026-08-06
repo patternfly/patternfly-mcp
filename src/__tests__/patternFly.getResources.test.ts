@@ -65,6 +65,7 @@ describe('setCategoryDisplayLabel', () => {
                 pathSlug: 'schemas-button',
                 category: 'react',
                 section: 'components',
+                source: 'schemas',
                 version: 'v6',
                 isSchemasAvailable: true
               }

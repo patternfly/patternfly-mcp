@@ -43,7 +43,8 @@ describe('patternFlySchemasCollection', () => {
           expect.objectContaining({
             displayName: 'Button',
             isSchemasAvailable: true,
-            version: 'v6'
+            version: 'v6',
+            source: 'schemas'
           })
         ]
       }
@@ -61,6 +62,7 @@ describe('patternFlySchemasCollection', () => {
     const tableEntries = (tableRecord?.data as Record<string, any>).table;
 
     expect(tableEntries[0].isSchemasAvailable).toBe(false);
+    expect(tableEntries[0].source).toBe('schemas');
   });
 
   it('should match snapshot for schema collection result', async () => {
