@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`collectionCallback should match snapshot for collection result 1`] = `
+{
+  "records": [
+    {
+      "data": {
+        "card": {
+          "category": "css",
+          "description": "Card css content",
+          "displayName": "Card",
+          "id": "api::v1::components::card::css::0",
+          "path": "https://main.patternfly-org.pages.dev/api/v1/components/Card/css",
+          "pathSlug": "card",
+          "section": "components",
+          "source": "api",
+          "version": "v1",
+        },
+      },
+      "id": "api::v1::components::card::css::0",
+      "sourceId": "https://main.patternfly-org.pages.dev/api/v1/components/Card/css",
+      "sourceType": "api",
+    },
+  ],
+}
+`;

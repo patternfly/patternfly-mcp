@@ -178,6 +178,12 @@ interface ModeOptions {
 /**
  * PatternFly-specific options.
  *
+ * @property api PatternFly API.
+ * @property api.base URL starting base for crawling the PatternFly API.
+ * @property api.versions URL Get the available PatternFly API versions. Versions are required to crawl.
+ * @property api.componentPaths List of additional PatternFly API component paths to try.
+ * @property api.crawlCancelMs Timeout in milliseconds for cancelling the PatternFly API crawl.
+ * @property api.crawlIntervalMs Interval in milliseconds, during server run, for crawling the PatternFly API.
  * @property availableResourceVersions List of available PatternFly resource versions to the MCP server.
  * @property availableSearchVersions List of available PatternFly search versions to the MCP server.
  * @property availableSchemasVersions List of available PatternFly schema versions to the MCP server.
@@ -191,6 +197,14 @@ interface ModeOptions {
  *    - 'lowest': Use the lowest major version found.
  */
 interface PatternFlyOptions {
+  api: {
+    base: string;
+    versions: string;
+    componentPaths: string[];
+    crawlCancelMs: number;
+    crawlIntervalMs: number;
+    enabled: boolean;
+  },
   availableResourceVersions: ('6.0.0')[];
   availableSearchVersions: ('current' | 'latest' | 'v6')[];
   availableSchemasVersions: ('v6')[];
@@ -410,6 +424,12 @@ const RESOURCE_MEMO_OPTIONS = {
   default: {
     cacheLimit: 3
   },
+  medium: {
+    cacheLimit: 25
+  },
+  high: {
+    cacheLimit: 50
+  },
   fetchUrl: {
     cacheLimit: 100,
     expire: 3 * 60 * 1000, // 3 minute sliding cache
@@ -462,8 +482,10 @@ const STATS_OPTIONS: StatsOptions = {
 const WHITELIST_OPTIONS: WhitelistOptions = {
   urls: [
     'https://patternfly.org',
-    // 'https://www.patternfly.org',
+    'https://www.patternfly.org',
     'https://github.com/patternfly',
+    'https://www.github.com/patternfly',
+    'https://main.patternfly-org.pages.dev',
     'https://raw.githubusercontent.com/patternfly'
   ],
   protocols: ['http', 'https']
@@ -488,6 +510,18 @@ const CHANNEL_BASENAME = 'pf-mcp';
  * Default PatternFly-specific options.
  */
 const PATTERNFLY_OPTIONS: PatternFlyOptions = {
+  api: {
+    base: 'https://main.patternfly-org.pages.dev/api',
+    versions: 'https://main.patternfly-org.pages.dev/api/versions',
+    componentPaths: [
+      'props',
+      'css'
+    ],
+    crawlCancelMs: 180_000, // 3 minutes
+    crawlIntervalMs: 43_200_000, // 12 hours
+    enabled: false
+    // concurrency: 4
+  },
   availableResourceVersions: ['6.0.0'],
   availableSearchVersions: ['current', 'latest', 'v6'],
   availableSchemasVersions: ['v6'],
