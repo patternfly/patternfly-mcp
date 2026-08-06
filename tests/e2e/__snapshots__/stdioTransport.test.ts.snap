@@ -150,6 +150,8 @@ exports[`Logging should allow setting logging options, stderr 1`] = `
 ",
   "[INFO]: Server stats enabled.
 ",
+  "[INFO]: No external collections loaded.
+",
   "[INFO]: No external resources loaded.
 ",
   "[INFO]: No external tools loaded.

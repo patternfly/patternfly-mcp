@@ -545,6 +545,7 @@ runServer.memo = memo(
 
 export {
   runServer,
+  registerServerCollections,
   registerServerResources,
   registerServerTools,
   type ServerInstance,

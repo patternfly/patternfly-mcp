@@ -6,6 +6,7 @@
   "type": "module",
   "imports": {
     "~docsCatalog": "./src/docs.json",
+    "#collectionsHost": "./dist/server.collectionsHost.js",
     "#toolsHost": "./dist/server.toolsHost.js"
   },
   "exports": {

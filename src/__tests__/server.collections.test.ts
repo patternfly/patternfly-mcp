@@ -2,8 +2,9 @@ import { composeCollections } from '../server.collections';
 import { getOptions, getSessionOptions } from '../options.context';
 
 jest.mock('../options.context', () => ({
-  getOptions: jest.fn(),
-  getSessionOptions: jest.fn()
+  getOptions: jest.fn(() => ({})),
+  getSessionOptions: jest.fn(() => ({ sessionId: 'test' })),
+  getLoggerOptions: jest.fn(() => ({}))
 }));
 
 describe('composeCollections', () => {
