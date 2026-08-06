@@ -5,12 +5,23 @@ import {
   resourceCallback
 } from '../resource.patternFlySchemasIndex';
 import { isPlainObject } from '../server.helpers';
+import { getPatternFlyMcpResources } from '../patternFly.getResources';
+import { filterPatternFly } from '../patternFly.search';
+
+jest.mock('../patternFly.getResources', () => ({
+  ...jest.requireActual('../patternFly.getResources'),
+  getPatternFlyMcpResources: { memo: jest.fn() }
+}));
+
+jest.mock('../patternFly.search', () => ({
+  ...jest.requireActual('../patternFly.search'),
+  filterPatternFly: { memo: jest.fn() }
+}));
+
+const MockMcpResources = getPatternFlyMcpResources.memo as jest.MockedFunction<typeof getPatternFlyMcpResources.memo>;
+const MockFilter = filterPatternFly.memo as jest.MockedFunction<typeof filterPatternFly.memo>;
 
 describe('patternFlySchemasIndexResource', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   it('should have a consistent return structure', () => {
     const resource = patternFlySchemasIndexResource();
 
@@ -25,6 +36,11 @@ describe('patternFlySchemasIndexResource', () => {
 
 describe('listResources', () => {
   it('should return a list of resources', async () => {
+    MockMcpResources.mockResolvedValue({
+      availableSchemasVersions: ['v6'],
+      byVersionComponentNames: new Map([['v6', ['button', 'table']]])
+    } as any);
+
     const resources = await listResources();
 
     expect(resources.resources).toBeDefined();
@@ -41,10 +57,6 @@ describe('listResources', () => {
 });
 
 describe('resourceCallback', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   it.each([
     {
       description: 'default',
@@ -59,6 +71,16 @@ describe('resourceCallback', () => {
       expected: '# PatternFly Component JSON Schemas Index for "v6"'
     }
   ])('should return component schemas index, $description', async ({ variables, expected }) => {
+    MockMcpResources.mockResolvedValue({ availableSchemasVersions: ['v6'], latestSchemasVersion: 'v6' } as any);
+    MockFilter.mockResolvedValue({
+      byResource: new Map([
+        ['button', {
+          name: 'Button',
+          uriSchemas: 'patternfly://schemas/v6/button'
+        }]
+      ])
+    } as any);
+
     const result = await resourceCallback(undefined as any, variables);
 
     expect(result.contents).toBeDefined();
@@ -75,6 +97,9 @@ describe('resourceCallback', () => {
       error: 'Invalid PatternFly version'
     }
   ])('should handle variable errors, $description', async ({ error, variables }) => {
+    MockMcpResources.mockResolvedValue({ availableSchemasVersions: ['v6'], latestSchemasVersion: 'v6' } as any);
+    MockFilter.mockResolvedValue({ byResource: new Map() } as any);
+
     await expect(resourceCallback(undefined as any, variables as any)).rejects.toThrow(McpError);
     await expect(resourceCallback(undefined as any, variables as any)).rejects.toThrow(error);
   });

@@ -154,6 +154,10 @@ exports[`Logging should allow setting logging options, stderr 1`] = `
 ",
   "[INFO]: No external tools loaded.
 ",
+  "[INFO]: Register collection: patternfly-docs
+",
+  "[INFO]: Register collection: patternfly-component-schemas
+",
   "[INFO]: Registered resource: patternfly-context
 ",
   "[INFO]: Registered resource: patternfly-components-index-meta

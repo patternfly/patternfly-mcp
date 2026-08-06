@@ -26,7 +26,19 @@ import { isZodRawShape, isZodSchema } from './server.schema';
 import { isPlainObject, timeoutFunction } from './server.helpers';
 import { createServerStats, type Stats } from './server.stats';
 import { stat, type StatReport } from './stats';
-import { builtinTools, builtinResources } from './options.registry';
+import {
+  builtinTools,
+  builtinResources,
+  builtinCollections
+} from './options.registry';
+import {
+  registerCollections,
+  type McpCollectionCreator,
+  type McpCollection,
+  type RegisterCollectionItem
+} from './collections';
+import { composeCollections } from './server.collections';
+import { setPatternFlyCollection } from './patternFly.getResources';
 
 /**
  * Server options. Equivalent to GlobalOptions.
@@ -40,12 +52,14 @@ type ServerOptions = GlobalOptions;
  *
  * @property {McpToolCreator[]} [tools] - An optional array of tool creators used by the server.
  * @property {McpResourceCreator[]} [resources] - An optional array of resource creators used by the server.
+ * @property {McpCollectionCreator[]} [collections] - An optional array of collection (of records') creators used by the server.
  * @property [enableSigint] - Indicates whether SIGINT signal handling is enabled.
  * @property [allowProcessExit] - Determines if the process is allowed to exit explicitly.
  */
 interface ServerSettings {
   tools?: McpToolCreator[];
   resources?: McpResourceCreator[];
+  collections?: McpCollectionCreator[];
   enableSigint?: boolean;
   allowProcessExit?: boolean;
 }
@@ -103,6 +117,46 @@ interface ServerInstance {
   getStats: ServerGetStats;
   onLog: ServerOnLog;
 }
+
+/**
+ * Initialize server collections.
+ *
+ * @param {McpResourceCreator[]} collections - collections to initialize.
+ * @param {GlobalOptions} [options]
+ * @param {AppSession} [session]
+ */
+const registerServerCollections = async (collections: McpCollectionCreator[], options = getOptions(), session = getSessionOptions()) => {
+  const updatedCollections = collections.map(collectionCreator => {
+    const [name, callback, _config] = collectionCreator(options);
+
+    return [
+      name,
+      async () => runWithSession(session, async () =>
+        runWithOptions(options, async () => {
+          log.debug(
+            `Running collection "${name}"`
+          );
+
+          const timedReport = stat.traffic();
+          const resourceResult = await callback();
+
+          timedReport({ collection: name });
+
+          return resourceResult;
+        })),
+      _config
+    ] as McpCollection;
+  });
+
+  // Update PatternFly collections, see {@link setPatternFlyCollection}
+  const onUpdate = ({ name, response }: RegisterCollectionItem) => {
+    if (response) {
+      setPatternFlyCollection(name, response);
+    }
+  };
+
+  return registerCollections(updatedCollections, { onUpdate });
+};
 
 /**
  * Register server resources.
@@ -259,6 +313,7 @@ const registerServerTools = async (tools: McpToolCreator[], server: McpServer, o
  * @param [options] Server options
  * @param [settings] Server settings (tools, signal handling, etc.)
  * @param [settings.tools] - Built-in tools to register.
+ * @param [settings.collections] - Built-in collections to register.
  * @param [settings.enableSigint] - Indicates whether SIGINT signal handling is enabled.
  * @param [settings.allowProcessExit] - Determines if the process is allowed to exit explicitly, useful for testing.
  * @param settings.resources
@@ -267,6 +322,7 @@ const registerServerTools = async (tools: McpToolCreator[], server: McpServer, o
 const runServer = async (options: ServerOptions = getOptions(), {
   tools = builtinTools,
   resources = builtinResources,
+  collections = builtinCollections,
   enableSigint = true,
   allowProcessExit = true
 }: ServerSettings = {}): Promise<ServerInstance> => {
@@ -357,6 +413,9 @@ const runServer = async (options: ServerOptions = getOptions(), {
       options.experimental.forEach(option => log.warn(`Enabled experimental option: ${option}`));
     }
 
+    // Compose collections after logging is set up.
+    const updatedCollections = await composeCollections(collections);
+
     // Compose resources after logging is set up.
     let updatedResources = await composeResources(resources);
 
@@ -383,6 +442,9 @@ const runServer = async (options: ServerOptions = getOptions(), {
       // Setup server stats for external handlers
       getStatsSetup = () => statsTracker.getStats();
     }
+
+    // Apply collections data, if available
+    await registerServerCollections(updatedCollections, options, session);
 
     // Apply MCP resources, if available
     await registerServerResources(updatedResources, server, options, session);
