@@ -361,11 +361,12 @@ const sendToolsHostShutdown = async (
   { pluginHost }: GlobalOptions = getOptions(),
   { sessionId }: AppSession = getSessionOptions()
 ): Promise<void> => {
-  const handle = activeChildrenBySession.get(sessionId) as HostHandle | undefined;
+  const registryKey = `${sessionId}:tools`;
+  const handle = activeChildrenBySession.get(registryKey) as HostHandle | undefined;
 
   await shutdownChildProcess(handle, {
     gracePeriodMs: Math.max(0, Number(pluginHost?.gracePeriodMs) || 0),
-    sessionId,
+    sessionId: registryKey,
     label: 'Tools Host'
   });
 };
@@ -388,7 +389,8 @@ const composeTools = async (
   { toolModules, nodeVersion, contextUrl, contextPath }: GlobalOptions = getOptions(),
   { sessionId }: AppSession = getSessionOptions()
 ): Promise<McpToolCreator[]> => {
-  const existingSession = activeChildrenBySession.get(sessionId);
+  const registryKey = `${sessionId}:tools`;
+  const existingSession = activeChildrenBySession.get(registryKey);
 
   if (existingSession) {
     log.warn(`Existing Tools Host session detected ${sessionId}. Shutting down the existing host before creating a new one.`);
@@ -451,7 +453,7 @@ const composeTools = async (
       return;
     }
 
-    const current = activeChildrenBySession.get(sessionId);
+    const current = activeChildrenBySession.get(registryKey);
 
     if (current && current.child === host.child) {
       try {
@@ -461,7 +463,7 @@ const composeTools = async (
         log.error(`Failed to close Tools Host stderr reader: ${formatUnknownError(error)}`);
       }
 
-      activeChildrenBySession.delete(sessionId);
+      activeChildrenBySession.delete(registryKey);
     }
 
     host.child.off('exit', onChildExitOrDisconnect);
@@ -492,7 +494,7 @@ const composeTools = async (
     const proxiedCreators = makeProxyCreators(filteredHandle);
 
     // Associate the spawned host with the current session
-    activeChildrenBySession.set(sessionId, host);
+    activeChildrenBySession.set(registryKey, host);
 
     host.child.once('exit', onChildExitOrDisconnect);
     host.child.once('disconnect', onChildExitOrDisconnect);

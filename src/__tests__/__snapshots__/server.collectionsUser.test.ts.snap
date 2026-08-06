@@ -1,0 +1,82 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`normalizeCollections should normalize configs, array of tuples 1`] = `
+[
+  {
+    "collectionName": "loremIpsum",
+    "error": undefined,
+    "index": 0,
+    "type": "tuple",
+  },
+  {
+    "collectionName": "dolorSit",
+    "error": undefined,
+    "index": 1,
+    "type": "tuple",
+  },
+]
+`;
+
+exports[`normalizeCollections should normalize configs, mix of non-configs 1`] = `
+[
+  {
+    "collectionName": undefined,
+    "error": "createMcpCollection: invalid configuration used at index 0: Unsupported type object",
+    "index": 0,
+    "type": "invalid",
+  },
+  {
+    "collectionName": undefined,
+    "error": "createMcpCollection: invalid configuration used at index 1: Unsupported type undefined",
+    "index": 1,
+    "type": "invalid",
+  },
+  {
+    "collectionName": undefined,
+    "error": "createMcpCollection: invalid configuration used at index 2: Unsupported type object",
+    "index": 2,
+    "type": "invalid",
+  },
+  {
+    "collectionName": undefined,
+    "error": "createMcpCollection: invalid configuration used at index 3: Unsupported type object",
+    "index": 3,
+    "type": "invalid",
+  },
+]
+`;
+
+exports[`normalizeCollections should normalize configs, single tuple 1`] = `
+[
+  {
+    "collectionName": "loremIpsum",
+    "error": undefined,
+    "index": 0,
+    "type": "tuple",
+  },
+]
+`;
+
+exports[`normalizeTuple should normalize the config, basic 1`] = `
+{
+  "collectionName": "loremIpsum",
+  "original": [
+    "loremIpsum",
+    "[MockFunction]",
+  ],
+  "type": "tuple",
+  "value": "[CollectionCreator]",
+}
+`;
+
+exports[`normalizeTuple should normalize the config, untrimmed name, async handler 1`] = `
+{
+  "collectionName": "loremIpsum",
+  "original": [
+    "loremIpsum  ",
+    "[MockFunction]",
+  ],
+  "type": "tuple",
+  "value": "[CollectionCreator]",
+}
+`;

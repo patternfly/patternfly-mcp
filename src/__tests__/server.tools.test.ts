@@ -474,15 +474,16 @@ describe('sendToolsHostShutdown', () => {
     const child = { pid: 123 };
     const handle = { child, closeStderr: jest.fn() };
     const sessionId = 'test-session-id';
+    const registryKey = `${sessionId}:tools`;
 
-    activeChildrenBySession.set(sessionId, handle as any);
+    activeChildrenBySession.set(registryKey, handle as any);
 
     await sendToolsHostShutdown({ pluginHost: { gracePeriodMs: 10 } } as any, { sessionId } as any);
 
     expect(MockShutdownChildProcess).toHaveBeenCalledTimes(1);
     expect(MockShutdownChildProcess).toHaveBeenCalledWith(handle, {
       gracePeriodMs: 10,
-      sessionId,
+      sessionId: registryKey,
       label: 'Tools Host'
     });
   });

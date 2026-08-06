@@ -10,6 +10,9 @@ exports[`runServer should allow server to be stopped, http stop server: diagnost
       "Server stats enabled.",
     ],
     [
+      "No external collections loaded.",
+    ],
+    [
       "No external resources loaded.",
     ],
     [
@@ -72,6 +75,9 @@ exports[`runServer should allow server to be stopped, stdio stop server: diagnos
       "Server stats enabled.",
     ],
     [
+      "No external collections loaded.",
+    ],
+    [
       "No external resources loaded.",
     ],
     [
@@ -132,6 +138,9 @@ exports[`runServer should attempt to run server, create transport, connect, and 
     ],
     [
       "Server stats enabled.",
+    ],
+    [
+      "No external collections loaded.",
     ],
     [
       "No external resources loaded.",
@@ -207,6 +216,9 @@ exports[`runServer should attempt to run server, disable SIGINT handler: diagnos
       "Server stats enabled.",
     ],
     [
+      "No external collections loaded.",
+    ],
+    [
       "No external resources loaded.",
     ],
     [
@@ -273,6 +285,9 @@ exports[`runServer should attempt to run server, enable SIGINT handler explicitl
     ],
     [
       "Server stats enabled.",
+    ],
+    [
+      "No external collections loaded.",
     ],
     [
       "No external resources loaded.",
@@ -346,6 +361,9 @@ exports[`runServer should attempt to run server, log warnings for experimental o
     ],
     [
       "Server stats enabled.",
+    ],
+    [
+      "No external collections loaded.",
     ],
     [
       "No external resources loaded.",
@@ -436,6 +454,9 @@ exports[`runServer should attempt to run server, register a tool: diagnostics 1`
       "Server stats enabled.",
     ],
     [
+      "No external collections loaded.",
+    ],
+    [
       "No external resources loaded.",
     ],
     [
@@ -515,6 +536,9 @@ exports[`runServer should attempt to run server, register multiple tools: diagno
     ],
     [
       "Server stats enabled.",
+    ],
+    [
+      "No external collections loaded.",
     ],
     [
       "No external resources loaded.",
@@ -605,6 +629,9 @@ exports[`runServer should attempt to run server, use custom options: diagnostics
       "Server stats enabled.",
     ],
     [
+      "No external collections loaded.",
+    ],
+    [
       "No external resources loaded.",
     ],
     [
@@ -676,6 +703,9 @@ exports[`runServer should attempt to run server, use default tools, http: diagno
     ],
     [
       "Server stats enabled.",
+    ],
+    [
+      "No external collections loaded.",
     ],
     [
       "No external resources loaded.",
@@ -758,6 +788,9 @@ exports[`runServer should attempt to run server, use default tools, stdio: diagn
     ],
     [
       "Server stats enabled.",
+    ],
+    [
+      "No external collections loaded.",
     ],
     [
       "No external resources loaded.",

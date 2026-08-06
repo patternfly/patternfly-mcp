@@ -66,4 +66,9 @@ const patternFlyDocsCollection = (): McpCollection => {
   ];
 };
 
+/**
+ * A collection name, typically the first entry in the tuple. Used in logging and deduplication.
+ */
+patternFlyDocsCollection.collectionName = 'patternfly-docs';
+
 export { patternFlyDocsCollection };

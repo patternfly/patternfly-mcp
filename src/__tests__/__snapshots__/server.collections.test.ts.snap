@@ -1,5 +1,41 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
+exports[`composeCollections should attempt to setup creators, default package creators 1`] = `
+{
+  "collectionsCount": 2,
+  "log": [],
+}
+`;
+
+exports[`composeCollections should attempt to setup creators, inline and case-variant duplicate creators 1`] = `
+{
+  "collectionsCount": 3,
+  "log": [
+    [
+      "Skipping collection plugin "LOREM" – name already used by built-in/inline collection.",
+    ],
+  ],
+}
+`;
+
+exports[`composeCollections should attempt to setup creators, inline and duplicate creators 1`] = `
+{
+  "collectionsCount": 3,
+  "log": [
+    [
+      "Skipping collection plugin "lorem" – name already used by built-in/inline collection.",
+    ],
+  ],
+}
+`;
+
+exports[`composeCollections should attempt to setup creators, inline creators 1`] = `
+{
+  "collectionsCount": 3,
+  "log": [],
+}
+`;
+
 exports[`composeCollections should match snapshot for composed collection creators 1`] = `
 [
   {
@@ -10,4 +46,360 @@ exports[`composeCollections should match snapshot for composed collection creato
     "name": "snap-collection",
   },
 ]
+`;
+
+exports[`composeCollections should return default creators on collections host error 1`] = `
+{
+  "collectionsCount": 2,
+  "log": [
+    [
+      "Failed to start Collections Host; skipping hosted collections and continuing with built-in/inline collections. Error: Mock spawn failure",
+    ],
+  ],
+}
+`;
+
+exports[`debugChild should format and forward lines to log.debug, access denied 1`] = `
+{
+  "debug": [
+    [
+      "[collections-host pid=123 sid=1234567890] Error [ERR_ACCESS_DENIED]: Access denied: FileSystemRead, resource: /lorem/ipsum/dolor/sit/amet",
+    ],
+  ],
+}
+`;
+
+exports[`debugChild should format and forward lines to log.debug, access denied, alt messaging 1`] = `
+{
+  "debug": [
+    [
+      "[collections-host pid=123 sid=1234567890] Error [ERR_ACCESS_DENIED]: fs.readFileSync access is denied by permission model: FileSystemRead, resource: /lorem/ipsum/dolor/sit/amet",
+    ],
+    [
+      "[collections-host pid=123 sid=1234567890] Error [ERR_ACCESS_DENIED]: Access denied: FileSystemRead, resource: /lorem/ipsum/dolor/sit/amet",
+    ],
+  ],
+}
+`;
+
+exports[`debugChild should format and forward lines to log.debug, access denied, multiple lines 1`] = `
+{
+  "debug": [
+    [
+      "[collections-host pid=123 sid=1234567890] Error [ERR_ACCESS_DENIED]: Access denied: FileSystemRead, resource: /lorem/ipsum/dolor/sit/amet",
+    ],
+    [
+      "[collections-host pid=123 sid=1234567890] Error [ERR_ACCESS_DENIED]: Access denied: FileSystemRead, resource: /lorem/ipsum/dolor/sit/amet",
+    ],
+  ],
+}
+`;
+
+exports[`debugChild should format and forward lines to log.debug, default 1`] = `
+{
+  "debug": [
+    [
+      "[collections-host pid=123 sid=1234567890] lorem ipsum dolor sit amet",
+    ],
+  ],
+}
+`;
+
+exports[`debugChild should format and forward lines to log.debug, empty string 1`] = `
+{
+  "debug": [],
+}
+`;
+
+exports[`debugChild should format and forward lines to log.debug, generic multiline error 1`] = `
+{
+  "debug": [
+    [
+      "[collections-host pid=123 sid=1234567890] Lorem ipsum",
+    ],
+    [
+      "[collections-host pid=123 sid=1234567890] dolor sit",
+    ],
+    [
+      "[collections-host pid=123 sid=1234567890] amet",
+    ],
+  ],
+}
+`;
+
+exports[`debugChild should format and forward lines to log.debug, generic multiline error with spaces 1`] = `
+{
+  "debug": [
+    [
+      "[collections-host pid=123 sid=1234567890] Lorem ipsum",
+    ],
+    [
+      "[collections-host pid=123 sid=1234567890] dolor sit",
+    ],
+    [
+      "[collections-host pid=123 sid=1234567890] amet",
+    ],
+  ],
+}
+`;
+
+exports[`debugChild should format and forward lines to log.debug, module not found 1`] = `
+{
+  "debug": [
+    [
+      "[collections-host pid=123 sid=1234567890] Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/lorem/ipsum/dolor/sit/amet' imported from /test/path",
+    ],
+  ],
+}
+`;
+
+exports[`debugChild should format and forward lines to log.debug, module not found, multiple lines 1`] = `
+{
+  "debug": [
+    [
+      "[collections-host pid=123 sid=1234567890] Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/lorem/ipsum/dolor/sit/amet' imported from /test/path",
+    ],
+    [
+      "[collections-host pid=123 sid=1234567890] Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/lorem/ipsum/dolor/sit/amet' imported from /test/path",
+    ],
+  ],
+}
+`;
+
+exports[`getBuiltInCollectionNames should log a warning when a collection name does not exist: warning 1`] = `
+[
+  [
+    "Built-in collection at index 0 is missing the static name property, "collectionName"",
+  ],
+]
+`;
+
+exports[`logWarningsErrors should log warnings and errors, with both warnings and errors 1`] = `
+{
+  "errors": [
+    [
+      "Collections load errors (1)
+  - Error 1",
+    ],
+  ],
+  "warnings": [
+    [
+      "Collections load warnings (1)
+  - Warning 1",
+    ],
+  ],
+}
+`;
+
+exports[`logWarningsErrors should log warnings and errors, with empty arrays 1`] = `
+{
+  "errors": [],
+  "warnings": [],
+}
+`;
+
+exports[`logWarningsErrors should log warnings and errors, with errors only 1`] = `
+{
+  "errors": [
+    [
+      "Collections load errors (2)
+  - Error 1
+  - Error 2",
+    ],
+  ],
+  "warnings": [],
+}
+`;
+
+exports[`logWarningsErrors should log warnings and errors, with single error 1`] = `
+{
+  "errors": [
+    [
+      "Collections load errors (1)
+  - Single error",
+    ],
+  ],
+  "warnings": [],
+}
+`;
+
+exports[`logWarningsErrors should log warnings and errors, with single warning 1`] = `
+{
+  "errors": [],
+  "warnings": [
+    [
+      "Collections load warnings (1)
+  - Single warning",
+    ],
+  ],
+}
+`;
+
+exports[`logWarningsErrors should log warnings and errors, with undefined warnings and errors 1`] = `
+{
+  "errors": [],
+  "warnings": [],
+}
+`;
+
+exports[`logWarningsErrors should log warnings and errors, with warnings only 1`] = `
+{
+  "errors": [],
+  "warnings": [
+    [
+      "Collections load warnings (2)
+  - Warning 1
+  - Warning 2",
+    ],
+  ],
+}
+`;
+
+exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false with error: handler 1`] = `[Error: Error message]`;
+
+exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false with error: request 1`] = `
+[
+  [
+    {
+      "args": {
+        "loremIpsum": 7,
+      },
+      "collectionId": "loremIpsum",
+      "t": "invoke",
+    },
+    "invoke:result",
+    10,
+  ],
+]
+`;
+
+exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false with full error: handler 1`] = `[Error: Error message]`;
+
+exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false with full error: request 1`] = `
+[
+  [
+    {
+      "args": {
+        "loremIpsum": 7,
+      },
+      "collectionId": "loremIpsum",
+      "t": "invoke",
+    },
+    "invoke:result",
+    10,
+  ],
+]
+`;
+
+exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false: handler 1`] = `[Error: Collection invocation failed]`;
+
+exports[`makeProxyCreators should attempt to invoke a creator then throw an error on child response, ok false: request 1`] = `
+[
+  [
+    {
+      "args": {
+        "loremIpsum": 7,
+      },
+      "collectionId": "loremIpsum",
+      "t": "invoke",
+    },
+    "invoke:result",
+    10,
+  ],
+]
+`;
+
+exports[`makeProxyCreators should attempt to return proxy creators, a function wrapper per collection, multiple collections 1`] = `
+{
+  "debug": [],
+  "output": [
+    [
+      "Lorem Ipsum",
+      [Function],
+    ],
+    [
+      "Dolor Sit",
+      [Function],
+    ],
+  ],
+}
+`;
+
+exports[`makeProxyCreators should attempt to return proxy creators, a function wrapper per collection, no collections 1`] = `
+{
+  "debug": [],
+  "output": [],
+}
+`;
+
+exports[`makeProxyCreators should attempt to return proxy creators, a function wrapper per collection, single collection 1`] = `
+{
+  "debug": [],
+  "output": [
+    [
+      "Lorem Ipsum",
+      [Function],
+    ],
+  ],
+}
+`;
+
+exports[`spawnCollectionHost attempt to spawn the Collections Host, with no pluginIsolation, node 24: spawn 1`] = `
+{
+  "spawnConfig": {
+    "enableStderrDebug": [Function],
+    "importSpecifier": "#collectionsHost",
+    "isolation": {
+      "fsReadAllowlist": [],
+      "mode": "none",
+      "nodeVersion": 24,
+    },
+    "label": "Collections Host",
+  },
+}
+`;
+
+exports[`spawnCollectionHost attempt to spawn the Collections Host, with strict pluginIsolation, node 22: spawn 1`] = `
+{
+  "spawnConfig": {
+    "enableStderrDebug": [Function],
+    "importSpecifier": "#collectionsHost",
+    "isolation": {
+      "fsReadAllowlist": [],
+      "mode": "strict",
+      "nodeVersion": 22,
+    },
+    "label": "Collections Host",
+  },
+}
+`;
+
+exports[`spawnCollectionHost attempt to spawn the Collections Host, with strict pluginIsolation, node 24: spawn 1`] = `
+{
+  "spawnConfig": {
+    "enableStderrDebug": [Function],
+    "importSpecifier": "#collectionsHost",
+    "isolation": {
+      "fsReadAllowlist": [],
+      "mode": "strict",
+      "nodeVersion": 24,
+    },
+    "label": "Collections Host",
+  },
+}
+`;
+
+exports[`spawnCollectionHost attempt to spawn the Collections Host, with undefined pluginIsolation, node 22: spawn 1`] = `
+{
+  "spawnConfig": {
+    "enableStderrDebug": [Function],
+    "importSpecifier": "#collectionsHost",
+    "isolation": {
+      "fsReadAllowlist": [],
+      "mode": "none",
+      "nodeVersion": 22,
+    },
+    "label": "Collections Host",
+  },
+}
 `;
