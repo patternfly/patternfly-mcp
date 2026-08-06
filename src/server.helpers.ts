@@ -557,6 +557,30 @@ const parseUrl = (url: string, { prefix, normalizeSearchParamKeys = true, isStri
 };
 
 /**
+ * Joins multiple URL segments into a single URL string, ensuring no double slashes.
+ * If `base` is not a valid URL, it's returned as-is.
+ *
+ * @param base - The base URL string
+ * @param parts - Additional path segments to join
+ * @returns The joined URL string
+ */
+const joinUrl = (base: string, ...parts: string[]): string => {
+  if (!isUrl(base)) {
+    return base;
+  }
+
+  const url = new URL(base);
+
+  parts.join('/').split('/').filter(Boolean).forEach(part => {
+    const updatedPathname = url.pathname.endsWith('/') ? url.pathname : `${url.pathname}/`;
+
+    url.pathname = `${updatedPathname}${part}`;
+  });
+
+  return url.toString();
+};
+
+/**
  * Basic split for URIs to find base and search.
  *
  * @note We only support a single `{?...}` query segment. Using `{?a}{?b}{?c}` will fail. Make sure
@@ -767,6 +791,7 @@ export {
   isUrl,
   isUrlObject,
   isWhitelistedUrl,
+  joinUrl,
   listAllCombinations,
   listIncrementalCombinations,
   mergeObjects,
