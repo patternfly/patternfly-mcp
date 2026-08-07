@@ -2,6 +2,7 @@ import { basename, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import packageJson from '../package.json';
 import { type ToolModule } from './server.toolsUser';
+import { type CollectionModule } from './server.collectionsUser';
 import { getNodeMajorVersion } from './options.helpers';
 
 /**
@@ -47,6 +48,8 @@ import { getNodeMajorVersion } from './options.helpers';
  * @property {typeof TOOL_MEMO_OPTIONS} toolMemoOptions - Tool-specific memoization options.
  * @property {ToolModule|ToolModule[]} toolModules - Array of external tool modules (ESM specs or paths) to be loaded and
  *     registered with the server.
+ * @property {CollectionModule|CollectionModule[]} collectionModules - Array of external collection modules
+ *     (ESM specs or paths) to be loaded and registered with the server.
  * @property urlRegex - Regular expression pattern for URL matching.
  * @property version - Version of the package.
  * @property whitelist - Central outbound-URL policy options.
@@ -83,6 +86,7 @@ interface DefaultOptions<TLogOptions = LoggingOptions> {
   stats: StatsOptions;
   toolMemoOptions: Partial<typeof TOOL_MEMO_OPTIONS>;
   toolModules: ToolModule | ToolModule[];
+  collectionModules: CollectionModule | CollectionModule[];
   urlRegex: RegExp;
   version: string;
   whitelist: WhitelistOptions;
@@ -560,6 +564,7 @@ const DEFAULT_OPTIONS: DefaultOptions = {
   resourceModules: [],
   toolMemoOptions: TOOL_MEMO_OPTIONS,
   toolModules: [],
+  collectionModules: [],
   separator: DEFAULT_SEPARATOR,
   urlRegex: URL_REGEX,
   version: (process.env.NODE_ENV === 'local' && '0.0.0') || packageJson.version,
