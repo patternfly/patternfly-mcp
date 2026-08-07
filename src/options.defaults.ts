@@ -2,6 +2,7 @@ import { basename, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import packageJson from '../package.json';
 import { type ToolModule } from './server.toolsUser';
+import { type CollectionModule } from './server.collectionsUser';
 import { getNodeMajorVersion } from './options.helpers';
 
 /**
@@ -47,6 +48,8 @@ import { getNodeMajorVersion } from './options.helpers';
  * @property {typeof TOOL_MEMO_OPTIONS} toolMemoOptions - Tool-specific memoization options.
  * @property {ToolModule|ToolModule[]} toolModules - Array of external tool modules (ESM specs or paths) to be loaded and
  *     registered with the server.
+ * @property {CollectionModule|CollectionModule[]} collectionModules - Array of external collection modules
+ *     (ESM specs or paths) to be loaded and registered with the server.
  * @property urlRegex - Regular expression pattern for URL matching.
  * @property version - Version of the package.
  * @property whitelist - Central outbound-URL policy options.
@@ -83,6 +86,7 @@ interface DefaultOptions<TLogOptions = LoggingOptions> {
   stats: StatsOptions;
   toolMemoOptions: Partial<typeof TOOL_MEMO_OPTIONS>;
   toolModules: ToolModule | ToolModule[];
+  collectionModules: CollectionModule | CollectionModule[];
   urlRegex: RegExp;
   version: string;
   whitelist: WhitelistOptions;
@@ -178,6 +182,11 @@ interface ModeOptions {
 /**
  * PatternFly-specific options.
  *
+ * @property api PatternFly API.
+ * @property api.base URL starting base for crawling the PatternFly API.
+ * @property api.versions URL Get the available PatternFly API versions. Versions are required to crawl.
+ * @property api.componentPaths List of additional PatternFly API component paths to try.
+ * @property api.crawlTimeoutMs Timeout in milliseconds for crawling the PatternFly API.
  * @property availableResourceVersions List of available PatternFly resource versions to the MCP server.
  * @property availableSearchVersions List of available PatternFly search versions to the MCP server.
  * @property availableSchemasVersions List of available PatternFly schema versions to the MCP server.
@@ -191,6 +200,14 @@ interface ModeOptions {
  *    - 'lowest': Use the lowest major version found.
  */
 interface PatternFlyOptions {
+  api: {
+    base: string;
+    versions: string;
+    componentPaths: string[];
+    crawlTimeoutMs: number;
+    enabled: boolean;
+    // concurrency: number;
+  },
   availableResourceVersions: ('6.0.0')[];
   availableSearchVersions: ('current' | 'latest' | 'v6')[];
   availableSchemasVersions: ('v6')[];
@@ -410,6 +427,12 @@ const RESOURCE_MEMO_OPTIONS = {
   default: {
     cacheLimit: 3
   },
+  medium: {
+    cacheLimit: 25
+  },
+  high: {
+    cacheLimit: 50
+  },
   fetchUrl: {
     cacheLimit: 100,
     expire: 3 * 60 * 1000, // 3 minute sliding cache
@@ -462,8 +485,10 @@ const STATS_OPTIONS: StatsOptions = {
 const WHITELIST_OPTIONS: WhitelistOptions = {
   urls: [
     'https://patternfly.org',
-    // 'https://www.patternfly.org',
+    'https://www.patternfly.org',
     'https://github.com/patternfly',
+    'https://www.github.com/patternfly',
+    'https://main.patternfly-org.pages.dev',
     'https://raw.githubusercontent.com/patternfly'
   ],
   protocols: ['http', 'https']
@@ -488,6 +513,17 @@ const CHANNEL_BASENAME = 'pf-mcp';
  * Default PatternFly-specific options.
  */
 const PATTERNFLY_OPTIONS: PatternFlyOptions = {
+  api: {
+    base: 'https://main.patternfly-org.pages.dev/api',
+    versions: 'https://main.patternfly-org.pages.dev/api/versions',
+    componentPaths: [
+      'props',
+      'css'
+    ],
+    crawlTimeoutMs: 180_000,
+    enabled: false
+    // concurrency: 4
+  },
   availableResourceVersions: ['6.0.0'],
   availableSearchVersions: ['current', 'latest', 'v6'],
   availableSchemasVersions: ['v6'],
@@ -560,6 +596,7 @@ const DEFAULT_OPTIONS: DefaultOptions = {
   resourceModules: [],
   toolMemoOptions: TOOL_MEMO_OPTIONS,
   toolModules: [],
+  collectionModules: [],
   separator: DEFAULT_SEPARATOR,
   urlRegex: URL_REGEX,
   version: (process.env.NODE_ENV === 'local' && '0.0.0') || packageJson.version,

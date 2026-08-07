@@ -10,6 +10,9 @@ exports[`runServer should allow server to be stopped, http stop server: diagnost
       "Server stats enabled.",
     ],
     [
+      "No external collections loaded.",
+    ],
+    [
       "No external resources loaded.",
     ],
     [
@@ -70,6 +73,9 @@ exports[`runServer should allow server to be stopped, stdio stop server: diagnos
     ],
     [
       "Server stats enabled.",
+    ],
+    [
+      "No external collections loaded.",
     ],
     [
       "No external resources loaded.",
@@ -134,6 +140,9 @@ exports[`runServer should attempt to run server, create transport, connect, and 
       "Server stats enabled.",
     ],
     [
+      "No external collections loaded.",
+    ],
+    [
       "No external resources loaded.",
     ],
     [
@@ -168,6 +177,9 @@ exports[`runServer should attempt to run server, create transport, connect, and 
     ],
     [
       "test-server-4 server running on stdio transport",
+    ],
+    [
+      "Failed to start Collections Host; skipping hosted collections and continuing with built-in/inline collections. Error: Child process exited before response (code=undefined, signal=none)",
     ],
   ],
   "hasDebugLogs": true,
@@ -207,6 +219,9 @@ exports[`runServer should attempt to run server, disable SIGINT handler: diagnos
       "Server stats enabled.",
     ],
     [
+      "No external collections loaded.",
+    ],
+    [
       "No external resources loaded.",
     ],
     [
@@ -242,6 +257,9 @@ exports[`runServer should attempt to run server, disable SIGINT handler: diagnos
     [
       "test-server-7 server running on stdio transport",
     ],
+    [
+      "Failed to start Collections Host; skipping hosted collections and continuing with built-in/inline collections. Error: Child process exited before response (code=undefined, signal=none)",
+    ],
   ],
   "hasDebugLogs": true,
   "mcpServer": [
@@ -273,6 +291,9 @@ exports[`runServer should attempt to run server, enable SIGINT handler explicitl
     ],
     [
       "Server stats enabled.",
+    ],
+    [
+      "No external collections loaded.",
     ],
     [
       "No external resources loaded.",
@@ -310,6 +331,9 @@ exports[`runServer should attempt to run server, enable SIGINT handler explicitl
     [
       "test-server-8 server running on stdio transport",
     ],
+    [
+      "Failed to start Collections Host; skipping hosted collections and continuing with built-in/inline collections. Error: Child process exited before response (code=undefined, signal=none)",
+    ],
   ],
   "hasDebugLogs": true,
   "mcpServer": [
@@ -346,6 +370,9 @@ exports[`runServer should attempt to run server, log warnings for experimental o
     ],
     [
       "Server stats enabled.",
+    ],
+    [
+      "No external collections loaded.",
     ],
     [
       "No external resources loaded.",
@@ -395,6 +422,9 @@ exports[`runServer should attempt to run server, log warnings for experimental o
     [
       "Enabled experimental option: loremIpsum",
     ],
+    [
+      "Failed to start Collections Host; skipping hosted collections and continuing with built-in/inline collections. Error: Child process exited before response (code=undefined, signal=none)",
+    ],
   ],
   "hasDebugLogs": true,
   "mcpServer": [
@@ -436,6 +466,9 @@ exports[`runServer should attempt to run server, register a tool: diagnostics 1`
       "Server stats enabled.",
     ],
     [
+      "No external collections loaded.",
+    ],
+    [
       "No external resources loaded.",
     ],
     [
@@ -473,6 +506,9 @@ exports[`runServer should attempt to run server, register a tool: diagnostics 1`
     ],
     [
       "test-server-5 server running on stdio transport",
+    ],
+    [
+      "Failed to start Collections Host; skipping hosted collections and continuing with built-in/inline collections. Error: Child process exited before response (code=undefined, signal=none)",
     ],
     [
       "Built-in tool at index 0 is missing the static name property, "toolName"",
@@ -517,6 +553,9 @@ exports[`runServer should attempt to run server, register multiple tools: diagno
       "Server stats enabled.",
     ],
     [
+      "No external collections loaded.",
+    ],
+    [
       "No external resources loaded.",
     ],
     [
@@ -557,6 +596,9 @@ exports[`runServer should attempt to run server, register multiple tools: diagno
     ],
     [
       "test-server-6 server running on stdio transport",
+    ],
+    [
+      "Failed to start Collections Host; skipping hosted collections and continuing with built-in/inline collections. Error: Child process exited before response (code=undefined, signal=none)",
     ],
     [
       "Built-in tool at index 0 is missing the static name property, "toolName"",
@@ -605,6 +647,9 @@ exports[`runServer should attempt to run server, use custom options: diagnostics
       "Server stats enabled.",
     ],
     [
+      "No external collections loaded.",
+    ],
+    [
       "No external resources loaded.",
     ],
     [
@@ -639,6 +684,9 @@ exports[`runServer should attempt to run server, use custom options: diagnostics
     ],
     [
       "test-server-3 server running on stdio transport",
+    ],
+    [
+      "Failed to start Collections Host; skipping hosted collections and continuing with built-in/inline collections. Error: Child process exited before response (code=undefined, signal=none)",
     ],
   ],
   "hasDebugLogs": true,
@@ -676,6 +724,9 @@ exports[`runServer should attempt to run server, use default tools, http: diagno
     ],
     [
       "Server stats enabled.",
+    ],
+    [
+      "No external collections loaded.",
     ],
     [
       "No external resources loaded.",
@@ -719,6 +770,9 @@ exports[`runServer should attempt to run server, use default tools, http: diagno
     [
       "test-server-2 server running on HTTP transport",
     ],
+    [
+      "Failed to start Collections Host; skipping hosted collections and continuing with built-in/inline collections. Error: Child process exited before response (code=undefined, signal=none)",
+    ],
   ],
   "hasDebugLogs": true,
   "mcpServer": [
@@ -758,6 +812,9 @@ exports[`runServer should attempt to run server, use default tools, stdio: diagn
     ],
     [
       "Server stats enabled.",
+    ],
+    [
+      "No external collections loaded.",
     ],
     [
       "No external resources loaded.",
@@ -800,6 +857,9 @@ exports[`runServer should attempt to run server, use default tools, stdio: diagn
     ],
     [
       "test-server-1 server running on stdio transport",
+    ],
+    [
+      "Failed to start Collections Host; skipping hosted collections and continuing with built-in/inline collections. Error: Child process exited before response (code=undefined, signal=none)",
     ],
   ],
   "hasDebugLogs": true,
