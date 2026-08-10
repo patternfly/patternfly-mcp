@@ -3,6 +3,12 @@ import { type McpTool, type McpToolCreator } from './mcpSdk';
 /**
  * Apply a static property to an object.
  *
+ * @note **Do not import the centralized helper from `server.processUser.ts`.**
+ * This duplication is intentional. This file should stay dependency-minimal.
+ * Importing shared helpers would pull in parent-side modules and widen the
+ * dependency graph, busting the lightweight child-process environment
+ * constraints.
+ *
  * @private
  * @param property - Name of the property to apply
  * @param value - Value of the property to apply

@@ -1,13 +1,14 @@
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, isAbsolute, resolve } from 'node:path';
-import { isPath, isPlainObject, isReferenceLike, isUrl } from './server.helpers';
 import { type McpTool } from './mcpSdk';
-import { type GlobalOptions } from './options';
+import { isPath, isPlainObject, isReferenceLike, isUrl } from './server.helpers';
 import { memo } from './server.caching';
+import { applyStaticProperty, getSetMemoKey } from './server.processUser';
+import { normalizeInputSchema } from './server.schema';
+import { type GlobalOptions } from './options';
 import { DEFAULT_OPTIONS } from './options.defaults';
 import { type ToolOptions } from './options.tools';
 import { formatUnknownError } from './logger';
-import { normalizeInputSchema } from './server.schema';
 
 /**
  * Inline tool options.
@@ -203,66 +204,6 @@ const ALLOWED_CONFIG_KEYS = new Set(['name', 'description', 'inputSchema', 'hand
  * Allowed keys in the tool schema objects. Expand as needed. See related `ToolSchema`.
  */
 const ALLOWED_SCHEMA_KEYS = new Set(['description', 'inputSchema']);
-
-/**
- * Memoization key store. See `getSetMemoKey`.
- */
-const toolsMemoKeyStore: WeakMap<object, Map<string, symbol>> = new WeakMap();
-
-/**
- * Quick consistent unique key, via symbol (anything unique-like will work), for a given input
- * and context.
- *
- * Used specifically for helping memoize functions and objects against context. Not used
- * elsewhere because simple equality checks, without context, in the lower-level functions
- * are good enough.
- *
- * @private
- * @param input - Input can be an object, function, or primitive value.
- * @param contextKey - Additional context to help uniqueness.
- * @returns A unique key, a symbol for objects/functions or string for primitives.
- */
-const getSetMemoKey = (input: unknown, contextKey: string) => {
-  if (!isReferenceLike(input)) {
-    return `${String(input)}:${contextKey}`;
-  }
-
-  let contextMap = toolsMemoKeyStore.get(input);
-  let token;
-
-  if (!contextMap) {
-    contextMap = new Map<string, symbol>();
-    toolsMemoKeyStore.set(input, contextMap);
-  }
-
-  token = contextMap.get(contextKey);
-
-  if (!token) {
-    token = Symbol(`tools:${contextKey}`);
-    contextMap.set(contextKey, token);
-  }
-
-  return token;
-};
-
-/**
- * Apply a static property to an object.
- *
- * @private
- * @param property - Name of the property to apply
- * @param value - Value of the property to apply
- * @param obj - Object to apply the property towards
- * @returns `true` if the property was applied successfully, `false` otherwise.
- */
-const applyStaticProperty = (property: string, value: unknown, obj: unknown) => {
-  try {
-    Object.defineProperty(obj, property, { value, writable: false, enumerable: false, configurable: false });
-  } catch {
-    return false;
-  }
-
-  return true;
-};
 
 /**
  * Return an object key value.
