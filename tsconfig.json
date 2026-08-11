@@ -24,7 +24,8 @@
     "rootDirs": ["./src", "./tests/e2e", "./tests/audit"],
     "paths": {
       "#docsCatalog": ["./src/docs.json"],
-      "#toolsHost": ["./src/server.toolsHost.ts"]
+      "#toolsHost": ["./src/server.toolsHost.ts"],
+      "#workerEntry": ["./src/server.workerEntry.ts"]
     }
   },
   "include": [

@@ -16,9 +16,10 @@ Examples should follow the basic guidelines:
 2. Filenames are lowerCamelCased
 3. Keep examples short; this is an introduction to the project
 4. Examples are either JS or TS with ESM import/exports
-5. Comments/annotations are used to explain key concepts
-6. Examples are linted from the project's linting configs with
+5. Tool plugins import `createMcpTool` from `@patternfly/patternfly-mcp/tools`; use the root entry for `start()` and server types
+6. Comments/annotations are used to explain key concepts
+7. Examples are linted from the project's linting configs with
    - `npm run test:lint`
    - `npm run test:types`
    - `npm run test:spell-docs`
-7. Examples are tested and can be run without errors
+8. Examples are tested and can be run without errors

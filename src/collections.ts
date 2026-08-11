@@ -39,15 +39,21 @@ interface McpCollectionResult {
 /**
  * Standardized Tuple-based Record Source.
  *
- * @note `priority` and `group` are future properties being considered in the related
- * collection work as a way to sort and override collections.
+ * @note **Future**: `priority` and `group` are future properties being considered in the
+ * related collection work as a way to sort and override collections.
+ *
+ * @note **Future**: Review supporting `boolean` variations and async callbacks
+ * `async (options) => boolean | #${string}` for dynamic configs.
  *
  * 0. `name` `{string}`: Unique identifier/name
  * 1. `handler` `{Function}`: callback function accepting an optional argument
  * 2. `_config` `{Object}`: Application level record source configuration. Unavailable to
  *     record collection plugins.
- *    - `_config.runInChildProcess`: Optional callback function to dynamically decide
- *        if the record source should run in a child process.
+ *    - `_config.runParallel`: Optional internal import specifier (`#specifier`) to run the
+ *        collection handler in a worker thread via the heavy pool. The referenced
+ *        module must export `collectionCallback`. Applied in {@link composeCollections}.
+ *    - `_config.runSchedule`: Optional object to dynamically decide if the record source
+ *        should run in a scheduled interval using {@link DeferTaskOptions}
  *    - `_config.isRequired`: Optional boolean used to control server startup when
  *        collections are required for operation.
  *   - `_config._isInternal`: Optional boolean. Applied internally. Attempting to manually
@@ -57,7 +63,8 @@ type McpCollection = [
   name: string,
   handler: (arg?: unknown) => McpCollectionResult | Promise<McpCollectionResult>,
   _config?: {
-    runInChildProcess?: boolean | ((options?: GlobalOptions) => boolean | Promise<boolean>);
+    runParallel?: `#${string}`;
+    runSchedule?: { cancelMs?: number, intervalMs?: number };
     // priority?: number;
     isRequired?: boolean;
     // group?: string;
@@ -129,8 +136,6 @@ type RegisterOnSettle = (results: RegisterCollectionsResult) => void;
  * This type encapsulates the outcome of registering collections, grouping the
  * results into settled, fulfilled, and rejected categories.
  *
- * @typedef {Object} RegisterCollectionsResult
- *
  * @property {RegisterCollectionSettledItem[]} settled - Settled registration results, including
  *     both fulfilled and failed attempts.
  * @property {McpCollectionResult[]} fulfilled - Successfully registered collections, containing
@@ -170,7 +175,7 @@ const registerCollections = async (
     onSettle?: RegisterOnSettle, onUpdate?: RegisterOnUpdate, onRequired?: RegisterOnRequired
   } = {}
 ): Promise<void> => {
-  log.debug(`Initiating registration for ${collections.length} collections.`);
+  log.debug(`Reviewing registration for ${collections.length} collections.`);
 
   // Wrapper for each loader; handle incremental updates
   const registrationPromises = collections.map(async ([name, callback]) => {
@@ -229,9 +234,9 @@ const registerCollections = async (
       };
 
       if (!res.isSuccess) {
-        log.error(`Failed to register collection ${item.name}: ${item.reason}`);
+        log.error(`Failed to register collection "${item.name}": ${item.reason}`);
       } else {
-        log.info(`Register collection: ${item.name}`);
+        log.debug(`Settled collection: ${item.name}`);
       }
 
       return item;

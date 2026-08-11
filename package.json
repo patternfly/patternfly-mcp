@@ -6,12 +6,17 @@
   "type": "module",
   "imports": {
     "~docsCatalog": "./src/docs.json",
-    "#toolsHost": "./dist/server.toolsHost.js"
+    "#toolsHost": "./dist/server.toolsHost.js",
+    "#workerEntry": "./dist/server.workerEntry.js"
   },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./tools": {
+      "types": "./dist/tools.d.ts",
+      "default": "./dist/tools.js"
     }
   },
   "bin": {
@@ -38,10 +43,11 @@
     "test:audit-container": "npm run container:build && jest --selectProjects audit:container",
     "test:ci": "npm test -- --coverage",
     "test:dev": "npm test -- --watchAll",
-    "test:integration": "npm run build && NODE_OPTIONS='--experimental-vm-modules' jest --selectProjects e2e",
+    "test:integration": "npm run build && jest --selectProjects package && NODE_OPTIONS='--experimental-vm-modules' jest --selectProjects e2e",
     "test:integration-dev": "npm run test:integration -- --watchAll",
     "test:lint": "eslint .",
     "test:lint-fix": "eslint . --fix",
+    "test:package": "npm run build && jest --selectProjects package",
     "test:spell-docs": "cspell './README.md' './CONTRIBUTING.md' './GOVERNANCE.md' './SECURITY.md' './docs/**/*.md' './guidelines/**/*.md' './docs/**/*.ts' './docs/**/*.js' --config ./cspell.config.json --fail-fast",
     "test:spell": "cspell './src/**/*.ts' './tests/**/*.ts' --exclude './src/**/*test*' --exclude './tests/**/*test*' --config ./cspell.config.json --fail-fast",
     "test:types": "tsc --noEmit",

@@ -1,24 +1,23 @@
-import {
-  type CliOptions,
-  type ExperimentalOptions,
-  type ProgrammaticOptions
+import type {
+  CliOptions,
+  ExperimentalOptions,
+  ProgrammaticOptions
 } from './options';
 import { parseCliOptions, parseProgrammaticOptions } from './options.parser';
 import { getSessionOptions, setOptions, runWithSession } from './options.context';
-import {
-  runServer,
-  type ServerInstance,
-  type ServerSettings,
-  type ServerOnLog,
-  type ServerOnLogHandler,
-  type ServerLogEvent,
-  type ServerStatReport,
-  type ServerStats,
-  type ServerGetStats,
-  type ServerOptions
+import type {
+  ServerInstance,
+  ServerSettings,
+  ServerOnLog,
+  ServerOnLogHandler,
+  ServerLogEvent,
+  ServerStatReport,
+  ServerStats,
+  ServerGetStats,
+  ServerOptions
 } from './server';
 import {
-  createMcpTool,
+  createMcpTool as createMcpToolFromTools,
   type ToolCreator,
   type ToolModule,
   type ToolConfig,
@@ -116,6 +115,13 @@ type PfMcpCliOptions = CliOptions;
 type DeprecatedCliOptions = PfMcpCliOptions;
 
 /**
+ * `createMcpTool` from the root entry is deprecated for external tool plugins.
+ *
+ * @deprecated Import from `@patternfly/patternfly-mcp/tools` instead.
+ */
+const DeprecatedCreateMcpTool = createMcpToolFromTools;
+
+/**
  * Exposed options for programmatic use. A limited `DefaultOptions` interface.
  *
  * @property [docsPaths] - Local documentation search paths.
@@ -174,7 +180,8 @@ type PfMcpSettings = Pick<ServerSettings, 'allowProcessExit'>;
  *
  * @example Programmatic: Listening for server stats
  * import { subscribe, unsubscribe } from 'node:diagnostics_channel';
- * import { start, createMcpTool } from '@patternfly/patternfly-mcp';
+ * import { start } from '@patternfly/patternfly-mcp';
+ * import { createMcpTool } from '@patternfly/patternfly-mcp/tools';
  *
  * const { stop, isRunning, getStats } = await start();
  * const stats = await getStats();
@@ -188,7 +195,8 @@ type PfMcpSettings = Pick<ServerSettings, 'allowProcessExit'>;
  * }
  *
  * @example Programmatic: A MCP server with inline tool configuration and JSON inputSchema.
- * import { start, createMcpTool } from '@patternfly/patternfly-mcp';
+ * import { start } from '@patternfly/patternfly-mcp';
+ * import { createMcpTool } from '@patternfly/patternfly-mcp/tools';
  *
  * const myToolModule = createMcpTool({
  *   name: 'my-tool',
@@ -246,6 +254,7 @@ const main = async (
   try {
     // Generate session options
     const session = getSessionOptions();
+    const { runServer } = await import('./server');
 
     // Start the server, apply session values, then apply merged options to ensure stable hashing.
     return await runWithSession(session, async () =>
@@ -259,7 +268,7 @@ const main = async (
 };
 
 export {
-  createMcpTool,
+  DeprecatedCreateMcpTool as createMcpTool,
   main,
   main as start,
   type DeprecatedCliOptions as CliOptions,
