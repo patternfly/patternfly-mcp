@@ -60,7 +60,7 @@
   "author": "Red Hat",
   "license": "MIT",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.29.0",
+    "@modelcontextprotocol/sdk": "1.30.0",
     "@patternfly/patternfly-component-schemas": "1.2.0",
     "fastest-levenshtein": "1.0.16",
     "pid-port": "2.1.1",
