@@ -698,7 +698,7 @@ const setPatternFlyCollection = async (
         log.warn('Failed getPatternFlyMcpResources clear.', error);
       }
 
-      log.debug(`Merged ${collection.records.length} records from collection [${name}].`);
+      log.debug(`Merging collection ${name} records. (${collection.records.length})`);
     }
   } catch (error) {
     log.error(`Failed to update collection [${name}]:`, error);

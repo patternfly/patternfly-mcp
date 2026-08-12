@@ -59,7 +59,7 @@ All tools and resources MUST follow the **Creator Pattern** for dependency injec
 - **Options Injection Pattern**: Environment-dependent helpers should accept an optional `options` parameter that defaults to `getOptions()`. This allows for explicit dependency injection in tests while maintaining ergonomics via `AsyncLocalStorage` in production. Pure transforms should remain option-agnostic.
 - **Internal Tools**: `(options = getOptions()): McpTool` -> Returns `[name, schema, handler]`.
 - **Internal Resources**: `(options = getOptions()): McpResource` -> Returns `[name, uri, config, handler]`.
-- **External Tool Plugins**: Authored using the `createMcpTool` helper with an object configuration, exported as `default`.
+- **External Tool Plugins**: Authored with `createMcpTool` from `@patternfly/patternfly-mcp/tools`, using an object configuration, exported as `default`.
 - **Testing**: Creators allow easy mocking: `const tool = usePatternFlyDocsTool(mockOptions)`.
 
 ### 2.2 Module Organization and Exports
@@ -78,7 +78,7 @@ All tools and resources MUST follow the **Creator Pattern** for dependency injec
 External tool plugins should follow this basic structure:
 
 ```javascript
-import { createMcpTool } from '@patternfly/patternfly-mcp';
+import { createMcpTool } from '@patternfly/patternfly-mcp/tools';
 
 export default createMcpTool({
   name: 'myTool',
@@ -208,7 +208,7 @@ While the codebase emphasizes pragmatism, **public APIs require comprehensive JS
 /**
  * Exposed options for CLI use. A focused options interface.
  *
- * Alias of {@link CliOptions} (Internal type).
+ * Alias of {@link CliOptions} (Internal type). `CliOptions` is deprecated; use {@link PfMcpCliOptions}.
  */
 type PfMcpCliOptions = CliOptions;
 

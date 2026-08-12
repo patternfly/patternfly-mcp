@@ -177,15 +177,32 @@ const server: PfMcpInstance = await start({
 
 ### Public API and imports
 
-To ensure stability and a predictable developer experience, this package currently enforces a strict public API. All supported programmatic functions and types are exported directly from the root entry point:
+This package exposes a curated public API through `package.json` exports:
+
+| Entry | Import | Purpose |
+|---|---|---|
+| Root | `@patternfly/patternfly-mcp` | `start()`, server instance types, programmatic options |
+| Tools | `@patternfly/patternfly-mcp/tools` | `createMcpTool` and tool-authoring types for plugins and inline tools |
 
 ```typescript
 import { start, type PfMcpInstance } from '@patternfly/patternfly-mcp';
+import { createMcpTool, type ToolModule } from '@patternfly/patternfly-mcp/tools';
 ```
 
-**Deep imports are not supported.** Accessing internal modules (e.g., `@patternfly/patternfly-mcp/dist/server`) is restricted by our package configuration. This "flattened" export strategy allows us to refactor internal code and move logic between files without impacting your programmatic integrations, as long as the root exports remain stable.
+**Deep imports are not supported.** Accessing internal modules (e.g., `@patternfly/patternfly-mcp/dist/server`) is restricted by our package configuration. This export strategy allows us to refactor internal code without impacting supported integrations, as long as documented entry points remain stable.
 
-If you require access to a type or utility that is not currently exported from the root, please open an issue to discuss your use case for extending the public API.
+If you require access to a type or utility that is not currently exported from a supported entry, please open an issue to discuss your use case.
+
+#### Deprecations
+
+Deprecated APIs remain available through minor releases. **Removal is targeted for major releases** (semver). See [CONTRIBUTING.md](../CONTRIBUTING.md#public-api-and-deprecations).
+
+Current consumer deprecations:
+
+| Deprecated                          | Replacement (Use instead)          | Removal         |
+|-------------------------------------|------------------------------------|-----------------|
+| `createMcpTool` from the root entry | `@patternfly/patternfly-mcp/tools` | Planned **3.0** |
+| `CliOptions` type alias             | `PfMcpCliOptions`                  | Planned **3.0** |
 
 ### Server instance
 
@@ -269,7 +286,8 @@ Reference typings are exported from the package. The full listing can be found i
 You can embed the MCP server inside your application using the `start()` function and provide **Tool Modules** directly.
 
 ```ts
-import { start, createMcpTool, type PfMcpInstance, type ToolModule } from '@patternfly/patternfly-mcp';
+import { start, type PfMcpInstance } from '@patternfly/patternfly-mcp';
+import { createMcpTool, type ToolModule } from '@patternfly/patternfly-mcp/tools';
 
 const echoTool: ToolModule = createMcpTool({
   name: 'echoAMessage',
@@ -321,7 +339,7 @@ You can extend the server's capabilities by loading **Tool Plugins** at startup.
 
 - **Node.js >= 22**: Loading external tool plugins (`--tool`) requires Node.js version 22 or higher due to the use of advanced process isolation and ESM module loading features.
 - **ESM**: Plugins MUST be authored as ECMAScript Modules.
-- **Dependency Resolution**: Plugins importing from `@patternfly/patternfly-mcp` require the package to be resolvable in the execution environment. This may require a local `npm install` in the plugin's directory or project root if the package is not available globally.
+- **Dependency Resolution**: Plugins importing from `@patternfly/patternfly-mcp/tools` require the package to be resolvable in the execution environment. This may require a local `npm install` in the plugin's directory or project root if the package is not available globally.
 
 ### Security & isolation
 
@@ -339,7 +357,7 @@ We recommend using the `createMcpTool` helper to define tools. It ensures your t
 #### Authoring a single tool module
 
 ```ts
-import { createMcpTool } from '@patternfly/patternfly-mcp';
+import { createMcpTool } from '@patternfly/patternfly-mcp/tools';
 
 export default createMcpTool({
   name: 'hello',
@@ -360,7 +378,7 @@ export default createMcpTool({
 #### Authoring multiple tools in one module
 
 ```ts
-import { createMcpTool } from '@patternfly/patternfly-mcp';
+import { createMcpTool } from '@patternfly/patternfly-mcp/tools';
 
 export default createMcpTool([
   { name: 'hi', description: 'Greets', inputSchema: {}, handler: () => ({ content: [{ type: 'text', text: 'hi' }] }) },

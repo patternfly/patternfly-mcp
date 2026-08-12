@@ -2,8 +2,8 @@
  * Requires: npm run build prior to running Jest.
  * - If typings are needed, use public types from dist to avoid type identity mismatches between src and dist
  */
-// @ts-ignore - dist/index.js isn't necessarily built yet, remember to build before running tests
-import { createMcpTool } from '../../dist/index.js';
+// @ts-ignore - dist/ isn't necessarily built yet; run npm run build before e2e tests
+import { createMcpTool } from '@patternfly/patternfly-mcp/tools';
 import { startServer, type HttpTransportClient, type RpcRequest } from './utils/httpTransportClient';
 import { setupFetchMock } from './utils/fetchMock';
 

@@ -135,6 +135,20 @@ Basic code style guidelines are generally enforced by ESLint, but there are addi
 - Typings exposed to consumers should always attempt to maintain consistency.
 - Typings for tests are less of a focus than functionality checks.
 
+#### Public API and deprecations
+
+Public API changes use this lifecycle:
+
+1. **Introduce** the replacement in a minor release (or a patch when appropriate).
+2. **Deprecate** the old export with `@deprecated` JSDoc, example updates, and add a row to the deprecations table in [development.md](./docs/development.md#deprecations).
+3. **Remove** deprecated exports only in a **major** release.
+
+Deprecated APIs remain functional through minor releases. Do not remove them in minors unless the export was never public or keeping it poses a security or correctness risk.
+
+Before each major release, audit `src/*.ts` and update deprecations that were announced in the prior cycle.
+
+See [development.md](./docs/development.md#public-api-and-imports) for current deprecations, import paths and authoring guidance.
+
 ### Testing
 Current testing is based on Jest.
 

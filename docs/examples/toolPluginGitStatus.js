@@ -11,7 +11,7 @@
  * - Requires ESM default export.
  */
 import { spawn } from 'node:child_process';
-import { createMcpTool } from '@patternfly/patternfly-mcp';
+import { createMcpTool } from '@patternfly/patternfly-mcp/tools';
 
 /**
  * Helper, execute a command using spawn with argument handling.

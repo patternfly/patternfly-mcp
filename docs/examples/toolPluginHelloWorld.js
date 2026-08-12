@@ -10,7 +10,7 @@
  * - JS support only. TypeScript is only supported for embedding the server.
  * - Requires ESM default export.
  */
-import { createMcpTool } from '@patternfly/patternfly-mcp';
+import { createMcpTool } from '@patternfly/patternfly-mcp/tools';
 
 export default createMcpTool({
   name: 'helloWorld',

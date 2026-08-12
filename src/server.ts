@@ -13,6 +13,7 @@ import { memo } from './server.caching';
 import { formatUnknownError, log, type LogEvent } from './logger';
 import { createServerLogger } from './server.logger';
 import { composeTools, sendToolsHostShutdown } from './server.tools';
+import { sendWorkerPoolsShutdown } from './server.workerPool';
 import { composeResources } from './server.resources';
 import { type GlobalOptions } from './options';
 import {
@@ -129,6 +130,8 @@ const registerServerCollections = async (collections: McpCollectionCreator[], op
   const updatedCollections = collections.map(collectionCreator => {
     const [name, callback, _config] = collectionCreator(options);
 
+    log.info(`Registered collection: ${name}`);
+
     return [
       name,
       async () => runWithSession(session, async () =>
@@ -149,9 +152,14 @@ const registerServerCollections = async (collections: McpCollectionCreator[], op
   });
 
   // Update PatternFly collections, see {@link setPatternFlyCollection}
-  const onUpdate = ({ name, response }: RegisterCollectionItem) => {
+  const onUpdate = ({ name, response, error }: RegisterCollectionItem) => {
     if (response) {
       setPatternFlyCollection(name, response);
+      log.info(`Update collection: ${name}`);
+    }
+
+    if (error) {
+      log.error(`Update collection error "${name}": ${error}`);
     }
   };
 
@@ -360,6 +368,7 @@ const runServer = async (options: ServerOptions = getOptions(), {
       running = false;
 
       await sendToolsHostShutdown();
+      await sendWorkerPoolsShutdown();
 
       log.info(`${options.name} closed!\n`);
       unsubscribeServerLogger?.();
@@ -545,6 +554,7 @@ runServer.memo = memo(
 
 export {
   runServer,
+  registerServerCollections,
   registerServerResources,
   registerServerTools,
   type ServerInstance,

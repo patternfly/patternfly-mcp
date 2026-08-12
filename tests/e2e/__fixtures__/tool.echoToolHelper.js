@@ -1,6 +1,6 @@
 // Fixture exports a createMcpTool module directly;
 // eslint-disable-next-line import/no-unresolved
-import { createMcpTool } from '@patternfly/patternfly-mcp';
+import { createMcpTool } from '@patternfly/patternfly-mcp/tools';
 
 export default createMcpTool({
   name: 'echo_createMcp_tool',
