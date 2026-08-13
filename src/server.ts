@@ -35,11 +35,9 @@ import {
 import {
   registerCollections,
   type McpCollectionCreator,
-  type McpCollection,
-  type RegisterCollectionItem
+  type McpCollection
 } from './collections';
 import { composeCollections } from './server.collections';
-import { setPatternFlyCollection } from './patternFly.getResources';
 
 /**
  * Server options. Equivalent to GlobalOptions.
@@ -151,19 +149,7 @@ const registerServerCollections = async (collections: McpCollectionCreator[], op
     ] as McpCollection;
   });
 
-  // Update PatternFly collections, see {@link setPatternFlyCollection}
-  const onUpdate = ({ name, response, error }: RegisterCollectionItem) => {
-    if (response) {
-      setPatternFlyCollection(name, response);
-      log.info(`Update collection: ${name}`);
-    }
-
-    if (error) {
-      log.error(`Update collection error "${name}": ${error}`);
-    }
-  };
-
-  return registerCollections(updatedCollections, { onUpdate });
+  return registerCollections(updatedCollections);
 };
 
 /**

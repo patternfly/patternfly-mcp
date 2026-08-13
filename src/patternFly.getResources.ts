@@ -16,7 +16,10 @@ import {
   type PatternFlyMcpDocsCatalogEntry,
   type PatternFlyMcpDocsCatalogDoc
 } from './docs.embedded';
-import { type McpCollectionResult } from './collections';
+import {
+  onUpdateServerRecordsRegistry, type McpCollectionResult,
+  registerCollections, RegisterCollectionItem
+} from './collections';
 
 /**
  * Derive the component schema type from @patternfly/patternfly-component-schemas
@@ -704,6 +707,20 @@ const setPatternFlyCollection = async (
     log.error(`Failed to update collection [${name}]:`, error);
   }
 };
+
+/**
+ * Add listener for PatternFly collection updates, see {@link setPatternFlyCollection}
+ */
+onUpdateServerRecordsRegistry(({ name, response, error }: RegisterCollectionItem) => {
+  if (name && response) {
+    setPatternFlyCollection(name, response);
+    log.info(`Update PatternFly collection: ${name}`);
+  }
+
+  if (error) {
+    log.error(`Update PatternFly collection error "${name}": ${error}`);
+  }
+});
 
 export {
   getPatternFlyComponentSchema,

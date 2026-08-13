@@ -99,7 +99,7 @@ type RegisterCollectionItem = {
  * @param {McpCollectionResult|undefined} [item.response] - Optional response associated with the item.
  * @param [item.error] - Optional error object if an error occurred during the collection process.
  */
-type RegisterOnUpdate = ({ name, response, error }: RegisterCollectionItem) => void;
+type RegisterOnUpdate = ({ name, response, error }: RegisterCollectionItem) => void | Promise<void>;
 
 /**
  * Callback invoked when required collections are loaded/updated.
@@ -150,6 +150,86 @@ type RegisterCollectionsResult = {
 };
 
 /**
+ * Central in-memory registry for all PatternFly collection records
+ */
+const serverRecordsRegistry = new Map<string, McpCollectionResult>();
+
+/**
+ * Listeners for server records registry updates
+ */
+const serverRecordsRegistryListeners = new Set<RegisterOnUpdate>();
+
+/**
+ * Retrieves the server collections/records registry, all or for a given collection name.
+ *
+ * @param params - Optional parameters.
+ * @param params.collectionName - Name of the collection to retrieve.
+ * @returns The entire server collections/records registry, or the registry for the specified collection name
+ *     if provided and available, otherwise returns `undefined`.
+ */
+const getServerRecordsRegistry = ({ collectionName }: { collectionName?: string } = {}) => {
+  if (collectionName) {
+    return serverRecordsRegistry.get(collectionName);
+  }
+
+  return serverRecordsRegistry;
+};
+
+/**
+ * Executes a collection callback, invalidates any cache, and then any next-call to the functions
+ * blends the returned records and "re-memos" the results.
+ *
+ * @param {McpCollectionResult} collection - Collection.
+ */
+const setServerRecordsRegistry = async (collection: RegisterCollectionItem) => {
+  const { name, response } = collection || {};
+
+  try {
+    if (name && response) {
+      serverRecordsRegistry.set(name, response);
+
+      for (const listener of serverRecordsRegistryListeners) {
+        try {
+          await listener(collection);
+        } catch (error) {
+          log.error(`Error in server records registry listener:`, error);
+        }
+      }
+
+      log.debug(`Storing server collection ${name} records. (${response?.records?.length})`);
+    }
+  } catch (error) {
+    log.error(`Failed to store server collection ${name}:`, error);
+  }
+};
+
+/**
+ * Register a listener callback to be invoked whenever a server record in the registry is updated.
+ *
+ * @param callback - The callback to execute on update.
+ * @returns A function to unregister/unsubscribe the listener.
+ */
+const onUpdateServerRecordsRegistry = (callback: RegisterOnUpdate) => {
+  if (typeof callback !== 'function') {
+    log.warn('onUpdateServerRecordsRegistry: callback must be a function');
+
+    return () => false;
+  }
+
+  serverRecordsRegistryListeners.add(callback);
+
+  return () => {
+    if (serverRecordsRegistryListeners.has(callback)) {
+      serverRecordsRegistryListeners.delete(callback);
+
+      return true;
+    }
+
+    return false;
+  };
+};
+
+/**
  * Registers a set of collections asynchronously.
  *
  * - Required collections gatekeep `registerCollections` resolve.
@@ -192,6 +272,10 @@ const registerCollections = async (
     }
 
     try {
+      if (response) {
+        setServerRecordsRegistry({ name, response, error });
+      }
+
       onUpdate?.({ name, response, error });
     } catch (err) {
       log.error(`Error "onUpdate" for collection ${name}: ${formatUnknownError(err)}`);
@@ -265,7 +349,10 @@ const registerCollections = async (
 };
 
 export {
+  getServerRecordsRegistry,
+  onUpdateServerRecordsRegistry,
   registerCollections,
+  setServerRecordsRegistry,
   type McpCollection,
   type McpCollectionCreator,
   type McpCollectionRecord,
