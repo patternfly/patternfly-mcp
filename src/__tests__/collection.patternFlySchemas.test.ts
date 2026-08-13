@@ -1,4 +1,4 @@
-import { patternFlySchemasCollection } from '../collection.patternFlySchemas';
+import { patternFlySchemasCollection, collectionCallback } from '../collection.patternFlySchemas';
 
 jest.mock('../patternFly.helpers', () => ({
   getPatternFlyVersionContext: {
@@ -16,15 +16,21 @@ describe('patternFlySchemasCollection', () => {
   });
 
   it('should return the correct collection name and configuration', () => {
-    const [name, , config] = patternFlySchemasCollection();
+    const [name, callback, config] = patternFlySchemasCollection();
 
     expect(name).toBe('patternfly-component-schemas');
+    expect(callback).toBeDefined();
     expect(config?.isRequired).toBe(true);
+  });
+});
+
+describe('collectionCallback', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should generate schema records for components and match McpCollectionResult structure', async () => {
-    const [, callback] = patternFlySchemasCollection();
-    const result = await callback();
+    const result = await collectionCallback();
 
     expect(result).toHaveProperty('records');
     expect(Array.isArray(result.records)).toBe(true);
@@ -52,8 +58,7 @@ describe('patternFlySchemasCollection', () => {
   });
 
   it('should manually include the Table component with isSchemasAvailable: false', async () => {
-    const [, callback] = patternFlySchemasCollection();
-    const result = await callback();
+    const result = await collectionCallback();
 
     const tableRecord = result.records.find(record => record.sourceId === 'table');
 
@@ -66,8 +71,7 @@ describe('patternFlySchemasCollection', () => {
   });
 
   it('should match snapshot for schema collection result', async () => {
-    const [, callback] = patternFlySchemasCollection();
-    const result = await callback();
+    const result = await collectionCallback();
 
     expect(result).toMatchSnapshot();
   });

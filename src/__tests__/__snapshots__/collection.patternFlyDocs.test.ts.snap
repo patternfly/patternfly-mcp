@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`patternFlyDocsCollection should match snapshot for collection result 1`] = `
+exports[`collectionCallback should match snapshot for collection result 1`] = `
 {
   "isFallback": false,
   "records": [

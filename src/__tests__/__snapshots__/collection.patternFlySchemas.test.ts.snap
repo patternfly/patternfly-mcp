@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`patternFlySchemasCollection should match snapshot for schema collection result 1`] = `
+exports[`collectionCallback should match snapshot for schema collection result 1`] = `
 {
   "records": [
     {
