@@ -17,8 +17,9 @@ import {
   type PatternFlyMcpDocsCatalogDoc
 } from './docs.embedded';
 import {
-  onUpdateServerRecordsRegistry, type McpCollectionResult,
-  registerCollections, RegisterCollectionItem
+  onUpdateServerRecordsRegistry,
+  type McpCollectionResult,
+  type RegisterCollectionItem
 } from './collections';
 
 /**
@@ -714,11 +715,11 @@ const setPatternFlyCollection = async (
 onUpdateServerRecordsRegistry(({ name, response, error }: RegisterCollectionItem) => {
   if (name && response) {
     setPatternFlyCollection(name, response);
-    log.info(`Update PatternFly collection: ${name}`);
+    log.info(`Update collection: ${name}`);
   }
 
   if (error) {
-    log.error(`Update PatternFly collection error "${name}": ${error}`);
+    log.error(`Update collection error "${name}": ${error}`);
   }
 });
 
