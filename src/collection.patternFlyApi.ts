@@ -41,11 +41,37 @@ interface ApiContent {
   }
 }
 
-// type ApiProcessedDoc = NonNullable<ProcessedDoc>;
+/**
+ * API crawler response.
+ *
+ * @interface ApiCrawler
+ *
+ * @property content - Content retrieved from the API.
+ * @property path - Initial or relative path used to fetch the content.
+ * @property resolvedPath - Absolute or resolved path after processing the initial path.
+ */
 interface ApiCrawler {
   content: string;
   path: string;
   resolvedPath: string;
+}
+
+/**
+ * API parsed payload response
+ */
+type ParsePayloadApi = string | number | boolean | null | string[] | Record<string, unknown>;
+
+/**
+ * API parsed payload response.
+ *
+ * @interface ParsePayload
+ *
+ * @property isEmpty - Whether the parsed payload is considered empty.
+ * @property {ParsePayloadApi} payload - Parsed version of the input payload.
+ */
+interface ParsePayload {
+  isEmpty: boolean;
+  payload: ParsePayloadApi;
 }
 
 /**
@@ -58,10 +84,10 @@ interface ApiCrawler {
  *   and can be parsed as JSON without error, the parsed result is returned.
  *   Otherwise, the trimmed string or original value is provided.
  */
-const parsePayload = (payload: unknown) => {
+const parsePayload = (payload: unknown): ParsePayload => {
   const updatedPayload = typeof payload === 'string' ? payload.trim() : '';
-  let isEmpty;
-  let parsedPayload;
+  let isEmpty: boolean;
+  let parsedPayload: ParsePayloadApi;
 
   try {
     parsedPayload = JSON.parse(updatedPayload);
@@ -339,5 +365,7 @@ export {
   isEmptyPayload,
   parsePayload,
   type ApiContent,
-  type ApiCrawler
+  type ApiCrawler,
+  type ParsePayload,
+  type ParsePayloadApi
 };
