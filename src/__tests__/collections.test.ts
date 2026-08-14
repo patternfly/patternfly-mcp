@@ -16,6 +16,7 @@ describe('registerCollections', () => {
   });
 
   it('should register valid collections and call onUpdate', async () => {
+    jest.useFakeTimers();
     const onUpdate = jest.fn();
     const handler = jest.fn().mockResolvedValue({ records: [] });
     const collections: any[] = [
@@ -23,12 +24,15 @@ describe('registerCollections', () => {
     ];
 
     await registerCollections(collections, { onUpdate });
+    await jest.runAllTimersAsync();
 
     expect(handler).toHaveBeenCalled();
     expect(onUpdate).toHaveBeenCalledWith(expect.objectContaining({
       name: 'test-collection',
       response: { records: [] }
     }));
+
+    jest.useRealTimers();
   });
 
   it('should handle isRequired and throw if it fails', async () => {
