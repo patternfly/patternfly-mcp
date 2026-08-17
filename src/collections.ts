@@ -279,12 +279,6 @@ const registerCollections = async (
       log.error(`Error "setServerRecordsRegistry" for collection ${name}: ${formatUnknownError(err)}`);
     }
 
-    /* try {
-      onUpdate?.({ name, response, error });
-    } catch (err) {
-      log.debug(`Error calling "onUpdate": ${formatUnknownError(err)}`);
-    }*/
-
     // Fire-and-forget if it exists. Review using `Promise.try` in the future.
     Promise.resolve()
       .then(() => onUpdate?.({ name, response, error }))
@@ -307,12 +301,6 @@ const registerCollections = async (
       throw new Error(requiredCollectionsFail);
     }
   }
-
-  /* try {
-    onRequired?.(results.map(({ name, response, error }) => ({ name, response, error })));
-  } catch (err) {
-    log.error(`Error calling "onRequired": ${formatUnknownError(err)}`);
-  }*/
 
   // Fire-and-forget if it exists. Review using `Promise.try` in the future.
   Promise.resolve()
@@ -349,13 +337,6 @@ const registerCollections = async (
       .map(item => ({ name: item.name, reason: item.reason }));
 
     const returnValues = { settled, fulfilled, rejected };
-
-    /* try {
-      onSettle?.(returnValues);
-    } catch (err) {
-      throw new Error(`Error calling "onSettle" ${formatUnknownError(err)}`);
-    }
-     */
 
     // Fire-and-forget if it exists. Review using `Promise.try` in the future.
     Promise.resolve()

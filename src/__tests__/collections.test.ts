@@ -1,4 +1,9 @@
-import { registerCollections } from '../collections';
+import {
+  registerCollections,
+  getServerRecordsRegistry,
+  onUpdateServerRecordsRegistry,
+  setServerRecordsRegistry
+} from '../collections';
 
 jest.mock('../logger', () => ({
   log: {
@@ -9,6 +14,95 @@ jest.mock('../logger', () => ({
   },
   formatUnknownError: jest.fn(err => String(err))
 }));
+
+describe('getServerRecordsRegistry', () => {
+  beforeEach(() => {
+    const registry = getServerRecordsRegistry() as Map<string, any>;
+
+    registry.clear();
+
+    jest.clearAllMocks();
+  });
+
+  it('returns the full registry Map when called without params', () => {
+    const registry = getServerRecordsRegistry();
+
+    expect(registry).toBeInstanceOf(Map);
+    expect((registry as Map<string, unknown>).size).toBe(0);
+  });
+});
+
+describe('onUpdateServerRecordsRegistry', () => {
+  it('returns a no-op unsubscribe when callback is not a function', () => {
+    const unsubscribe = onUpdateServerRecordsRegistry(null as any);
+
+    expect(unsubscribe()).toBe(false);
+  });
+});
+
+describe('get, set, update the server records registry', () => {
+  beforeEach(() => {
+    const registry = getServerRecordsRegistry() as Map<string, any>;
+
+    registry.clear();
+
+    jest.clearAllMocks();
+  });
+
+  it('returns a specific collection by name when available', async () => {
+    const response = { records: [{ id: '1', sourceId: 's', sourceType: 'local' }] } as any;
+
+    await setServerRecordsRegistry({ name: 'hello', response });
+
+    expect(getServerRecordsRegistry({ collectionName: 'hello' })).toEqual(response);
+    expect(getServerRecordsRegistry({ collectionName: 'world' })).toBeUndefined();
+  });
+
+  it('registers and unregisters listener correctly', async () => {
+    const handler = jest.fn();
+    const unsubscribe = onUpdateServerRecordsRegistry(handler);
+
+    await setServerRecordsRegistry({ name: 'ipsum', response: { records: [] } as any });
+
+    expect(handler).toHaveBeenCalledWith({ name: 'ipsum', response: { records: [] }, error: undefined });
+
+    expect(unsubscribe()).toBe(true);
+    expect(unsubscribe()).toBe(false);
+
+    await setServerRecordsRegistry({ name: 'ipsum', response: { records: [] } as any });
+    expect(handler).toHaveBeenCalledTimes(1);
+  });
+
+  it('continues processing when a listener throws', async () => {
+    const faulty = jest.fn().mockRejectedValue(new Error('lorem ipsum'));
+    const good = jest.fn();
+
+    onUpdateServerRecordsRegistry(faulty);
+    onUpdateServerRecordsRegistry(good);
+
+    await setServerRecordsRegistry({ name: 'sit', response: { records: [] } as any });
+    expect(good).toHaveBeenCalled();
+  });
+
+  it('stores records when name and response are provided', async () => {
+    await setServerRecordsRegistry({ name: 'lorem-ipsum', response: { records: [{ id: 'x' }] } as any });
+
+    const stored = getServerRecordsRegistry({ collectionName: 'lorem-ipsum' });
+
+    expect(stored).toEqual({ records: [{ id: 'x' }] });
+  });
+
+  it('does not store or notify when response is missing', async () => {
+    const listener = jest.fn();
+
+    onUpdateServerRecordsRegistry(listener);
+
+    await setServerRecordsRegistry({ name: 'dolor' });
+
+    expect(getServerRecordsRegistry({ collectionName: 'dolor' })).toBeUndefined();
+    expect(listener).not.toHaveBeenCalled();
+  });
+});
 
 describe('registerCollections', () => {
   beforeEach(() => {
