@@ -16,7 +16,11 @@ import {
   type PatternFlyMcpDocsCatalogEntry,
   type PatternFlyMcpDocsCatalogDoc
 } from './docs.embedded';
-import { type McpCollectionResult } from './collections';
+import {
+  onUpdateServerRecordsRegistry,
+  type McpCollectionResult,
+  type RegisterCollectionItem
+} from './collections';
 
 /**
  * Derive the component schema type from @patternfly/patternfly-component-schemas
@@ -704,6 +708,23 @@ const setPatternFlyCollection = async (
     log.error(`Failed to update collection [${name}]:`, error);
   }
 };
+
+/**
+ * Add listener for PatternFly collection updates, see {@link setPatternFlyCollection}
+ *
+ * @note We don't need to use the `replay` option here, all of PF collections we need are `required`
+ * currently, any future updates to this logic may consider adding the `replay` option.
+ */
+onUpdateServerRecordsRegistry(({ name, response, error }: RegisterCollectionItem) => {
+  if (name && response) {
+    setPatternFlyCollection(name, response);
+    log.info(`Update collection: ${name}`);
+  }
+
+  if (error) {
+    log.error(`Update collection error "${name}": ${error}`);
+  }
+});
 
 export {
   getPatternFlyComponentSchema,

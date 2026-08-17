@@ -99,7 +99,18 @@ type RegisterCollectionItem = {
  * @param {McpCollectionResult|undefined} [item.response] - Optional response associated with the item.
  * @param [item.error] - Optional error object if an error occurred during the collection process.
  */
-type RegisterOnUpdate = ({ name, response, error }: RegisterCollectionItem) => void;
+type RegisterOnUpdate = ({ name, response, error }: RegisterCollectionItem) => void | Promise<void>;
+
+/**
+ * Options for {@link onUpdateServerRecordsRegistry}.
+ *
+ * @property replay - When `true`, invokes the callback once for each collection already in the registry.
+ *     Live updates after subscribe **MAY INVOKE THE CALLBACK AGAIN** for the same collection.
+ *     Deduplication is the consumer's responsibility.
+ */
+type OnUpdateServerRecordsRegistryOptions = {
+  replay?: boolean;
+};
 
 /**
  * Callback invoked when required collections are loaded/updated.
@@ -150,6 +161,122 @@ type RegisterCollectionsResult = {
 };
 
 /**
+ * Central in-memory registry for all PatternFly collection records
+ */
+const serverRecordsRegistry = new Map<string, McpCollectionResult>();
+
+/**
+ * Listeners for server records registry updates
+ */
+const serverRecordsRegistryListeners = new Set<RegisterOnUpdate>();
+
+/**
+ * Invokes a server records registry listener and logs errors without rethrowing.
+ *
+ * @param callback - Listener to invoke/fire.
+ * @param item - Collection item passed to the listener.
+ */
+const invokeServerRecordsRegistryListener = async (
+  callback: RegisterOnUpdate,
+  item: RegisterCollectionItem
+) => {
+  try {
+    await callback(item);
+  } catch (error) {
+    log.error(`Error in server records registry listener:`, error);
+  }
+};
+
+/**
+ * Retrieves the server collections/records registry, all or for a given collection name.
+ *
+ * @param params - Optional parameters.
+ * @param params.collectionName - Name of the collection to retrieve.
+ * @returns The entire server collections/records registry, or the registry for the specified collection name
+ *     if provided and available, otherwise returns `undefined`.
+ */
+const getServerRecordsRegistry = ({ collectionName }: { collectionName?: string } = {}) => {
+  if (collectionName) {
+    return serverRecordsRegistry.get(collectionName);
+  }
+
+  return serverRecordsRegistry;
+};
+
+/**
+ * Executes a collection callback, invalidates any cache, and then any next-call to the functions
+ * blends the returned records and "re-memos" the results.
+ *
+ * @param {McpCollectionResult} collection - Collection.
+ */
+const setServerRecordsRegistry = async (collection: RegisterCollectionItem) => {
+  const { name, response } = collection || {};
+
+  try {
+    if (name && response) {
+      serverRecordsRegistry.set(name, response);
+
+      for (const listener of serverRecordsRegistryListeners) {
+        await invokeServerRecordsRegistryListener(listener, collection);
+      }
+
+      log.debug(`Storing server collection ${name} records. (${response?.records?.length})`);
+    }
+  } catch (error) {
+    log.error(`Failed to store server collection ${name}:`, error);
+  }
+};
+
+/**
+ * Register a listener callback to be fired whenever a server record in the registry is updated.
+ *
+ * @note Using the `replay` {@link OnUpdateServerRecordsRegistryOptions.replay} option means the
+ * callback can be fired multiple times for the same collection. Deduplication is the consumer's
+ * responsibility. This isn't needed if your collections are `required`.
+ *
+ * @param callback - The callback to execute on update.
+ * @param [options] - Subscribe options.
+ * @param [options.replay] - When `true`, fire the registry-level callback for each collection
+ *     already stored in the registry. Useful for callbacks registered after the registry-level callback
+ *     has already fired. Defaults to `false`. See {@link OnUpdateServerRecordsRegistryOptions.replay}
+ * @returns A function to unregister/unsubscribe the listener.
+ */
+const onUpdateServerRecordsRegistry = (
+  callback: RegisterOnUpdate,
+  { replay = false }: OnUpdateServerRecordsRegistryOptions = {}
+) => {
+  if (typeof callback !== 'function') {
+    log.warn('onUpdateServerRecordsRegistry: callback must be a function');
+
+    return () => false;
+  }
+
+  serverRecordsRegistryListeners.add(callback);
+
+  if (replay) {
+    void (async () => {
+      for (const [name, response] of serverRecordsRegistry) {
+        if (!serverRecordsRegistryListeners.has(callback)) {
+          break;
+        }
+
+        await invokeServerRecordsRegistryListener(callback, { name, response, error: undefined });
+      }
+    })();
+  }
+
+  return () => {
+    if (serverRecordsRegistryListeners.has(callback)) {
+      serverRecordsRegistryListeners.delete(callback);
+
+      return true;
+    }
+
+    return false;
+  };
+};
+
+/**
  * Registers a set of collections asynchronously.
  *
  * - Required collections gatekeep `registerCollections` resolve.
@@ -160,12 +287,12 @@ type RegisterCollectionsResult = {
  *
  * @param {McpCollection[]} collections - An array of collection sources to be registered. Each source is represented as a tuple.
  * @param [options] - Options callback functions to handle registration events.
- * @param [options.onSettle] - Callback function executed after all collection
- *     registrations are settled. Receives the results as an object containing settled, fulfilled, and rejected collections.
- * @param [options.onUpdate] - Callback function executed for each collection
- *     registration update. Receives details about the collection being processed including name, response, and any error encountered.
- * @param [options.onRequired] - Callback function executed when required
- *     collections are processed. Receives an array of results containing collection name, response, and error details.
+ * @param [options.onSettle] - A non-blocking consumer-facing callback executed after all collection registrations are
+ *     settled. Receives the results as an object containing settled, fulfilled, and rejected collections.
+ * @param [options.onUpdate] - A non-blocking consumer-facing callback executed for each collection registration update.
+ *     Receives details about the collection being processed, including name, response, and any error encountered.
+ * @param [options.onRequired] - A non-blocking consumer-facing callback executed when required collections are processed.
+ *     Receives an array of results containing collection name, response, and error details.
  * @returns Resolves when all "isRequired" collections are registered and settled.
  * @throws {Error} If any required collection fails to register successfully.
  */
@@ -192,17 +319,23 @@ const registerCollections = async (
     }
 
     try {
-      onUpdate?.({ name, response, error });
+      if (response) {
+        await setServerRecordsRegistry({ name, response, error });
+      }
     } catch (err) {
-      log.error(`Error "onUpdate" for collection ${name}: ${formatUnknownError(err)}`);
+      log.error(`Error "setServerRecordsRegistry" for collection ${name}: ${formatUnknownError(err)}`);
     }
+
+    // Fire-and-forget if it exists. Review using `Promise.try` in the future.
+    Promise.resolve()
+      .then(() => onUpdate?.({ name, response, error }))
+      .catch(err => log.debug(`Error calling "onUpdate": ${formatUnknownError(err)}`));
 
     return { name, response, isSuccess, error };
   });
 
   // Determine which collections are required and optional
   const required = registrationPromises.filter((_, index) => collections[index]?.[2]?.isRequired);
-  // const optional = registrationPromises.filter((_, index) => !collections[index]?.[2]?.isRequired);
 
   // Gatekeep on any required collections
   const results = await Promise.all(required);
@@ -216,11 +349,10 @@ const registerCollections = async (
     }
   }
 
-  try {
-    onRequired?.(results.map(({ name, response, error }) => ({ name, response, error })));
-  } catch (err) {
-    log.error(`Error calling "onRequired": ${formatUnknownError(err)}`);
-  }
+  // Fire-and-forget if it exists. Review using `Promise.try` in the future.
+  Promise.resolve()
+    .then(() => onRequired?.(results.map(({ name, response, error }) => ({ name, response, error }))))
+    .catch(err => log.debug(`Error calling "onRequired": ${formatUnknownError(err)}`));
 
   // Wait for all loaders to settle
   Promise.all(registrationPromises).then(allResults => {
@@ -253,19 +385,21 @@ const registerCollections = async (
 
     const returnValues = { settled, fulfilled, rejected };
 
-    // Fire onSettle if it exists
-    try {
-      onSettle?.(returnValues);
-    } catch (err) {
-      throw new Error(`Error calling "onSettle" ${formatUnknownError(err)}`);
-    }
+    // Fire-and-forget if it exists. Review using `Promise.try` in the future.
+    Promise.resolve()
+      .then(() => onSettle?.(returnValues))
+      .catch(err => log.debug(`Error calling "onSettle": ${formatUnknownError(err)}`));
   }).catch(err => {
-    log.error(`Failed to settle collections: ${err}`);
+    log.debug(`Failed to settle collections: ${err}`);
   });
 };
 
 export {
+  getServerRecordsRegistry,
+  onUpdateServerRecordsRegistry,
   registerCollections,
+  setServerRecordsRegistry,
+  type OnUpdateServerRecordsRegistryOptions,
   type McpCollection,
   type McpCollectionCreator,
   type McpCollectionRecord,
