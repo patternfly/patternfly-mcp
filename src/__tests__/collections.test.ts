@@ -33,10 +33,79 @@ describe('getServerRecordsRegistry', () => {
 });
 
 describe('onUpdateServerRecordsRegistry', () => {
-  it('returns a no-op unsubscribe when callback is not a function', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+    const registry = getServerRecordsRegistry() as Map<string, any>;
+
+    registry.clear();
+
+    jest.clearAllMocks();
+  });
+
+  afterEach(() => jest.useRealTimers());
+
+  it('should return a no-op unsubscribe when callback is not a function', () => {
     const unsubscribe = onUpdateServerRecordsRegistry(null as any);
 
     expect(unsubscribe()).toBe(false);
+  });
+
+  it('should not replay existing registry entries by default', async () => {
+    const response = { records: [{ id: '1' }] } as any;
+
+    await setServerRecordsRegistry({ name: 'cached', response });
+
+    const handler = jest.fn();
+
+    onUpdateServerRecordsRegistry(handler);
+
+    await jest.runAllTimersAsync();
+
+    expect(handler).not.toHaveBeenCalled();
+  });
+
+  it('replays existing registry entries when replay is enabled', async () => {
+    const docs = { records: [{ id: 'docs' }] } as any;
+    const schemas = { records: [{ id: 'schemas' }] } as any;
+
+    await setServerRecordsRegistry({ name: 'patternfly-docs', response: docs });
+    await setServerRecordsRegistry({ name: 'patternfly-component-schemas', response: schemas });
+
+    const handler = jest.fn();
+
+    onUpdateServerRecordsRegistry(handler, { replay: true });
+
+    await jest.runAllTimersAsync();
+
+    expect(handler).toHaveBeenCalledTimes(2);
+    expect(handler).toHaveBeenCalledWith({
+      name: 'patternfly-docs',
+      response: docs,
+      error: undefined
+    });
+    expect(handler).toHaveBeenCalledWith({
+      name: 'patternfly-component-schemas',
+      response: schemas,
+      error: undefined
+    });
+  });
+
+  it('should attempt to fire the callback again after replay on a subsequent update', async () => {
+    const response = { records: [{ id: '1' }] } as any;
+
+    await setServerRecordsRegistry({ name: 'repeatable', response });
+
+    const handler = jest.fn();
+
+    onUpdateServerRecordsRegistry(handler, { replay: true });
+
+    await jest.runAllTimersAsync();
+
+    expect(handler).toHaveBeenCalledTimes(1);
+
+    await setServerRecordsRegistry({ name: 'repeatable', response });
+
+    expect(handler).toHaveBeenCalledTimes(2);
   });
 });
 
@@ -49,7 +118,7 @@ describe('get, set, update the server records registry', () => {
     jest.clearAllMocks();
   });
 
-  it('returns a specific collection by name when available', async () => {
+  it('should return a specific collection by name when available', async () => {
     const response = { records: [{ id: '1', sourceId: 's', sourceType: 'local' }] } as any;
 
     await setServerRecordsRegistry({ name: 'hello', response });
@@ -58,7 +127,7 @@ describe('get, set, update the server records registry', () => {
     expect(getServerRecordsRegistry({ collectionName: 'world' })).toBeUndefined();
   });
 
-  it('registers and unregisters listener correctly', async () => {
+  it('should register and unregister listeners correctly', async () => {
     const handler = jest.fn();
     const unsubscribe = onUpdateServerRecordsRegistry(handler);
 
@@ -73,7 +142,7 @@ describe('get, set, update the server records registry', () => {
     expect(handler).toHaveBeenCalledTimes(1);
   });
 
-  it('continues processing when a listener throws', async () => {
+  it('should continue processing when a listener throws', async () => {
     const faulty = jest.fn().mockRejectedValue(new Error('lorem ipsum'));
     const good = jest.fn();
 
@@ -84,7 +153,7 @@ describe('get, set, update the server records registry', () => {
     expect(good).toHaveBeenCalled();
   });
 
-  it('stores records when name and response are provided', async () => {
+  it('should store records when name and response are provided', async () => {
     await setServerRecordsRegistry({ name: 'lorem-ipsum', response: { records: [{ id: 'x' }] } as any });
 
     const stored = getServerRecordsRegistry({ collectionName: 'lorem-ipsum' });
@@ -92,7 +161,7 @@ describe('get, set, update the server records registry', () => {
     expect(stored).toEqual({ records: [{ id: 'x' }] });
   });
 
-  it('does not store or notify when response is missing', async () => {
+  it('should not store or notify when response is missing', async () => {
     const listener = jest.fn();
 
     onUpdateServerRecordsRegistry(listener);

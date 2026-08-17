@@ -102,6 +102,17 @@ type RegisterCollectionItem = {
 type RegisterOnUpdate = ({ name, response, error }: RegisterCollectionItem) => void | Promise<void>;
 
 /**
+ * Options for {@link onUpdateServerRecordsRegistry}.
+ *
+ * @property replay - When `true`, invokes the callback once for each collection already in the registry.
+ *     Live updates after subscribe **MAY INVOKE THE CALLBACK AGAIN** for the same collection.
+ *     Deduplication is the consumer's responsibility.
+ */
+type OnUpdateServerRecordsRegistryOptions = {
+  replay?: boolean;
+};
+
+/**
  * Callback invoked when required collections are loaded/updated.
  *
  * @param {RegisterCollectionItem[]} requiredCollections - Array of required collections.
@@ -160,6 +171,23 @@ const serverRecordsRegistry = new Map<string, McpCollectionResult>();
 const serverRecordsRegistryListeners = new Set<RegisterOnUpdate>();
 
 /**
+ * Invokes a server records registry listener and logs errors without rethrowing.
+ *
+ * @param callback - Listener to invoke/fire.
+ * @param item - Collection item passed to the listener.
+ */
+const invokeServerRecordsRegistryListener = async (
+  callback: RegisterOnUpdate,
+  item: RegisterCollectionItem
+) => {
+  try {
+    await callback(item);
+  } catch (error) {
+    log.error(`Error in server records registry listener:`, error);
+  }
+};
+
+/**
  * Retrieves the server collections/records registry, all or for a given collection name.
  *
  * @param params - Optional parameters.
@@ -189,11 +217,7 @@ const setServerRecordsRegistry = async (collection: RegisterCollectionItem) => {
       serverRecordsRegistry.set(name, response);
 
       for (const listener of serverRecordsRegistryListeners) {
-        try {
-          await listener(collection);
-        } catch (error) {
-          log.error(`Error in server records registry listener:`, error);
-        }
+        await invokeServerRecordsRegistryListener(listener, collection);
       }
 
       log.debug(`Storing server collection ${name} records. (${response?.records?.length})`);
@@ -204,12 +228,23 @@ const setServerRecordsRegistry = async (collection: RegisterCollectionItem) => {
 };
 
 /**
- * Register a listener callback to be invoked whenever a server record in the registry is updated.
+ * Register a listener callback to be fired whenever a server record in the registry is updated.
+ *
+ * @note Using the `replay` {@link OnUpdateServerRecordsRegistryOptions.replay} option means the
+ * callback can be fired multiple times for the same collection. Deduplication is the consumer's
+ * responsibility. This isn't needed if your collections are `required`.
  *
  * @param callback - The callback to execute on update.
+ * @param [options] - Subscribe options.
+ * @param [options.replay] - When `true`, fire the registry-level callback for each collection
+ *     already stored in the registry. Useful for callbacks registered after the registry-level callback
+ *     has already fired. Defaults to `false`. See {@link OnUpdateServerRecordsRegistryOptions.replay}
  * @returns A function to unregister/unsubscribe the listener.
  */
-const onUpdateServerRecordsRegistry = (callback: RegisterOnUpdate) => {
+const onUpdateServerRecordsRegistry = (
+  callback: RegisterOnUpdate,
+  { replay = false }: OnUpdateServerRecordsRegistryOptions = {}
+) => {
   if (typeof callback !== 'function') {
     log.warn('onUpdateServerRecordsRegistry: callback must be a function');
 
@@ -217,6 +252,18 @@ const onUpdateServerRecordsRegistry = (callback: RegisterOnUpdate) => {
   }
 
   serverRecordsRegistryListeners.add(callback);
+
+  if (replay) {
+    void (async () => {
+      for (const [name, response] of serverRecordsRegistry) {
+        if (!serverRecordsRegistryListeners.has(callback)) {
+          break;
+        }
+
+        await invokeServerRecordsRegistryListener(callback, { name, response, error: undefined });
+      }
+    })();
+  }
 
   return () => {
     if (serverRecordsRegistryListeners.has(callback)) {
@@ -352,6 +399,7 @@ export {
   onUpdateServerRecordsRegistry,
   registerCollections,
   setServerRecordsRegistry,
+  type OnUpdateServerRecordsRegistryOptions,
   type McpCollection,
   type McpCollectionCreator,
   type McpCollectionRecord,

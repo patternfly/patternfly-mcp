@@ -711,6 +711,9 @@ const setPatternFlyCollection = async (
 
 /**
  * Add listener for PatternFly collection updates, see {@link setPatternFlyCollection}
+ *
+ * @note We don't need to use the `replay` option here, all of PF collections we need are `required`
+ * currently, any future updates to this logic may consider adding the `replay` option.
  */
 onUpdateServerRecordsRegistry(({ name, response, error }: RegisterCollectionItem) => {
   if (name && response) {
