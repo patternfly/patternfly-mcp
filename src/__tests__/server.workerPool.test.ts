@@ -208,6 +208,58 @@ describe('buildPersistentPool', () => {
     await expect(t2).resolves.toBe('result-2');
     await expect(t3).resolves.toBe('result-3');
   });
+
+  it('should reset slot.active and reuse slot after a worker crash during task execution', async () => {
+    jest.useFakeTimers();
+    const instances: any[] = [];
+
+    MockWorker.mockImplementation((): any => {
+      const listeners: Record<string, any> = {};
+      const workerInstance = {
+        on: jest.fn((event: string, cb: any): any => {
+          listeners[event] = cb;
+
+          return workerInstance;
+        }),
+        off: jest.fn((event: string, _cb: any): any => {
+          delete listeners[event];
+
+          return workerInstance;
+        }),
+        removeAllListeners: jest.fn(),
+        terminate: jest.fn().mockResolvedValue(0),
+        postMessage: jest.fn(),
+        emit: (event: string, value: any) => {
+          if (listeners[event]) {
+            listeners[event](value);
+          }
+        }
+      };
+
+      instances.push(workerInstance);
+
+      return workerInstance as any;
+    });
+    const pool = buildPersistentPool(1);
+    // Run task 1 which will crash
+    const task1 = pool.runTask({ moduleSpecifier: 'fail-spec', args: {} });
+
+    instances[0].emit('exit', 1);
+    await expect(task1).rejects.toThrow('Persistent worker exited unexpectedly with code 1');
+
+    // Fast-forward past the backoff timer to trigger worker respawn
+    jest.advanceTimersByTime(100);
+
+    // Run task 2, verify it can execute in the recovered slot
+    const task2 = pool.runTask({ moduleSpecifier: 'next-spec', args: {} });
+    const secondWorker = instances[1];
+
+    expect(secondWorker).toBeDefined();
+    secondWorker.emit('message', { success: true, payload: 'recovered-success' });
+    await expect(task2).resolves.toBe('recovered-success');
+
+    jest.useRealTimers();
+  });
 });
 
 describe('buildTransientPool', () => {
