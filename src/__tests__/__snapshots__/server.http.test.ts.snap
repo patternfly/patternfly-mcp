@@ -298,27 +298,36 @@ exports[`startHttpTransport should start HTTP server, with port and host: server
       [Function],
     ],
   ],
-  "setupHandlers": [
-    [
-      "connection",
-      [Function],
+  "setupHandlers": {
+    "off": [
+      [
+        "error",
+        [Function],
+      ],
     ],
-    [
-      "error",
-      [Function],
+    "on": [
+      [
+        "connection",
+        [Function],
+      ],
+      [
+        "error",
+        [Function],
+      ],
     ],
-  ],
+    "once": [
+      [
+        "error",
+        [Function],
+      ],
+    ],
+  },
   "setupServer": [
     [
       {
         "handleRequest": [MockFunction],
         "sessionId": "test-session-123",
       },
-    ],
-    [
-      3000,
-      "localhost",
-      [Function],
     ],
   ],
   "setupTransport": [
