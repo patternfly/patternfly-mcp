@@ -1,4 +1,5 @@
 import { deferTask, delay } from '../server.task';
+import { log } from '../logger';
 
 describe('deferTask', () => {
   beforeEach(() => {
@@ -71,19 +72,70 @@ describe('deferTask', () => {
   it('should cancel a task', async () => {
     const mockDebug = jest.fn();
     const mockFunc = jest.fn().mockReturnValue('lorem ipsum');
-    const handle = deferTask(mockFunc, { debug: mockDebug, repeat: 3, cancelMs: 100, intervalMs: 110 })();
+    const handle = deferTask(mockFunc, { debug: mockDebug, repeat: 5, cancelMs: 250, intervalMs: 100 })();
 
     expect(handle.isRunning()).toBe(false);
 
     await Promise.allSettled([
       handle.start(),
-      jest.advanceTimersByTimeAsync(85)
+      jest.advanceTimersByTimeAsync(300)
     ]);
 
     expect(mockDebug.mock.calls.map(arr => ({ type: arr[0].type, value: arr[0].value() }))).toMatchSnapshot();
 
     expect(handle.isRunning()).toBe(false);
+    expect(mockFunc).toHaveBeenCalledTimes(3);
+  });
+
+  it('should disable cutoff and warn if cancelMs <= intervalMs', async () => {
+    const warnSpy = jest.spyOn(log, 'warn').mockImplementation(() => {});
+    const mockFunc = jest.fn().mockReturnValue('ok');
+    const handle = deferTask(mockFunc, { repeat: 1, cancelMs: 100, intervalMs: 100 })();
+    const result = await handle.start();
+
+    expect(result).toBe('ok');
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('cancelMs (100) must be greater than intervalMs (100)')
+    );
     expect(mockFunc).toHaveBeenCalledTimes(1);
+  });
+
+  it('should repeat indefinitely when repeat is Infinity until stopped', async () => {
+    const mockFunc = jest.fn().mockReturnValue('polling');
+    const handle = deferTask(mockFunc, { repeat: Infinity, intervalMs: 100 })();
+
+    // Starts execution: Call 1 runs immediately at t = 0ms
+    handle.start();
+
+    // Advance timers for 2 intervals -> Call 2 (t=100ms) and Call 3 (t=200ms)
+    await jest.advanceTimersByTimeAsync(100);
+    await jest.advanceTimersByTimeAsync(100);
+
+    expect(mockFunc).toHaveBeenCalledTimes(3);
+    expect(handle.isRunning()).toBe(true);
+
+    // Stop the loop
+    await handle.stop();
+    expect(handle.isRunning()).toBe(false);
+  });
+
+  it('should continue loop on error when continueOnError is true', async () => {
+    const errorSpy = jest.spyOn(log, 'error').mockImplementation(() => {});
+    const mockFunc = jest
+      .fn()
+      .mockRejectedValueOnce(new Error('transient network failure'))
+      .mockResolvedValue('recovered');
+    const handle = deferTask(mockFunc, { repeat: 2, intervalMs: 100, continueOnError: true })();
+    const runPromise = handle.start();
+
+    // Advance past iteration 1 error delay to iteration 2
+    await jest.advanceTimersByTimeAsync(100);
+
+    const result = await runPromise;
+
+    expect(result).toBe('recovered');
+    expect(mockFunc).toHaveBeenCalledTimes(2);
+    expect(errorSpy).toHaveBeenCalledWith('Defer task error', expect.any(Error));
   });
 
   it('should enforce a timeout', async () => {
