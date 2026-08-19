@@ -150,7 +150,7 @@ const delay = ({ ms, signal }: { ms: number; signal?: AbortSignal | undefined })
  * const pollFunc = async (passedArgsToPollFunc: string) => {}
  * // Create a handle for the task. `continueOnError` keeps the loop alive
  * // when a single run fails (errors are logged instead of re-rejecting).
- * pollFunc.deferTask = deferTask(pollFunc, { repeat: undefined, intervalMs: 5000, continueOnError: true });
+ * pollFunc.deferTask = deferTask(pollFunc, { repeat: Infinity, intervalMs: 5000, continueOnError: true });
  *
  * // Start the task. Attach a rejection handler, an unhandled rejection can crash the process.
  * pollFunc.deferTask.start(passedArgsToPollFunc).catch(error => log.error('Task error', error));

@@ -100,7 +100,7 @@ describe('deferTask', () => {
     expect(mockFunc).toHaveBeenCalledTimes(1);
   });
 
-  it('should repeat indefinitely when repeat is undefined until stopped', async () => {
+  it('should repeat indefinitely when repeat is Infinity until stopped', async () => {
     const mockFunc = jest.fn().mockReturnValue('polling');
     const handle = deferTask(mockFunc, { repeat: Infinity, intervalMs: 100 })();
 
