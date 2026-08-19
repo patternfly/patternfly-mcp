@@ -1,7 +1,7 @@
 import { Worker } from 'node:worker_threads';
 import { fileURLToPath } from 'node:url';
 import { availableParallelism } from 'node:os';
-import { formatUnknownError } from './logger';
+import { formatUnknownError, log } from './logger';
 
 /**
  * Payload for a task execution, including module details, arguments, and configuration options.
@@ -50,6 +50,25 @@ interface QueuedTask {
 }
 
 /**
+ * Worker instance. Props and methods for worker instance status and respawn behavior.
+ *
+ * @interface Workers
+ *
+ * @property worker Optional worker instance.
+ * @property active Is worker active.
+ * @property reject Optional promise reject for worker errors.
+ * @property consecutiveCrashes Count consecutive crashes.
+ * @property respawnTimer Optional timer for worker respawn.
+ */
+interface Workers {
+  worker?: Worker;
+  active: boolean;
+  reject?: (reason: unknown) => void;
+  consecutiveCrashes: number;
+  respawnTimer?: NodeJS.Timeout;
+}
+
+/**
  * Throttled worker thread pool for parallel execution.
  *
  * @interface WorkerPoolInstance
@@ -78,6 +97,21 @@ const poolRegistry = new Map<PoolKind, WorkerPoolInstance>();
  * @note In the future we can look at adding this to default options.
  */
 const MAX_QUEUE_CAP = 50;
+
+/**
+ * Maximum number of consecutive worker crashes before shutdown.
+ */
+const MAX_CONSECUTIVE_CRASHES = 5;
+
+/**
+ * Minimum backoff time for worker respawn.
+ */
+const MIN_BACKOFF_MS = 50;
+
+/**
+ * Maximum backoff time for worker respawn.
+ */
+const MAX_BACKOFF_MS = 2000;
 
 /**
  * Resolves the location of the worker entry script safely across bundling and testing frameworks.
@@ -271,33 +305,65 @@ const buildTransientPool = (maxWorkers = Math.max(1, availableParallelism() - 1)
  */
 const buildPersistentPool = (maxWorkers = Math.max(1, availableParallelism() - 1)): WorkerPoolInstance => {
   const queue: QueuedTask[] = [];
-  const workers: { worker: Worker; active: boolean; reject?: (reason: unknown) => void }[] = [];
+  const workers: Workers[] = [];
   const workerScript = getWorkerScriptPath();
   const poolAbort = createPoolAbort();
+
+  const spawnWorker = (index: number) => {
+    const slot = workers[index];
+
+    if (!slot || poolAbort.isAborted()) {
+      return;
+    }
+
+    const worker = new Worker(workerScript);
+
+    slot.worker = worker;
+    worker.on('error', () => handleWorkerCrash(index));
+    worker.on('exit', (code: number) => handleWorkerCrash(index, code));
+    next();
+  };
 
   const handleWorkerCrash = (index: number, exitCode?: number) => {
     const slot = workers[index];
 
-    if (!slot) {
+    if (!slot || poolAbort.isAborted()) {
       return;
     }
 
     slot.worker?.removeAllListeners();
 
-    if (slot.reject) {
+    delete slot.worker;
+
+    const reject = slot.reject;
+
+    delete slot.reject;
+    slot.active = false;
+
+    if (reject) {
       const message = exitCode !== undefined
         ? `Persistent worker exited unexpectedly with code ${exitCode}`
         : 'Persistent worker thread crashed';
 
-      slot.reject(new Error(message));
-    } else {
-      slot.active = false;
+      reject(new Error(message));
     }
 
-    slot.worker = new Worker(workerScript);
-    slot.worker.on('error', () => handleWorkerCrash(index));
-    slot.worker.on('exit', (code: number) => handleWorkerCrash(index, code));
-    next();
+    slot.consecutiveCrashes += 1;
+    if (slot.consecutiveCrashes > MAX_CONSECUTIVE_CRASHES) {
+      log.warn(`Persistent worker slot ${index} reached max crash limit (${MAX_CONSECUTIVE_CRASHES}); halting respawn.`);
+
+      return;
+    }
+
+    const backoffMs = Math.min(
+      MAX_BACKOFF_MS,
+      MIN_BACKOFF_MS * 2 ** (slot.consecutiveCrashes - 1) + Math.random() * 20
+    );
+
+    slot.respawnTimer = setTimeout(() => {
+      delete slot.respawnTimer;
+      spawnWorker(index);
+    }, backoffMs);
   };
 
   const next = (): void => {
@@ -305,7 +371,7 @@ const buildPersistentPool = (maxWorkers = Math.max(1, availableParallelism() - 1
       return;
     }
 
-    const idleWorkerSlot = workers.find(worker => !worker.active);
+    const idleWorkerSlot = workers.find(worker => !worker.active && worker.worker);
 
     if (!idleWorkerSlot) {
       return;
@@ -325,6 +391,8 @@ const buildPersistentPool = (maxWorkers = Math.max(1, availableParallelism() - 1
 
     const onMessage = (message: WorkerIpcMessage) => {
       cleanup();
+      idleWorkerSlot.consecutiveCrashes = 0;
+
       if (message && message.success) {
         resolve(message.payload);
       } else {
@@ -338,28 +406,25 @@ const buildPersistentPool = (maxWorkers = Math.max(1, availableParallelism() - 1
     };
 
     const cleanup = () => {
-      worker.off('message', onMessage);
-      worker.off('error', onError);
+      worker?.off('message', onMessage);
+      worker?.off('error', onError);
       idleWorkerSlot.active = false;
       delete idleWorkerSlot.reject;
 
       next();
     };
 
-    worker.on('message', onMessage);
-    worker.on('error', onError);
+    worker?.on('message', onMessage);
+    worker?.on('error', onError);
 
     // Send the task data via postMessage channel to be captured by persistent listeners
-    worker.postMessage(payload);
+    worker?.postMessage(payload);
   };
 
   // Pre-spawn and warm up the permanent thread containers
   for (let i = 0; i < maxWorkers; i++) {
-    const worker = new Worker(workerScript); // Instantiated WITHOUT initial workerData
-
-    workers.push({ worker, active: false });
-    worker.on('error', () => handleWorkerCrash(i));
-    worker.on('exit', (code: number) => handleWorkerCrash(i, code));
+    workers.push({ active: false, consecutiveCrashes: 0 });
+    spawnWorker(i);
   }
 
   return {
@@ -385,8 +450,16 @@ const buildPersistentPool = (maxWorkers = Math.max(1, availableParallelism() - 1
       queue.length = 0;
 
       for (const slot of workers) {
-        slot.worker.removeAllListeners();
-        await slot.worker.terminate();
+        if (slot.respawnTimer) {
+          clearTimeout(slot.respawnTimer);
+          delete slot.respawnTimer;
+        }
+
+        slot.worker?.removeAllListeners();
+        await slot.worker?.terminate();
+
+        delete slot.worker;
+
         slot.active = false;
         delete slot.reject;
       }
