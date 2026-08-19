@@ -137,6 +137,12 @@ normalizeString.memo = memo(normalizeString, { cacheLimit: 50 });
  * @param {ClosestSearchOptions} options - Search configuration options
  * @returns Closest matching item from items.
  *
+ * @note The `items[itemIndex]` truthiness check in the distance branch intentionally guards
+ * against computing distance on empty or falsy values, as realistic MCP search datasets
+ * operate exclusively on non-empty identifiers (component names, CSS tokens, and resource URIs).
+ * Attempting to "correct" falsy values with logic additions, or removals, on the `items[itemIndex]`
+ * check may ironically end up returning the same results you intended to correct.
+ *
  * @example
  * ```typescript
  * const result = findClosest('button', ['Button', 'ButtonGroup', 'Badge']);

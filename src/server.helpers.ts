@@ -207,6 +207,10 @@ const isUrlObject = (obj: unknown, { allowedProtocols }: { allowedProtocols?: st
  * Be aware this helper is used to gate-keep tools-as-plugins. Consider additions carefully
  * since they may fall outside our use cases.
  *
+ * @note When `isStrict: true` (default), only schemes specified in `allowedProtocols` are
+ * accepted. When `isStrict: false`, `allowedProtocols` serves as a fast-path prefix check,
+ * falling back to `new URL()` to support open/custom schemes or empty protocol lists.
+ *
  * @param str - String or object to check
  * @param [options] - Options
  * @param [options.allowedProtocols] - List of allowed URL protocols. Default: `['file', 'http', 'https', 'data', 'node']`

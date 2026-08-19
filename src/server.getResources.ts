@@ -91,6 +91,12 @@ const matchPackageVersion = (value: string | undefined, supportedVersions: strin
  * it as-is back to async and witness the unit tests fail. If it is moved back to async, it
  * should be thoroughly tested.
  *
+ * @note The traversal loop condition `while (currentDir !== root)` deliberately stops before
+ * inspecting the filesystem root directory (e.g. `/package.json` or `C:\package.json`).
+ * Because this function resolves consumer project dependencies from CLI/npx working directories
+ * (`process.cwd()`), inspecting the filesystem root is a hypothetical boundary condition
+ * and is currently unnecessary in general project workflows.
+ *
  * @param startPath - Directory to start searching from
  * @param options - Options object
  * @param options.resolvedPath - Set to `true` to return the absolute path, or `false` to return the relative path. Defaults to `true`.
