@@ -28,7 +28,10 @@ describe('getProcessOnPort', () => {
 
 describe('startHttpTransport', () => {
   const mockFunction = jest.fn();
-  const mockEventHandler = jest.fn();
+  const mockOnHandler = jest.fn();
+  const mockOnceHandler = jest.fn();
+  const mockOffHandler = jest.fn();
+  const mockListen = jest.fn();
   const mockServerClose = jest.fn();
   let mockRequestHandler: ((req: any, res: any) => void) | undefined;
   let mockServer: any;
@@ -41,8 +44,10 @@ describe('startHttpTransport', () => {
       registerTool: mockFunction
     };
     mockHttpServer = {
-      on: mockEventHandler,
-      listen: mockFunction.mockImplementation((_port: any, _host: any, callback: any) => {
+      on: mockOnHandler,
+      once: mockOnceHandler,
+      off: mockOffHandler,
+      listen: mockListen.mockImplementation((_port: any, _host: any, callback: any) => {
         if (callback) {
           callback();
         }
@@ -78,9 +83,41 @@ describe('startHttpTransport', () => {
     expect({
       setupServer: mockFunction.mock.calls,
       setupTransport: MockStreamableHTTPServerTransport.mock.calls,
-      setupHandlers: mockEventHandler.mock.calls,
+      setupHandlers: {
+        on: mockOnHandler.mock.calls,
+        once: mockOnceHandler.mock.calls,
+        off: mockOffHandler.mock.calls
+      },
       serverClose: mockServerClose.mock.calls
     }).toMatchSnapshot('server setup');
+  });
+
+  it('should reject startup on EADDRINUSE error', async () => {
+    mockHttpServer.listen.mockImplementation(() => {
+      const errorHandler = mockHttpServer.once.mock.calls.find((call: any) => call[0] === 'error')?.[1];
+
+      if (errorHandler) {
+        const err: any = new Error('Address in use');
+
+        err.code = 'EADDRINUSE';
+        errorHandler(err);
+      }
+    });
+
+    await expect(
+      startHttpTransport(mockServer, { http: { port: 5000, host: 'localhost' } } as any)
+    ).rejects.toThrow('Port 5000 is already in use');
+  });
+
+  it('should log runtime error emitted after startup without throwing unhandled exception', async () => {
+    const server = await startHttpTransport(mockServer, { http: { port: 3000, host: 'localhost' } } as any);
+
+    const runtimeErrorHandler = mockHttpServer.on.mock.calls.find((call: any) => call[0] === 'error')?.[1];
+
+    expect(runtimeErrorHandler).toBeDefined();
+    await expect(runtimeErrorHandler(new Error('Connection reset'))).resolves.toBeUndefined();
+
+    await server.close();
   });
 
   it.each([

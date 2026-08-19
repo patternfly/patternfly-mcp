@@ -214,17 +214,9 @@ const startHttpTransport = async (mcpServer: McpServer, options = getOptions()):
 
   // Start the server. Port conflicts will be handled in the error handler below
   await new Promise<void>((resolve, reject) => {
-    server.listen(http.port, http.host, () => {
-      log.info(`${name} server running on http://${http.host}:${getPort()}`);
-      resolve();
-    });
+    const onStartupError = async (error: NodeJS.ErrnoException) => {
+      server.off('error', onStartupError);
 
-    server.on('connection', socket => {
-      connections.add(socket);
-      socket.on('close', () => connections.delete(socket));
-    });
-
-    server.on('error', async (error: NodeJS.ErrnoException) => {
       if (error.code === 'EADDRINUSE') {
         const processInfo = await getProcessOnPort(http.port);
         const errorMessage = `Port ${http.port} is already in use${processInfo ? ` by PID ${processInfo.pid}` : ''}.`;
@@ -235,7 +227,24 @@ const startHttpTransport = async (mcpServer: McpServer, options = getOptions()):
         log.error(`HTTP server error: ${error}`);
         reject(error);
       }
+    };
+
+    server.once('error', onStartupError);
+
+    server.listen(http.port, http.host, () => {
+      server.off('error', onStartupError);
+      log.info(`${name} server running on http://${http.host}:${getPort()}`);
+      resolve();
     });
+  });
+
+  server.on('connection', socket => {
+    connections.add(socket);
+    socket.on('close', () => connections.delete(socket));
+  });
+
+  server.on('error', async (error: NodeJS.ErrnoException) => {
+    log.error(`HTTP server runtime error: ${error.message || error}`);
   });
 
   return {
