@@ -51,12 +51,11 @@ const healthReport = (statsOptions: StatsSession) => {
 
 /**
  * Task for `healthReport`.
- *
- * @note `undefined` repeat means the task will run indefinitely.
  */
 healthReport.deferTask = deferTask(healthReport, {
   intervalMs: DEFAULT_OPTIONS.stats.reportIntervalMs.health,
-  repeat: undefined
+  repeat: Infinity,
+  continueOnError: true
 });
 
 /**
@@ -101,12 +100,11 @@ const transportReport = (
 
 /**
  * Task for `transportReport`.
- *
- * @note `undefined` repeat means the task will run indefinitely.
  */
 transportReport.deferTask = deferTask(transportReport, {
   intervalMs: DEFAULT_OPTIONS.stats.reportIntervalMs.transport,
-  repeat: undefined
+  repeat: Infinity,
+  continueOnError: true
 });
 
 /**
@@ -147,10 +145,10 @@ const createServerStats = (statsOptions = getStatsOptions(), options = getOption
       const httpPort = options.isHttp ? httpHandle?.port : undefined;
       const stats = statsReport({ httpPort }, statsOptions);
 
-      // Start the health report. Defining repeat as undefined keeps the loop infinite.
+      // Start the health report.
       healthTask = healthReport.deferTask(statsOptions);
 
-      // Start the transport report. Defining repeat as undefined keeps the loop infinite.
+      // Start the transport report.
       transportTask = transportReport.deferTask({ httpPort }, statsOptions);
 
       void healthTask.start();
