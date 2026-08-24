@@ -1,6 +1,38 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.3.0](https://github.com/patternfly/patternfly-mcp/compare/ef494382dad4b9e89e3eca75bca9c87a62f3b9cb...d8bf77fc2dc33de5adb7706ba2dda8409fded577) (2026-08-24)
+
+
+### Features
+* **collections** pf-4401 patternfly api base ([#274](https://github.com/patternfly/patternfly-mcp/pull/274)) ([9f08cc2](https://github.com/patternfly/patternfly-mcp/commit/9f08cc2af260577e4e211a6b8c9e8e4121ba520a))
+* **collections** pf-4401 worker threads ([#276](https://github.com/patternfly/patternfly-mcp/pull/276)) ([3ee24ef](https://github.com/patternfly/patternfly-mcp/commit/3ee24ef549ce06e2d465345ddba3178c0cfc9172))
+* **collections** pf-4401 collection plugins base ([#272](https://github.com/patternfly/patternfly-mcp/pull/272)) ([2ce5d7b](https://github.com/patternfly/patternfly-mcp/commit/2ce5d7be4afcb936932e7bd63a2e3e19ae08e879))
+
+### Code Refactoring
+* **collections** pf-4402 move to listeners ([#281](https://github.com/patternfly/patternfly-mcp/pull/281)) ([892c81e](https://github.com/patternfly/patternfly-mcp/commit/892c81e180b8cd09688164896641190981abfc89))
+*  pf-4401 centralize toolsUser helpers ([#275](https://github.com/patternfly/patternfly-mcp/pull/275)) ([76b4049](https://github.com/patternfly/patternfly-mcp/commit/76b404986170aec324d8ed0561b8c9b8f8ae28f1))
+* **server** pf-4401 centralize child-process, ipc, host ([#262](https://github.com/patternfly/patternfly-mcp/pull/262)) ([c43005f](https://github.com/patternfly/patternfly-mcp/commit/c43005f7dc44977215be8da832ba1a67930c2236))
+
+### Builds
+* **deps-dev** bump dev group with 5 updates ([#283](https://github.com/patternfly/patternfly-mcp/pull/283)) ([d8bf77f](https://github.com/patternfly/patternfly-mcp/commit/d8bf77fc2dc33de5adb7706ba2dda8409fded577))
+* **deps** patternfly-component-schemas from 1.2.0 to 1.3.0 ([#280](https://github.com/patternfly/patternfly-mcp/pull/280)) ([4248588](https://github.com/patternfly/patternfly-mcp/commit/42485888e630f9fdad91f50251d19f613f0135c5))
+* **deps** lock update ([#279](https://github.com/patternfly/patternfly-mcp/pull/279)) ([35abcea](https://github.com/patternfly/patternfly-mcp/commit/35abcea1e0c395647e3e94f9664213149e9ae4d6))
+* **deps** bump @modelcontextprotocol/sdk ([#278](https://github.com/patternfly/patternfly-mcp/pull/278)) ([cb7591d](https://github.com/patternfly/patternfly-mcp/commit/cb7591dd42653301ffa58e5a4cda7b4ddaed9085))
+* **deps-dev** bump the dev group with 2 updates ([#277](https://github.com/patternfly/patternfly-mcp/pull/277)) ([031954f](https://github.com/patternfly/patternfly-mcp/commit/031954f23075c0ab0787fdee9308270908e4b0a1))
+* **deps-dev** bump the dev group with 5 updates ([#270](https://github.com/patternfly/patternfly-mcp/pull/270)) ([95ade3d](https://github.com/patternfly/patternfly-mcp/commit/95ade3d25b28790f9f112f323b6b48191bfeb97c))
+*  pf-4265 compass links, package ref ([#269](https://github.com/patternfly/patternfly-mcp/pull/269)) ([ec35bc1](https://github.com/patternfly/patternfly-mcp/commit/ec35bc1d44dbdf2f73a40e1a2aa11eb4d6003505))
+* **deps** bump actions/setup-node from 6.4.0 to 7.0.0 ([#267](https://github.com/patternfly/patternfly-mcp/pull/267)) ([315dbf0](https://github.com/patternfly/patternfly-mcp/commit/315dbf0275fd0a3b2ac0a436f10c0c2a291068a3))
+*  pf-4265 apply compass config ([#261](https://github.com/patternfly/patternfly-mcp/pull/261)) ([e9629eb](https://github.com/patternfly/patternfly-mcp/commit/e9629eb0224b6b3ed0f4eeedf6baeb22a19aca1d))
+* **deps-dev** bump the dev group with 6 updates ([#265](https://github.com/patternfly/patternfly-mcp/pull/265)) ([9b32f68](https://github.com/patternfly/patternfly-mcp/commit/9b32f68576edd7b2754ae7423c531312d676d95a))
+
+### Bug Fixes
+* **deferTask** pf-4402 continueOnError, schedule padding ([#288](https://github.com/patternfly/patternfly-mcp/pull/288)) ([dfa8eed](https://github.com/patternfly/patternfly-mcp/commit/dfa8eedbefb3d9b6faba07224d3ff119d9d2ba50))
+* **server** prevent dropped http error events on startup ([#287](https://github.com/patternfly/patternfly-mcp/pull/287)) ([d98a3d5](https://github.com/patternfly/patternfly-mcp/commit/d98a3d5cc2cf05aacee91ab82b091e06fb9bbfb1))
+* **buildPersistentPool** pf-4402 reset after crash, cap respawn ([#284](https://github.com/patternfly/patternfly-mcp/pull/284)) ([a9f520a](https://github.com/patternfly/patternfly-mcp/commit/a9f520ad6f021b19bb214673b0c9a4429b6c44db))
+* **server** avoid stopping parent with embedded server ([#285](https://github.com/patternfly/patternfly-mcp/pull/285)) ([db61968](https://github.com/patternfly/patternfly-mcp/commit/db619682f2d1531e035708b864ee9cb0e88b1758))
+* **server** behavior, clarity annotations ([#286](https://github.com/patternfly/patternfly-mcp/pull/286)) ([4a91509](https://github.com/patternfly/patternfly-mcp/commit/4a915092e9a0549856f88074b87c0e84d0a64347))
+
 ## [2.2.0](https://github.com/patternfly/patternfly-mcp/compare/4e1cd7c636f6ac17c851f54a920549e5377f3809...36caaa960f706744f733d00a5686c17d2f6a6c4a) (2026-07-28)
 
 
