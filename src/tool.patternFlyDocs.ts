@@ -189,15 +189,20 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
 
     for (const doc of docs) {
       const patternFlyEntry = doc.path ? byPath[doc.path] : undefined;
+      const entryId = patternFlyEntry?.id;
+      const entryGroupId = patternFlyEntry?.groupId;
       const entryName = patternFlyEntry?.name;
       const entryVersion = patternFlyEntry?.version;
       const entryVersionDisplay = (entryVersion && ` (${entryVersion})`) || '';
+
+      const provenance = entryId ? `<!-- mcp:provenance id="${entryId}" groupId="${entryGroupId}" -->` : `<!-- mcp:provenance id="${doc.path}" -->`;
 
       const docTitle = patternFlyEntry
         ? `# Documentation for ${patternFlyEntry?.displayName || entryName}${entryVersionDisplay} [${setCategoryDisplayLabel(patternFlyEntry)}]`
         : `# Content for ${doc.path}`;
 
       docResults.push(stringJoin.newline(
+        provenance,
         docTitle,
         `Source: ${doc.path}`,
         '',
