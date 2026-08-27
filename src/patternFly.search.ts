@@ -171,6 +171,55 @@ type FilterPatternFlyMemoArgs = [
 ];
 
 /**
+ * Rate how closely a search result matches a search query.
+ *
+ * @param {SearchPatternFlyResult} result - Result object containing name and display name props.
+ * @param normalizedQuery - Query string for comparison.
+ * @returns `result` relevance to a `normalizedQuery`:
+ *  - `0`: Exact match with name or entity slug.
+ *  - `1`: Exact match with display name.
+ *  - `2`: Prefix match with entity name.
+ *  - `3`: Match display name at a word boundary.
+ *  - `4`: Name substring match.
+ *  - `5`: Match solely by descriptive content or keywords.
+ */
+const calculateRelevance = (
+  result: SearchPatternFlyResult,
+  normalizedQuery: string
+): number => {
+  const resultName = (result.name || '').toLowerCase();
+  const displayName = 'displayName' in result ? (result.displayName as string).toLowerCase() : undefined;
+
+  // Exact name / entity match
+  if (resultName === normalizedQuery) {
+    return 0;
+  }
+
+  // Exact display name match
+  if (displayName && displayName === normalizedQuery) {
+    return 1;
+  }
+
+  // Prefix match
+  if (resultName.startsWith(`${normalizedQuery}-`) || resultName.startsWith(normalizedQuery)) {
+    return 2;
+  }
+
+  // Word boundary match in display name
+  if (displayName && new RegExp(`\\b${normalizedQuery}\\b`, 'i').test(displayName)) {
+    return 3;
+  }
+
+  // Substring match in name
+  if (resultName.includes(normalizedQuery)) {
+    return 4;
+  }
+
+  // Tier 5: Matched solely via prose keyword index / description
+  return 5;
+};
+
+/**
  * Apply sequenced priority filters for predictable filtering, filter PatternFly data.
  *
  * @note It is tempting to apply a default version to this function. Do not. Architecture
@@ -616,7 +665,14 @@ const searchPatternFly = async (searchQuery: unknown, filters?: FilterPatternFly
       return a.distance - b.distance;
     }
 
-    return a.name.localeCompare(b.name);
+    const relevantA = calculateRelevance(a, coercedSearchQuery.toLowerCase());
+    const relevantB = calculateRelevance(b, coercedSearchQuery.toLowerCase());
+
+    if (relevantA !== relevantB) {
+      return relevantA - relevantB;
+    }
+
+    return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
   };
 
   const sortedExactMatches = exactMatches.sort(sortByDistanceByName);

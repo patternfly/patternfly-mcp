@@ -89,10 +89,15 @@ const searchPatternFlyTool = (options = getOptions()): McpTool => {
 
     const results = new Map<string, Record<string, unknown>>();
     const groupSortNames = new Map<string, string>();
+    const groupOrder = new Map<string, number>();
     let numberCollections = 0;
     let numberRecords = 0;
 
-    parseResults.forEach(result => {
+    parseResults.forEach((result, index) => {
+      if (!groupOrder.has(result.groupId)) {
+        groupOrder.set(result.groupId, index);
+      }
+
       if (results.has(result.groupId)) {
         return;
       }
@@ -164,8 +169,22 @@ const searchPatternFlyTool = (options = getOptions()): McpTool => {
       const gidA = a.groupId as string;
       const gidB = b.groupId as string;
 
-      // 1. Sort by Group (using the Collection's name)
+      // 1. Sort by Group (Relevance order from search results, or alphabetical for wildcard all)
       if (gidA !== gidB) {
+        if (isSearchWildCardAll) {
+          const nameA = groupSortNames.get(gidA) || '';
+          const nameB = groupSortNames.get(gidB) || '';
+
+          return nameA.localeCompare(nameB);
+        }
+
+        const orderA = groupOrder.get(gidA) ?? Number.MAX_SAFE_INTEGER;
+        const orderB = groupOrder.get(gidB) ?? Number.MAX_SAFE_INTEGER;
+
+        if (orderA !== orderB) {
+          return orderA - orderB;
+        }
+
         const nameA = groupSortNames.get(gidA) || '';
         const nameB = groupSortNames.get(gidB) || '';
 
