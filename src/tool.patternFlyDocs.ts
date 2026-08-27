@@ -15,6 +15,7 @@ import { searchPatternFly, type SearchPatternFlyResult } from './patternFly.sear
 import { getPatternFlyMcpResources, getPatternFlyComponentSchema, setCategoryDisplayLabel } from './patternFly.getResources';
 import { normalizeEnumeratedPatternFlyVersion } from './patternFly.helpers';
 import { isPatternFlyUri } from './patternFly.support';
+import { formatContentForMarkdown } from './resource.helpers';
 
 /**
  * usePatternFlyDocs tool function
@@ -206,7 +207,7 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
         docTitle,
         `Source: ${doc.path}`,
         '',
-        doc.content
+        formatContentForMarkdown(doc.content)
       ));
 
       if (latestSchemasVersion === entryVersion && entryName) {

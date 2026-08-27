@@ -21,7 +21,9 @@ exports[`usePatternFlyDocsTool, callback should have a specific markdown format:
 # Documentation for Button (v6) [Documentation]
 Source: components/loremButton.md
 
+\`\`\`
 lorem documentation content
+\`\`\`
 
 ---
 
@@ -29,7 +31,9 @@ lorem documentation content
 # Content for components/ipsumButton.md
 Source: components/ipsumButton.md
 
+\`\`\`
 ipsum documentation content
+\`\`\`
 
 ---
 

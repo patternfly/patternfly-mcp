@@ -14,6 +14,7 @@ import {
   uriSectionComplete,
   uriVersionComplete
 } from './resource.patternFlyDocsIndex';
+import { formatContentForMarkdown } from './resource.helpers';
 
 /**
  * Name of the resource template.
@@ -180,7 +181,7 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
         `<!-- mcp:provenance id="${id}" groupId="${groupId}" -->`,
         `# Documentation for ${displayName} - ${displayCategory} (${entryVersion})`,
         '',
-        content
+        formatContentForMarkdown(content)
       )
     }))
   };
