@@ -13,6 +13,7 @@ import {
   isScriptLike,
   isShellLike,
   isXmlLike,
+  stringToCase,
   paramCompletion
 } from '../resource.helpers';
 import { filterPatternFly } from '../patternFly.search';
@@ -564,6 +565,122 @@ describe('formatContentForMarkdown', () => {
     }
   ])('should format content for markdown, $description', ({ input, options, expected }) => {
     expect(formatContentForMarkdown(input, options)).toBe(expected);
+  });
+});
+
+describe('stringToCase', () => {
+  it.each([
+    {
+      description: 'kebab-case to camelCase',
+      input: 'button-group-item',
+      options: undefined,
+      expected: 'buttonGroupItem'
+    },
+    {
+      description: 'snake_case to camelCase',
+      input: 'button_group_item',
+      options: { type: 'camel' },
+      expected: 'buttonGroupItem'
+    },
+    {
+      description: 'PascalCase to camelCase',
+      input: 'ButtonGroupItem',
+      options: { type: 'camel' },
+      expected: 'buttonGroupItem'
+    },
+    {
+      description: 'mixed delimiters, colons and slashes',
+      input: 'components/button:react-guidelines',
+      options: { type: 'camel' },
+      expected: 'componentsButtonReactGuidelines'
+    },
+    {
+      description: 'keeps acronyms in camelCase, trailing',
+      input: 'button-css-api',
+      options: { type: 'camel' },
+      expected: 'buttonCSSAPI'
+    },
+    {
+      description: 'keeps acronyms in camelCase, leading',
+      input: 'mcp-server-ui',
+      options: { type: 'camel' },
+      expected: 'mcpServerUI'
+    },
+    {
+      description: 'kebab-case to PascalCase',
+      input: 'about-modal-box',
+      options: { type: 'pascal' },
+      expected: 'AboutModalBox'
+    },
+    {
+      description: 'keeps acronyms in PascalCase',
+      input: 'patternfly-mcp-api',
+      options: { type: 'pascal' },
+      expected: 'PatternflyMCPAPI'
+    },
+    {
+      description: 'PascalCase to snake_case',
+      input: 'AboutModalBox',
+      options: { type: 'snake' },
+      expected: 'about_modal_box'
+    },
+    {
+      description: 'kebab-case to snake_case',
+      input: 'button-group-item',
+      options: { type: 'snake' },
+      expected: 'button_group_item'
+    },
+    {
+      description: 'kebab-case to Title Case',
+      input: 'action-list-item',
+      options: { type: 'title' },
+      expected: 'Action List Item'
+    },
+    {
+      description: 'keeps acronyms in Title Case',
+      input: 'mcp-html-aria-rules',
+      options: { type: 'title' },
+      expected: 'MCP HTML ARIA Rules'
+    },
+    {
+      description: 'empty string',
+      input: '',
+      expected: ''
+    },
+    {
+      description: 'whitespace only',
+      input: '   ',
+      expected: ''
+    },
+    {
+      description: 'null input',
+      input: null,
+      expected: ''
+    },
+    {
+      description: 'undefined input',
+      input: undefined,
+      expected: ''
+    },
+    {
+      description: 'number input',
+      input: 12345,
+      expected: ''
+    },
+    {
+      description: 'custom acronym array',
+      input: 'custom-foo-bar',
+      options: { type: 'pascal', acronyms: ['foo'] },
+      expected: 'CustomFOOBar'
+    },
+    {
+      description: 'custom split regex',
+      input: 'custom|pipe|separated',
+      options: { splitRegex: /\|/ },
+      expected: 'customPipeSeparated'
+    }
+  ])('should convert string case, $description', ({ input, options, expected }) => {
+    expect(stringToCase(input, options as any)).toBe(expected);
   });
 });
 

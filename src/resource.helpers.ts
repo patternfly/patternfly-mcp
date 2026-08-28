@@ -3,6 +3,91 @@ import { normalizeEnumeratedPatternFlyVersion } from './patternFly.helpers';
 import { isPlainObject } from './server.helpers';
 
 /**
+ * Common default regex to tokenize mixed string formats (kebab, snake, camel, spaces, punctuation).
+ */
+const DEFAULT_STRING_SPLIT_REGEX = /[\s\-_.:/]+|(?<=[a-z0-9])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])/;
+
+/**
+ * Common acronyms to preserve across transformations.
+ */
+const DEFAULT_ACRONYMS = ['ai', 'css', 'html', 'mcp', 'cli', 'uxd', 'ui', 'api', 'faq', 'faqs', 'aria', 'rtl'];
+
+/**
+ * Convert a string into a casing style.
+ *
+ * @param str - Input to convert.
+ * @param [options] - Config options.
+ * @param [options.type] - Target case type for the output string. Defaults to `camel`.
+ * @param [options.splitRegex] - A regex or string used to split the input words.
+ * @param [options.acronyms] - Array of common acronyms.
+ * @returns Converted string or an empty string if the input is either invalid or contains zero words.
+ */
+const stringToCase = (
+  str: unknown,
+  {
+    type = 'camel',
+    splitRegex = DEFAULT_STRING_SPLIT_REGEX,
+    acronyms = DEFAULT_ACRONYMS
+  }: { type?: 'snake' | 'pascal' | 'title' | 'camel'; splitRegex?: RegExp | string; acronyms?: string[] } = {}
+) => {
+  const words = typeof str === 'string' && str.trim().length
+    ? str
+      .trim()
+      .split(splitRegex)
+      .map(word => word.trim())
+      .filter(Boolean)
+    : [];
+
+  if (!words.length) {
+    return '';
+  }
+
+  const acronymRegex = acronyms.length > 0 ? new RegExp(`^(${acronyms.join('|')})$`, 'i') : null;
+
+  switch (type) {
+    case 'snake':
+      return words.map(word => word.toLowerCase()).join('_');
+
+    case 'pascal':
+      return words
+        .map(word => {
+          if (acronymRegex?.test(word)) {
+            return word.toUpperCase();
+          }
+
+          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        })
+        .join('');
+
+    case 'title':
+      return words
+        .map(word => {
+          if (acronymRegex?.test(word)) {
+            return word.toUpperCase();
+          }
+
+          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        })
+        .join(' ');
+
+    case 'camel':
+    default:
+      return words
+        .map((word, index) => {
+          if (index === 0) {
+            return word.toLowerCase();
+          }
+          if (acronymRegex?.test(word)) {
+            return word.toUpperCase();
+          }
+
+          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        })
+        .join('');
+  }
+};
+
+/**
  * Count the number of inlined code blocks in a given string.
  *
  * @param str - Input string.
@@ -558,5 +643,8 @@ export {
   isScriptLike,
   isShellLike,
   isXmlLike,
-  paramCompletion
+  paramCompletion,
+  stringToCase,
+  DEFAULT_STRING_SPLIT_REGEX,
+  DEFAULT_ACRONYMS
 };

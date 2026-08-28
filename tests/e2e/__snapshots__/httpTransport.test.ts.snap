@@ -10,7 +10,7 @@ Use these parameters to filter the list of PatternFly components.
 
 | Parameter | Valid Values | Description |
 | :--- | :--- | :--- |
-| \`category\` | \`accessibility\`, \`design-guidelines\`, \`react\` | Filter by category |
+| \`category\` | \`accessibility\`, \`css\`, \`design-guidelines\`, \`html\`, \`react\`, \`text\` | Filter by category |
 | \`version\` | \`v5\`, \`v6\` | Filter by version |
 
 ## Available Patterns
@@ -31,8 +31,8 @@ Use these parameters to filter the PatternFly documentation index.
 
 | Parameter | Valid Values | Description |
 | :--- | :--- | :--- |
-| \`category\` | \`accessibility\`, \`design-guidelines\`, \`design-tokens\`, \`development-guidelines\`, \`grammar\`, \`react\`, \`writing-guides\` | Filter by category |
-| \`section\` | \`ai\`, \`charts\`, \`components\`, \`content-design\`, \`extensions\`, \`foundations-and-styles\`, \`get-started\`, \`guidelines\`, \`layouts\`, \`patterns\`, \`resources\`, \`upgrade\` | Filter by section |
+| \`category\` | \`about\`, \`about-rapid-prototyping\`, \`accessibility\`, \`analytics\`, \`chat-bot\`, \`css\`, \`customizing%20messages\`, \`demo\`, \`demo-demos\`, \`design-guidelines\`, \`design-tokens\`, \`development-guide\`, \`development-guidelines\`, \`enhancing-existing-projects\`, \`general\`, \`grammar\`, \`html\`, \`new-prototypes\`, \`overview\`, \`react\`, \`release-notes\`, \`text\`, \`upgrade-guide\`, \`writing-guidelines\`, \`writing-guides\` | Filter by category |
+| \`section\` | \`accessibility\`, \`ai\`, \`charts\`, \`components\`, \`content-design\`, \`developer-guides\`, \`extensions\`, \`foundations-and-styles\`, \`get-help\`, \`get-involved\`, \`get-started\`, \`guidelines\`, \`layouts\`, \`patterns\`, \`releases\`, \`resources\`, \`upgrade\` | Filter by section |
 | \`version\` | \`v4\`, \`v5\`, \`v6\` | Filter by version |
 
 ## Available Patterns
@@ -58,7 +58,7 @@ Use these parameters to filter the list of PatternFly component schemas.
 
 | Parameter | Valid Values | Description |
 | :--- | :--- | :--- |
-| \`category\` | \`accessibility\`, \`design-guidelines\`, \`react\` | Filter by category |
+| \`category\` | \`accessibility\`, \`css\`, \`design-guidelines\`, \`html\`, \`react\`, \`text\` | Filter by category |
 | \`version\` | \`v5\`, \`v6\` | Filter by version |
 
 ## Available Patterns
@@ -107,7 +107,7 @@ exports[`Builtin tools, HTTP transport should initialize MCP session over HTTP 1
 `;
 
 exports[`Builtin tools, HTTP transport should return expected markdown structure for search results: markdown 1`] = `
-"# Search results for PatternFly version "v6" and "button". Showing 1 exact match.
+"# Search results for PatternFly version "v6" and "button". Showing 2 exact matches.
 1. **button**:
   "usePatternFlyDocs" resource parameter "name" and "URLs"
     - **Name**: button
@@ -115,9 +115,28 @@ exports[`Builtin tools, HTTP transport should return expected markdown structure
       - [Button - (v6) - Design Guidelines for the button component.](https://raw.githubusercontent.com/patternfly/patternfly-org/957756128e8ddfc4be5db49e72312a2c43b9d220/packages/documentation-site/patternfly-docs/content/components/button/button.md)
       - [Button - (v6) - Accessibility for the button component.](https://raw.githubusercontent.com/patternfly/patternfly-org/957756128e8ddfc4be5db49e72312a2c43b9d220/packages/documentation-site/patternfly-docs/content/components/accessibility/button/button.md)
       - [Button - (v6) - Examples for the button component.](https://raw.githubusercontent.com/patternfly/patternfly-react/6f2385bbcc03de22a7ae8be506481e1b4d653200/packages/react-core/src/components/Button/examples/Button.md)
+      - [Button CSS - (v6) - PatternFly variables and tokens for Button CSS.](https://main.patternfly-org.pages.dev/api/v6/components/button/css)
+      - [Button - (v6) - A favorite button should use a plain button with the star icon. Applying .pf-m-favorited to the button initiates a microanimation and indicates that the item is favorited.](https://main.patternfly-org.pages.dev/api/v6/components/button/html)
+      - [Button Block - (v6) - PatternFly examples and demos for Button Block.](https://main.patternfly-org.pages.dev/api/v6/components/button/react/examples/ButtonBlock)
+      - [Button Call To Action - (v6) - PatternFly examples and demos for Button Call To Action.](https://main.patternfly-org.pages.dev/api/v6/components/button/react/examples/ButtonCallToAction)
+      - [Button Disabled - (v6) - PatternFly examples and demos for Button Disabled.](https://main.patternfly-org.pages.dev/api/v6/components/button/react/examples/ButtonDisabled)
+      - [Button Inline Span Link - (v6) - PatternFly examples and demos for Button Inline Span Link.](https://main.patternfly-org.pages.dev/api/v6/components/button/react/examples/ButtonInlineSpanLink)
+      - [Button Links - (v6) - PatternFly examples and demos for Button Links.](https://main.patternfly-org.pages.dev/api/v6/components/button/react/examples/ButtonLinks)
+      - [Button Progress - (v6) - PatternFly examples and demos for Button Progress.](https://main.patternfly-org.pages.dev/api/v6/components/button/react/examples/ButtonProgress)
+      - [Button Small - (v6) - PatternFly examples and demos for Button Small.](https://main.patternfly-org.pages.dev/api/v6/components/button/react/examples/ButtonSmall)
+      - [Button Variations - (v6) - PatternFly examples and demos for Button Variations.](https://main.patternfly-org.pages.dev/api/v6/components/button/react/examples/ButtonVariations)
+      - [Button - (v6) - There are certain cases where specific buttons must be used within your UI.](https://main.patternfly-org.pages.dev/api/v6/components/button/text)
     - **Resources**:
       - **URI**: patternfly://docs/button?version=v6
       - **JSON Schemas**: patternfly://schemas/button?version=v6
+
+2. **extensionscomponentgroupsclosebutton**:
+  "usePatternFlyDocs" resource parameter "name" and "URLs"
+    - **Name**: extensionscomponentgroupsclosebutton
+    - **URLs**:
+      - [Component Groups Close Button - (v6) - The close button component provides a way for users to exit a modal, dialogue, or similar action. To further customize this component, you can also utilize all properties of the button component.](https://main.patternfly-org.pages.dev/api/v6/extensions/component-groups_close-button/react)
+    - **Resources**:
+      - **URI**: patternfly://docs/extensionscomponentgroupsclosebutton?version=v6
 
 
 

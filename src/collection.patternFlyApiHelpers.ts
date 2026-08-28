@@ -3,7 +3,9 @@ import {
   contentType,
   getInlinedCodeBlockCount,
   isJson,
-  isJsonLike
+  isJsonLike,
+  stringToCase,
+  DEFAULT_ACRONYMS
 } from './resource.helpers';
 
 /**
@@ -195,12 +197,14 @@ const calculateContentQualityScore = (
  * Transform a string.
  *
  * @param segment - Input string to normalize.
+ * @param [settings] - Optional settings
+ * @param [settings.acronyms] - Acronyms to avoid
  * @returns Normalized slug.
  */
-const normalizeSlug = (segment: string): string => {
+const normalizeSlug = (segment: string, { acronyms = DEFAULT_ACRONYMS }: { acronyms?: string[] } = {}): string => {
   let updatedSegment = segment;
 
-  if (/[A-Z]/.test(updatedSegment) && !/^(ai|css|html|mcp|cli|uxd|ui|api|faq|faqs|aria|rtl)$/i.test(updatedSegment)) {
+  if (/[A-Z]/.test(updatedSegment) && !new RegExp(`^(${acronyms.join('|')})$`, 'i').test(updatedSegment)) {
     const split = updatedSegment.split(/(?=[A-Z])/);
 
     if (split.every(val => /^[A-Z]/.test(val))) {
@@ -219,6 +223,9 @@ const normalizeSlug = (segment: string): string => {
  * Format a compound slug into a clean title.
  * E.g., 'ai-assisted-development_ai-assisted-code-migration' -> 'AI Assisted Development: AI Assisted Code Migration'
  *
+ * @note The content in the API response slugs varies from snake to hyphens
+ * making it unique to parse.
+ *
  * @param slug
  * @param section
  */
@@ -227,36 +234,15 @@ const formatSlugToTitle = (slug: string, section?: string): string => {
     return 'PatternFly API';
   }
 
-  const acronyms = ['ai', 'css', 'html', 'mcp', 'cli', 'uxd', 'ui', 'api', 'faq', 'faqs', 'aria', 'rtl'];
-  const acronymRegex = new RegExp(`^(${acronyms.join('|')})$`, 'i');
+  const cleanSection = section ? stringToCase(section, { type: 'title' }) : '';
 
-  const cleanSection = section
-    ? section
-      .split('-')
-      .map(wordPhrase =>
-        (acronymRegex.test(wordPhrase)
-          ? wordPhrase.toUpperCase()
-          : wordPhrase.charAt(0).toUpperCase() + wordPhrase.slice(1))).join(' ')
-    : '';
-
-  // Handle bare generic names like 'overview'
   if (slug.toLowerCase() === 'overview' && cleanSection) {
     return `${cleanSection} Overview`;
   }
 
   return slug
     .split('_')
-    .map(segment =>
-      segment
-        .split('-')
-        .map(word => {
-          if (acronymRegex.test(word)) {
-            return word.toUpperCase();
-          }
-
-          return word.charAt(0).toUpperCase() + word.slice(1);
-        })
-        .join(' '))
+    .map(segment => stringToCase(segment, { type: 'title' }))
     .join(': ');
 };
 
@@ -268,12 +254,22 @@ const formatSlugToTitle = (slug: string, section?: string): string => {
  * @param [context.slug] - Optional slug used for fallback or secondary formatting of the display name.
  * @param [context.category] - Optional category of content being processed (e.g., 'props', 'css', or 'doc').
  * @param [context.section] - Optional section name used for refining the display name.
+ * @param [context.detail] - Optional detail string used for refining the display name.
+ * @param [context.detailType] - Optional detail type used for refining the display name.
  * @returns Extracted or formatted display name for the API item.
  */
-const extractApiDisplayName = (content?: string, context: { slug?: string; category?: string; section?: string; } = {}): string => {
-  const { slug = '', category = 'doc', section } = context || {};
+const extractApiDisplayName = (
+  content?: string,
+  context: { slug?: string; category?: string; section?: string; detail?: string; detailType?: string } = {}
+): string => {
+  const { slug = '', category = 'doc', section, detail = '', detailType = '' } = context || {};
 
   const trimmed = content?.trim() || '';
+
+  // Use example detail
+  if (detailType === 'examples' && detail) {
+    return formatSlugToTitle(detail, section);
+  }
 
   // Props JSON signature
   if (category === 'props' && trimmed.startsWith('{')) {
@@ -453,23 +449,24 @@ const extractApiDescription = (
  * @returns Extracted entry name
  */
 const extractApiName = (item: string, section: string): string => {
-  const normalizedItem = item.trim().toLowerCase();
-  const normalizedSection = section.trim().toLowerCase();
+  const normalizedItem = item.trim();
+  const normalizedSection = section.trim();
+  let updatedName = `${normalizedSection}-${normalizedItem}`;
 
-  if (normalizedSection === 'components') {
-    return normalizedItem;
+  if (normalizedSection.toLowerCase() === 'components') {
+    updatedName = normalizedItem;
   }
 
-  if (normalizedItem === 'overview') {
-    return `${normalizedSection}-overview`;
+  if (normalizedItem.toLowerCase() === 'overview') {
+    updatedName = `${normalizedSection}-overview`;
   }
 
   // Prevent double-prefix
-  if (normalizedItem.startsWith(`${normalizedSection}-`)) {
-    return normalizedItem;
+  if (normalizedItem.toLowerCase().startsWith(`${normalizedSection.toLowerCase()}-`)) {
+    updatedName = normalizedItem;
   }
 
-  return `${normalizedSection}-${normalizedItem}`;
+  return stringToCase(updatedName, { type: 'pascal' });
 };
 
 export {

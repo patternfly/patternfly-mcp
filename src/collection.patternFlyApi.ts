@@ -544,7 +544,7 @@ const contentMetadata = (record: ApiCrawler | ApiEmbeddedExpanded, options = get
     normalizedFacet,
     normalizedDetailType,
     normalizedDetail,
-    ...remaining.map(normalizeSlug)
+    ...remaining.map(remainder => normalizeSlug(remainder))
   ].filter(Boolean).join('-');
 
   const name = extractApiName(normalizedItem, normalizedSection);
@@ -552,7 +552,7 @@ const contentMetadata = (record: ApiCrawler | ApiEmbeddedExpanded, options = get
   const id = `api::${normalizedVersion}::${normalizedSection}::${normalizedItem}::${normalizedCategory}${normalizedDetailType ? `::${normalizedDetailType}::${normalizedDetail}` : ''}`;
 
   const displayName = (record as ApiEmbeddedExpanded)?.displayName ||
-    extractApiDisplayName(content, { slug: normalizedItem, category: normalizedCategory, section: normalizedSection });
+    extractApiDisplayName(content, { slug: normalizedItem, category: normalizedCategory, section: normalizedSection, detail: rawDetail, detailType: normalizedDetailType });
 
   const description = (record as ApiEmbeddedExpanded)?.description ||
     extractApiDescription(content, { displayName, category: normalizedCategory, detailType: normalizedDetailType });

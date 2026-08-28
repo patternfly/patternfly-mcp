@@ -22,6 +22,9 @@ exports[`runServer should allow server to be stopped, http stop server: diagnost
       "Registered collection: patternfly-component-schemas",
     ],
     [
+      "Registered collection: patternfly-api",
+    ],
+    [
       "Registered resource: patternfly-context",
     ],
     [
@@ -90,6 +93,9 @@ exports[`runServer should allow server to be stopped, stdio stop server: diagnos
       "Registered collection: patternfly-component-schemas",
     ],
     [
+      "Registered collection: patternfly-api",
+    ],
+    [
       "Registered resource: patternfly-context",
     ],
     [
@@ -156,6 +162,9 @@ exports[`runServer should attempt to run server, create transport, connect, and 
     ],
     [
       "Registered collection: patternfly-component-schemas",
+    ],
+    [
+      "Registered collection: patternfly-api",
     ],
     [
       "Registered resource: patternfly-context",
@@ -237,6 +246,9 @@ exports[`runServer should attempt to run server, disable SIGINT handler: diagnos
       "Registered collection: patternfly-component-schemas",
     ],
     [
+      "Registered collection: patternfly-api",
+    ],
+    [
       "Registered resource: patternfly-context",
     ],
     [
@@ -309,6 +321,9 @@ exports[`runServer should attempt to run server, enable SIGINT handler explicitl
     ],
     [
       "Registered collection: patternfly-component-schemas",
+    ],
+    [
+      "Registered collection: patternfly-api",
     ],
     [
       "Registered resource: patternfly-context",
@@ -388,6 +403,9 @@ exports[`runServer should attempt to run server, log warnings for experimental o
     ],
     [
       "Registered collection: patternfly-component-schemas",
+    ],
+    [
+      "Registered collection: patternfly-api",
     ],
     [
       "Registered resource: patternfly-context",
@@ -484,6 +502,9 @@ exports[`runServer should attempt to run server, register a tool: diagnostics 1`
       "Registered collection: patternfly-component-schemas",
     ],
     [
+      "Registered collection: patternfly-api",
+    ],
+    [
       "Registered resource: patternfly-context",
     ],
     [
@@ -569,6 +590,9 @@ exports[`runServer should attempt to run server, register multiple tools: diagno
     ],
     [
       "Registered collection: patternfly-component-schemas",
+    ],
+    [
+      "Registered collection: patternfly-api",
     ],
     [
       "Registered resource: patternfly-context",
@@ -665,6 +689,9 @@ exports[`runServer should attempt to run server, use custom options: diagnostics
       "Registered collection: patternfly-component-schemas",
     ],
     [
+      "Registered collection: patternfly-api",
+    ],
+    [
       "Registered resource: patternfly-context",
     ],
     [
@@ -742,6 +769,9 @@ exports[`runServer should attempt to run server, use default tools, http: diagno
     ],
     [
       "Registered collection: patternfly-component-schemas",
+    ],
+    [
+      "Registered collection: patternfly-api",
     ],
     [
       "Registered resource: patternfly-context",
@@ -830,6 +860,9 @@ exports[`runServer should attempt to run server, use default tools, stdio: diagn
     ],
     [
       "Registered collection: patternfly-component-schemas",
+    ],
+    [
+      "Registered collection: patternfly-api",
     ],
     [
       "Registered resource: patternfly-context",

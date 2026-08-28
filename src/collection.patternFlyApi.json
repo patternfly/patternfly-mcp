@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generated": "2026-09-10T14:57:31.829Z",
+  "generated": "2026-09-11T21:17:36.541Z",
   "base": "https://main.patternfly-org.pages.dev/api",
   "records": [
     {
@@ -166,22 +166,22 @@
     },
     {
       "p": "v6/components/about-modal/react/examples/AboutModalBasic",
-      "n": "About Modal",
-      "d": "PatternFly examples and demos for About Modal.",
+      "n": "About Modal Basic",
+      "d": "PatternFly examples and demos for About Modal Basic.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/about-modal/react/examples/AboutModalComplexUserPositionedContent",
-      "n": "About Modal",
-      "d": "PatternFly examples and demos for About Modal.",
+      "n": "About Modal Complex User Positioned Content",
+      "d": "PatternFly examples and demos for About Modal Complex User Positioned Content.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/about-modal/react/examples/AboutModalWithoutProductName",
-      "n": "About Modal",
-      "d": "PatternFly examples and demos for About Modal.",
+      "n": "About Modal Without Product Name",
+      "d": "PatternFly examples and demos for About Modal Without Product Name.",
       "c": "javascript",
       "q": 1
     },
@@ -208,36 +208,36 @@
     },
     {
       "p": "v6/components/accordion/react/examples/AccordionBordered",
-      "n": "Accordion",
-      "d": "PatternFly examples and demos for Accordion.",
+      "n": "Accordion Bordered",
+      "d": "PatternFly examples and demos for Accordion Bordered.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/accordion/react/examples/AccordionDefinitionList",
-      "n": "Accordion",
-      "d": "PatternFly examples and demos for Accordion.",
+      "n": "Accordion Definition List",
+      "d": "PatternFly examples and demos for Accordion Definition List.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/accordion/react/examples/AccordionFixedWithMultipleExpandBehavior",
-      "n": "Accordion",
-      "d": "PatternFly examples and demos for Accordion.",
+      "n": "Accordion Fixed With Multiple Expand Behavior",
+      "d": "PatternFly examples and demos for Accordion Fixed With Multiple Expand Behavior.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/accordion/react/examples/AccordionSingleExpandBehavior",
-      "n": "Accordion",
-      "d": "PatternFly examples and demos for Accordion.",
+      "n": "Accordion Single Expand Behavior",
+      "d": "PatternFly examples and demos for Accordion Single Expand Behavior.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/accordion/react/examples/AccordionToggleIconAtStart",
-      "n": "Accordion",
-      "d": "PatternFly examples and demos for Accordion.",
+      "n": "Accordion Toggle Icon At Start",
+      "d": "PatternFly examples and demos for Accordion Toggle Icon At Start.",
       "c": "javascript",
       "q": 1
     },
@@ -264,29 +264,29 @@
     },
     {
       "p": "v6/components/action-list/react/examples/ActionListMultipleGroups",
-      "n": "Action List",
-      "d": "PatternFly examples and demos for Action List.",
+      "n": "Action List Multiple Groups",
+      "d": "PatternFly examples and demos for Action List Multiple Groups.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/action-list/react/examples/ActionListSingleGroup",
-      "n": "Action List",
-      "d": "PatternFly examples and demos for Action List.",
+      "n": "Action List Single Group",
+      "d": "PatternFly examples and demos for Action List Single Group.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/action-list/react/examples/ActionListWithCancelButton",
-      "n": "Action List",
-      "d": "PatternFly examples and demos for Action List.",
+      "n": "Action List With Cancel Button",
+      "d": "PatternFly examples and demos for Action List With Cancel Button.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/action-list/react/examples/ActionListWithIcons",
-      "n": "Action List",
-      "d": "PatternFly examples and demos for Action List.",
+      "n": "Action List With Icons",
+      "d": "PatternFly examples and demos for Action List With Icons.",
       "c": "javascript",
       "q": 1
     },
@@ -320,57 +320,57 @@
     },
     {
       "p": "v6/components/alert/react/examples/AlertAsyncLiveRegion",
-      "n": "Alert",
-      "d": "PatternFly examples and demos for Alert.",
+      "n": "Alert Async Live Region",
+      "d": "PatternFly examples and demos for Alert Async Live Region.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/alert/react/examples/AlertDynamicLiveRegion",
-      "n": "Alert",
-      "d": "PatternFly examples and demos for Alert.",
+      "n": "Alert Dynamic Live Region",
+      "d": "PatternFly examples and demos for Alert Dynamic Live Region.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/alert/react/examples/AlertGroupAsync",
-      "n": "Alert",
-      "d": "PatternFly examples and demos for Alert.",
+      "n": "Alert Group Async",
+      "d": "PatternFly examples and demos for Alert Group Async.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/alert/react/examples/AlertGroupSingularDynamic",
-      "n": "Alert",
-      "d": "PatternFly examples and demos for Alert.",
+      "n": "Alert Group Singular Dynamic",
+      "d": "PatternFly examples and demos for Alert Group Singular Dynamic.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/alert/react/examples/AlertGroupSingularDynamicOverflow",
-      "n": "Alert",
-      "d": "PatternFly examples and demos for Alert.",
+      "n": "Alert Group Singular Dynamic Overflow",
+      "d": "PatternFly examples and demos for Alert Group Singular Dynamic Overflow.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/alert/react/examples/AlertGroupStatic",
-      "n": "Alert",
-      "d": "PatternFly examples and demos for Alert.",
+      "n": "Alert Group Static",
+      "d": "PatternFly examples and demos for Alert Group Static.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/alert/react/examples/AlertGroupToast",
-      "n": "Alert",
-      "d": "PatternFly examples and demos for Alert.",
+      "n": "Alert Group Toast",
+      "d": "PatternFly examples and demos for Alert Group Toast.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/alert/react/examples/AlertGroupToastOverflowCapture",
-      "n": "Alert",
-      "d": "PatternFly examples and demos for Alert.",
+      "n": "Alert Group Toast Overflow Capture",
+      "d": "PatternFly examples and demos for Alert Group Toast Overflow Capture.",
       "c": "javascript",
       "q": 1
     },
@@ -397,36 +397,36 @@
     },
     {
       "p": "v6/components/avatar/react/examples/AvatarBasic",
-      "n": "Avatar",
-      "d": "PatternFly examples and demos for Avatar.",
+      "n": "Avatar Basic",
+      "d": "PatternFly examples and demos for Avatar Basic.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/avatar/react/examples/AvatarBordered",
-      "n": "Avatar",
-      "d": "PatternFly examples and demos for Avatar.",
+      "n": "Avatar Bordered",
+      "d": "PatternFly examples and demos for Avatar Bordered.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/avatar/react/examples/AvatarColorModifiers",
-      "n": "Avatar",
-      "d": "PatternFly examples and demos for Avatar.",
+      "n": "Avatar Color Modifiers",
+      "d": "PatternFly examples and demos for Avatar Color Modifiers.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/avatar/react/examples/AvatarInitials",
-      "n": "Avatar",
-      "d": "PatternFly examples and demos for Avatar.",
+      "n": "Avatar Initials",
+      "d": "PatternFly examples and demos for Avatar Initials.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/avatar/react/examples/AvatarSizeVariations",
-      "n": "Avatar",
-      "d": "PatternFly examples and demos for Avatar.",
+      "n": "Avatar Size Variations",
+      "d": "PatternFly examples and demos for Avatar Size Variations.",
       "c": "javascript",
       "q": 1
     },
@@ -460,8 +460,8 @@
     },
     {
       "p": "v6/components/back-to-top/react/examples/BackToTopBasic",
-      "n": "Back To Top",
-      "d": "PatternFly examples and demos for Back To Top.",
+      "n": "Back To Top Basic",
+      "d": "PatternFly examples and demos for Back To Top Basic.",
       "c": "javascript",
       "q": 1
     },
@@ -537,22 +537,22 @@
     },
     {
       "p": "v6/components/badge/react/examples/BadgeDisabled",
-      "n": "Badge",
-      "d": "PatternFly examples and demos for Badge.",
+      "n": "Badge Disabled",
+      "d": "PatternFly examples and demos for Badge Disabled.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/badge/react/examples/BadgeRead",
-      "n": "Badge",
-      "d": "PatternFly examples and demos for Badge.",
+      "n": "Badge Read",
+      "d": "PatternFly examples and demos for Badge Read.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/badge/react/examples/BadgeUnread",
-      "n": "Badge",
-      "d": "PatternFly examples and demos for Badge.",
+      "n": "Badge Unread",
+      "d": "PatternFly examples and demos for Badge Unread.",
       "c": "javascript",
       "q": 1
     },
@@ -572,22 +572,22 @@
     },
     {
       "p": "v6/components/banner/react/examples/BannerBasic",
-      "n": "Banner",
-      "d": "PatternFly examples and demos for Banner.",
+      "n": "Banner Basic",
+      "d": "PatternFly examples and demos for Banner Basic.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/banner/react/examples/BannerPill",
-      "n": "Banner",
-      "d": "PatternFly examples and demos for Banner.",
+      "n": "Banner Pill",
+      "d": "PatternFly examples and demos for Banner Pill.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/banner/react/examples/BannerStatus",
-      "n": "Banner",
-      "d": "PatternFly examples and demos for Banner.",
+      "n": "Banner Status",
+      "d": "PatternFly examples and demos for Banner Status.",
       "c": "javascript",
       "q": 1
     },
@@ -607,15 +607,15 @@
     },
     {
       "p": "v6/components/brand/react/examples/BrandBasic",
-      "n": "Brand",
-      "d": "PatternFly examples and demos for Brand.",
+      "n": "Brand Basic",
+      "d": "PatternFly examples and demos for Brand Basic.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/brand/react/examples/BrandResponsive",
-      "n": "Brand",
-      "d": "PatternFly examples and demos for Brand.",
+      "n": "Brand Responsive",
+      "d": "PatternFly examples and demos for Brand Responsive.",
       "c": "javascript",
       "q": 1
     },
@@ -642,29 +642,29 @@
     },
     {
       "p": "v6/components/breadcrumb/react/examples/BreadcrumbBasic",
-      "n": "Breadcrumb",
-      "d": "PatternFly examples and demos for Breadcrumb.",
+      "n": "Breadcrumb Basic",
+      "d": "PatternFly examples and demos for Breadcrumb Basic.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/breadcrumb/react/examples/BreadcrumbDropdown",
-      "n": "Breadcrumb",
-      "d": "PatternFly examples and demos for Breadcrumb.",
+      "n": "Breadcrumb Dropdown",
+      "d": "PatternFly examples and demos for Breadcrumb Dropdown.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/breadcrumb/react/examples/BreadcrumbWithHeading",
-      "n": "Breadcrumb",
-      "d": "PatternFly examples and demos for Breadcrumb.",
+      "n": "Breadcrumb With Heading",
+      "d": "PatternFly examples and demos for Breadcrumb With Heading.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/breadcrumb/react/examples/BreadcrumbWithoutHomeLink",
-      "n": "Breadcrumb",
-      "d": "PatternFly examples and demos for Breadcrumb.",
+      "n": "Breadcrumb Without Home Link",
+      "d": "PatternFly examples and demos for Breadcrumb Without Home Link.",
       "c": "javascript",
       "q": 1
     },
@@ -691,57 +691,57 @@
     },
     {
       "p": "v6/components/button/react/examples/ButtonBlock",
-      "n": "Button",
-      "d": "PatternFly examples and demos for Button.",
+      "n": "Button Block",
+      "d": "PatternFly examples and demos for Button Block.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/button/react/examples/ButtonCallToAction",
-      "n": "Button",
-      "d": "PatternFly examples and demos for Button.",
+      "n": "Button Call To Action",
+      "d": "PatternFly examples and demos for Button Call To Action.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/button/react/examples/ButtonDisabled",
-      "n": "Button",
-      "d": "PatternFly examples and demos for Button.",
+      "n": "Button Disabled",
+      "d": "PatternFly examples and demos for Button Disabled.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/button/react/examples/ButtonInlineSpanLink",
-      "n": "Button",
-      "d": "PatternFly examples and demos for Button.",
+      "n": "Button Inline Span Link",
+      "d": "PatternFly examples and demos for Button Inline Span Link.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/button/react/examples/ButtonLinks",
-      "n": "Button",
-      "d": "PatternFly examples and demos for Button.",
+      "n": "Button Links",
+      "d": "PatternFly examples and demos for Button Links.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/button/react/examples/ButtonProgress",
-      "n": "Button",
-      "d": "PatternFly examples and demos for Button.",
+      "n": "Button Progress",
+      "d": "PatternFly examples and demos for Button Progress.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/button/react/examples/ButtonSmall",
-      "n": "Button",
-      "d": "PatternFly examples and demos for Button.",
+      "n": "Button Small",
+      "d": "PatternFly examples and demos for Button Small.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/button/react/examples/ButtonVariations",
-      "n": "Button",
-      "d": "PatternFly examples and demos for Button.",
+      "n": "Button Variations",
+      "d": "PatternFly examples and demos for Button Variations.",
       "c": "javascript",
       "q": 1
     },
@@ -761,57 +761,57 @@
     },
     {
       "p": "v6/components/card/react/examples/CardBasic",
-      "n": "Card",
-      "d": "PatternFly examples and demos for Card.",
+      "n": "Card Basic",
+      "d": "PatternFly examples and demos for Card Basic.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/card/react/examples/CardHeaderInCardHead",
-      "n": "Card",
-      "d": "PatternFly examples and demos for Card.",
+      "n": "Card Header In Card Head",
+      "d": "PatternFly examples and demos for Card Header In Card Head.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/card/react/examples/CardHeaderWraps",
-      "n": "Card",
-      "d": "PatternFly examples and demos for Card.",
+      "n": "Card Header Wraps",
+      "d": "PatternFly examples and demos for Card Header Wraps.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/card/react/examples/CardOnlyActionsInCardHead",
-      "n": "Card",
-      "d": "PatternFly examples and demos for Card.",
+      "n": "Card Only Actions In Card Head",
+      "d": "PatternFly examples and demos for Card Only Actions In Card Head.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/card/react/examples/CardSecondary",
-      "n": "Card",
-      "d": "PatternFly examples and demos for Card.",
+      "n": "Card Secondary",
+      "d": "PatternFly examples and demos for Card Secondary.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/card/react/examples/CardWithHeadingElement",
-      "n": "Card",
-      "d": "PatternFly examples and demos for Card.",
+      "n": "Card With Heading Element",
+      "d": "PatternFly examples and demos for Card With Heading Element.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/card/react/examples/CardWithImageAndActions",
-      "n": "Card",
-      "d": "PatternFly examples and demos for Card.",
+      "n": "Card With Image And Actions",
+      "d": "PatternFly examples and demos for Card With Image And Actions.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/components/card/react/examples/CardWithModifiers",
-      "n": "Card",
-      "d": "PatternFly examples and demos for Card.",
+      "n": "Card With Modifiers",
+      "d": "PatternFly examples and demos for Card With Modifiers.",
       "c": "javascript",
       "q": 1
     },
@@ -950,8 +950,8 @@
     },
     {
       "p": "v6/developer-guides/react-flow/text/examples/CompassReactFlowDemo",
-      "n": "React Flow",
-      "d": "PatternFly examples and demos for React Flow.",
+      "n": "Compass React Flow Demo",
+      "d": "PatternFly examples and demos for Compass React Flow Demo.",
       "c": "javascript",
       "q": 1
     },
@@ -1139,8 +1139,8 @@
     },
     {
       "p": "v6/foundations-and-styles/layouts_bullseye/react/examples/BullseyeBasic",
-      "n": "Layouts Bullseye",
-      "d": "PatternFly examples and demos for Layouts Bullseye.",
+      "n": "Bullseye Basic",
+      "d": "PatternFly examples and demos for Bullseye Basic.",
       "c": "javascript",
       "q": 1
     },
@@ -1160,57 +1160,57 @@
     },
     {
       "p": "v6/foundations-and-styles/layouts_flex/react/examples/FlexBasic",
-      "n": "Layouts Flex",
-      "d": "PatternFly examples and demos for Layouts Flex.",
+      "n": "Flex Basic",
+      "d": "PatternFly examples and demos for Flex Basic.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/foundations-and-styles/layouts_flex/react/examples/FlexColumnGap",
-      "n": "Layouts Flex",
-      "d": "PatternFly examples and demos for Layouts Flex.",
+      "n": "Flex Column Gap",
+      "d": "PatternFly examples and demos for Flex Column Gap.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/foundations-and-styles/layouts_flex/react/examples/FlexIndividuallySpaced",
-      "n": "Layouts Flex",
-      "d": "PatternFly examples and demos for Layouts Flex.",
+      "n": "Flex Individually Spaced",
+      "d": "PatternFly examples and demos for Flex Individually Spaced.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/foundations-and-styles/layouts_flex/react/examples/FlexNestedItems",
-      "n": "Layouts Flex",
-      "d": "PatternFly examples and demos for Layouts Flex.",
+      "n": "Flex Nested Items",
+      "d": "PatternFly examples and demos for Flex Nested Items.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/foundations-and-styles/layouts_flex/react/examples/FlexNesting",
-      "n": "Layouts Flex",
-      "d": "PatternFly examples and demos for Layouts Flex.",
+      "n": "Flex Nesting",
+      "d": "PatternFly examples and demos for Flex Nesting.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/foundations-and-styles/layouts_flex/react/examples/FlexRowGap",
-      "n": "Layouts Flex",
-      "d": "PatternFly examples and demos for Layouts Flex.",
+      "n": "Flex Row Gap",
+      "d": "PatternFly examples and demos for Flex Row Gap.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/foundations-and-styles/layouts_flex/react/examples/FlexSpacingNone",
-      "n": "Layouts Flex",
-      "d": "PatternFly examples and demos for Layouts Flex.",
+      "n": "Flex Spacing None",
+      "d": "PatternFly examples and demos for Flex Spacing None.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/foundations-and-styles/layouts_flex/react/examples/FlexSpacingXl",
-      "n": "Layouts Flex",
-      "d": "PatternFly examples and demos for Layouts Flex.",
+      "n": "Flex Spacing Xl",
+      "d": "PatternFly examples and demos for Flex Spacing Xl.",
       "c": "javascript",
       "q": 1
     },
@@ -1230,43 +1230,43 @@
     },
     {
       "p": "v6/foundations-and-styles/layouts_gallery/react/examples/GalleryAdjustingMaxWidths",
-      "n": "Layouts Gallery",
-      "d": "PatternFly examples and demos for Layouts Gallery.",
+      "n": "Gallery Adjusting Max Widths",
+      "d": "PatternFly examples and demos for Gallery Adjusting Max Widths.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/foundations-and-styles/layouts_gallery/react/examples/GalleryAdjustingMinMaxWidths",
-      "n": "Layouts Gallery",
-      "d": "PatternFly examples and demos for Layouts Gallery.",
+      "n": "Gallery Adjusting Min Max Widths",
+      "d": "PatternFly examples and demos for Gallery Adjusting Min Max Widths.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/foundations-and-styles/layouts_gallery/react/examples/GalleryAdjustingMinWidths",
-      "n": "Layouts Gallery",
-      "d": "PatternFly examples and demos for Layouts Gallery.",
+      "n": "Gallery Adjusting Min Widths",
+      "d": "PatternFly examples and demos for Gallery Adjusting Min Widths.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/foundations-and-styles/layouts_gallery/react/examples/GalleryAlternativeComponents",
-      "n": "Layouts Gallery",
-      "d": "PatternFly examples and demos for Layouts Gallery.",
+      "n": "Gallery Alternative Components",
+      "d": "PatternFly examples and demos for Gallery Alternative Components.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/foundations-and-styles/layouts_gallery/react/examples/GalleryBasic",
-      "n": "Layouts Gallery",
-      "d": "PatternFly examples and demos for Layouts Gallery.",
+      "n": "Gallery Basic",
+      "d": "PatternFly examples and demos for Gallery Basic.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/foundations-and-styles/layouts_gallery/react/examples/GalleryWithGutters",
-      "n": "Layouts Gallery",
-      "d": "PatternFly examples and demos for Layouts Gallery.",
+      "n": "Gallery With Gutters",
+      "d": "PatternFly examples and demos for Gallery With Gutters.",
       "c": "javascript",
       "q": 1
     },
@@ -1286,50 +1286,50 @@
     },
     {
       "p": "v6/foundations-and-styles/layouts_grid/react/examples/GridAlternativeComponents",
-      "n": "Layouts Grid",
-      "d": "PatternFly examples and demos for Layouts Grid.",
+      "n": "Grid Alternative Components",
+      "d": "PatternFly examples and demos for Grid Alternative Components.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/foundations-and-styles/layouts_grid/react/examples/GridBasic",
-      "n": "Layouts Grid",
-      "d": "PatternFly examples and demos for Layouts Grid.",
+      "n": "Grid Basic",
+      "d": "PatternFly examples and demos for Grid Basic.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/foundations-and-styles/layouts_grid/react/examples/GridGroupingOrdering",
-      "n": "Layouts Grid",
-      "d": "PatternFly examples and demos for Layouts Grid.",
+      "n": "Grid Grouping Ordering",
+      "d": "PatternFly examples and demos for Grid Grouping Ordering.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/foundations-and-styles/layouts_grid/react/examples/GridResponsiveOrdering",
-      "n": "Layouts Grid",
-      "d": "PatternFly examples and demos for Layouts Grid.",
+      "n": "Grid Responsive Ordering",
+      "d": "PatternFly examples and demos for Grid Responsive Ordering.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/foundations-and-styles/layouts_grid/react/examples/GridStandardOrdering",
-      "n": "Layouts Grid",
-      "d": "PatternFly examples and demos for Layouts Grid.",
+      "n": "Grid Standard Ordering",
+      "d": "PatternFly examples and demos for Grid Standard Ordering.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/foundations-and-styles/layouts_grid/react/examples/GridWithGutters",
-      "n": "Layouts Grid",
-      "d": "PatternFly examples and demos for Layouts Grid.",
+      "n": "Grid With Gutters",
+      "d": "PatternFly examples and demos for Grid With Gutters.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/foundations-and-styles/layouts_grid/react/examples/GridWithOverrides",
-      "n": "Layouts Grid",
-      "d": "PatternFly examples and demos for Layouts Grid.",
+      "n": "Grid With Overrides",
+      "d": "PatternFly examples and demos for Grid With Overrides.",
       "c": "javascript",
       "q": 1
     },
@@ -1349,15 +1349,15 @@
     },
     {
       "p": "v6/foundations-and-styles/layouts_level/react/examples/LevelBasic",
-      "n": "Layouts Level",
-      "d": "PatternFly examples and demos for Layouts Level.",
+      "n": "Level Basic",
+      "d": "PatternFly examples and demos for Level Basic.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/foundations-and-styles/layouts_level/react/examples/LevelWithGutters",
-      "n": "Layouts Level",
-      "d": "PatternFly examples and demos for Layouts Level.",
+      "n": "Level With Gutters",
+      "d": "PatternFly examples and demos for Level With Gutters.",
       "c": "javascript",
       "q": 1
     },
@@ -1377,22 +1377,22 @@
     },
     {
       "p": "v6/foundations-and-styles/layouts_split/react/examples/SplitBasic",
-      "n": "Layouts Split",
-      "d": "PatternFly examples and demos for Layouts Split.",
+      "n": "Split Basic",
+      "d": "PatternFly examples and demos for Split Basic.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/foundations-and-styles/layouts_split/react/examples/SplitWithGutter",
-      "n": "Layouts Split",
-      "d": "PatternFly examples and demos for Layouts Split.",
+      "n": "Split With Gutter",
+      "d": "PatternFly examples and demos for Split With Gutter.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/foundations-and-styles/layouts_split/react/examples/SplitWrappable",
-      "n": "Layouts Split",
-      "d": "PatternFly examples and demos for Layouts Split.",
+      "n": "Split Wrappable",
+      "d": "PatternFly examples and demos for Split Wrappable.",
       "c": "javascript",
       "q": 1
     },
@@ -1412,15 +1412,15 @@
     },
     {
       "p": "v6/foundations-and-styles/layouts_stack/react/examples/StackBasic",
-      "n": "Layouts Stack",
-      "d": "PatternFly examples and demos for Layouts Stack.",
+      "n": "Stack Basic",
+      "d": "PatternFly examples and demos for Stack Basic.",
       "c": "javascript",
       "q": 1
     },
     {
       "p": "v6/foundations-and-styles/layouts_stack/react/examples/StackWithGutter",
-      "n": "Layouts Stack",
-      "d": "PatternFly examples and demos for Layouts Stack.",
+      "n": "Stack With Gutter",
+      "d": "PatternFly examples and demos for Stack With Gutter.",
       "c": "javascript",
       "q": 1
     },
