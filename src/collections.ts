@@ -64,7 +64,12 @@ type McpCollection = [
   handler: (arg?: unknown) => McpCollectionResult | Promise<McpCollectionResult>,
   _config?: {
     runParallel?: `#${string}`;
-    runSchedule?: { cancelMs?: number, intervalMs?: number };
+    runSchedule?: {
+      continueOnError?: boolean;
+      cancelMs?: number;
+      intervalMs?: number;
+      repeat?: number
+    };
     // priority?: number;
     isRequired?: boolean;
     // group?: string;
