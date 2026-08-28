@@ -160,6 +160,8 @@ exports[`Logging should allow setting logging options, stderr 1`] = `
 ",
   "[INFO]: Registered collection: patternfly-component-schemas
 ",
+  "[INFO]: Registered collection: patternfly-api
+",
   "[INFO]: Update collection: patternfly-component-schemas
 ",
   "[INFO]: Update collection: patternfly-docs
