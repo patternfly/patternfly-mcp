@@ -8,22 +8,24 @@ exports[`usePatternFlyDocsTool should have a consistent return structure: struct
 }
 `;
 
-exports[`usePatternFlyDocsTool, callback should attempt to parse parameters, multiple files, mock paths 1`] = `"# Content for components/button.md"`;
+exports[`usePatternFlyDocsTool, callback should attempt to parse parameters, multiple files, mock paths 1`] = `"<!-- mcp:provenance id="components/button.md" -->"`;
 
-exports[`usePatternFlyDocsTool, callback should attempt to parse parameters, single file, mock path 1`] = `"# Content for components/button.md"`;
+exports[`usePatternFlyDocsTool, callback should attempt to parse parameters, single file, mock path 1`] = `"<!-- mcp:provenance id="components/button.md" -->"`;
 
-exports[`usePatternFlyDocsTool, callback should attempt to parse parameters, with name and actual path 1`] = `"# Content for documentation:chatbot/README.md"`;
+exports[`usePatternFlyDocsTool, callback should attempt to parse parameters, with name and actual path 1`] = `"<!-- mcp:provenance id="documentation:chatbot/README.md" -->"`;
 
 exports[`usePatternFlyDocsTool, callback should have a specific markdown format: Button 1`] = `
 [
   {
-    "text": "# Documentation for Button (v6) [Documentation]
+    "text": "<!-- mcp:provenance id="components/loremButton.md" -->
+# Documentation for Button (v6) [Documentation]
 Source: components/loremButton.md
 
 lorem documentation content
 
 ---
 
+<!-- mcp:provenance id="components/ipsumButton.md" -->
 # Content for components/ipsumButton.md
 Source: components/ipsumButton.md
 
