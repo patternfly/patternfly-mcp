@@ -137,7 +137,10 @@ describe('isMarkdown', () => {
       description: 'fenced code block', input: '```js\nconst a=1;\n```', expected: true
     },
     {
-      description: 'table', input: '| Header |\n|--------|\n| Cell   |', expected: false
+      description: 'table', input: '| Header |\n|--------|\n| Cell   |', expected: true
+    },
+    {
+      description: 'table with colon', input: '| Header |\n|:---|:---|\n| Cell   |', expected: true
     },
     {
       description: 'plain text', input: 'Just a sentence.', expected: false
