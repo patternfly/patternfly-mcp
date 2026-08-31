@@ -16,6 +16,7 @@
     "onsessionclosed",
     "patternfly",
     "prefault",
+    "pypy",
     "rereview",
     "rescan",
     "rootfs",
