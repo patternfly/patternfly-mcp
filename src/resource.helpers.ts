@@ -151,13 +151,24 @@ const isXmlLike = (content: unknown): boolean => {
   }
   const trimmed = content.trim();
 
-  // Must start with a tag and contain a closing tag
-  if (!/^<\s*[!?\w]/i.test(trimmed) || !/<\/\s*\w+\s*>/.test(trimmed)) {
+  // Must start with a tag
+  if (!/^<\s*[!?\w]/i.test(trimmed)) {
     return false;
   }
 
+  // Standalone tags
+  if (/^<\s*([a-zA-Z][\w:-]*)(?:\s+[^>]*)?\s*\/>$/s.test(trimmed) || /<\s*[a-zA-Z][\w:-]*(?:\s+[^>]*)?\s*\/>/.test(trimmed)) {
+    return true;
+  }
+
+  // Paired tags
+  if (/<\/\s*[\w:-]+\s*>/.test(trimmed) && /^<\s*[a-zA-Z][\w:-]*/.test(trimmed)) {
+    return true;
+  }
+
   const indicators = [
-    /<!DOCTYPE\s+html>/i,
+    /<!DOCTYPE\s+[^>]+>/i,
+    /<\?xml\b/i,
     /<html\b/i,
     /<body\b/i,
     /<div\b/i,
@@ -360,7 +371,7 @@ const contentType = (content: unknown): '' | 'sh' | 'python' | 'markdown' | 'jav
     return 'markdown';
   }
 
-  if (isJsonLike(content) || isJson(content)) {
+  if (isJson(content)) {
     return 'json';
   }
 
@@ -386,6 +397,10 @@ const contentType = (content: unknown): '' | 'sh' | 'python' | 'markdown' | 'jav
 
   if (isCssLike(content)) {
     return 'css';
+  }
+
+  if (isJsonLike(content)) {
+    return 'json';
   }
 
   return updatedLanguage;

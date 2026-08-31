@@ -186,6 +186,30 @@ describe('isXmlLike', () => {
       description: 'mismatched tags', input: '<div><span></div>', expected: true
     },
     {
+      description: 'standalone tag', input: '<mytag />', expected: true
+    },
+    {
+      description: 'standalone tag without spaces', input: '<mytag/>', expected: true
+    },
+    {
+      description: 'standalone tag with attributes', input: '<mytag id="test" disabled />', expected: true
+    },
+    {
+      description: 'standalone hyphenated custom tag', input: '<my-custom-tag />', expected: true
+    },
+    {
+      description: 'standalone namespaced tag', input: '<xml:element name="foo" />', expected: true
+    },
+    {
+      description: 'standalone void HTML tag', input: '<img src="avatar.png" alt="avatar" />', expected: true
+    },
+    {
+      description: 'XML declaration', input: '<?xml version="1.0" encoding="UTF-8"?>', expected: true
+    },
+    {
+      description: 'generic paired XML tags', input: '<custom>value</custom>', expected: true
+    },
+    {
       description: 'non‑XML code', input: 'console.log("hi")', expected: false
     }
   ])('should detect XML/HTML, $description', ({ input, expected }) => {
@@ -324,7 +348,19 @@ describe('contentType', () => {
       description: 'json string', input: '{"a":1}', expected: 'json'
     },
     {
+      description: 'valid json object string', input: '{"color": "red"}', expected: 'json'
+    },
+    {
+      description: 'valid json array string', input: '[1, 2, 3]', expected: 'json'
+    },
+    {
       description: 'xml/html', input: '<div></div>', expected: 'html'
+    },
+    {
+      description: 'standalone xml tag', input: '<mytag />', expected: 'html'
+    },
+    {
+      description: 'standalone custom tag with attributes', input: '<pf-button variant="primary" />', expected: 'html'
     },
     {
       description: 'javascript', input: `console.log(42); module.exports=test`, expected: 'javascript'
@@ -340,6 +376,12 @@ describe('contentType', () => {
     },
     {
       description: 'css', input: `.foo{}`, expected: 'css'
+    },
+    {
+      description: 'css declaration block', input: '{ color: red; }', expected: 'css'
+    },
+    {
+      description: 'css custom property', input: '--pf-v6-global--Color: #fff;', expected: 'css'
     }
   ])('should detect, $description', ({ input, expected }) => {
     expect(contentType(input)).toBe(expected);
