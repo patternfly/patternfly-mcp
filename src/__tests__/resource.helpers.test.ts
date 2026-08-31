@@ -144,6 +144,9 @@ describe('isMarkdown', () => {
     },
     {
       description: 'plain text', input: 'Just a sentence.', expected: false
+    },
+    {
+      description: 'unrelated brackets and parentheses', input: '[1] foo (bar) [2] (baz)', expected: false
     }
   ])('should detect markdown, $description', ({ input, expected }) => {
     expect(isMarkdown(input)).toBe(expected);
@@ -233,7 +236,7 @@ describe('isPythonLike', () => {
       expected: true
     },
     { description: 'non‑Python code', input: `console.log("hi")`, expected: false }
-  ])('should  detects python like scripts, $description', ({ input, expected }) => {
+  ])('should detect Python-like scripts, $description', ({ input, expected }) => {
     expect(isPythonLike(input)).toBe(expected);
   });
 });

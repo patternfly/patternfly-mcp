@@ -7,9 +7,10 @@ import { isPlainObject } from './server.helpers';
  *
  * CSS matching:
  * - Selector or `@` followed by an opening brace
- * - Common `@` rules. (e.g., `@media`, `@keyframes`, `@import`)
- * - Property declarations (e.g., `color: red;`)
- * - URL usage (e.g., `url(some-url)`)
+ * - Common `@` rules (e.g., `@media`, `@keyframes`, `@import`)
+ * - Sass, Less, and CSS variable declarations (e.g., `--color: red;`)
+ * - Common HTML tag selectors (e.g., `body {`)
+ * - Declaration blocks (e.g., `{ color: red; }`)
  *
  * @param content - Input value
  * @returns Returns `true` if the input matches CSS-like syntax.
@@ -101,10 +102,9 @@ const isMarkdown = (content: unknown): boolean => {
     /^>\s/m, // blockquote
     /^[-+*]\s/m, // unordered list
     /^\d+\.\s/m, // ordered list
-    /\[.*\]\(.*\)/, // inline link
-    /!\[.*\]\(.*\)/, // image
+    /\[[^\]]+\]\([^)]+\)/, // inline link
+    /!\[[^\]]*\]\([^)]+\)/, // image
     /^```/m, // fenced code block
-    // /^\s*\|(?:\s*:-+:-*\s*\|)+\s*$/m // table
     /^\s*\|(?:\s*:?-+:?\s*\|)+\s*$/m // table
   ];
 
