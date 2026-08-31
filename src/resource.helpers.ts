@@ -68,10 +68,27 @@ const isJsonLike = (content: unknown): boolean => {
   if (typeof content === 'string') {
     const trimmed = content.trim();
 
-    return (
+    if (
       (trimmed.startsWith('{') && trimmed.endsWith('}')) ||
       (trimmed.startsWith('[') && trimmed.endsWith(']'))
-    );
+    ) {
+      const inner = trimmed.slice(1, -1).trim();
+
+      // Empty object or array
+      if (!inner) {
+        return true;
+      }
+
+      const patterns = [
+        /(['"])?[\w$-]+\1?\s*:/, // key: value, "key": value
+        /(['"]).*\1/, // quoted strings
+        /\b(true|false|null)\b/, // primitives
+        /\b\d+(\.\d+)?\b/, // numbers
+        /,/ // comma-separated items
+      ];
+
+      return patterns.some(re => re.test(inner));
+    }
   }
 
   return Array.isArray(content) || isPlainObject(content);
@@ -97,8 +114,14 @@ const isMarkdown = (content: unknown): boolean => {
     return false;
   }
 
+  const trimmed = content.trim();
+
+  if (/^#!\s*\S+/.test(trimmed)) {
+    return false;
+  }
+
   const patterns = [
-    /^(#+\s)/m, // headings
+    /^(#{1,6}\s)/m, // headings
     /^>\s/m, // blockquote
     /^[-+*]\s/m, // unordered list
     /^\d+\.\s/m, // ordered list
@@ -129,7 +152,7 @@ const isXmlLike = (content: unknown): boolean => {
   const trimmed = content.trim();
 
   // Must start with a tag and contain a closing tag
-  if (!/^<\s*\w+/.test(trimmed) || !/<\/\s*\w+\s*>/.test(trimmed)) {
+  if (!/^<\s*[!?\w]/i.test(trimmed) || !/<\/\s*\w+\s*>/.test(trimmed)) {
     return false;
   }
 
@@ -236,7 +259,7 @@ const isPythonLike = (content: unknown): boolean => {
   ];
 
   const hasKeywords = () => /\b(sys\.exit|print)\b/.test(trimmed);
-  const structuralSymbols = () => (trimmed.match(/[{};=>]/g) || []).length > 2;
+  const structuralSymbols = () => (trimmed.match(/[:=()]/g) || []).length > 2;
 
   return indicators.some(re => re.test(trimmed)) || (hasKeywords() && structuralSymbols());
 };
@@ -267,7 +290,7 @@ const isShellLike = (content: unknown): boolean => {
   ];
 
   const hasKeywords = () => /\b(echo|printf)\b/.test(trimmed);
-  const structuralSymbols = () => (trimmed.match(/[{};=>]/g) || []).length > 2;
+  const structuralSymbols = () => (trimmed.match(/[{}[\]$;|&><=]/g) || []).length > 2;
 
   return indicators.some(re => re.test(trimmed)) || (hasKeywords() && structuralSymbols());
 };
@@ -370,6 +393,9 @@ const contentType = (content: unknown): '' | 'sh' | 'python' | 'markdown' | 'jav
 
 /**
  * Format content as a code block for Markdown rendering.
+ *
+ * @note We purposefully allow passing in `null`, `undefined`, and empty strings since
+ * that may be the content the consumer is attempting to render.
  *
  * @param content - Content to format.
  * @param options - Config options for formatting.

@@ -103,6 +103,15 @@ describe('isJsonLike', () => {
       description: 'missing quotes', input: '{a:1}', expected: true
     },
     {
+      description: 'empty object', input: '{}', expected: true
+    },
+    {
+      description: 'empty array', input: '[]', expected: true
+    },
+    {
+      description: 'relaxed JSON-like with unquoted keys', input: '{ a: 1, b: "two" }', expected: true
+    },
+    {
       description: 'non‑JSON string', input: 'hello', expected: false
     },
     {
@@ -143,6 +152,15 @@ describe('isMarkdown', () => {
       description: 'table with colon', input: '| Header |\n|:---|:---|\n| Cell   |', expected: true
     },
     {
+      description: 'shebang bash script with comments', input: '#!/usr/bin/env bash\n# Heading comment\necho 1', expected: false
+    },
+    {
+      description: 'shebang python script with comments', input: '#!/usr/bin/env python\n# Heading comment\nprint(1)', expected: false
+    },
+    {
+      description: 'seven hashes heading limit', input: '####### Not a heading', expected: false
+    },
+    {
       description: 'plain text', input: 'Just a sentence.', expected: false
     },
     {
@@ -155,6 +173,9 @@ describe('isMarkdown', () => {
 
 describe('isXmlLike', () => {
   it.each([
+    {
+      description: 'HTML document with DOCTYPE', input: `<!DOCTYPE html><html><body>Hello</body></html>`, expected: true
+    },
     {
       description: 'HTML document', input: `<html><body>Hello</body></html>`, expected: true
     },
@@ -332,31 +353,82 @@ describe('contentType', () => {
 });
 
 describe('formatContentForMarkdown', () => {
-  const json = '{"a":1,"b":[2,3]}';
-  const js = `cons` + `ole.log(42); module.exports=test`;
-
-  it('should wrap non‑markdown content in a code block', () => {
-    expect(formatContentForMarkdown(js)).toMatch(/^```javascript\n/);
-  });
-
-  it('should pretty‑print JSON when language is JSON', () => {
-    const formatted = formatContentForMarkdown(json, { langOverride: 'json' });
-
-    expect(formatted).toContain('\n{\n  "a": 1,\n  "b": [\n    2,\n    3\n  ]\n}\n');
-  });
-
-  it('should not wrap markdown unless overridden', () => {
-    const md = '# Title';
-
-    expect(formatContentForMarkdown(md)).toBe('# Title'); // no wrapping
-    expect(formatContentForMarkdown(md, { langOverride: 'js' })).toMatch(/^```js\n/);
-  });
-
-  it('should wrap markdown with the allowWrappingMarkdown flag', () => {
-    const md = '- item';
-
-    expect(formatContentForMarkdown(md, { allowWrappingMarkdown: true }))
-      .toMatch(/^```markdown\n- item\n```$/); // wrapped as plain code
+  it.each([
+    {
+      description: 'wrap non‑markdown content in block',
+      input: `console.log(42); module.exports=test`,
+      expected: '```javascript\nconsole.log(42); module.exports=test\n```'
+    },
+    {
+      description: 'pretty‑print JSON',
+      input: '{"a":1,"b":[2,3]}',
+      options: { langOverride: 'json' },
+      expected: '```json\n{\n  "a": 1,\n  "b": [\n    2,\n    3\n  ]\n}\n```'
+    },
+    {
+      description: 'not wrap markdown unless overridden',
+      input: '# Title',
+      expected: '# Title'
+    },
+    {
+      description: 'wrap markdown when overridden',
+      input: '# Title',
+      options: { langOverride: 'js' },
+      expected: '```js\n# Title\n```'
+    },
+    {
+      description: 'wrap markdown with allowWrappingMarkdown flag',
+      input: '- item',
+      options: { allowWrappingMarkdown: true },
+      expected: '```markdown\n- item\n```'
+    },
+    {
+      description: 'null value',
+      input: null,
+      expected: '```\nnull\n```'
+    },
+    {
+      description: 'undefined value',
+      input: undefined,
+      expected: '```\nundefined\n```'
+    },
+    {
+      description: 'empty string value',
+      input: '',
+      expected: '```\n\n```'
+    },
+    {
+      description: 'whitespace value',
+      input: '   ',
+      expected: '```\n   \n```'
+    },
+    {
+      description: 'string null',
+      input: 'null',
+      expected: '```\nnull\n```'
+    },
+    {
+      description: 'string undefined',
+      input: 'undefined',
+      expected: '```\nundefined\n```'
+    },
+    {
+      description: 'string NaN',
+      input: 'NaN',
+      expected: '```\nNaN\n```'
+    },
+    {
+      description: 'number 0',
+      input: 0,
+      expected: '```\n0\n```'
+    },
+    {
+      description: 'number NaN',
+      input: NaN,
+      expected: '```\nNaN\n```'
+    }
+  ])('should format content for markdown, $description', ({ input, options, expected }) => {
+    expect(formatContentForMarkdown(input, options)).toBe(expected);
   });
 });
 
