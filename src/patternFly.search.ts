@@ -1,5 +1,6 @@
 import {
   fuzzySearch,
+  normalizeString,
   type FuzzySearch,
   type FuzzySearchOptions,
   type FuzzySearchResult
@@ -173,50 +174,42 @@ type FilterPatternFlyMemoArgs = [
 /**
  * Rate how closely a search result matches a search query.
  *
+ * @note We prioritize **exact name matches** because users/agents respond best when
+ * the returned item’s `name` (or any of its display names) exactly equals their typed
+ * search, even if other metadata might be a better match.
+ *
  * @param {SearchPatternFlyResult} result - Result object containing name and display name props.
- * @param normalizedQuery - Query string for comparison.
+ * @param query - Query string for comparison.
  * @returns `result` relevance to a `normalizedQuery`:
- *  - `0`: Exact match with name or entity slug.
- *  - `1`: Exact match with display name.
- *  - `2`: Prefix match with entity name.
- *  - `3`: Match display name at a word boundary.
- *  - `4`: Name substring match.
- *  - `5`: Match solely by descriptive content or keywords.
+ *  - `0`: Exact match
+ *  - `1`: Contains match
+ *  - `2`: Everything else
  */
 const calculateRelevance = (
   result: SearchPatternFlyResult,
-  normalizedQuery: string
+  query: string
 ): number => {
-  const resultName = (result.name || '').toLowerCase();
-  const displayName = 'displayName' in result ? (result.displayName as string).toLowerCase() : undefined;
+  const normalizedName = normalizeString.memo(result.name);
+  const normalizedQuery = normalizeString(query);
 
-  // Exact name / entity match
-  if (resultName === normalizedQuery) {
+  if (normalizedName === normalizedQuery) {
     return 0;
   }
 
-  // Exact display name match
-  if (displayName && displayName === normalizedQuery) {
+  const displayNames = (result.entries || [])
+    .map(entry => (entry.displayName ? normalizeString.memo(entry.displayName) : ''))
+    .filter(Boolean);
+
+  if (displayNames.some(name => name === normalizedQuery)) {
+    return 0;
+  }
+
+  if (normalizedName.includes(normalizedQuery) ||
+    displayNames.some(name => name.includes(normalizedQuery))) {
     return 1;
   }
 
-  // Prefix match
-  if (resultName.startsWith(`${normalizedQuery}-`) || resultName.startsWith(normalizedQuery)) {
-    return 2;
-  }
-
-  // Word boundary match in display name
-  if (displayName && new RegExp(`\\b${normalizedQuery}\\b`, 'i').test(displayName)) {
-    return 3;
-  }
-
-  // Substring match in name
-  if (resultName.includes(normalizedQuery)) {
-    return 4;
-  }
-
-  // Tier 5: Matched solely via prose keyword index / description
-  return 5;
+  return 2;
 };
 
 /**
@@ -665,8 +658,8 @@ const searchPatternFly = async (searchQuery: unknown, filters?: FilterPatternFly
       return a.distance - b.distance;
     }
 
-    const relevantA = calculateRelevance(a, coercedSearchQuery.toLowerCase());
-    const relevantB = calculateRelevance(b, coercedSearchQuery.toLowerCase());
+    const relevantA = calculateRelevance(a, coercedSearchQuery);
+    const relevantB = calculateRelevance(b, coercedSearchQuery);
 
     if (relevantA !== relevantB) {
       return relevantA - relevantB;
