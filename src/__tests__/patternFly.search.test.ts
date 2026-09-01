@@ -1,9 +1,132 @@
 import {
+  calculateRelevance,
   dynamicFilterPatternFly,
   filterPatternFly,
   searchPatternFly,
   type FilterPatternFlyFilters
 } from '../patternFly.search';
+
+describe('calculateRelevance', () => {
+  it.each([
+    {
+      description: 'exact match for name',
+      query: 'button',
+      result: {
+        name: 'button',
+        entries: []
+      },
+      expected: 0
+    },
+    {
+      description: 'exact match for name, casing',
+      query: 'Button',
+      result: {
+        name: 'button',
+        entries: []
+      },
+      expected: 0
+    },
+    {
+      description: 'exact match on displayName',
+      query: 'Action Button',
+      result: {
+        name: 'btn-component',
+        entries: [
+          { displayName: 'Action Button' }
+        ]
+      },
+      expected: 0
+    },
+    {
+      description: 'exact match on displayName, casing',
+      query: 'action button',
+      result: {
+        name: 'btn-component',
+        entries: [
+          { displayName: 'Action Button' }
+        ]
+      },
+      expected: 0
+    },
+    {
+      description: 'exact match on multiple displayNames',
+      query: 'Secondary Button',
+      result: {
+        name: 'button',
+        entries: [
+          { displayName: 'Primary Button' },
+          { displayName: 'Secondary Button' }
+        ]
+      },
+      expected: 0
+    },
+    {
+      description: 'contains match in name',
+      query: 'modal',
+      result: {
+        name: 'modal-box',
+        entries: []
+      },
+      expected: 1
+    },
+    {
+      description: 'contains match in displayName',
+      query: 'group',
+      result: {
+        name: 'btn',
+        entries: [
+          { displayName: 'Button Group' }
+        ]
+      },
+      expected: 1
+    },
+    {
+      description: 'contains match with casing',
+      query: 'ALERT',
+      result: {
+        name: 'inline-alert-box',
+        entries: []
+      },
+      expected: 1
+    },
+    {
+      description: 'no match on name or displayNames',
+      query: 'dropdown',
+      result: {
+        name: 'button',
+        entries: [
+          { displayName: 'Primary Button' }
+        ]
+      },
+      expected: 2
+    },
+    {
+      description: 'undefined entries',
+      query: 'table',
+      result: {
+        name: 'card',
+        entries: undefined
+      },
+      expected: 2
+    },
+    {
+      description: 'missing or empty displayName entries',
+      query: 'toolbar',
+      result: {
+        name: 'page',
+        entries: [
+          { displayName: '' },
+          { displayName: undefined }
+        ]
+      },
+      expected: 2
+    }
+  ])('should create a relevance score, $description', ({ query, result, expected }) => {
+    const relevance = calculateRelevance(result as any, query);
+
+    expect(relevance).toBe(expected);
+  });
+});
 
 describe('filterPatternFly', () => {
   const mockResources = new Map([

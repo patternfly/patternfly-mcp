@@ -690,6 +690,7 @@ const searchPatternFly = async (searchQuery: unknown, filters?: FilterPatternFly
 searchPatternFly.memo = memo(searchPatternFly, DEFAULT_OPTIONS.toolMemoOptions.searchPatternFlyDocs);
 
 export {
+  calculateRelevance,
   dynamicFilterPatternFly,
   filterPatternFly,
   searchPatternFly,
