@@ -1,5 +1,6 @@
 import {
   fuzzySearch,
+  normalizeString,
   type FuzzySearch,
   type FuzzySearchOptions,
   type FuzzySearchResult
@@ -169,6 +170,47 @@ type FilterPatternFlyMemoArgs = [
   mcpResources?: FilterPatternFlyMcpResources | undefined,
   settings?: FilterPatternFlySettings | undefined
 ];
+
+/**
+ * Rate how closely a search result matches a search query.
+ *
+ * @note We prioritize **exact name matches** because users/agents respond best when
+ * the returned item’s `name` (or any of its display names) exactly equals their typed
+ * search, even if other metadata might be a better match.
+ *
+ * @param {SearchPatternFlyResult} result - Result object containing name and display name props.
+ * @param query - Query string for comparison.
+ * @returns `result` relevance to a `normalizedQuery`:
+ *  - `0`: Exact match
+ *  - `1`: Contains match
+ *  - `2`: Everything else
+ */
+const calculateRelevance = (
+  result: SearchPatternFlyResult,
+  query: string
+): number => {
+  const normalizedName = normalizeString.memo(result.name);
+  const normalizedQuery = normalizeString.memo(query);
+
+  if (normalizedName === normalizedQuery) {
+    return 0;
+  }
+
+  const displayNames = (result.entries || [])
+    .map(entry => (entry.displayName ? normalizeString.memo(entry.displayName) : ''))
+    .filter(Boolean);
+
+  if (displayNames.some(name => name === normalizedQuery)) {
+    return 0;
+  }
+
+  if (normalizedName.includes(normalizedQuery) ||
+    displayNames.some(name => name.includes(normalizedQuery))) {
+    return 1;
+  }
+
+  return 2;
+};
 
 /**
  * Apply sequenced priority filters for predictable filtering, filter PatternFly data.
@@ -616,7 +658,14 @@ const searchPatternFly = async (searchQuery: unknown, filters?: FilterPatternFly
       return a.distance - b.distance;
     }
 
-    return a.name.localeCompare(b.name);
+    const relevantA = calculateRelevance(a, coercedSearchQuery);
+    const relevantB = calculateRelevance(b, coercedSearchQuery);
+
+    if (relevantA !== relevantB) {
+      return relevantA - relevantB;
+    }
+
+    return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
   };
 
   const sortedExactMatches = exactMatches.sort(sortByDistanceByName);
@@ -641,6 +690,7 @@ const searchPatternFly = async (searchQuery: unknown, filters?: FilterPatternFly
 searchPatternFly.memo = memo(searchPatternFly, DEFAULT_OPTIONS.toolMemoOptions.searchPatternFlyDocs);
 
 export {
+  calculateRelevance,
   dynamicFilterPatternFly,
   filterPatternFly,
   searchPatternFly,
