@@ -132,12 +132,19 @@ const MIN_API_QUALITY_THRESHOLD = 0.95;
  *   Otherwise, the trimmed string or original value is provided.
  */
 const parsePayload = (payload: unknown): ParsePayload => {
-  const updatedPayload = typeof payload === 'string' ? payload.trim() : '';
+  let updatedPayload: string | Record<string, unknown> = '';
+
+  if (typeof payload === 'string') {
+    updatedPayload = payload.trim();
+  } else if (isPlainObject(payload)) {
+    updatedPayload = payload;
+  }
+
   let isEmpty: boolean;
   let parsedPayload: ParsePayloadApi;
 
   try {
-    parsedPayload = JSON.parse(updatedPayload);
+    parsedPayload = typeof updatedPayload === 'string' ? JSON.parse(updatedPayload) : updatedPayload;
 
     if (typeof parsedPayload === 'number') {
       isEmpty = false;

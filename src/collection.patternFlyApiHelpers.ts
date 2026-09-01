@@ -206,7 +206,7 @@ const extractApiDisplayName = (content?: string, context: { slug?: string; categ
 
   // CSS JSON Array signature
   if (category === 'css') {
-    return slug.includes('CSS') ? formatSlugToTitle(slug, section) : `${formatSlugToTitle(slug, section)} CSS`;
+    return slug.toLowerCase().includes('css') ? formatSlugToTitle(slug, section) : `${formatSlugToTitle(slug, section)} CSS`;
   }
 
   // Markdown H1 signature (# Title)
@@ -317,7 +317,7 @@ const extractApiDescription = (
       let cleanPara = lines[0]
         // Convert HTML links to their inner text
         .replace(/<a\b[^>]*>(.*?)<\/a>/gi, '$1')
-        // Remove closing HTML stags
+        // Remove closing HTML tags
         .replace(/<\/[A-Za-z0-9_-]+>/g, '')
         // Convert bare tags
         .replace(/<([A-Za-z0-9_\s-]+)>/g, '$1')
