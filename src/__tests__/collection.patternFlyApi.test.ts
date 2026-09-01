@@ -343,7 +343,7 @@ describe('apiSpider', () => {
           isSuccess: true
         }
       ])
-      .mockImplementation(() => new Promise(resolve => setTimeout(resolve, 50)));
+      .mockImplementation(() => new Promise(() => {}));
 
     const res = await apiSpider({
       ...options,
@@ -351,7 +351,7 @@ describe('apiSpider', () => {
         ...options.patternflyOptions,
         api: {
           ...options.patternflyOptions.api,
-          timeoutMs: 50
+          timeoutMs: 20
         }
       }
     });
