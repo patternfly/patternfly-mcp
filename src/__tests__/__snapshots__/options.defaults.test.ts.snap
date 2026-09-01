@@ -57,9 +57,16 @@ exports[`options defaults should return specific properties: defaults 1`] = `
         "props",
         "css",
       ],
-      "crawlCancelMs": 180000,
-      "crawlIntervalMs": 43200000,
       "enabled": false,
+      "schedule": {
+        "continueOnError": true,
+        "intervalMs": 604800000,
+        "repeat": Infinity,
+      },
+      "timeoutMs": 120000,
+      "traversalPaths": [
+        "examples",
+      ],
       "versions": "https://main.patternfly-org.pages.dev/api/versions",
     },
     "availableResourceVersions": [

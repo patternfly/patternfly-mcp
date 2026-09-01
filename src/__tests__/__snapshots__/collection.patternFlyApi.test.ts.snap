@@ -5,19 +5,23 @@ exports[`collectionCallback should match snapshot for collection result 1`] = `
   "records": [
     {
       "data": {
-        "card": {
-          "category": "css",
-          "description": "Card css content",
-          "displayName": "Card",
-          "id": "api::v1::components::card::css::0",
-          "path": "https://main.patternfly-org.pages.dev/api/v1/components/Card/css",
-          "pathSlug": "card",
-          "section": "components",
-          "source": "api",
-          "version": "v1",
-        },
+        "card": [
+          {
+            "category": "css",
+            "content": "Card css content",
+            "contentType": "",
+            "description": "PatternFly variables and tokens for Card CSS.",
+            "displayName": "Card CSS",
+            "id": "api::v1::components::card::css",
+            "path": "https://main.patternfly-org.pages.dev/api/v1/components/Card/css",
+            "pathSlug": "components-card-css",
+            "section": "components",
+            "source": "api",
+            "version": "v1",
+          },
+        ],
       },
-      "id": "api::v1::components::card::css::0",
+      "id": "api::v1::components::card::css",
       "sourceId": "https://main.patternfly-org.pages.dev/api/v1/components/Card/css",
       "sourceType": "api",
     },

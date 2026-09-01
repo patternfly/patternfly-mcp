@@ -463,6 +463,20 @@ const mutateKeyWordsMap = (
 };
 
 /**
+ * Normalizes collection resource names into a uniform slug.
+ *
+ * @param key - Raw catalog or collection identifier
+ * @returns Normalized slug for current resource grouping strategy.
+ */
+const normalizeKey = (key: string): string => {
+  if (!key) {
+    return '__unknown__';
+  }
+
+  return key.replace(/[^a-z0-9]/gi, '').toLowerCase();
+};
+
+/**
  * Get a multifaceted resources breakdown from PatternFly.
  *
  * @note `resources.set(name...` includes `undefined` PF version contextual metadata by design. These values
@@ -494,7 +508,7 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
   const rawKeywordsMap: PatternFlyMcpKeywordsMap = new Map();
 
   catalog.forEach(([unifiedName, entries]) => {
-    const name = unifiedName.toLowerCase();
+    const name = normalizeKey(unifiedName);
     const groupId = generateHash(name);
 
     hashIndexMap.set(groupId.toLowerCase(), name);

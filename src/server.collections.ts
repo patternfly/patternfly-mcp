@@ -42,7 +42,7 @@ options: GlobalOptions = getOptions()): McpCollectionCreator => () => {
  * Proxy a collection creator with a deferred task wrapper.
  *
  * @param {McpCollectionCreator} creator - Original creator.
- * @param {CollectionRunSchedule} runSchedule - Schedule config sourced from the collection's
+ * @param {NonNullable<McpCollection[2]>['runSchedule']} runSchedule - Schedule config sourced from the collection's
  *     `_config.runSchedule`. Provides `cancelMs` and `intervalMs` used to build {@link deferTask}.
  * @param {GlobalOptions} options - Global options.
  * @returns {McpCollectionCreator} The proxied creator function.

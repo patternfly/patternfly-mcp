@@ -7,6 +7,7 @@ import {
   crawler
 } from '../collection.patternFlyApi';
 import { processDocsFunction } from '../server.getResources';
+import { getOptions } from '../options.context';
 
 jest.mock('../server.getResources');
 
@@ -46,12 +47,11 @@ describe('collectionCallback', () => {
           isSuccess: true
         }
       ])
-      // crawler to leaf at a component facet path ("props")
       .mockResolvedValueOnce([
         {
-          content: 'Button props content',
+          content: 'Button react component content with length enough to pass quality scoring...',
           path: `${BASE}/v1/components/Button`,
-          resolvedPath: `${BASE}/v1/components/Button/props`,
+          resolvedPath: `${BASE}/v1/components/Button/react`,
           isSuccess: true
         }
       ]);
@@ -76,22 +76,26 @@ describe('collectionCallback', () => {
     expect(keys.length).toBe(1);
     const key: any = keys[0];
 
+    expect(key).toBe('button');
+
     expect(first).toMatchObject({
-      sourceId: `${BASE}/v1/components/Button/props`
+      sourceId: `${BASE}/v1/components/Button/react`
     });
 
-    expect(first.data[key]).toMatchObject({
+    expect(Array.isArray(first.data[key])).toBe(true);
+
+    expect(first.data[key][0]).toMatchObject({
       displayName: 'Button',
-      pathSlug: 'button',
+      pathSlug: 'components-button-react',
       source: 'api',
       version: 'v1',
       section: 'components',
-      category: 'props',
-      path: `${BASE}/v1/components/Button/props`
+      category: 'react',
+      path: `${BASE}/v1/components/Button/react`
     });
   });
 
-  it('should uses kind "doc" when a facet is not a componentPath', async () => {
+  it('should use an extrapolated category', async () => {
     // getVersions to ["v1"]
     mockedProcessDocsFunction
       .mockResolvedValueOnce([
@@ -118,15 +122,15 @@ describe('collectionCallback', () => {
     const rec: any = result.records[0];
 
     // id encodes version, section, item, kind, and index
-    expect(rec?.id).toMatch(/^api::v1::components::card::doc::0$/);
+    expect(rec?.id).toMatch(/^api::v1::components::card::overview$/);
 
     const key: any = rec?.data ? Object.keys(rec.data)[0] : '';
 
     expect(key).toBe('card');
-    expect(rec?.data?.[key]).toMatchObject({
+    expect(rec?.data?.[key]).toContainEqual(expect.objectContaining({
       displayName: 'Card',
-      category: 'doc'
-    });
+      category: 'overview'
+    }));
   });
 
   it('should match snapshot for collection result', async () => {
@@ -205,7 +209,7 @@ describe('crawler', () => {
 
     expect(res).toHaveLength(1);
     expect(res[0]?.content).toBe('some content');
-    expect(mockedProcessDocsFunction).toHaveBeenCalledTimes(2);
+    expect(mockedProcessDocsFunction).toHaveBeenCalledTimes(3);
   });
 
   it('handles component paths and terminates recursion', async () => {
@@ -266,6 +270,16 @@ describe('crawler', () => {
     expect(res.length).toBeGreaterThanOrEqual(1);
     expect(mockedProcessDocsFunction).toHaveBeenCalledWith(['https://api.com/v1']);
   });
+
+  it('aborts crawling early when signal is aborted', async () => {
+    const controller = new AbortController();
+
+    controller.abort();
+    const res = await crawler(['https://api.com/v1'], { signal: controller.signal });
+
+    expect(res).toEqual([]);
+    expect(mockedProcessDocsFunction).not.toHaveBeenCalled();
+  });
 });
 
 describe('apiSpider', () => {
@@ -288,7 +302,7 @@ describe('apiSpider', () => {
     expect(res).toEqual([]);
   });
 
-  it('returns ApiContent[] with metadata shape', async () => {
+  it('returns ApiContent[] shape', async () => {
     mockedProcessDocsFunction
       .mockResolvedValueOnce([
         {
@@ -311,14 +325,37 @@ describe('apiSpider', () => {
 
     expect(res.length).toBeGreaterThan(0);
     expect(res[0]).toMatchObject({
-      url: 'https://main.patternfly-org.pages.dev/api/v1/section/item/facet',
-      content: 'leaf content',
-      semanticContext: {
-        version: 'v1',
-        section: 'section',
-        item: 'item',
-        facet: 'facet'
+      path: 'https://main.patternfly-org.pages.dev/api/v1',
+      resolvedPath: 'https://main.patternfly-org.pages.dev/api/v1/section/item/facet',
+      content: 'leaf content'
+    });
+  });
+
+  it('handles crawl timeout gracefully in apiSpider', async () => {
+    const options = getOptions();
+
+    mockedProcessDocsFunction
+      .mockResolvedValueOnce([
+        {
+          content: JSON.stringify(['v1']),
+          path: 'https://main.patternfly-org.pages.dev/api/versions',
+          resolvedPath: 'https://main.patternfly-org.pages.dev/api/versions',
+          isSuccess: true
+        }
+      ])
+      .mockImplementation(() => new Promise(() => {}));
+
+    const res = await apiSpider({
+      ...options,
+      patternflyOptions: {
+        ...options.patternflyOptions,
+        api: {
+          ...options.patternflyOptions.api,
+          timeoutMs: 20
+        }
       }
     });
+
+    expect(res).toEqual([]);
   });
 });
