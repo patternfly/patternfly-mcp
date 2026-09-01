@@ -94,7 +94,7 @@ describe('collectionCallback', () => {
     });
   });
 
-  it('should uses kind "doc" when a facet is not a componentPath', async () => {
+  it('should use an extrapolated category', async () => {
     // getVersions to ["v1"]
     mockedProcessDocsFunction
       .mockResolvedValueOnce([
@@ -269,6 +269,16 @@ describe('crawler', () => {
     expect(res.length).toBeGreaterThanOrEqual(1);
     expect(mockedProcessDocsFunction).toHaveBeenCalledWith(['https://api.com/v1']);
   });
+
+  it('aborts crawling early when signal is aborted', async () => {
+    const controller = new AbortController();
+
+    controller.abort();
+    const res = await crawler(['https://api.com/v1'], { signal: controller.signal });
+
+    expect(res).toEqual([]);
+    expect(mockedProcessDocsFunction).not.toHaveBeenCalled();
+  });
 });
 
 describe('apiSpider', () => {
@@ -318,5 +328,14 @@ describe('apiSpider', () => {
       resolvedPath: 'https://main.patternfly-org.pages.dev/api/v1/section/item/facet',
       content: 'leaf content'
     });
+  });
+
+  it('handles crawl timeout gracefully in apiSpider', async () => {
+    mockedProcessDocsFunction.mockImplementation(
+      () => new Promise(resolve => setTimeout(resolve, 500))
+    );
+    const res = await apiSpider();
+
+    expect(res).toEqual([]);
   });
 });

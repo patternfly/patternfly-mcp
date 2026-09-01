@@ -183,6 +183,7 @@ interface ModeOptions {
  * @property api.versions URL Get the available PatternFly API versions. Versions are required to crawl.
  * @property api.componentPaths List of additional PatternFly API component paths to try and terminate with expected content.
  * @property api.traversalPaths List of additional PatternFly API traversal paths to iteratively try.
+ * @property api.timeoutMs Timeout in milliseconds, during server run, for crawling the PatternFly API.
  * @property api.schedule Schedule for crawling the PatternFly API. See {@link McpCollection} config for details.
  * @property api.schedule.continueOnError Continue crawling the PatternFly API on error.
  * @property api.schedule.intervalMs Interval in milliseconds, during server run, for crawling the PatternFly API.
@@ -205,6 +206,7 @@ interface PatternFlyOptions {
     versions: string;
     componentPaths: string[];
     traversalPaths: string[];
+    timeoutMs: number;
     enabled: boolean;
     schedule: {
       continueOnError: boolean;
@@ -527,6 +529,7 @@ const PATTERNFLY_OPTIONS: PatternFlyOptions = {
     traversalPaths: [
       'examples'
     ],
+    timeoutMs: 120_000,
     schedule: {
       continueOnError: true,
       intervalMs: 86_400_000 * 7, // 7 days

@@ -6,7 +6,7 @@ import {
 import { log } from './logger';
 import { processDocsFunction } from './server.getResources';
 import { memo } from './server.caching';
-import { isPlainObject, joinUrl } from './server.helpers';
+import { isPlainObject, joinUrl, timeoutFunction } from './server.helpers';
 import {
   getOptions,
   getSessionOptions,
@@ -203,14 +203,24 @@ const getUniqueUrls = (urls: string[], visited = new Set<string>()) => urls.filt
  * Resolves paths and fetches content; built specifically around the PatternFly API response structure.
  *
  * @param urls - The list of URLs to crawl.
- * @param [visited] - Used to track visited paths.
+ * @param [settings] - An optional configuration object.
+ * @param [settings.visited] - Used to track visited paths.
+ * @param [settings.signal] - AbortSignal for the crawling operation.
  * @param [options] - An optional configuration object.
- * @returns {Promise<ProcessedDoc[]>} A promise that resolves to an array of processed documents,
+ * @returns {Promise<ApiCrawler[]>} A promise that resolves to an array of processed documents,
  *     each containing information about the crawling result, status, and content.
  */
 const crawler = async (
-  urls: string[], visited = new Set<string>(), options = getOptions()
+  urls: string[],
+  { visited = new Set<string>(), signal }: { visited?: Set<string>; signal?: AbortSignal | undefined } = {},
+  options = getOptions()
 ): Promise<ApiCrawler[]> => {
+  if (signal?.aborted) {
+    log.debug('Aborted PatternFly API collection crawl.');
+
+    return [];
+  }
+
   const { componentPaths, traversalPaths } = options.patternflyOptions.api;
   const uniqueUrls = getUniqueUrls(urls, visited);
 
@@ -260,7 +270,7 @@ const crawler = async (
 
       log.debug(`Collection PatternFly API Crawling ${updatedPayload.length} path(s)`);
 
-      const crawledContent = await crawler(updatedPayload, visited);
+      const crawledContent = await crawler(updatedPayload, { visited, signal });
 
       content.push(...crawledContent);
       continue;
@@ -274,7 +284,7 @@ const crawler = async (
     // Probe Traversal Paths on Facet Endpoints (e.g. /react -> /react/examples)
     if (!traversalPaths.some(traversalPath => res?.path?.endsWith(`/${traversalPath}`))) {
       const traversalUrls = traversalPaths.map(traversalPath => joinUrl(res.path, traversalPath));
-      const traversalCrawledContent = await crawler(traversalUrls, visited);
+      const traversalCrawledContent = await crawler(traversalUrls, { visited, signal });
 
       content.push(...traversalCrawledContent);
     }
@@ -318,10 +328,13 @@ const getVersions = async (options = getOptions()) => {
 /**
  * Initiate API crawl.
  *
+ * @param options - Options for the API spider.
  * @returns A promise resolving to an array of processed API content entries.
  */
-const apiSpider = async (): Promise<ApiCrawler[]> => {
+const apiSpider = async (options = getOptions()): Promise<ApiCrawler[]> => {
   log.info(`Collection PatternFly API spider crawl started`);
+
+  const { timeoutMs } = options.patternflyOptions.api;
   let seedVersions: string[] = [];
   let content: ApiCrawler[] = [];
 
@@ -334,9 +347,18 @@ const apiSpider = async (): Promise<ApiCrawler[]> => {
   }
 
   if (seedVersions.length) {
+    const controller = new AbortController();
+
     try {
-      content = await crawler(seedVersions);
+      content = await timeoutFunction(
+        () => crawler(seedVersions, { visited: new Set<string>(), signal: controller.signal }),
+        {
+          timeout: timeoutMs,
+          errorMessage: `Crawl timed out after ${timeoutMs}ms`
+        }
+      );
     } catch (err) {
+      controller.abort();
       log.warn(`Collection PatternFly API spider: crawler failed`, err);
 
       return [];
