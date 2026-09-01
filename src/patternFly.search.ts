@@ -190,7 +190,7 @@ const calculateRelevance = (
   query: string
 ): number => {
   const normalizedName = normalizeString.memo(result.name);
-  const normalizedQuery = normalizeString(query);
+  const normalizedQuery = normalizeString.memo(query);
 
   if (normalizedName === normalizedQuery) {
     return 0;
