@@ -243,9 +243,9 @@ describe('calculateContentQualityScore', () => {
       expected: 1
     },
     {
-      description: 'kind equals examples skips quality checks',
+      description: 'category equals examples skips quality checks',
       content: 'short',
-      options: { kind: 'examples' },
+      options: { category: 'examples' },
       expected: 1
     },
     {
@@ -526,39 +526,39 @@ describe('formatSlugToTitle', () => {
 describe('extractApiDisplayName', () => {
   it.each([
     {
-      description: 'props kind with valid JSON containing name property',
+      description: 'props category with valid JSON containing name property',
       content: JSON.stringify({ name: 'ButtonProps', props: {} }),
-      context: { kind: 'props', slug: 'button-props' },
+      context: { category: 'props', slug: 'button-props' },
       expected: 'ButtonProps'
     },
     {
-      description: 'props kind with valid JSON without name property falls back to slug',
+      description: 'props category with valid JSON without name property falls back to slug',
       content: JSON.stringify({ props: {} }),
-      context: { kind: 'props', slug: 'button-props' },
+      context: { category: 'props', slug: 'button-props' },
       expected: 'Button Props'
     },
     {
-      description: 'props kind with invalid JSON falls back to slug',
+      description: 'props category with invalid JSON falls back to slug',
       content: '{ invalid json',
-      context: { kind: 'props', slug: 'button-props' },
+      context: { category: 'props', slug: 'button-props' },
       expected: 'Button Props'
     },
     {
-      description: 'props kind with markdown H1 heading',
+      description: 'props category with markdown H1 heading',
       content: '# Custom Button Props\nSome description',
-      context: { kind: 'props', slug: 'button-props' },
+      context: { category: 'props', slug: 'button-props' },
       expected: 'Custom Button Props'
     },
     {
-      description: 'css kind with slug not containing CSS appends CSS',
+      description: 'css category with slug not containing CSS appends CSS',
       content: '[]',
-      context: { kind: 'css', slug: 'button', section: 'components' },
+      context: { category: 'css', slug: 'button', section: 'components' },
       expected: 'Button CSS'
     },
     {
-      description: 'css kind with slug already containing CSS does not append CSS',
+      description: 'css category with slug already containing CSS does not append CSS',
       content: '[]',
-      context: { kind: 'css', slug: 'button-CSS', section: 'components' },
+      context: { category: 'css', slug: 'button-CSS', section: 'components' },
       expected: 'Button CSS'
     },
     {
@@ -568,7 +568,7 @@ describe('extractApiDisplayName', () => {
       expected: 'Card Component'
     },
     {
-      description: 'markdown content with H1 Overview and section',
+      description: 'markdown content with H1 overview and section',
       content: '# Overview\nOverview body',
       context: { slug: 'overview', section: 'components' },
       expected: 'Components Overview'
@@ -592,7 +592,7 @@ describe('extractApiDisplayName', () => {
       expected: 'Alert Group'
     },
     {
-      description: 'undefined content and undefined context returns default',
+      description: 'undefined content and context return default',
       content: undefined,
       context: undefined,
       expected: 'PatternFly API'
@@ -611,158 +611,158 @@ describe('extractApiDisplayName', () => {
 describe('getApiFallbackDescription', () => {
   it.each([
     {
-      description: 'props kind',
+      description: 'props category',
       displayName: 'Button',
-      kind: 'props',
+      category: 'props',
       expected: 'PatternFly React component props and TypeScript interfaces for Button.'
     },
     {
-      description: 'css kind without css in displayName',
+      description: 'css category without css in displayName',
       displayName: 'Button',
-      kind: 'css',
+      category: 'css',
       expected: 'PatternFly CSS variables and tokens for Button.'
     },
     {
-      description: 'css kind with uppercase CSS in displayName',
+      description: 'css category with uppercase CSS in displayName',
       displayName: 'Button CSS',
-      kind: 'css',
+      category: 'css',
       expected: 'PatternFly variables and tokens for Button CSS.'
     },
     {
-      description: 'css kind with lowercase css in displayName',
+      description: 'css category with lowercase css in displayName',
       displayName: 'button css tokens',
-      kind: 'css',
+      category: 'css',
       expected: 'PatternFly variables and tokens for button css tokens.'
     },
     {
-      description: 'html kind',
+      description: 'html category',
       displayName: 'Button',
-      kind: 'html',
+      category: 'html',
       expected: 'PatternFly HTML examples and markup structure for Button.'
     },
     {
-      description: 'html-demos kind',
+      description: 'html-demos category',
       displayName: 'Card',
-      kind: 'html-demos',
+      category: 'html-demos',
       expected: 'PatternFly HTML examples and markup structure for Card.'
     },
     {
-      description: 'react kind',
+      description: 'react category',
       displayName: 'Button',
-      kind: 'react',
+      category: 'react',
       expected: 'PatternFly React component examples and demos for Button.'
     },
     {
-      description: 'react-demos kind',
+      description: 'react-demos category',
       displayName: 'Modal',
-      kind: 'react-demos',
+      category: 'react-demos',
       expected: 'PatternFly React component examples and demos for Modal.'
     },
     {
-      description: 'examples kind',
+      description: 'examples category',
       displayName: 'Button',
-      kind: 'examples',
+      category: 'examples',
       expected: 'PatternFly Button examples and demos.'
     },
     {
-      description: 'doc kind',
+      description: 'doc category',
       displayName: 'Button',
-      kind: 'doc',
+      category: 'doc',
       expected: 'PatternFly documentation and guidelines for Button.'
     },
     {
-      description: 'unrecognized kind defaults to doc format',
+      description: 'unrecognized category defaults to doc format',
       displayName: 'Button',
-      kind: 'custom',
+      category: 'custom',
       expected: 'PatternFly documentation and guidelines for Button.'
     },
     {
       description: 'default arguments without parameters',
       displayName: undefined,
-      kind: undefined,
+      category: undefined,
       expected: 'PatternFly documentation and guidelines for .'
     }
-  ])('should provide fallback description, $description', ({ displayName, kind, expected }: any) => {
-    expect(getApiFallbackDescription(displayName, kind)).toBe(expected);
+  ])('should provide fallback description, $description', ({ displayName, category, expected }: any) => {
+    expect(getApiFallbackDescription(displayName, category)).toBe(expected);
   });
 });
 
 describe('extractApiDescription', () => {
   it.each([
     {
-      description: 'props kind returns fallback description',
+      description: 'props category returns fallback',
       content: '# Title\nValid paragraph line exceeding twenty characters in length.',
-      context: { displayName: 'Button', kind: 'props' },
+      context: { displayName: 'Button', category: 'props' },
       expected: 'PatternFly React component props and TypeScript interfaces for Button.'
     },
     {
-      description: 'css kind returns fallback description',
+      description: 'css category returns fallback',
       content: '# Title\nValid paragraph line exceeding twenty characters in length.',
-      context: { displayName: 'Button', kind: 'css' },
+      context: { displayName: 'Button', category: 'css' },
       expected: 'PatternFly CSS variables and tokens for Button.'
     },
     {
-      description: 'detailType equals examples returns fallback description',
+      description: 'detailType equals examples returns fallback',
       content: '# Title\nValid paragraph line exceeding twenty characters in length.',
       context: { displayName: 'Button', detailType: 'examples' },
       expected: 'PatternFly Button examples and demos.'
     },
     {
-      description: 'markdown content extracts first valid prose paragraph',
+      description: 'markdown content uses first valid paragraph',
       content: '# Button\n\nA button is a clickable interactive element that triggers an action.',
-      context: { displayName: 'Button', kind: 'doc' },
+      context: { displayName: 'Button', category: 'doc' },
       expected: 'A button is a clickable interactive element that triggers an action.'
     },
     {
       description: 'markdown formatting like bold, italics, inline code, and links are stripped',
       content: '# Title\n\nA **button** communicates an [action](https://patternfly.org) to be *performed* with `onClick`.',
-      context: { displayName: 'Button', kind: 'doc' },
+      context: { displayName: 'Button', category: 'doc' },
       expected: 'A button communicates an action to be performed with onClick.'
     },
     {
       description: 'HTML links and tags are stripped or converted to inner text',
       content: '# Title\n\nA <a href="link">button</a> with <span class="badge">badge</span> indicator.',
-      context: { displayName: 'Button', kind: 'doc' },
+      context: { displayName: 'Button', category: 'doc' },
       expected: 'A button with badge indicator.'
     },
     {
       description: 'trailing colon in paragraph is replaced with period',
       content: '# Title\n\nHere is a list of components and features available for use:',
-      context: { displayName: 'Button', kind: 'doc' },
+      context: { displayName: 'Button', category: 'doc' },
       expected: 'Here is a list of components and features available for use.'
     },
     {
-      description: 'long paragraph exceeding 200 characters is truncated with ellipsis',
+      description: 'paragraph exceeding 200 characters is truncated',
       content: `# Title\n\n${'This is a long description sentence describing the component. '.repeat(5)}`,
-      context: { displayName: 'Button', kind: 'doc' },
+      context: { displayName: 'Button', category: 'doc' },
       expected: `${'This is a long description sentence describing the component. '.repeat(5).trim().slice(0, 197)}...`
     },
     {
       description: 'content with imports and code blocks filtered out before extracting prose',
       content: "import React from 'react';\n```tsx\n<Button />\n```\n# Heading\n| table |\n\nA valid paragraph with more than twenty characters for description.",
-      context: { displayName: 'Button', kind: 'doc' },
+      context: { displayName: 'Button', category: 'doc' },
       expected: 'A valid paragraph with more than twenty characters for description.'
     },
     {
-      description: 'content without valid prose paragraphs falls back to generated description',
+      description: 'content without valid prose paragraphs uses fallback',
       content: "import React from 'react';\n# Heading\nShort line",
-      context: { displayName: 'Card', kind: 'doc' },
+      context: { displayName: 'Card', category: 'doc' },
       expected: 'PatternFly documentation and guidelines for Card.'
     },
     {
-      description: 'undefined content falls back to generated description',
+      description: 'undefined content uses fallback',
       content: undefined,
-      context: { displayName: 'Card', kind: 'doc' },
+      context: { displayName: 'Card', category: 'doc' },
       expected: 'PatternFly documentation and guidelines for Card.'
     },
     {
-      description: 'undefined content and undefined context returns default fallback description',
+      description: 'undefined content and undefined context returns fallback',
       content: undefined,
       context: undefined,
       expected: 'PatternFly documentation and guidelines for .'
     },
     {
-      description: 'null context explicitly passed returns default fallback description',
+      description: 'null context explicitly passed returns fallback',
       content: undefined,
       context: null as any,
       expected: 'PatternFly documentation and guidelines for .'

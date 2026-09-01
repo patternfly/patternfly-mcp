@@ -45,7 +45,7 @@ const hasEmptyFileCodeFence = (str: string) =>
  * @param content - Content to score.
  * @param [options] - Function options
  * @param [options.baseScore] - Base starting score.
- * @param [options.kind] - Used to determine which quality metrics are applied.
+ * @param [options.category] - Used to determine which quality metrics are applied.
  * @param [options.qualityReduction] - Amount to reduce the base score for each quality metric.
  * @param [options.minCharacters] - Minimum number of characters required to avoid quality reduction.
  * @returns The calculated quality score.
@@ -53,8 +53,8 @@ const hasEmptyFileCodeFence = (str: string) =>
 const calculateContentQualityScore = (
   content: unknown,
   {
-    baseScore = 1, kind, qualityReduction = 0.03, minCharacters = 150
-  }: { baseScore?: number; kind?: undefined | string; qualityReduction?: number; minCharacters?: number } = {}
+    baseScore = 1, category, qualityReduction = 0.03, minCharacters = 150
+  }: { baseScore?: number; category?: undefined | string; qualityReduction?: number; minCharacters?: number } = {}
 ): number => {
   if (content === undefined || content === null) {
     return baseScore;
@@ -72,7 +72,7 @@ const calculateContentQualityScore = (
     return baseScore;
   }
 
-  if (kind === 'examples') {
+  if (category === 'examples') {
     return baseScore;
   }
 
@@ -184,17 +184,17 @@ const formatSlugToTitle = (slug: string, section?: string): string => {
  * @param [content] - Optional content string.
  * @param [context] - Optional context object for generating a unique name.
  * @param [context.slug] - Optional slug used for fallback or secondary formatting of the display name.
- * @param [context.kind] - Optional kind of content being processed (e.g., 'props', 'css', or 'doc').
+ * @param [context.category] - Optional category of content being processed (e.g., 'props', 'css', or 'doc').
  * @param [context.section] - Optional section name used for refining the display name.
  * @returns Extracted or formatted display name for the API item.
  */
-const extractApiDisplayName = (content?: string, context: { slug?: string; kind?: string; section?: string; } = {}): string => {
-  const { slug = '', kind = 'doc', section } = context || {};
+const extractApiDisplayName = (content?: string, context: { slug?: string; category?: string; section?: string; } = {}): string => {
+  const { slug = '', category = 'doc', section } = context || {};
 
   const trimmed = content?.trim() || '';
 
   // Props JSON signature
-  if (kind === 'props' && trimmed.startsWith('{')) {
+  if (category === 'props' && trimmed.startsWith('{')) {
     try {
       const parsed = JSON.parse(trimmed);
 
@@ -205,7 +205,7 @@ const extractApiDisplayName = (content?: string, context: { slug?: string; kind?
   }
 
   // CSS JSON Array signature
-  if (kind === 'css') {
+  if (category === 'css') {
     return slug.includes('CSS') ? formatSlugToTitle(slug, section) : `${formatSlugToTitle(slug, section)} CSS`;
   }
 
@@ -231,10 +231,10 @@ const extractApiDisplayName = (content?: string, context: { slug?: string; kind?
  * Provide a fallback description based on kind/category when no prose is available.
  *
  * @param displayName - Display name
- * @param kind - Category / facet kind
+ * @param category - Category / facet kind
  */
-const getApiFallbackDescription = (displayName = '', kind = 'doc'): string => {
-  switch (kind) {
+const getApiFallbackDescription = (displayName = '', category = 'doc'): string => {
+  switch (category) {
     case 'props':
       return `PatternFly React component props and TypeScript interfaces for ${displayName}.`;
     case 'css':
@@ -259,18 +259,18 @@ const getApiFallbackDescription = (displayName = '', kind = 'doc'): string => {
  * @param [content] - Optional content.
  * @param [context] - Optional context for generating a unique description.
  * @param [context.displayName] - Display name.
- * @param [context.kind] - Type of content.
- * @param [context.detailType] - Alternate to `context.kind`, like "examples".
+ * @param [context.category] - Type of content.
+ * @param [context.detailType] - Alternate to `category, like "examples".
  * @returns A generated description from metadata, or a fallback.
  */
 const extractApiDescription = (
   content?: string,
-  context: { displayName?: string; kind?: string; detailType?: string | undefined } = {}
+  context: { displayName?: string; category?: string; detailType?: string | undefined } = {}
 ): string => {
-  const { displayName = '', kind = 'doc', detailType = '' } = context || {};
+  const { displayName = '', category = 'doc', detailType = '' } = context || {};
 
-  if (kind === 'props' || kind === 'css') {
-    return getApiFallbackDescription(displayName, kind);
+  if (category === 'props' || category === 'css') {
+    return getApiFallbackDescription(displayName, category);
   }
 
   if (detailType === 'examples') {
@@ -344,7 +344,7 @@ const extractApiDescription = (
   }
 
   // Fallback
-  return getApiFallbackDescription(displayName, kind);
+  return getApiFallbackDescription(displayName, category);
 };
 
 /**
