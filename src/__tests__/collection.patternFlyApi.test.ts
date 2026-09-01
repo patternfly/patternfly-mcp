@@ -7,6 +7,7 @@ import {
   crawler
 } from '../collection.patternFlyApi';
 import { processDocsFunction } from '../server.getResources';
+import { getOptions } from '../options.context';
 
 jest.mock('../server.getResources');
 
@@ -331,10 +332,29 @@ describe('apiSpider', () => {
   });
 
   it('handles crawl timeout gracefully in apiSpider', async () => {
-    mockedProcessDocsFunction.mockImplementation(
-      () => new Promise(resolve => setTimeout(resolve, 500))
-    );
-    const res = await apiSpider();
+    const options = getOptions();
+
+    mockedProcessDocsFunction
+      .mockResolvedValueOnce([
+        {
+          content: JSON.stringify(['v1']),
+          path: 'https://main.patternfly-org.pages.dev/api/versions',
+          resolvedPath: 'https://main.patternfly-org.pages.dev/api/versions',
+          isSuccess: true
+        }
+      ])
+      .mockImplementation(() => new Promise(resolve => setTimeout(resolve, 50)));
+
+    const res = await apiSpider({
+      ...options,
+      patternflyOptions: {
+        ...options.patternflyOptions,
+        api: {
+          ...options.patternflyOptions.api,
+          timeoutMs: 50
+        }
+      }
+    });
 
     expect(res).toEqual([]);
   });
