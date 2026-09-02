@@ -492,10 +492,12 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
   const { componentNamesIndex, byVersion: componentNamesByVersion, byDocs: componentNamesByDocs } = componentNames;
 
   const originalDocs = patternFlyRecordsRegistry.get('patternfly-docs');
+  const apiCollection = patternFlyRecordsRegistry.get('patternfly-api');
 
   const catalog = [
     ...originalDocs?.records?.flatMap(({ data }) => Object.entries(data as Record<string, unknown[]>)) || [],
-    ...Array.from(componentNamesByDocs)
+    ...Array.from(componentNamesByDocs),
+    ...apiCollection?.records?.flatMap(({ data }) => Object.entries(data as Record<string, unknown[]>)) || []
   ];
 
   const resources = new Map<string, PatternFlyMcpResourceMetadata>();

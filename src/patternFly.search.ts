@@ -192,6 +192,7 @@ const calculateRelevance = (
   const normalizedName = normalizeString.memo(result.name);
   const normalizedQuery = normalizeString.memo(query);
 
+  // Exact match
   if (normalizedName === normalizedQuery) {
     return 0;
   }
@@ -200,16 +201,32 @@ const calculateRelevance = (
     .map(entry => (entry.displayName ? normalizeString.memo(entry.displayName) : ''))
     .filter(Boolean);
 
+  // Exact match
   if (displayNames.some(name => name === normalizedQuery)) {
     return 0;
   }
 
-  if (normalizedName.includes(normalizedQuery) ||
-    displayNames.some(name => name.includes(normalizedQuery))) {
+  // Substring match
+  if (
+    normalizedName.includes(normalizedQuery) ||
+    normalizedQuery.includes(normalizedName) ||
+    displayNames.some(name => name.includes(normalizedQuery) || normalizedQuery.includes(name))
+  ) {
     return 1;
   }
 
-  return 2;
+  // Multi-word name match
+  const queryTokens = normalizedQuery.split(' ').filter(token => token.length > 2);
+  const hasTokenMatch = queryTokens.some(token =>
+    normalizedName === token ||
+    displayNames.some(name => name === token));
+
+  if (hasTokenMatch) {
+    return 2;
+  }
+
+  // Everything else
+  return 3;
 };
 
 /**
