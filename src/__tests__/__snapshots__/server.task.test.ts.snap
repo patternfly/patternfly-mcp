@@ -60,6 +60,29 @@ exports[`deferTask should cancel a task 1`] = `
 ]
 `;
 
+exports[`deferTask should delay the first execution when delayStartMs is provided 1`] = `
+[
+  [
+    {
+      "type": "start",
+      "value": [Function],
+    },
+  ],
+  [
+    {
+      "type": "run:delay",
+      "value": [Function],
+    },
+  ],
+  [
+    {
+      "type": "run",
+      "value": [Function],
+    },
+  ],
+]
+`;
+
 exports[`deferTask should enforce a timeout 1`] = `
 [
   [

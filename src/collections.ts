@@ -1,3 +1,4 @@
+import { isPlainObject } from './server.helpers';
 import { formatUnknownError, log } from './logger';
 import { type GlobalOptions } from './options';
 
@@ -49,11 +50,17 @@ interface McpCollectionResult {
  * 1. `handler` `{Function}`: callback function accepting an optional argument
  * 2. `_config` `{Object}`: Application level record source configuration. Unavailable to
  *     record collection plugins.
+ *    - `_config.initial`: Optional initial collection records or loader function executed
+ *        immediately at server startup prior to background scheduled runs or worker execution.
+ *        Hydrates the server records registry at $t=0$.
  *    - `_config.runParallel`: Optional internal import specifier (`#specifier`) to run the
  *        collection handler in a worker thread via the heavy pool. The referenced
  *        module must export `collectionCallback`. Applied in {@link composeCollections}.
  *    - `_config.runSchedule`: Optional object to dynamically decide if the record source
  *        should run in a scheduled interval using {@link DeferTaskOptions}
+ *    - `_config.retainLastViable`: Optional boolean or custom function to retain previously
+ *        viable collection records in the registry if an update fails, drops to zero records,
+ *        or triggers custom retention conditions.
  *    - `_config.isRequired`: Optional boolean used to control server startup when
  *        collections are required for operation.
  *   - `_config._isInternal`: Optional boolean. Applied internally. Attempting to manually
@@ -63,19 +70,51 @@ type McpCollection = [
   name: string,
   handler: (arg?: unknown) => McpCollectionResult | Promise<McpCollectionResult>,
   _config?: {
+    initial?: McpCollectionResult | (() => McpCollectionResult | Promise<McpCollectionResult>);
     runParallel?: `#${string}`;
     runSchedule?: {
       continueOnError?: boolean;
       cancelMs?: number;
+      delayStartMs?: number;
       intervalMs?: number;
       repeat?: number
     };
+    retainLastViable?: RetainLastViableOption;
     // priority?: number;
     isRequired?: boolean;
     // group?: string;
     _isInternal?: boolean;
   }
 ];
+
+/**
+ * Context provided to a {@link RetainLastViableCollection} evaluation.
+ *
+ * @property name - Collection name being evaluated.
+ * @property {McpCollectionResult|undefined} [previous] - Previous "viable" collection stored in the registry.
+ * @property {McpCollectionResult|undefined} [current] - Updated collection response created by the latest run.
+ * @property [error] - Error, exception, thrown during collection updates.
+ * @property isSuccess - Did the collection callback resolve without throwing an error?
+ */
+type RetainLastViableContext = {
+  name: string;
+  previous?: McpCollectionResult | undefined;
+  current?: McpCollectionResult | undefined;
+  error?: unknown | undefined;
+  isSuccess: boolean;
+};
+
+/**
+ * Custom function to determine whether the previous collection should be kept. Returning `true`
+ * keeps the previous collection; `false` lets it get updated. Useful when a remote collection
+ * fails.
+ */
+type RetainLastViableCollection = (context: RetainLastViableContext) => boolean | Promise<boolean>;
+
+/**
+ * Config option for `retainLastViable`. Supports `boolean` shorthand or a custom function.
+ */
+type RetainLastViableOption = boolean | RetainLastViableCollection;
 
 /**
  * A function that creates a collection registered with the MCP server.
@@ -282,6 +321,43 @@ const onUpdateServerRecordsRegistry = (
 };
 
 /**
+ * Default "last viable" check, see {@link RetainLastViableCollection}.
+ * Retains the previous response if:
+ *  1. If the previous data existed and records had length (`previous.records.length > 0`), AND
+ *  2. The new update threw an error (`!isSuccess`) OR returned zero records (`current.records.length === 0`).
+ *
+ * @param context - Retention context.
+ */
+const defaultRetainCollection: RetainLastViableCollection = context => {
+  const { previous, current, isSuccess } = context || {} as RetainLastViableContext;
+  const prevCount = Array.isArray(previous?.records) ? previous.records.length : 0;
+  const newCount = Array.isArray(current?.records) ? current.records.length : 0;
+
+  return prevCount > 0 && (!isSuccess || newCount === 0);
+};
+
+/**
+ * Is this a collection record?
+ *
+ * @param value - Value to check.
+ */
+const isMcpCollectionRecord = (value: unknown): value is McpCollectionRecord =>
+  isPlainObject(value) &&
+  typeof (value as McpCollectionRecord).id === 'string' && (value as McpCollectionRecord).id.length > 0 &&
+  typeof (value as McpCollectionRecord).sourceId === 'string' && (value as McpCollectionRecord).sourceId.length > 0 &&
+  typeof (value as McpCollectionRecord).sourceType === 'string' && (value as McpCollectionRecord).sourceType.length > 0;
+
+/**
+ * Is this a collection result?
+ *
+ * @param value - Value to check.
+ */
+const isMcpCollectionResult = (value: unknown): value is McpCollectionResult =>
+  isPlainObject(value) &&
+  Array.isArray((value as McpCollectionResult).records) &&
+  (value as McpCollectionResult).records.every(isMcpCollectionRecord);
+
+/**
  * Registers a set of collections asynchronously.
  *
  * - Required collections gatekeep `registerCollections` resolve.
@@ -309,22 +385,73 @@ const registerCollections = async (
 ): Promise<void> => {
   log.debug(`Reviewing registration for ${collections.length} collections.`);
 
+  // Step 1: Immediate hydration for collections with `_config.initial`
+  for (const [name, , config] of collections) {
+    if (config?.initial) {
+      try {
+        const initialResult = typeof config.initial === 'function'
+          ? await config.initial()
+          : config.initial;
+
+        if (isMcpCollectionResult(initialResult)) {
+          await setServerRecordsRegistry({ name, response: initialResult, error: undefined });
+        } else {
+          throw new Error(`Invalid collection response "${name}"`);
+        }
+      } catch (err) {
+        log.warn(`Failed to hydrate initial data for collection "${name}": ${formatUnknownError(err)}`);
+      }
+    }
+  }
+
+  // Step 2: Main collection execution (handles scheduled/worker/background callbacks)
   // Wrapper for each loader; handle incremental updates
-  const registrationPromises = collections.map(async ([name, callback]) => {
+  const registrationPromises = collections.map(async ([name, callback, config]) => {
     let error: unknown | undefined;
     let response: McpCollectionResult | undefined;
     let isSuccess = false;
 
     try {
       response = await callback();
-      isSuccess = true;
+
+      if (isMcpCollectionResult(response)) {
+        isSuccess = true;
+      } else {
+        throw new Error(`Invalid collection response "${name}"`);
+      }
     } catch (err) {
       error = err;
       log.error(`Error loading collection ${name}: ${formatUnknownError(err)}`);
     }
 
+    const previous = getServerRecordsRegistry({ collectionName: name }) as McpCollectionResult | undefined;
+    let shouldRetain = false;
+
+    if (config?.retainLastViable) {
+      try {
+        const context: RetainLastViableContext = {
+          name,
+          previous,
+          current: response,
+          error,
+          isSuccess
+        };
+
+        shouldRetain = await Promise.resolve(
+          typeof config.retainLastViable === 'function'
+            ? (config.retainLastViable as RetainLastViableCollection)(context)
+            : defaultRetainCollection(context)
+        );
+      } catch (err) {
+        log.warn(`Error evaluating "retainLastViable" collection "${name}": ${formatUnknownError(err)}`);
+      }
+    }
+
     try {
-      if (response) {
+      if (shouldRetain) {
+        log.warn(`Collection "${name}" update triggered retention policy; keeping previous viable response (${previous?.records?.length || 0} records).`);
+        response = previous;
+      } else if (response) {
         await setServerRecordsRegistry({ name, response, error });
       }
     } catch (err) {
@@ -400,11 +527,17 @@ const registerCollections = async (
 };
 
 export {
+  defaultRetainCollection,
   getServerRecordsRegistry,
+  isMcpCollectionRecord,
+  isMcpCollectionResult,
   onUpdateServerRecordsRegistry,
   registerCollections,
   setServerRecordsRegistry,
   type OnUpdateServerRecordsRegistryOptions,
+  type RetainLastViableContext,
+  type RetainLastViableOption,
+  type RetainLastViableCollection,
   type McpCollection,
   type McpCollectionCreator,
   type McpCollectionRecord,

@@ -1,12 +1,14 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`registerCollections should call onSettle with all results (fulfilled and rejected) 1`] = `
+exports[`registerCollections should call onSettle with all results, fulfilled and rejected 1`] = `
 {
   "fulfilled": [
     {
       "records": [
         {
           "id": "1",
+          "sourceId": "mock",
+          "sourceType": "mock",
         },
       ],
     },
@@ -26,6 +28,8 @@ exports[`registerCollections should call onSettle with all results (fulfilled an
         "records": [
           {
             "id": "1",
+            "sourceId": "mock",
+            "sourceType": "mock",
           },
         ],
       },

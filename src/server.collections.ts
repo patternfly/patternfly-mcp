@@ -35,7 +35,7 @@ options: GlobalOptions = getOptions()): McpCollectionCreator => () => {
     });
   };
 
-  return config ? [name, handler, config] : [name, handler];
+  return config ? [name, handler, { ...config }] : [name, handler];
 };
 
 /**
@@ -55,7 +55,10 @@ options: GlobalOptions = getOptions()): McpCollectionCreator => () => {
   const [name, callback, config] = creator(options);
   const deferOptions = {
     ...(typeof runSchedule?.cancelMs === 'number' ? { cancelMs: runSchedule.cancelMs } : {}),
-    ...(typeof runSchedule?.intervalMs === 'number' ? { intervalMs: runSchedule.intervalMs } : {})
+    ...(typeof runSchedule?.intervalMs === 'number' ? { intervalMs: runSchedule.intervalMs } : {}),
+    ...(typeof runSchedule?.delayStartMs === 'number' ? { delayStartMs: runSchedule.delayStartMs } : {}),
+    ...(typeof runSchedule?.continueOnError === 'boolean' ? { continueOnError: runSchedule.continueOnError } : {}),
+    ...(typeof runSchedule?.repeat === 'number' ? { repeat: runSchedule.repeat } : {})
   };
 
   const handler = async (args?: unknown): Promise<McpCollectionResult> => {
@@ -71,7 +74,7 @@ options: GlobalOptions = getOptions()): McpCollectionCreator => () => {
     return response || { records: [] };
   };
 
-  return config ? [name, handler, config] : [name, handler];
+  return config ? [name, handler, { ...config }] : [name, handler];
 };
 
 /**
@@ -118,7 +121,10 @@ const composeCollections = async (
       updatedCreator = makeParallelProxyCreator({ creator, moduleSpecifier: runHostValue, exportName: 'collectionCallback' });
     }
 
-    if (typeof runScheduleConfig?.cancelMs === 'number' || typeof runScheduleConfig?.intervalMs === 'number') {
+    if (typeof runScheduleConfig?.cancelMs === 'number' ||
+      typeof runScheduleConfig?.intervalMs === 'number' ||
+      typeof runScheduleConfig?.delayStartMs === 'number' ||
+      typeof runScheduleConfig?.repeat === 'number') {
       // Layer scheduling so the defer-task guardrails apply to the entire execution, including any worker-pool proxy.
       updatedCreator = makeScheduledProxyCreator({ creator: updatedCreator, runSchedule: runScheduleConfig });
     }
