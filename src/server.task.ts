@@ -42,6 +42,7 @@ interface DeferTaskHandle<TReturn> {
  *     Defaults to `false`. `stop()` and `cancelMs` still terminate the loop.
  * @property {DeferTaskDebugHandler} [debug] - Debug callback for lifecycle events.
  *     See {@link deferTask}.
+ * @property [delayStartMs] - Delay before the **FIRST** run in ms. (default `0`)
  * @property [intervalMs] - Max time for both per-execution timeout AND
  *     the randomized base delay between repetitions. The per-execution timeout is
  *     derived as `intervalMs * 1.5` so a run is never killed by the same value used
@@ -54,6 +55,7 @@ interface DeferTaskOptions {
   cancelMs?: number;
   continueOnError?: boolean;
   debug?: DeferTaskDebugHandler;
+  delayStartMs?: number;
   intervalMs?: number;
   repeat?: number | undefined;
   errorMessage?: string;
@@ -165,6 +167,7 @@ const deferTask = <TArgs extends unknown[], TReturn>(
     cancelMs,
     continueOnError = false,
     debug = () => {},
+    delayStartMs,
     repeat,
     intervalMs,
     errorMessage = 'Task timed out'
@@ -172,7 +175,8 @@ const deferTask = <TArgs extends unknown[], TReturn>(
 
   const validRepeat = typeof repeat === 'number' && repeat > 0 ? repeat : 1;
   const updatedRepeat = Number.isFinite(validRepeat) ? validRepeat : undefined;
-  const updatedIntervalMs = intervalMs ?? 1000;
+  const updatedIntervalMs = typeof intervalMs === 'number' && Number.isFinite(intervalMs) ? intervalMs : 1000;
+  const updatedDelayStartMs = typeof delayStartMs === 'number' && Number.isFinite(delayStartMs) ? delayStartMs : 0;
   const runTimeoutMs = updatedIntervalMs * 1.5;
   let updatedCancelMs = cancelMs;
 
@@ -200,6 +204,30 @@ const deferTask = <TArgs extends unknown[], TReturn>(
     const task = async (): Promise<TReturn | undefined> => {
       if (!state.isRunning || (updatedRepeat !== undefined && state.count >= updatedRepeat)) {
         return undefined;
+      }
+
+      // Initial startup delay
+      if (state.count === 0 && updatedDelayStartMs > 0) {
+        debug({
+          type: 'run:delay',
+          value: () => ({ ...state })
+        });
+
+        const randomizedStartMs = updatedDelayStartMs * (0.9 + Math.random() * 0.2);
+
+        try {
+          await delay({ ms: randomizedStartMs, signal: state.controller?.signal });
+        } catch (error) {
+          if (error instanceof DOMException && error.name === 'AbortError') {
+            return undefined;
+          }
+
+          return Promise.reject(error);
+        }
+
+        if (!state.isRunning) {
+          return undefined;
+        }
       }
 
       const startFunc = timeoutFunction(() => {
@@ -249,6 +277,7 @@ const deferTask = <TArgs extends unknown[], TReturn>(
         return Promise.reject(error);
       });
 
+      // Subsequent interval delay
       if (state.isRunning && (updatedRepeat === undefined || state.count < updatedRepeat)) {
         const randomizedMs = updatedIntervalMs * (0.9 + Math.random() * 0.2);
 

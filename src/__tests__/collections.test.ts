@@ -216,9 +216,99 @@ describe('registerCollections', () => {
     await expect(registerCollections(collections)).resolves.not.toThrow();
   });
 
+  it('should immediately hydrate serverRecordsRegistry when config.initial is provided', async () => {
+    const initialRecords = [{ id: 'init-1', sourceId: 'local', sourceType: 'api' }] as any;
+    let resolveHandler: (res: any) => void;
+    const asyncPromise = new Promise(resolve => {
+      resolveHandler = resolve as (res: any) => void;
+    });
+    const handler = jest.fn().mockImplementation(() => asyncPromise);
+
+    const collections: any[] = [
+      ['dual-phase-collection', handler, { initial: { records: initialRecords } }]
+    ];
+
+    const registrationPromise = registerCollections(collections);
+
+    // Immediate check: serverRecordsRegistry has initial records before handler finishes
+    expect(getServerRecordsRegistry({ collectionName: 'dual-phase-collection' })).toEqual({ records: initialRecords });
+
+    resolveHandler!({ records: [{ id: 'live-1', sourceId: 'live', sourceType: 'api' }] });
+    await registrationPromise;
+  });
+
+  it('should retain previous viable records when retainLastViable is true and update returns empty records', async () => {
+    const initialRecords = [{ id: 'init-1', sourceId: 'local', sourceType: 'api' }] as any;
+    const handler = jest.fn().mockResolvedValue({ records: [] });
+
+    const collections: any[] = [
+      ['retained-collection', handler, { initial: { records: initialRecords }, retainLastViable: true }]
+    ];
+
+    await registerCollections(collections);
+
+    // Retains initialRecords because update returned empty records
+    expect(getServerRecordsRegistry({ collectionName: 'retained-collection' })).toEqual({ records: initialRecords });
+  });
+
+  it('should retain previous viable records when retainLastViable is true and update throws an error', async () => {
+    const initialRecords = [{ id: 'init-1', sourceId: 'local', sourceType: 'api' }] as any;
+    const handler = jest.fn().mockRejectedValue(new Error('Network failure'));
+
+    const collections: any[] = [
+      ['error-retained-collection', handler, { initial: { records: initialRecords }, retainLastViable: true }]
+    ];
+
+    await registerCollections(collections);
+
+    // Retains initialRecords because update threw an error
+    expect(getServerRecordsRegistry({ collectionName: 'error-retained-collection' })).toEqual({ records: initialRecords });
+  });
+
+  it('should support a custom function for retainLastViable', async () => {
+    const initialRecords = [
+      { id: 'init-1', sourceId: 'mock', sourceType: 'mock' },
+      { id: 'init-2', sourceId: 'mock', sourceType: 'mock' },
+      { id: 'init-3', sourceId: 'mock', sourceType: 'mock' }
+    ];
+    // Crawl returned only 1 record
+    const handler = jest.fn().mockResolvedValue({ records: [{ id: 'init-1', sourceId: 'mock', sourceType: 'mock' }] });
+    const customPredicate = jest.fn().mockImplementation(({ previous, current }) => {
+      const prevCount = previous?.records?.length || 0;
+      const newCount = current?.records?.length || 0;
+
+      return newCount < prevCount * 0.5;
+    });
+
+    const collections: any[] = [
+      ['custom-func-collection', handler, {
+        initial: { records: initialRecords },
+        retainLastViable: customPredicate
+      }]
+    ];
+
+    await registerCollections(collections);
+
+    expect(customPredicate).toHaveBeenCalledWith(expect.objectContaining({
+      name: 'custom-func-collection',
+      previous: { records: initialRecords },
+      current: { records: [{ id: 'init-1', sourceId: 'mock', sourceType: 'mock' }] },
+      isSuccess: true
+    }));
+    expect(getServerRecordsRegistry({ collectionName: 'custom-func-collection' })).toEqual({ records: initialRecords });
+  });
+
+  it('should not write invalid collections to the registry', async () => {
+    const handler = jest.fn().mockResolvedValue({ records: [{ id: 'invalid-record' }] });
+
+    await registerCollections([['invalid-collection', handler]]);
+
+    expect(getServerRecordsRegistry({ collectionName: 'invalid-collection' })).toBeUndefined();
+  });
+
   it('should call onRequired when all required collections are settled', async () => {
     const onRequired = jest.fn();
-    const handler = jest.fn().mockResolvedValue({ records: [{ id: '1' }] });
+    const handler = jest.fn().mockResolvedValue({ records: [{ id: '1', sourceId: 'mock', sourceType: 'mock' }] });
     const collections: any[] = [
       ['req', handler, { isRequired: true }]
     ];
@@ -226,11 +316,11 @@ describe('registerCollections', () => {
     await registerCollections(collections, { onRequired });
 
     expect(onRequired).toHaveBeenCalledWith([
-      expect.objectContaining({ name: 'req', response: { records: [{ id: '1' }] } })
+      expect.objectContaining({ name: 'req', response: { records: [{ id: '1', sourceId: 'mock', sourceType: 'mock' }] } })
     ]);
   });
 
-  it('should call onSettle with all results (fulfilled and rejected)', async () => {
+  it('should call onSettle with all results, fulfilled and rejected', async () => {
     let settlePromiseResolve: (value: any) => void;
     const settlePromise = new Promise(resolve => {
       settlePromiseResolve = resolve;
@@ -238,7 +328,7 @@ describe('registerCollections', () => {
 
     const onSettle = jest.fn(results => settlePromiseResolve(results));
 
-    const handler1 = jest.fn().mockResolvedValue({ records: [{ id: '1' }] });
+    const handler1 = jest.fn().mockResolvedValue({ records: [{ id: '1', sourceId: 'mock', sourceType: 'mock' }] });
     const handler2 = jest.fn().mockRejectedValue(new Error('Fail'));
 
     const collections: any[] = [
@@ -250,7 +340,8 @@ describe('registerCollections', () => {
     const results: any = await settlePromise;
 
     expect(results).toMatchSnapshot();
-    expect(results.fulfilled).toContainEqual({ records: [{ id: '1' }] });
+
+    expect(results.fulfilled).toContainEqual({ records: [{ id: '1', sourceId: 'mock', sourceType: 'mock' }] });
     expect(results.rejected).toContainEqual(expect.objectContaining({ name: 'c2' }));
   });
 

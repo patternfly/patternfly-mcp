@@ -158,6 +158,25 @@ describe('deferTask', () => {
 
     expect(mockDebug.mock.calls).toMatchSnapshot();
   });
+
+  it('should delay the first execution when delayStartMs is provided', async () => {
+    const mockDebug = jest.fn();
+    const mockFunc = jest.fn().mockReturnValue('delayed');
+    const handle = deferTask(mockFunc, { debug: mockDebug, delayStartMs: 1000, intervalMs: 100, repeat: 1 })();
+    const promise = handle.start();
+
+    // Task delayed
+    await jest.advanceTimersByTimeAsync(500);
+    expect(mockFunc).not.toHaveBeenCalled();
+
+    // Delay finishes and task executes
+    await jest.advanceTimersByTimeAsync(500);
+    const result = await promise;
+
+    expect(result).toBe('delayed');
+    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockDebug.mock.calls).toMatchSnapshot();
+  });
 });
 
 describe('delay', () => {
