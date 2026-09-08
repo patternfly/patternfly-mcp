@@ -225,13 +225,13 @@ describe('registerCollections', () => {
     const handler = jest.fn().mockImplementation(() => asyncPromise);
 
     const collections: any[] = [
-      ['dual-phase-coll', handler, { initial: { records: initialRecords } }]
+      ['dual-phase-collection', handler, { initial: { records: initialRecords } }]
     ];
 
     const registrationPromise = registerCollections(collections);
 
     // Immediate check: serverRecordsRegistry has initial records before handler finishes
-    expect(getServerRecordsRegistry({ collectionName: 'dual-phase-coll' })).toEqual({ records: initialRecords });
+    expect(getServerRecordsRegistry({ collectionName: 'dual-phase-collection' })).toEqual({ records: initialRecords });
 
     resolveHandler!({ records: [{ id: 'live-1', sourceId: 'live', sourceType: 'api' }] });
     await registrationPromise;
@@ -242,13 +242,13 @@ describe('registerCollections', () => {
     const handler = jest.fn().mockResolvedValue({ records: [] });
 
     const collections: any[] = [
-      ['retained-coll', handler, { initial: { records: initialRecords }, retainLastViable: true }]
+      ['retained-collection', handler, { initial: { records: initialRecords }, retainLastViable: true }]
     ];
 
     await registerCollections(collections);
 
     // Retains initialRecords because update returned empty records
-    expect(getServerRecordsRegistry({ collectionName: 'retained-coll' })).toEqual({ records: initialRecords });
+    expect(getServerRecordsRegistry({ collectionName: 'retained-collection' })).toEqual({ records: initialRecords });
   });
 
   it('should retain previous viable records when retainLastViable is true and update throws an error', async () => {
@@ -256,22 +256,22 @@ describe('registerCollections', () => {
     const handler = jest.fn().mockRejectedValue(new Error('Network failure'));
 
     const collections: any[] = [
-      ['error-retained-coll', handler, { initial: { records: initialRecords }, retainLastViable: true }]
+      ['error-retained-collection', handler, { initial: { records: initialRecords }, retainLastViable: true }]
     ];
 
     await registerCollections(collections);
 
     // Retains initialRecords because update threw an error
-    expect(getServerRecordsRegistry({ collectionName: 'error-retained-coll' })).toEqual({ records: initialRecords });
+    expect(getServerRecordsRegistry({ collectionName: 'error-retained-collection' })).toEqual({ records: initialRecords });
   });
 
-  it('should support custom predicate function for retainLastViable', async () => {
+  it('should support a custom function for retainLastViable', async () => {
     const initialRecords = [
       { id: 'init-1', sourceId: 'mock', sourceType: 'mock' },
       { id: 'init-2', sourceId: 'mock', sourceType: 'mock' },
       { id: 'init-3', sourceId: 'mock', sourceType: 'mock' }
     ];
-    // Crawl returned only 1 record (loss of > 50% data)
+    // Crawl returned only 1 record
     const handler = jest.fn().mockResolvedValue({ records: [{ id: 'init-1', sourceId: 'mock', sourceType: 'mock' }] });
     const customPredicate = jest.fn().mockImplementation(({ previous, current }) => {
       const prevCount = previous?.records?.length || 0;
@@ -281,7 +281,7 @@ describe('registerCollections', () => {
     });
 
     const collections: any[] = [
-      ['custom-predicate-coll', handler, {
+      ['custom-func-collection', handler, {
         initial: { records: initialRecords },
         retainLastViable: customPredicate
       }]
@@ -290,12 +290,20 @@ describe('registerCollections', () => {
     await registerCollections(collections);
 
     expect(customPredicate).toHaveBeenCalledWith(expect.objectContaining({
-      name: 'custom-predicate-coll',
+      name: 'custom-func-collection',
       previous: { records: initialRecords },
       current: { records: [{ id: 'init-1', sourceId: 'mock', sourceType: 'mock' }] },
       isSuccess: true
     }));
-    expect(getServerRecordsRegistry({ collectionName: 'custom-predicate-coll' })).toEqual({ records: initialRecords });
+    expect(getServerRecordsRegistry({ collectionName: 'custom-func-collection' })).toEqual({ records: initialRecords });
+  });
+
+  it('should not write invalid collections to the registry', async () => {
+    const handler = jest.fn().mockResolvedValue({ records: [{ id: 'invalid-record' }] });
+
+    await registerCollections([['invalid-collection', handler]]);
+
+    expect(getServerRecordsRegistry({ collectionName: 'invalid-collection' })).toBeUndefined();
   });
 
   it('should call onRequired when all required collections are settled', async () => {

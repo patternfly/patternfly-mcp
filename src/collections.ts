@@ -412,10 +412,11 @@ const registerCollections = async (
     let isSuccess = false;
 
     try {
-      response = await callback();
+      const initialResponse = await callback();
 
-      if (isMcpCollectionResult(response)) {
+      if (isMcpCollectionResult(initialResponse)) {
         isSuccess = true;
+        response = initialResponse;
       } else {
         throw new Error(`Invalid collection response "${name}"`);
       }
