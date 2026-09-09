@@ -6,6 +6,10 @@ import {
   formatSlugToTitle,
   getApiFallbackDescription,
   getLiveExampleCount,
+  getRawImportCount,
+  getTemplateCount,
+  isContentAggregator,
+  isSubstantialGuide,
   hasEmptyFileCodeFence,
   isRawImport,
   normalizeSlug
@@ -75,6 +79,144 @@ describe('isRawImport', () => {
     }
   ])('should detect raw imports, $description', ({ input, expected }) => {
     expect(isRawImport(input)).toBe(expected);
+  });
+});
+
+describe('getRawImportCount', () => {
+  it.each([
+    {
+      description: 'plain text with no import',
+      input: 'const a = "./Button.tsx";',
+      expected: 0
+    },
+    {
+      description: 'single raw import',
+      input: "import ButtonRaw from './Button.tsx?raw';",
+      expected: 1
+    },
+    {
+      description: 'multiple raw imports across multiple lines',
+      input: "import Btn1 from './Btn1.tsx?raw';\nimport Btn2 from './Btn2.tsx?raw';\nimport Btn3 from './Btn3.tsx?raw';",
+      expected: 3
+    },
+    {
+      description: 'multiline raw import statement',
+      input: "import {\n  Button,\n  Card\n} from './components?raw';",
+      expected: 1
+    },
+    {
+      description: 'mixed raw imports and standard imports',
+      input: "import React from 'react';\nimport ExampleRaw from './Example?raw';\nimport { Card } from './Card';",
+      expected: 1
+    }
+  ])('should count raw imports, $description', ({ input, expected }) => {
+    expect(getRawImportCount(input)).toBe(expected);
+  });
+});
+
+describe('getTemplateCount', () => {
+  it.each([
+    {
+      description: 'content with no templates, raw imports',
+      input: 'Pure documentation content without any examples.',
+      expected: { pairedCount: 0, orphanCount: 0, totalUnits: 0 }
+    },
+    {
+      description: 'live example, raw import',
+      input: "import Example from './Example?raw';\n<LiveExample src=\"./Example\" />",
+      expected: { pairedCount: 1, orphanCount: 0, totalUnits: 1 }
+    },
+    {
+      description: 'orphaned raw import, no live examples',
+      input: "import Example1 from './Example1?raw';\nimport Example2 from './Example2?raw';",
+      expected: { pairedCount: 0, orphanCount: 2, totalUnits: 2 }
+    },
+    {
+      description: 'orphaned live examples, no raw imports',
+      input: '<LiveExample src="1" />\n<LiveExample src="2" />',
+      expected: { pairedCount: 0, orphanCount: 2, totalUnits: 2 }
+    },
+    {
+      description: 'multiple live examples and a single raw import',
+      input: "import Ex1 from './Ex1?raw';\n<LiveExample src=\"1\" />\n<LiveExample src=\"2\" />\n<LiveExample src=\"3\" />",
+      expected: { pairedCount: 1, orphanCount: 2, totalUnits: 3 }
+    }
+  ])('should calculate template counts and pairings, $description', ({ input, expected }) => {
+    expect(getTemplateCount(input)).toEqual(expected);
+  });
+});
+
+describe('isContentAggregator', () => {
+  it.each([
+    {
+      description: 'multiple templates without inlined code blocks',
+      input: '<LiveExample src="1" />\n<LiveExample src="2" />',
+      expected: true
+    },
+    {
+      description: 'multiple templates where total units is greater than inlinedCodeCount',
+      input: '<LiveExample src="1" />\n<LiveExample src="2" />\n<LiveExample src="3" />\n```tsx\nconst a = \'single block that exceeds 20 characters\';\n```',
+      expected: true
+    },
+    {
+      description: 'template tag present, lacks prose paragraphs and no inlined code',
+      input: '<LiveExample src="1" />\nShort line',
+      expected: true
+    },
+    {
+      description: 'multiple paragraphs and inlined code, content is not an aggregator',
+      input: '<LiveExample src="Ex" />\n\nThis is the first substantive paragraph detailing how to implement this pattern.\n\nThis is the second substantive paragraph detailing accessibility guidelines and props.\n\n```tsx\nimport React from \'react\';\nexport const Sample = () => <Button>Click</Button>;\n```',
+      expected: false
+    },
+    {
+      description: 'non-markdown/html, content is not an aggregator',
+      input: '{"template": "<LiveExample />", "raw": "import x from \'x?raw\'"}',
+      expected: false
+    },
+    {
+      description: 'no templates, content is not an aggregator',
+      input: '# Documentation\n\nThis is a standard document with no template references.',
+      expected: false
+    }
+  ])('should determine if content is an aggregator, $description', ({ input, expected }) => {
+    expect(isContentAggregator(input)).toBe(expected);
+  });
+});
+
+describe('isSubstantialGuide', () => {
+  it.each([
+    {
+      description: 'markdown with templates and multiple paragraphs',
+      input: 'This is paragraph one explaining how to configure the component in depth.\n\nThis is paragraph two explaining proper event handling and keyboard navigation.\n\n<LiveExample src="Ex" />',
+      expected: true
+    },
+    {
+      description: 'markdown with templates and an inlined code block',
+      input: '```tsx\nimport React from \'react\';\nexport const App = () => <Card>Content</Card>;\n```\n<LiveExample src="Ex" />',
+      expected: true
+    },
+    {
+      description: 'markdown with templates and minimum number of words',
+      input: `${'word '.repeat(105)}\n\n<LiveExample src="Ex" />`,
+      expected: true
+    },
+    {
+      description: 'aggregator stub with templates but no paragraphs, words < 100, and no inlined code',
+      input: "import Ex1 from './Ex1?raw';\nimport Ex2 from './Ex2?raw';\n<LiveExample src=\"1\" />\n<LiveExample src=\"2\" />",
+      expected: false
+    },
+    {
+      description: 'substantial document without template units',
+      input: "This is paragraph one explaining how to configure the component in depth.\n\nThis is paragraph two explaining proper event handling and keyboard navigation.\n\n```tsx\nimport React from 'react';\nexport const App = () => <Card>Content</Card>;\n```",
+      expected: false
+    },
+    {
+      description: 'non-markdown content type',
+      input: '{"paragraphs": 5, "template": "<LiveExample />"}',
+      expected: false
+    }
+  ])('should determine if content is a substantial guide, $description', ({ input, expected }) => {
+    expect(isSubstantialGuide(input)).toBe(expected);
   });
 });
 
@@ -774,6 +916,24 @@ describe('extractApiDescription', () => {
     {
       description: 'content without valid prose paragraphs uses fallback',
       content: "import React from 'react';\n# Heading\nShort line",
+      context: { displayName: 'Card', category: 'doc' },
+      expected: 'PatternFly documentation and guidelines for Card.'
+    },
+    {
+      description: 'content with purposeful script injections',
+      content: "import React from 'react';\n# Heading\nShort line <<script>script>console.warn('lorem ipsum')</script>",
+      context: { displayName: 'Card', category: 'doc' },
+      expected: 'PatternFly documentation and guidelines for Card.'
+    },
+    {
+      description: 'content with purposeful nested script injections',
+      content: "import React from 'react';\n# Heading\nShort line <scr<script>ipt> console.warn('lorem ipsum')",
+      context: { displayName: 'Card', category: 'doc' },
+      expected: 'PatternFly documentation and guidelines for Card.'
+    },
+    {
+      description: 'content with purposeful unclosed script injections',
+      content: "import React from 'react';\n# Heading\nShort line <script console.warn('lorem ipsum')",
       context: { displayName: 'Card', category: 'doc' },
       expected: 'PatternFly documentation and guidelines for Card.'
     },
