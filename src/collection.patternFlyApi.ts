@@ -66,11 +66,13 @@ interface ApiContent {
  * @property content - Content retrieved from the API.
  * @property path - Initial or relative path used to fetch the content.
  * @property resolvedPath - Absolute or resolved path after processing the initial path.
+ * @property qualityScore - Content quality score.
  */
 interface ApiCrawler {
   content: string;
   path: string;
   resolvedPath: string;
+  qualityScore: number;
 }
 
 /**
@@ -85,10 +87,12 @@ type ParsePayloadApi = string | number | boolean | null | string[] | Record<stri
  *
  * @property isEmpty - Whether the parsed payload is considered empty.
  * @property {ParsePayloadApi} payload - Parsed version of the input payload.
+ * @property qualityScore - Content quality score.
  */
 interface ParsePayload {
   isEmpty: boolean;
   payload: ParsePayloadApi;
+  qualityScore: number;
 }
 
 /**
@@ -140,6 +144,7 @@ const parsePayload = (payload: unknown): ParsePayload => {
     updatedPayload = payload;
   }
 
+  const qualityScore = calculateContentQualityScore(updatedPayload);
   let isEmpty: boolean;
   let parsedPayload: ParsePayloadApi;
 
@@ -158,7 +163,7 @@ const parsePayload = (payload: unknown): ParsePayload => {
     isEmpty = updatedPayload.length === 0;
   }
 
-  return { isEmpty, payload: parsedPayload };
+  return { isEmpty, payload: parsedPayload, qualityScore };
 };
 
 /**
@@ -243,13 +248,13 @@ const crawler = async (
       continue;
     }
 
-    const { isEmpty, payload } = parsePayload.memo(res.content);
+    const { isEmpty, payload, qualityScore } = parsePayload.memo(res.content);
 
     if (Array.isArray(payload)) {
       // Terminal Data Arrays (props, css, etc)
       if (componentPaths.some(componentPath => res?.path?.endsWith(`/${componentPath}`))) {
         if (!isEmpty) {
-          content.push({ ...res });
+          content.push({ ...res, qualityScore });
         }
         continue;
       }
@@ -285,7 +290,7 @@ const crawler = async (
 
     // String Payloads (Markdown, HTML, .tsx source code)
     if (!isEmpty) {
-      content.push({ ...res });
+      content.push({ ...res, qualityScore });
     }
 
     // Probe Traversal Paths on Facet Endpoints (e.g. /react -> /react/examples)
@@ -389,7 +394,7 @@ const apiSpider = async (options = getOptions()): Promise<ApiCrawler[]> => {
  * @returns The process metadata entry.
  */
 const contentMetadata = (crawlerResponse: ApiCrawler, options = getOptions()): ApiContent => {
-  const { content, resolvedPath } = crawlerResponse;
+  const { content, resolvedPath, qualityScore } = crawlerResponse;
   const { base } = options.patternflyOptions.api;
 
   // Relative path after '/api/'
@@ -424,7 +429,7 @@ const contentMetadata = (crawlerResponse: ApiCrawler, options = getOptions()): A
   const displayName = extractApiDisplayName(content, { slug: normalizedItem, category: normalizedCategory, section: normalizedSection });
   const description = extractApiDescription(content, { displayName, category: normalizedCategory, detailType: normalizedDetailType });
 
-  const isLowQuality = calculateContentQualityScore(content, { category: normalizedCategory }) < MIN_API_QUALITY_THRESHOLD;
+  const isLowQuality = qualityScore < MIN_API_QUALITY_THRESHOLD;
   const isDeferred = DEFERRED_API_CATEGORIES.has(normalizedCategory);
 
   return {

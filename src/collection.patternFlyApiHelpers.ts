@@ -1,4 +1,10 @@
-import { isJson, isJsonLike } from './resource.helpers';
+import {
+  breakdownProse,
+  contentType,
+  getInlinedCodeBlockCount,
+  isJson,
+  isJsonLike
+} from './resource.helpers';
 
 /**
  * Detect imports that use the `?raw` query param.
@@ -9,11 +15,13 @@ const isRawImport = (str: string) =>
   /import\s+[\w*\s{},]+\s+from\s+['"][^'"]+\?raw['"]/i.test(str);
 
 /**
- * Detect a `<LiveExample … />` tag.
+ * Count the number of raw imports in a given string.
  *
- * @param str
+ * @param str - Input string.
+ * @returns Number of raw imports found in the input string.
  */
-const hasLiveExample = (str: string) => /<LiveExample\b[^>]*\/?>/i.test(str);
+const getRawImportCount = (str: string): number =>
+  (str.match(/import\s+[\w*\s{},]+\s+from\s+['"][^'"]+\?raw['"]/gi) || []).length;
 
 /**
  * Count the number of `<LiveExample>` tags in a given string.
@@ -40,6 +48,79 @@ const hasEmptyFileCodeFence = (str: string) =>
   /```[\w-]*\s*\n\s*```/.test(str);
 
 /**
+ * Calculate template example counts.
+ *
+ * - When `?raw` import and `<LiveExample>` are paired (1:1), count as 1 unit.
+ * - When `?raw` import and `<LiveExample>` appear without the other (orphaned/unpaired), each adds 1 independently to the count.
+ *
+ * @param content - Input content.ß
+ * @returns Total effective template reference count.
+ */
+const getTemplateCount = (content: string): { pairedCount: number; orphanCount: number; totalUnits: number } => {
+  const liveCount = getLiveExampleCount(content);
+  const rawCount = getRawImportCount(content);
+
+  const pairedCount = Math.min(liveCount, rawCount);
+  const orphanCount = Math.abs(liveCount - rawCount);
+  const totalUnits = pairedCount + orphanCount; // Equivalent to Math.max(liveCount, rawCount)
+
+  return { pairedCount, orphanCount, totalUnits };
+};
+
+/**
+ * Is the content a content aggregator?
+ *
+ * @param content - Content to eval.
+ * @returns Returns `true` if the content aggregates other content.
+ */
+const isContentAggregator = (content: string): boolean => {
+  const type = contentType(content);
+
+  if (type !== '' && type !== 'markdown' && type !== 'html') {
+    return false;
+  }
+
+  const { totalUnits } = getTemplateCount(content);
+  const inlinedCodeCount = getInlinedCodeBlockCount(content);
+
+  // Check: Multiple external example tags without inlined blocks
+  if (totalUnits >= 2 && inlinedCodeCount === 0) {
+    return true;
+  }
+
+  // Check: High template density
+  if (totalUnits > inlinedCodeCount * 2 && totalUnits >= 3) {
+    return true;
+  }
+
+  // Check: Template tags present without paragraphs
+  const { paragraphs } = breakdownProse(content);
+
+  return totalUnits >= 1 && paragraphs < 2 && inlinedCodeCount === 0;
+};
+
+/**
+ * Determine if the content has anything to offer, weight.
+ *
+ * Counts:
+ * - if the content type must be empty or 'markdown'
+ * - if the content contains at least 2 paragraphs, or has a word count of at
+ *     least 100, or has at least one inline code block
+ * - if the live example, template count, is greater than zero
+ *
+ * @param content - Content to eval
+ * @returns `true` has weight.
+ */
+const isSubstantialGuide = (content: string) => {
+  const { totalUnits } = getTemplateCount(content);
+  const inlinedCount = getInlinedCodeBlockCount(content);
+  const { type, paragraphs, wordCount } = breakdownProse(content);
+  const hasSubstance = paragraphs >= 2 || wordCount >= 100 || inlinedCount >= 1;
+
+  return (type === '' || type === 'markdown') && hasSubstance && totalUnits > 0;
+};
+
+/**
  * Calculate a quality score for a PatternFly API response.
  *
  * @param content - Content to score.
@@ -53,7 +134,7 @@ const hasEmptyFileCodeFence = (str: string) =>
 const calculateContentQualityScore = (
   content: unknown,
   {
-    baseScore = 1, category, qualityReduction = 0.03, minCharacters = 150
+    baseScore = 1, category, qualityReduction = 0.03, minCharacters = 100
   }: { baseScore?: number; category?: undefined | string; qualityReduction?: number; minCharacters?: number } = {}
 ): number => {
   if (content === undefined || content === null) {
@@ -78,20 +159,21 @@ const calculateContentQualityScore = (
 
   let score = baseScore;
 
-  if (isJsonLike(trimmed)) {
-    const jsonValid = isJson(trimmed);
-
-    if (!jsonValid) {
-      score -= qualityReduction;
-    }
-  }
-
-  if (isRawImport(trimmed)) {
+  if (isJsonLike(trimmed) && !isJson(trimmed)) {
     score -= qualityReduction;
   }
 
-  if (hasLiveExample(trimmed)) {
-    score -= qualityReduction * getLiveExampleCount(trimmed);
+  const { totalUnits } = getTemplateCount(trimmed);
+
+  if (isContentAggregator(trimmed)) {
+    // Aggregator overview pages take linear deductions, falling below 0.95
+    score -= qualityReduction * Math.max(2, totalUnits);
+  } else if (isSubstantialGuide(trimmed)) {
+    // Developer guides, cap isolated demo tag/raw imports
+    score -= qualityReduction;
+  } else {
+    // Non-guide stubs
+    score -= qualityReduction * totalUnits;
   }
 
   if (trimmed.length < minCharacters && !trimmed.includes('```') && !hasEmptyFileCodeFence(trimmed)) {
@@ -231,25 +313,28 @@ const extractApiDisplayName = (content?: string, context: { slug?: string; categ
  * Provide a fallback description based on kind/category when no prose is available.
  *
  * @param displayName - Display name
- * @param category - Category / facet kind
+ * @param [category] - Category / facet kind
  */
-const getApiFallbackDescription = (displayName = '', category = 'doc'): string => {
+const getApiFallbackDescription = (displayName: string, category?: string): string => {
+  const trimmed = typeof displayName === 'string' ? displayName.trim() : '';
+  const updatedDisplayName = trimmed ? ` for ${trimmed}` : '';
+
   switch (category) {
     case 'props':
-      return `PatternFly React component props and TypeScript interfaces for ${displayName}.`;
+      return `PatternFly React component props and TypeScript interfaces${updatedDisplayName}.`;
     case 'css':
       return `PatternFly ${
-        displayName.toLowerCase().includes('css') ? '' : 'CSS '}variables and tokens for ${displayName}.`;
+        displayName.toLowerCase().includes('css') ? '' : 'CSS '}variables and tokens${updatedDisplayName}.`;
     case 'html':
     case 'html-demos':
-      return `PatternFly HTML examples and markup structure for ${displayName}.`;
+      return `PatternFly HTML examples and markup structure${updatedDisplayName}.`;
     case 'react':
     case 'react-demos':
-      return `PatternFly React component examples and demos for ${displayName}.`;
+      return `PatternFly React component examples and demos${updatedDisplayName}.`;
     case 'examples':
-      return `PatternFly ${displayName} examples and demos.`;
+      return `PatternFly examples and demos${updatedDisplayName}.`;
     default:
-      return `PatternFly documentation and guidelines for ${displayName}.`;
+      return `PatternFly documentation and guidelines${updatedDisplayName}.`;
   }
 };
 
@@ -380,10 +465,13 @@ export {
   extractApiDisplayName,
   extractApiName,
   formatSlugToTitle,
+  isContentAggregator,
+  isSubstantialGuide,
   getApiFallbackDescription,
   getLiveExampleCount,
+  getRawImportCount,
+  getTemplateCount,
   hasEmptyFileCodeFence,
-  hasLiveExample,
   isRawImport,
   normalizeSlug
 };

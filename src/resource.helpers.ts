@@ -3,6 +3,23 @@ import { normalizeEnumeratedPatternFlyVersion } from './patternFly.helpers';
 import { isPlainObject } from './server.helpers';
 
 /**
+ * Count the number of inlined code blocks in a given string.
+ *
+ * @param str - Input string.
+ * @param minBlockLength - Minimum length of code block content to consider it valid.
+ * @returns Number of inlined code blocks found in the input string.
+ */
+const getInlinedCodeBlockCount = (str: string, minBlockLength = 20): number => {
+  const codeBlocks = str.match(/```[a-zA-Z0-9_-]*\n([\s\S]*?)```/g) || [];
+
+  return codeBlocks.filter(block => {
+    const inner = block.replace(/^```[^\n]*\n/, '').replace(/```$/, '').trim();
+
+    return inner.length >= minBlockLength && !inner.startsWith('file=');
+  }).length;
+};
+
+/**
  * Is content CSS-like?
  *
  * CSS matching:
@@ -407,6 +424,46 @@ const contentType = (content: unknown): '' | 'sh' | 'python' | 'markdown' | 'jav
 };
 
 /**
+ * Break down prose content for quality evaluation.
+ *
+ * @note This function is intended to only evaluate prose content, not code.
+ * The internal content guard will return empty counts if the content is not
+ * prose.
+ *
+ * @param content - The content to be broken down.
+ * @returns An object containing the content type, original content, paragraphs, and word count of the content.
+ */
+const breakdownProse = (content: string): { type: string; content: string; paragraphs: number; wordCount: number } => {
+  const type = contentType(content);
+
+  if (type !== '' && type !== 'markdown') {
+    return {
+      type,
+      content,
+      paragraphs: 0,
+      wordCount: 0
+    };
+  }
+
+  const cleaned = content
+    .replace(/```[\s\S]*?```/g, '') // Remove fenced blocks (```...```)
+    .replace(/<[^>]+>/g, '') // Remove inline HTML/JSX
+    .replace(/^\s*(import|export)\s+.*?;?\s*$/gm, '') // Remove import / export statements
+    .trim();
+
+  // Split paragraphs, use min-length
+  const paragraphs = cleaned.split(/\n\s*\n/).filter(paragraph => paragraph.trim().length > 30);
+  const words = cleaned.split(/\s+/).filter(Boolean);
+
+  return {
+    type,
+    content,
+    paragraphs: paragraphs.length,
+    wordCount: words.length
+  };
+};
+
+/**
  * Format content as a code block for Markdown rendering.
  *
  * @note We purposefully allow passing in `null`, `undefined`, and empty strings since
@@ -487,8 +544,10 @@ const paramCompletion = async (filters: FilterPatternFlyFilters) => {
 };
 
 export {
+  breakdownProse,
   contentType,
   formatContentForMarkdown,
+  getInlinedCodeBlockCount,
   isJavaLike,
   isJsLike,
   isJson,

@@ -7,7 +7,6 @@ import {
   getApiFallbackDescription,
   getLiveExampleCount,
   hasEmptyFileCodeFence,
-  hasLiveExample,
   isRawImport,
   normalizeSlug
 } from '../collection.patternFlyApiHelpers';
@@ -79,53 +78,6 @@ describe('isRawImport', () => {
   });
 });
 
-describe('hasLiveExample', () => {
-  it.each([
-    {
-      description: 'self-closing LiveExample tag',
-      input: '<LiveExample src="./Button.tsx" />',
-      expected: true
-    },
-    {
-      description: 'opening LiveExample tag with attributes',
-      input: '<LiveExample id="example-1">',
-      expected: true
-    },
-    {
-      description: 'case-insensitive liveexample tag',
-      input: '<liveexample src="demo" />',
-      expected: true
-    },
-    {
-      description: 'LiveExample tag with multiline attributes',
-      input: '<LiveExample\n  src="./Demo.tsx"\n/>',
-      expected: true
-    },
-    {
-      description: 'LiveExample tag without attributes',
-      input: '<LiveExample/>',
-      expected: true
-    },
-    {
-      description: 'text without LiveExample tag',
-      input: '<div>Regular HTML component</div>',
-      expected: false
-    },
-    {
-      description: 'extended component name without word boundary match',
-      input: '<LiveExampleExtended />',
-      expected: false
-    },
-    {
-      description: 'empty string',
-      input: '',
-      expected: false
-    }
-  ])('should detect LiveExample tags, $description', ({ input, expected }) => {
-    expect(hasLiveExample(input)).toBe(expected);
-  });
-});
-
 describe('getLiveExampleCount', () => {
   it.each([
     {
@@ -151,6 +103,31 @@ describe('getLiveExampleCount', () => {
     {
       description: 'empty string',
       input: '',
+      expected: 0
+    },
+    {
+      description: 'opening LiveExample tag with attributes',
+      input: '<LiveExample id="example-1">',
+      expected: 1
+    },
+    {
+      description: 'LiveExample tag with multiline attributes',
+      input: '<LiveExample\n  src="./Demo.tsx"\n/>',
+      expected: 1
+    },
+    {
+      description: 'LiveExample tag without attributes',
+      input: '<LiveExample/>',
+      expected: 1
+    },
+    {
+      description: 'text without LiveExample tag',
+      input: '<div>Regular HTML component</div>',
+      expected: 0
+    },
+    {
+      description: 'extended component name without word boundary match',
+      input: '<LiveExampleExtended />',
       expected: 0
     }
   ])('should count LiveExample occurrences, $description', ({ input, expected }) => {
@@ -334,6 +311,57 @@ describe('calculateContentQualityScore', () => {
     }
   ])('should calculate quality score, $description', ({ content, options, expected }: any) => {
     expect(calculateContentQualityScore(content, options)).toBe(expected);
+  });
+
+  it.each([
+    {
+      description: 'multiple paragraphs multiple live examples',
+      content: [
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+        '\n',
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+        '\n',
+        '<LiveExample src="./first.tsx" />',
+        '<LiveExample src="./second.tsx" />'
+      ].join('\n'),
+      expected: 0.94
+    },
+    {
+      description: 'single paragraph',
+      content: [
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+        '\n',
+        '<LiveExample src="./first.tsx" />',
+        '<LiveExample src="./second.tsx" />'
+      ].join('\n'),
+      expected: 0.94
+    },
+    {
+      description: 'no paragraphs',
+      content: [
+        'Lorem ipsum dolor sit amet.',
+        '<LiveExample src="./first.tsx" />',
+        '<LiveExample src="./second.tsx" />'
+      ].join('\n'),
+      expected: 0.91
+    },
+    {
+      description: 'no paragraphs single example',
+      content: [
+        'Lorem ipsum dolor sit amet.',
+        '<LiveExample src="./first.tsx" />'
+      ].join('\n'),
+      expected: 0.91
+    },
+    {
+      description: 'single example',
+      content: [
+        '<LiveExample src="./first.tsx" />'
+      ].join('\n'),
+      expected: 0.91
+    }
+  ])('should cap "LiveExample" penalities for wordy documents, $description', ({ content, expected }) => {
+    expect(calculateContentQualityScore(content)).toBe(expected);
   });
 });
 
@@ -662,7 +690,7 @@ describe('getApiFallbackDescription', () => {
       description: 'examples category',
       displayName: 'Button',
       category: 'examples',
-      expected: 'PatternFly Button examples and demos.'
+      expected: 'PatternFly examples and demos for Button.'
     },
     {
       description: 'doc category',
@@ -680,7 +708,7 @@ describe('getApiFallbackDescription', () => {
       description: 'default arguments without parameters',
       displayName: undefined,
       category: undefined,
-      expected: 'PatternFly documentation and guidelines for .'
+      expected: 'PatternFly documentation and guidelines.'
     }
   ])('should provide fallback description, $description', ({ displayName, category, expected }: any) => {
     expect(getApiFallbackDescription(displayName, category)).toBe(expected);
@@ -705,7 +733,7 @@ describe('extractApiDescription', () => {
       description: 'detailType equals examples returns fallback',
       content: '# Title\nValid paragraph line exceeding twenty characters in length.',
       context: { displayName: 'Button', detailType: 'examples' },
-      expected: 'PatternFly Button examples and demos.'
+      expected: 'PatternFly examples and demos for Button.'
     },
     {
       description: 'markdown content uses first valid paragraph',
@@ -759,13 +787,13 @@ describe('extractApiDescription', () => {
       description: 'undefined content and undefined context returns fallback',
       content: undefined,
       context: undefined,
-      expected: 'PatternFly documentation and guidelines for .'
+      expected: 'PatternFly documentation and guidelines.'
     },
     {
       description: 'null context explicitly passed returns fallback',
       content: undefined,
       context: null as any,
-      expected: 'PatternFly documentation and guidelines for .'
+      expected: 'PatternFly documentation and guidelines.'
     }
   ])('should extract API description, $description', ({ content, context, expected }: any) => {
     expect(extractApiDescription(content, context)).toBe(expected);
