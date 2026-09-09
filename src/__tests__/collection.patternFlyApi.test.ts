@@ -179,6 +179,24 @@ describe('parsePayload', () => {
   it('parses numeric payloads as non-empty', () => {
     expect(parsePayload('42').isEmpty).toBe(false);
   });
+
+  it.each([
+    {
+      description: 'length',
+      payload: 'A'.repeat(200),
+      expected: 1
+    },
+    {
+      description: 'code fence',
+      payload: '```ts file="./ButtonBasic.tsx"\n```',
+      expected: 0.95
+    }
+  ])('should calculate qualityScore during payload parsing, $description', ({ payload, expected }) => {
+    // See collection.patternFlyApi.test.ts for quality scoring tests
+    const parsed = parsePayload(payload);
+
+    expect(parsed.qualityScore).toBeLessThanOrEqual(expected);
+  });
 });
 
 describe('crawler', () => {

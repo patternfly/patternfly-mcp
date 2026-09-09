@@ -1,6 +1,8 @@
 import {
+  breakdownProse,
   contentType,
   formatContentForMarkdown,
+  getInlinedCodeBlockCount,
   isCssLike,
   isJavaLike,
   isJsLike,
@@ -28,6 +30,97 @@ jest.mock('../patternFly.helpers', () => ({
 
 const MockFilter = filterPatternFly.memo as jest.MockedFunction<typeof filterPatternFly.memo>;
 const MockNormalizeVersion = normalizeEnumeratedPatternFlyVersion.memo as jest.MockedFunction<typeof normalizeEnumeratedPatternFlyVersion.memo>;
+
+describe('getInlinedCodeBlockCount', () => {
+  it.each([
+    {
+      description: 'markdown without code blocks',
+      input: 'Just regular markdown prose text.',
+      expected: 0
+    },
+    {
+      description: 'code block meeting default minBlockLength threshold (>=20)',
+      input: '```tsx\nimport React from "react";\nexport const App = () => <div />;\n```',
+      expected: 1
+    },
+    {
+      description: 'code block below minBlockLength threshold',
+      input: '```js\nconst a = 1;\n```',
+      expected: 0
+    },
+    {
+      description: 'code block with custom minBlockLength threshold',
+      input: '```js\nconst a = 1;\n```',
+      minBlockLength: 5,
+      expected: 1
+    },
+    {
+      description: 'ignored code block starting with file= external reference',
+      input: '```tsx\nfile="./examples/ButtonBasic.tsx"\n```',
+      expected: 0
+    },
+    {
+      description: 'multiple code blocks mixed inline and file= references',
+      input: '```tsx\nfile="./examples/ButtonBasic.tsx"\n```\n\n```tsx\nimport React from "react";\nexport const Comp = () => <Button>Click</Button>;\n```\n\n```html\n<button class="pf-v6-c-button pf-m-primary">Click</button>\n```',
+      expected: 2
+    },
+    {
+      description: 'empty code block',
+      input: '```ts\n\n```',
+      expected: 0
+    }
+  ])('should count inlined code blocks, $description', ({ input, minBlockLength, expected }) => {
+    expect(getInlinedCodeBlockCount(input, minBlockLength)).toBe(expected);
+  });
+});
+
+describe('breakdownProse', () => {
+  it.each([
+    {
+      description: 'non-markdown returns zero paragraph, word counts',
+      input: '{"key": "value", "items": [1, 2, 3]}',
+      expected: {
+        type: 'json',
+        paragraphs: 0,
+        wordCount: 0
+      }
+    },
+    {
+      description: 'typescript returns zero paragraph, word counts',
+      input: 'import React from "react";\nexport const Button = () => {\n  return <button>Click</button>;\n};',
+      expected: {
+        type: 'javascript',
+        paragraphs: 0,
+        wordCount: 0
+      }
+    },
+    {
+      description: 'multi-paragraph markdown',
+      input: 'This is the first paragraph describing the component and its general capabilities.\n\nThis is the second paragraph providing accessibility notes and usage recommendations.',
+      expected: {
+        type: '',
+        paragraphs: 2,
+        wordCount: 23
+      }
+    },
+    {
+      description: 'markdown stripped code blocks, JSX tags, and imports',
+      input: "import Button from './Button';\n\n# Button Component\n\nButtons allow users to perform actions and choose options with a single tap.\n\n<LiveExample src=\"ButtonBasic\" />\n\n```tsx\nconst App = () => <Button>Submit</Button>;\n```\n\nAlways use descriptive labels so users know what action will be performed.",
+      expected: {
+        type: 'markdown',
+        paragraphs: 2,
+        wordCount: 28
+      }
+    }
+  ])('should breakdown prose content, $description', ({ input, expected }) => {
+    const result = breakdownProse(input);
+
+    expect(result.type).toBe(expected.type);
+    expect(result.paragraphs).toBe(expected.paragraphs);
+    expect(result.wordCount).toBe(expected.wordCount);
+    expect(result.content).toBe(input);
+  });
+});
 
 describe('isCssLike', () => {
   it.each([
