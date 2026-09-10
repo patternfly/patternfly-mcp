@@ -12,7 +12,20 @@ const baseConfig = {
     '^.+\\.(ts|tsx)$': [
       'ts-jest',
       {
-        ...tsConfig
+        ...tsConfig,
+        diagnostics: {
+          // See codes https://github.com/Microsoft/TypeScript/blob/main/src/compiler/diagnosticMessages.json
+          // 1324 - Dynamic imports only support a second argument when the '--module' option is...
+          // 1343 - The 'import.meta' meta-property is only allowed when the '--module' option is...
+          ignoreCodes: [1324, 1343]
+        },
+        astTransformers: {
+          before: [
+            {
+              path: 'ts-jest-mock-import-meta'
+            }
+          ]
+        }
       }
     ]
   }
@@ -40,28 +53,7 @@ export default {
       roots: ['<rootDir>/src'],
       testMatch: ['<rootDir>/src/**/*.test.ts'],
       setupFilesAfterEnv: ['<rootDir>/jest.setupTests.ts'],
-      ...baseConfig,
-      transform: {
-        '^.+\\.(ts|tsx)$': [
-          'ts-jest',
-          {
-            ...tsConfig,
-            diagnostics: {
-              // See codes https://github.com/Microsoft/TypeScript/blob/main/src/compiler/diagnosticMessages.json
-              // 1324 - Dynamic imports only support a second argument when the '--module' option is...
-              // 1343 - The 'import.meta' meta-property is only allowed when the '--module' option is...
-              ignoreCodes: [1324, 1343]
-            },
-            astTransformers: {
-              before: [
-                {
-                  path: 'ts-jest-mock-import-meta'
-                }
-              ]
-            }
-          }
-        ]
-      }
+      ...baseConfig
     },
     {
       displayName: 'package',
@@ -77,6 +69,12 @@ export default {
       transformIgnorePatterns: [
         '<rootDir>/dist/'
       ],
+      ...baseConfig
+    },
+    {
+      displayName: 'collections',
+      roots: ['<rootDir>/tests/scripts'],
+      testMatch: ['<rootDir>/tests/scripts/**/*collection*.test.ts'],
       ...baseConfig
     },
     {

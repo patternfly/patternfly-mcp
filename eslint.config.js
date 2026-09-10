@@ -126,6 +126,17 @@ export default [
   },
   {
     files: [
+      'scripts/**/*.ts',
+      'scripts/**/*.js'
+    ],
+    rules: {
+      'no-console': 0,
+      'n/no-process-exit': 0,
+      'import/no-unresolved': 0
+    }
+  },
+  {
+    files: [
       'docs/**/*.ts',
       'docs/**/*.js'
     ],

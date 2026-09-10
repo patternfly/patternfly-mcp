@@ -1,0 +1,1659 @@
+{
+  "version": "1",
+  "generated": "2026-09-10T14:57:31.829Z",
+  "base": "https://main.patternfly-org.pages.dev/api",
+  "records": [
+    {
+      "p": "v6/accessibility/design/text",
+      "n": "Design",
+      "d": "As described in our accessibility guidelines, users may interact with your product through a variety of assistive technologies. In addition to developing for accessibility, you must also incorporat...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/accessibility/develop/text",
+      "n": "Develop",
+      "d": "PatternFly provides accessible components, but we can't guarantee that your products will be accessible. In order to ensure that your product is accessible, you will need to take additional steps d...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/accessibility/overview/text",
+      "n": "Accessibility Overview",
+      "d": "Accessibility refers to the ways that your product is set up to support different user needs and abilities, making their experience more comfortable and ensuring that they can easily interact with ...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/accessibility/product-scorecard/text",
+      "n": "Product Scorecard",
+      "d": "To support the proper assessment of accessibility measures, we've created a scorecard that outlines the ways that we recommend testing your UI and assessing how well it meets accessibility expectat...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/accessibility/test-your-product/text",
+      "n": "Testing your product's accessibility",
+      "d": "This guide contains instructions and recommendations that you can use to robustly test your product's accessibility, in order to identify accessibility issues and opportunities for improvement.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/AI/ai-assisted-development_ai-assisted-code-migration/text",
+      "n": "AI Assisted Development AI Assisted Code Migration",
+      "d": "This guide explores a workflow that enables developers to leverage AI to accelerate code migrations, with best practices and recommendations to follow when replicating the process.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/AI/ai-assisted-development_marketplace/text",
+      "n": "AI Assisted Development Marketplace",
+      "d": "The AI Helpers marketplace is an open source collection of plugins for AI coding tools like Claude Code and Cursor. Hosted in the rh-uxd/ai-helpers repository, it includes plugins for both PatternF...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/AI/ai-assisted-development_patternfly-cli/text",
+      "n": "AI Assisted Development Patternfly CLI",
+      "d": "The PatternFly CLI is a command-line tool for scaffolding projects, performing code modifications, and running project-related tasks. It streamlines everyday development work and PatternFly upgrade...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/AI/ai-assisted-development_patternfly-mcp/text",
+      "n": "AI Assisted Development Patternfly MCP",
+      "d": "This guide provides an overview of the PatternFly MCP server, including its benefits and instructions for setting up the tool.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/AI/ai-assisted-development_rapid-prototyping/about-rapid-prototyping",
+      "n": "Rapid prototyping with AI-assisted PatternFly development",
+      "d": "This guide explores a workflow that enables teams to rapidly prototype PatternFly UIs directly in code using AI-powered development tools.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/AI/ai-assisted-development_rapid-prototyping/enhancing-existing-projects",
+      "n": "Enhancing existing projects",
+      "d": "This guide describes how to integrate AI-assisted PatternFly development tools into an existing codebase.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/AI/ai-assisted-development_rapid-prototyping/new-prototypes",
+      "n": "Starting new prototypes",
+      "d": "This guide provides instructions for setting up new PatternFly prototypes using AI-assisted development tools.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/AI/guidelines_ai-design-principles/text",
+      "n": "Guidelines AI Design Principles",
+      "d": "Regardless of the application or components, when designing for an AI-enabled experience.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/AI/guidelines_animation/text",
+      "n": "Guidelines Animation",
+      "d": "Use the premade sparkle animation to add interest to AI indicators, including icons and chatbot avatars.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/AI/guidelines_chatbot-avatars/text",
+      "n": "Guidelines Chatbot Avatars",
+      "d": "All chatbots should use the robot icon as their avatar or profile picture. Other AI experiences should not use a robot icon.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/AI/guidelines_color/text",
+      "n": "Guidelines Color",
+      "d": "AI features use the same colors as other interface elements.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/AI/guidelines_conversation-design/text",
+      "n": "Conversation design guidelines",
+      "d": "Conversation design is the practice of creating human-centered chatbots and other AI-driven interfaces. Like traditional content design, conversation design uses words to make experiences clear, co...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/AI/guidelines_iconography/text",
+      "n": "Guidelines Iconography",
+      "d": "AI is widely used across Red Hat products and digital experiences, and there are a variety of ways to represent it in different parts of the Red Hat brand. Nearly every medium we use includes one o...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/AI/guidelines_legal-requirements/text",
+      "n": "Guidelines Legal Requirements",
+      "d": "This guidance does not replace other assessments or guidance from other teams you may be required to complete (such as submitting an AI Assessment, Privacy Impact Assessment, or other reviews).",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/AI/guidelines_transparency-notices/text",
+      "n": "Guidelines Transparency Notices",
+      "d": "User research has shown that users want to clearly see when an action that they will take involves AI. When in doubt, communicate more about AI features, not less.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/AI/overview/text",
+      "n": "AI Overview",
+      "d": "When used thoughtfully, AI can enhance user experiences through personalized interactions, increased efficiency, and innovative designs. Regardless of the AI resources or workflows you use, it's im...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/about-modal/css",
+      "n": "About Modal CSS",
+      "d": "PatternFly variables and tokens for About Modal CSS.",
+      "c": "json",
+      "q": 1
+    },
+    {
+      "p": "v6/components/about-modal/html",
+      "n": "About Modal",
+      "d": "In order to add a background image, set the --pf-v6-c-about-modal-box--BackgroundImage CSS variable to the path of the image. For example: --pf-v6-c-about-modal-box--BackgroundImage: url(custom/pat...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/about-modal/react/examples/AboutModalBasic",
+      "n": "About Modal",
+      "d": "PatternFly examples and demos for About Modal.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/about-modal/react/examples/AboutModalComplexUserPositionedContent",
+      "n": "About Modal",
+      "d": "PatternFly examples and demos for About Modal.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/about-modal/react/examples/AboutModalWithoutProductName",
+      "n": "About Modal",
+      "d": "PatternFly examples and demos for About Modal.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/about-modal/text",
+      "n": "About Modal",
+      "d": "When version and build information are both shown: Version 6.3 (Build 5)",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/accordion/css",
+      "n": "Accordion CSS",
+      "d": "PatternFly variables and tokens for Accordion CSS.",
+      "c": "json",
+      "q": 1
+    },
+    {
+      "p": "v6/components/accordion/html",
+      "n": "Accordion",
+      "d": "There are two variations to build the accordion component. The first is to use div and h1 - h6 tags.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/accordion/react/examples/AccordionBordered",
+      "n": "Accordion",
+      "d": "PatternFly examples and demos for Accordion.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/accordion/react/examples/AccordionDefinitionList",
+      "n": "Accordion",
+      "d": "PatternFly examples and demos for Accordion.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/accordion/react/examples/AccordionFixedWithMultipleExpandBehavior",
+      "n": "Accordion",
+      "d": "PatternFly examples and demos for Accordion.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/accordion/react/examples/AccordionSingleExpandBehavior",
+      "n": "Accordion",
+      "d": "PatternFly examples and demos for Accordion.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/accordion/react/examples/AccordionToggleIconAtStart",
+      "n": "Accordion",
+      "d": "PatternFly examples and demos for Accordion.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/accordion/text",
+      "n": "Accordion",
+      "d": "Accordions are one of many ways to organize large amounts of content when there is limited space. It provides a grouping structure while the header title gives an overview of the content hidden und...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/action-list/css",
+      "n": "Action List CSS",
+      "d": "PatternFly variables and tokens for Action List CSS.",
+      "c": "json",
+      "q": 1
+    },
+    {
+      "p": "v6/components/action-list/html",
+      "n": "Action List",
+      "d": "PatternFly HTML examples and markup structure for Action List.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/action-list/react/examples/ActionListMultipleGroups",
+      "n": "Action List",
+      "d": "PatternFly examples and demos for Action List.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/action-list/react/examples/ActionListSingleGroup",
+      "n": "Action List",
+      "d": "PatternFly examples and demos for Action List.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/action-list/react/examples/ActionListWithCancelButton",
+      "n": "Action List",
+      "d": "PatternFly examples and demos for Action List.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/action-list/react/examples/ActionListWithIcons",
+      "n": "Action List",
+      "d": "PatternFly examples and demos for Action List.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/action-list/text",
+      "n": "Action List",
+      "d": "Use an action list to determine which spacing guidelines to use for a group of actions in toolbars, modals, forms, data lists, wizards, and more. Using an action list allows you to know what spacin...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/alert/css",
+      "n": "Alert CSS",
+      "d": "PatternFly variables and tokens for Alert CSS.",
+      "c": "json",
+      "q": 1
+    },
+    {
+      "p": "v6/components/alert/html",
+      "n": "Alert",
+      "d": "An alert group is optional when only one static alert is needed. It becomes required when more than one alert is used in a list.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/alert/react",
+      "n": "Alert",
+      "d": "This example shows how an alert could be triggered by an asynchronous event in the application. Note that you can customize how the alert will be announced to assistive technology. See the alert ac...",
+      "c": "markdown",
+      "q": 0.97
+    },
+    {
+      "p": "v6/components/alert/react/examples/AlertAsyncLiveRegion",
+      "n": "Alert",
+      "d": "PatternFly examples and demos for Alert.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/alert/react/examples/AlertDynamicLiveRegion",
+      "n": "Alert",
+      "d": "PatternFly examples and demos for Alert.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/alert/react/examples/AlertGroupAsync",
+      "n": "Alert",
+      "d": "PatternFly examples and demos for Alert.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/alert/react/examples/AlertGroupSingularDynamic",
+      "n": "Alert",
+      "d": "PatternFly examples and demos for Alert.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/alert/react/examples/AlertGroupSingularDynamicOverflow",
+      "n": "Alert",
+      "d": "PatternFly examples and demos for Alert.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/alert/react/examples/AlertGroupStatic",
+      "n": "Alert",
+      "d": "PatternFly examples and demos for Alert.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/alert/react/examples/AlertGroupToast",
+      "n": "Alert",
+      "d": "PatternFly examples and demos for Alert.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/alert/react/examples/AlertGroupToastOverflowCapture",
+      "n": "Alert",
+      "d": "PatternFly examples and demos for Alert.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/alert/text",
+      "n": "Alert",
+      "d": "Alert elements vary depending on the variation of alert. Toast alerts are always dismissible, but bordered inline alerts can be both dismissable and non-dismissible. All other elements are consiste...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/avatar/css",
+      "n": "Avatar CSS",
+      "d": "PatternFly variables and tokens for Avatar CSS.",
+      "c": "json",
+      "q": 1
+    },
+    {
+      "p": "v6/components/avatar/html",
+      "n": "Avatar",
+      "d": "Avatars can be created using either an img element with an image source, or a div element with custom content.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/avatar/react/examples/AvatarBasic",
+      "n": "Avatar",
+      "d": "PatternFly examples and demos for Avatar.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/avatar/react/examples/AvatarBordered",
+      "n": "Avatar",
+      "d": "PatternFly examples and demos for Avatar.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/avatar/react/examples/AvatarColorModifiers",
+      "n": "Avatar",
+      "d": "PatternFly examples and demos for Avatar.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/avatar/react/examples/AvatarInitials",
+      "n": "Avatar",
+      "d": "PatternFly examples and demos for Avatar.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/avatar/react/examples/AvatarSizeVariations",
+      "n": "Avatar",
+      "d": "PatternFly examples and demos for Avatar.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/avatar/text",
+      "n": "Avatar",
+      "d": "An avatar is typically used to represent the current user in the masthead. However, based on your product's use cases and needs, there is room for customization, as outlined in the following avatar...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/back-to-top/css",
+      "n": "Back To Top CSS",
+      "d": "PatternFly variables and tokens for Back To Top CSS.",
+      "c": "json",
+      "q": 1
+    },
+    {
+      "p": "v6/components/back-to-top/html",
+      "n": "Back To Top",
+      "d": "PatternFly HTML examples and markup structure for Back To Top.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/back-to-top/react",
+      "n": "Back To Top",
+      "d": "PatternFly React component examples and demos for Back To Top.",
+      "c": "markdown",
+      "q": 0.97
+    },
+    {
+      "p": "v6/components/back-to-top/react/examples/BackToTopBasic",
+      "n": "Back To Top",
+      "d": "PatternFly examples and demos for Back To Top.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/back-to-top/text",
+      "n": "Back To Top",
+      "d": "Use the back to top component on large-medium screens when content fills up more than two screens in length.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/backdrop/css",
+      "n": "Backdrop CSS",
+      "d": "PatternFly variables and tokens for Backdrop CSS.",
+      "c": "json",
+      "q": 1
+    },
+    {
+      "p": "v6/components/backdrop/html",
+      "n": "Backdrop",
+      "d": "This component puts a backdrop over the entire viewport.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/backdrop/react",
+      "n": "Backdrop",
+      "d": "PatternFly React component examples and demos for Backdrop.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/backdrop/text",
+      "n": "Backdrop",
+      "d": "To implement an accessible PatternFly backdrop.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/background-image/css",
+      "n": "Background Image CSS",
+      "d": "PatternFly variables and tokens for Background Image CSS.",
+      "c": "json",
+      "q": 1
+    },
+    {
+      "p": "v6/components/background-image/html",
+      "n": "Background Image",
+      "d": "In order to set the background image to be used, set the --pf-v6-c-background-image--BackgroundImage CSS variable to the path of the image. For example: --pf-v6-c-background-image--BackgroundImage:...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/background-image/react",
+      "n": "Background Image",
+      "d": "PatternFly React component examples and demos for Background Image.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/background-image/text",
+      "n": "Background Image",
+      "d": "To implement an accessible PatternFly background image.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/badge/css",
+      "n": "Badge CSS",
+      "d": "PatternFly variables and tokens for Badge CSS.",
+      "c": "json",
+      "q": 1
+    },
+    {
+      "p": "v6/components/badge/react/examples/BadgeDisabled",
+      "n": "Badge",
+      "d": "PatternFly examples and demos for Badge.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/badge/react/examples/BadgeRead",
+      "n": "Badge",
+      "d": "PatternFly examples and demos for Badge.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/badge/react/examples/BadgeUnread",
+      "n": "Badge",
+      "d": "PatternFly examples and demos for Badge.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/badge/text",
+      "n": "Badge",
+      "d": "Badges are typically used to reflect counts like number of objects, number of events, or number of unread items. If you need a selectable annotation consider using a label instead.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/banner/css",
+      "n": "Banner CSS",
+      "d": "PatternFly variables and tokens for Banner CSS.",
+      "c": "json",
+      "q": 1
+    },
+    {
+      "p": "v6/components/banner/react/examples/BannerBasic",
+      "n": "Banner",
+      "d": "PatternFly examples and demos for Banner.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/banner/react/examples/BannerPill",
+      "n": "Banner",
+      "d": "PatternFly examples and demos for Banner.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/banner/react/examples/BannerStatus",
+      "n": "Banner",
+      "d": "PatternFly examples and demos for Banner.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/banner/text",
+      "n": "Banner",
+      "d": "PatternFly offers 5 different banner types detailed below. We suggest that users adopt one of these 5 colors, as they’ve been tested with their text colors for accessibility. However, if colors out...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/brand/html",
+      "n": "Brand",
+      "d": "Simple brand component.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/brand/react/examples/BrandBasic",
+      "n": "Brand",
+      "d": "PatternFly examples and demos for Brand.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/brand/react/examples/BrandResponsive",
+      "n": "Brand",
+      "d": "PatternFly examples and demos for Brand.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/brand/text",
+      "n": "Brand",
+      "d": "To implement an accessible PatternFly brand component.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/breadcrumb/css",
+      "n": "Breadcrumb CSS",
+      "d": "PatternFly variables and tokens for Breadcrumb CSS.",
+      "c": "json",
+      "q": 1
+    },
+    {
+      "p": "v6/components/breadcrumb/html",
+      "n": "Breadcrumb",
+      "d": "A breadcrumb is a list of links to display a user's navigational hierarchy. The last item of the breadcrumb list indicates the current page's location.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/breadcrumb/react/examples/BreadcrumbBasic",
+      "n": "Breadcrumb",
+      "d": "PatternFly examples and demos for Breadcrumb.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/breadcrumb/react/examples/BreadcrumbDropdown",
+      "n": "Breadcrumb",
+      "d": "PatternFly examples and demos for Breadcrumb.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/breadcrumb/react/examples/BreadcrumbWithHeading",
+      "n": "Breadcrumb",
+      "d": "PatternFly examples and demos for Breadcrumb.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/breadcrumb/react/examples/BreadcrumbWithoutHomeLink",
+      "n": "Breadcrumb",
+      "d": "PatternFly examples and demos for Breadcrumb.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/breadcrumb/text",
+      "n": "Breadcrumb",
+      "d": "Use breadcrumbs in addition to your global navigation to display a user's location in the application.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/button/css",
+      "n": "Button CSS",
+      "d": "PatternFly variables and tokens for Button CSS.",
+      "c": "json",
+      "q": 1
+    },
+    {
+      "p": "v6/components/button/html",
+      "n": "Button",
+      "d": "A favorite button should use a plain button with the star icon. Applying .pf-m-favorited to the button initiates a microanimation and indicates that the item is favorited.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/button/react/examples/ButtonBlock",
+      "n": "Button",
+      "d": "PatternFly examples and demos for Button.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/button/react/examples/ButtonCallToAction",
+      "n": "Button",
+      "d": "PatternFly examples and demos for Button.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/button/react/examples/ButtonDisabled",
+      "n": "Button",
+      "d": "PatternFly examples and demos for Button.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/button/react/examples/ButtonInlineSpanLink",
+      "n": "Button",
+      "d": "PatternFly examples and demos for Button.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/button/react/examples/ButtonLinks",
+      "n": "Button",
+      "d": "PatternFly examples and demos for Button.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/button/react/examples/ButtonProgress",
+      "n": "Button",
+      "d": "PatternFly examples and demos for Button.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/button/react/examples/ButtonSmall",
+      "n": "Button",
+      "d": "PatternFly examples and demos for Button.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/button/react/examples/ButtonVariations",
+      "n": "Button",
+      "d": "PatternFly examples and demos for Button.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/button/text",
+      "n": "Button",
+      "d": "There are certain cases where specific buttons must be used within your UI.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/card/css",
+      "n": "Card CSS",
+      "d": "PatternFly variables and tokens for Card CSS.",
+      "c": "json",
+      "q": 1
+    },
+    {
+      "p": "v6/components/card/react/examples/CardBasic",
+      "n": "Card",
+      "d": "PatternFly examples and demos for Card.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/card/react/examples/CardHeaderInCardHead",
+      "n": "Card",
+      "d": "PatternFly examples and demos for Card.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/card/react/examples/CardHeaderWraps",
+      "n": "Card",
+      "d": "PatternFly examples and demos for Card.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/card/react/examples/CardOnlyActionsInCardHead",
+      "n": "Card",
+      "d": "PatternFly examples and demos for Card.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/card/react/examples/CardSecondary",
+      "n": "Card",
+      "d": "PatternFly examples and demos for Card.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/card/react/examples/CardWithHeadingElement",
+      "n": "Card",
+      "d": "PatternFly examples and demos for Card.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/card/react/examples/CardWithImageAndActions",
+      "n": "Card",
+      "d": "PatternFly examples and demos for Card.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/card/react/examples/CardWithModifiers",
+      "n": "Card",
+      "d": "PatternFly examples and demos for Card.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/components/card/text",
+      "n": "Card",
+      "d": "A card usually consists of four parts.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/components/charts_area-chart/text",
+      "n": "Charts Area Chart",
+      "d": "An area chart is used to provide metrics for a single data point. While similar to a line chart in both form and function, it offers an area fill for visual emphasis. The area fill below the line a...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/content-design/accessibility-and-localization/text",
+      "n": "Accessibility And Localization",
+      "d": "By following accessibility and global writing best practices, you’ll be better equipped to create product experiences for users of all abilities and backgrounds.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/content-design/best-practices/text",
+      "n": "Best Practices",
+      "d": "Treat words as part of your design, not something to be added at the end. UX copy needs to be rooted in user information and context so that it can contribute to an effective, intuitive, and human-...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/content-design/brand-voice-and-tone/text",
+      "n": "Brand Voice And Tone",
+      "d": "In a business context, brand is the identity of a company that people recognize based on an emotional and psychological connection, as well as factual information.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/content-design/grammar_capitalization/text",
+      "n": "Capitalization guidelines",
+      "d": "Consistent capitalization adds clarity and creates unity across product UIs. PatternFly recommends writing in sentence case for all titles, headings, subtitles, or subheadings. Sentence case capita...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/content-design/grammar_numerics/text",
+      "n": "Grammar Numerics",
+      "d": "If needed, we offer a font modifier .pf-v6-m-tabular-nums that applies tabular styling to numerals. Learn more about tabular font styling.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/content-design/grammar_punctuation/text",
+      "n": "Grammar Punctuation",
+      "d": "Headings and titles can include punctuation, but should not end in punctuation. For example.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/content-design/grammar_sentence-structure/text",
+      "n": "Grammar Sentence Structure",
+      "d": "Use the second person \"you/your\" whenever you can. This way, your focus is on the user, and the product interaction feels more like a conversation.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/content-design/grammar_terminology/text",
+      "n": "Grammar Terminology",
+      "d": "This resource overviews common UI terms and their usage. Do not precede any terms in a UI with \"please\" as it is extraneous and overly formal.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/content-design/grammar_truncation/text",
+      "n": "Grammar Truncation",
+      "d": "Truncate, or shorten, your content whenever a string overflows the container and you don't want multiple lines of text. Typically, this is done by utilizing ellipses (...), either manually, or via ...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/content-design/grammar_units-and-symbols/text",
+      "n": "Communicating measurements",
+      "d": "Use consistent formatting, terminology, and symbols when displaying units of measurement in your UI, including.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/content-design/overview/text",
+      "n": "Content Design Overview",
+      "d": "Content design (often called UX copy or microcopy) is a strategic element of design that's just as vital as visual design and layout. By treating words as part of your design process instead of a l...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/content-design/writing-guides_cli-handbook/overview",
+      "n": "Designing for command-line interfaces",
+      "d": "Our CLI handbook offers best practices for designing consistent, usable, and developer-friendly command-line interfaces (CLIs). It supports developers building CLI tools and designers collaborating...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/content-design/writing-guides_cli-handbook/writing-guidelines",
+      "n": "Writing Guides CLI Handbook",
+      "d": "CLI output messages typically fall into one of 3 categories.",
+      "c": "markdown",
+      "q": 0.97
+    },
+    {
+      "p": "v6/content-design/writing-guides_error-messages/text",
+      "n": "Writing Guides Error Messages",
+      "d": "A user typically sees an error message when they attempt to perform an action but cannot continue because something isn’t right.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/content-design/writing-guides_patternfly-design-guidelines/text",
+      "n": "Writing Guides Patternfly Design Guidelines",
+      "d": "This guide provides instructions for writing clear and consistent design documentation for PatternFly. PatternFly's design guidelines provide users with information regarding the design, usage, beh...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/content-design/writing-guides_product-tours/text",
+      "n": "Writing Guides Product Tours",
+      "d": "A product tour, also referred to as an \"onboarding flow\", includes a series of dialog boxes or pop-ups that introduce users to a new tool or a redesigned tool.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/developer-guides/react-flow/text",
+      "n": "React Flow",
+      "d": "While React Flow is built with accessibility in mind, you should always check that your implementation (when paired with PatternFly) is accessible via mouse, keyboard, and other assistive technolog...",
+      "c": "markdown",
+      "q": 0.97
+    },
+    {
+      "p": "v6/developer-guides/react-flow/text/examples/CompassReactFlowDemo",
+      "n": "React Flow",
+      "d": "PatternFly examples and demos for React Flow.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/developer-guides/right-to-left-handbook/text",
+      "n": "Right To Left Handbook",
+      "d": "To allow for internationalization of your product's content, it is important to implement bidirectional language support by developing for both right-to-left (RTL) and left-to-right (LTR) languages.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/extensions/catalog-view_catalog-item-header/react",
+      "n": "Catalog View Catalog Item Header",
+      "d": "Note: Catalog item header lives in its own package at @patternfly/react-catalog-view-extension!",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/extensions/catalog-view_catalog-tile/react",
+      "n": "Catalog View Catalog Tile",
+      "d": "Note: Catalog tile lives in its own package at @patternfly/react-catalog-view-extension!",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/extensions/catalog-view_filter-side-panel/react",
+      "n": "Catalog View Filter Side Panel",
+      "d": "Note: FilterSidePanel lives in its own package at @patternfly/react-catalog-view-extension!",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/extensions/catalog-view_overview/react",
+      "n": "Catalog View Overview",
+      "d": "Note: Catalog view lives in its own package @patternfly/react-catalog-view-extension",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/extensions/catalog-view_properties-side-panel/react",
+      "n": "Catalog View Properties Side Panel",
+      "d": "Note: PropertiesSidePanel lives in its own package at @patternfly/react-catalog-view-extension!",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/extensions/catalog-view_vertical-tabs/react",
+      "n": "Catalog View Vertical Tabs",
+      "d": "Note: Vertical tabs lives in its own package at @patternfly/react-catalog-view-extension!",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/extensions/chat-bot_analytics/Analytics",
+      "n": "Chat Bot Analytics",
+      "d": "const { pathname } = useLocation();",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/extensions/chat-bot_customizing-messages/Customizing%20messages",
+      "n": "Chat Bot Customizing Messages",
+      "d": "The ChatBot extension Message component transforms Markdown to PatternFly React components via react-markdown, which supports both rehype and remark plugins for further output customization.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/extensions/chat-bot_messages/demo-demos",
+      "n": "Chat Bot Messages",
+      "d": "When a user selects a positive or negative message action, you can display a message feedback card that acknowledges their response and provides space for additional written feedback. These cards c...",
+      "c": "markdown",
+      "q": 0.97
+    },
+    {
+      "p": "v6/extensions/chat-bot_messages/react",
+      "n": "Chat Bot Messages",
+      "d": "The content prop of the Message component is passed to a Markdown component (from react-markdown), which is configured to translate plain text strings into PatternFly Content components and code bl...",
+      "c": "markdown",
+      "q": 0.97
+    },
+    {
+      "p": "v6/extensions/chat-bot_overview/ChatBot",
+      "n": "Chat Bot Overview",
+      "d": "Note: The PatternFly ChatBot extension lives in its own package @patternfly/chatbot.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/extensions/chat-bot_overview/demo-demos",
+      "n": "Chat Bot Overview",
+      "d": "This demo displays a basic ChatBot, which includes.",
+      "c": "markdown",
+      "q": 0.97
+    },
+    {
+      "p": "v6/extensions/chat-bot_overview/design-guidelines",
+      "n": "Chat Bot Overview",
+      "d": "Note: These guidelines are specific to ChatBot. Before implementing AI-enabled features, review PatternFly's AI design language guidelines, which cover foundational requirements for AI disclosure, ...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/extensions/chat-bot_ui/react",
+      "n": "Chat Bot UI",
+      "d": "The PatternFly ChatBot is a separate window that overlays or is embedded within other UI content. This container can be shown and hidden via the ChatBot toggle.",
+      "c": "markdown",
+      "q": 0.97
+    },
+    {
+      "p": "v6/extensions/component-groups_ansible/react",
+      "n": "Component Groups Ansible",
+      "d": "The Ansible component displays the Ansible project logo, with a support status style.",
+      "c": "markdown",
+      "q": 0.97
+    },
+    {
+      "p": "v6/extensions/component-groups_bulk-select/react",
+      "n": "Component Groups Bulk Select",
+      "d": "The bulk select provides a way of selecting data records in batches. You can select all data at once, all data on current page or deselect all.",
+      "c": "markdown",
+      "q": 0.97
+    },
+    {
+      "p": "v6/extensions/component-groups_close-button/react",
+      "n": "Component Groups Close Button",
+      "d": "The close button component provides a way for users to exit a modal, dialogue, or similar action. To further customize this component, you can also utilize all properties of the button component.",
+      "c": "markdown",
+      "q": 0.97
+    },
+    {
+      "p": "v6/extensions/component-groups_column-management-modal/react",
+      "n": "Component Groups Column Management Modal",
+      "d": "The column management modal component can be used to implement customizable table columns. Columns can be configured to be enabled or disabled by default or be unhidable.",
+      "c": "markdown",
+      "q": 0.97
+    },
+    {
+      "p": "v6/foundations-and-styles/colors/text",
+      "n": "PatternFly's palette",
+      "d": "Our color palettes align with Red Hat's brand colors and are designed to reinforce content and support effective communication across different UI needs. Colors are applied to PatternFly elements u...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/design-tokens_design/text",
+      "n": "Design Tokens Design",
+      "d": "Tokens are only available as part of PatternFly 6. In order to make use of our token system, you will need to install the PatternFly 6 design kit using our onboarding guide and make sure that your ...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/design-tokens_develop/text",
+      "n": "Design Tokens Develop",
+      "d": "PatternFly tokens are exported from Figma and transformed into CSS variables for use in code. You can find all token files in the core HTML repo.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/design-tokens_overview/text",
+      "n": "Design Tokens Overview",
+      "d": "Design tokens are the source of truth for our visual design attributes, storing values for concepts like color, typography, and spacing in semantically-named variables. They provide a predictable n...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/iconography/text",
+      "n": "Iconography",
+      "d": "The table lists Red Hat UI icons with usage guidance for PatternFly. For the full catalog of Red Hat icons (UI, standard, microns, and social), refer to the RDHS iconography guidelines.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_bullseye/css",
+      "n": "Layouts Bullseye CSS",
+      "d": "PatternFly variables and tokens for Layouts Bullseye CSS.",
+      "c": "json",
+      "q": 0.97
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_bullseye/html",
+      "n": "Layouts Bullseye",
+      "d": "The bullseye layout is designed to center a single child element horizontally and vertically within its parent.",
+      "c": "markdown",
+      "q": 0.97
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_bullseye/react/examples/BullseyeBasic",
+      "n": "Layouts Bullseye",
+      "d": "PatternFly examples and demos for Layouts Bullseye.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_bullseye/text",
+      "n": "Layouts Bullseye",
+      "d": "The bullseye layout centers content, both vertically and horizontally within a container.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_flex/css",
+      "n": "Layouts Flex CSS",
+      "d": "PatternFly variables and tokens for Layouts Flex CSS.",
+      "c": "json",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_flex/react/examples/FlexBasic",
+      "n": "Layouts Flex",
+      "d": "PatternFly examples and demos for Layouts Flex.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_flex/react/examples/FlexColumnGap",
+      "n": "Layouts Flex",
+      "d": "PatternFly examples and demos for Layouts Flex.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_flex/react/examples/FlexIndividuallySpaced",
+      "n": "Layouts Flex",
+      "d": "PatternFly examples and demos for Layouts Flex.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_flex/react/examples/FlexNestedItems",
+      "n": "Layouts Flex",
+      "d": "PatternFly examples and demos for Layouts Flex.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_flex/react/examples/FlexNesting",
+      "n": "Layouts Flex",
+      "d": "PatternFly examples and demos for Layouts Flex.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_flex/react/examples/FlexRowGap",
+      "n": "Layouts Flex",
+      "d": "PatternFly examples and demos for Layouts Flex.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_flex/react/examples/FlexSpacingNone",
+      "n": "Layouts Flex",
+      "d": "PatternFly examples and demos for Layouts Flex.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_flex/react/examples/FlexSpacingXl",
+      "n": "Layouts Flex",
+      "d": "PatternFly examples and demos for Layouts Flex.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_flex/text",
+      "n": "Layouts Flex",
+      "d": "The flex layout supports a completely custom layout by utilizing the PatternFly spacer and breakpoint systems. Flex layouts are infinitely nestable and allow you to adjust spacing, direction, align...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_gallery/css",
+      "n": "Layouts Gallery CSS",
+      "d": "PatternFly variables and tokens for Layouts Gallery CSS.",
+      "c": "json",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_gallery/react/examples/GalleryAdjustingMaxWidths",
+      "n": "Layouts Gallery",
+      "d": "PatternFly examples and demos for Layouts Gallery.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_gallery/react/examples/GalleryAdjustingMinMaxWidths",
+      "n": "Layouts Gallery",
+      "d": "PatternFly examples and demos for Layouts Gallery.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_gallery/react/examples/GalleryAdjustingMinWidths",
+      "n": "Layouts Gallery",
+      "d": "PatternFly examples and demos for Layouts Gallery.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_gallery/react/examples/GalleryAlternativeComponents",
+      "n": "Layouts Gallery",
+      "d": "PatternFly examples and demos for Layouts Gallery.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_gallery/react/examples/GalleryBasic",
+      "n": "Layouts Gallery",
+      "d": "PatternFly examples and demos for Layouts Gallery.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_gallery/react/examples/GalleryWithGutters",
+      "n": "Layouts Gallery",
+      "d": "PatternFly examples and demos for Layouts Gallery.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_gallery/text",
+      "n": "Layouts Gallery",
+      "d": "The gallery layout is used to arrange content in a responsive grid. Content will wrap responsively to create uniform rows and columns.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_grid/css",
+      "n": "Layouts Grid CSS",
+      "d": "PatternFly variables and tokens for Layouts Grid CSS.",
+      "c": "json",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_grid/react/examples/GridAlternativeComponents",
+      "n": "Layouts Grid",
+      "d": "PatternFly examples and demos for Layouts Grid.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_grid/react/examples/GridBasic",
+      "n": "Layouts Grid",
+      "d": "PatternFly examples and demos for Layouts Grid.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_grid/react/examples/GridGroupingOrdering",
+      "n": "Layouts Grid",
+      "d": "PatternFly examples and demos for Layouts Grid.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_grid/react/examples/GridResponsiveOrdering",
+      "n": "Layouts Grid",
+      "d": "PatternFly examples and demos for Layouts Grid.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_grid/react/examples/GridStandardOrdering",
+      "n": "Layouts Grid",
+      "d": "PatternFly examples and demos for Layouts Grid.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_grid/react/examples/GridWithGutters",
+      "n": "Layouts Grid",
+      "d": "PatternFly examples and demos for Layouts Grid.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_grid/react/examples/GridWithOverrides",
+      "n": "Layouts Grid",
+      "d": "PatternFly examples and demos for Layouts Grid.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_grid/text",
+      "n": "Layouts Grid",
+      "d": "The grid layout places content on a fixed 12 column grid.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_level/css",
+      "n": "Layouts Level CSS",
+      "d": "PatternFly variables and tokens for Layouts Level CSS.",
+      "c": "json",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_level/react/examples/LevelBasic",
+      "n": "Layouts Level",
+      "d": "PatternFly examples and demos for Layouts Level.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_level/react/examples/LevelWithGutters",
+      "n": "Layouts Level",
+      "d": "PatternFly examples and demos for Layouts Level.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_level/text",
+      "n": "Layouts Level",
+      "d": "The level layout is designed to distribute space evenly between sections of content and center them horizontally.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_overview/text",
+      "n": "Layouts Overview",
+      "d": "PatternFly’s layouts are used to place components on a page. They create a fully responsive structure to keep components organized and aligned across screen sizes.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_split/react/examples/SplitBasic",
+      "n": "Layouts Split",
+      "d": "PatternFly examples and demos for Layouts Split.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_split/react/examples/SplitWithGutter",
+      "n": "Layouts Split",
+      "d": "PatternFly examples and demos for Layouts Split.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_split/react/examples/SplitWrappable",
+      "n": "Layouts Split",
+      "d": "PatternFly examples and demos for Layouts Split.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_split/text",
+      "n": "Layouts Split",
+      "d": "The split layout positions items horizontally in a container, with one item filling the remaining horizontal space as the viewport is resized.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_stack/css",
+      "n": "Layouts Stack CSS",
+      "d": "PatternFly variables and tokens for Layouts Stack CSS.",
+      "c": "json",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_stack/react/examples/StackBasic",
+      "n": "Layouts Stack",
+      "d": "PatternFly examples and demos for Layouts Stack.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_stack/react/examples/StackWithGutter",
+      "n": "Layouts Stack",
+      "d": "PatternFly examples and demos for Layouts Stack.",
+      "c": "javascript",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/layouts_stack/text",
+      "n": "Layouts Stack",
+      "d": "The stack layout positions items vertically, with one or more items filling the available vertical space.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/motion/about",
+      "n": "Motion",
+      "d": "Like color or typography, motion can create a strong foundation that helps connect the complex elements within your designs. By carefully incorporating motion into the design of a UI, you can creat...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/motion/demo",
+      "n": "Motion",
+      "d": "Our components can now use motion to provide clear visual feedback to users, improving engagement and usability. To see our new animations in motion, take this interactive tour, which guides you th...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/motion/development-guide",
+      "n": "Motion",
+      "d": "We try to support animations by default in our components, but&mdash;to avoid introducing breaking changes&mdash;some animations require you to manually opt in. Opt-in animations require additional...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/foundations-and-styles/overview/text",
+      "n": "Foundations And Styles Overview",
+      "d": "PatternFly’s foundations and styles lay the groundwork for all components and extensions that we offer. These visual and structural frameworks describe how all of our components should be built and...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/get-help/contact-us/text",
+      "n": "Contact Us",
+      "d": "The PatternFly team is available to help answer any questions that you can't find the answer to on our website. There are a couple of ways to get in touch with our team quickly.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/get-help/fa-qs/General",
+      "n": "Fa Qs",
+      "d": "This guide provides answers to some of the questions new Flyers may have, as well as common questions the PatternFly team receives from the community. If there's a question that you believe should ...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/get-help/report-a-bug/text",
+      "n": "Report A Bug",
+      "d": "If you believe you've found a bug in PatternFly, we appreciate you taking the time to report it so we can resolve the issue.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/get-involved/community/text",
+      "n": "Become a Flyer",
+      "d": "PatternFly's core is its global community of designers, developers, and UX professionals with a passion for open source. We call ourselves Flyers.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/get-involved/contribute_contribute-code/text",
+      "n": "Contribute Contribute Code",
+      "d": "We invite developers of all skill levels to contribute code to PatternFly, either to advance our system with new features or to fix issues in our existing offerings.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/get-involved/contribute_contribute-designs/text",
+      "n": "Contribute Contribute Designs",
+      "d": "We invite anyone with skills in visual and interaction design to contribute to PatternFly's design by working on an existing issue or proposing a new feature, enhancement, or icon.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/get-involved/contribute_contribute-documentation/text",
+      "n": "Contribute Contribute Documentation",
+      "d": "We invite writers and subject matter experts to contribute to our website documentation. By helping us explain new concepts, provide better guidance, and outline important resources, you can help u...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/get-started/about-us/text",
+      "n": "About Us",
+      "d": "PatternFly is an open source design system, dedicated to building consistent, usable enterprise software. We operate on principles of transparency and community contribution, making PatternFly acce...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/get-started/design/text",
+      "n": "Design",
+      "d": "To start designing with PatternFly, you will need to install our PatternFly 6 design kit. This kit gives you access to PatternFly's visual design system — including design tokens — so that you can ...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/get-started/develop/text",
+      "n": "Develop",
+      "d": "In order to develop with PatternFly, you will need to.",
+      "c": "markdown",
+      "q": 0.97
+    },
+    {
+      "p": "v6/get-started/training_html-css-variables-and-overrides-training/text",
+      "n": "CSS variables and overrides",
+      "d": "PatternFly is based on the principles of Atomic Design and BEM (Block, Element, Modifier). BEM is a popular CSS methodology for building modular, scalable applications. It provides scope, avoids in...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/get-started/training_html-fundamentals-training/text",
+      "n": "Fundamentals",
+      "d": "PatternFly is based on the principles of Atomic Design and BEM (Block, Element, Modifier).",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/get-started/training_html/text",
+      "n": "Training HTML",
+      "d": "PatternFly documentation and guidelines for Training HTML.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/get-started/training_react-fundamentals-training/text",
+      "n": "React fundamentals",
+      "d": "PatternFly React is made up of components, layouts, and demos. The PatternFly React library provides a collection of React components used to build interfaces with consistent markup, styling, and b...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/get-started/training_react/text",
+      "n": "Training React",
+      "d": "PatternFly documentation and guidelines for Training React.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/patterns/actions/text",
+      "n": "Actions",
+      "d": "An action is any process that a user can trigger by clicking or selecting a linked component. Common actions include adding, deleting, editing, filtering, and submitting, for example. In PatternFly...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/patterns/bulk-selection/text",
+      "n": "Bulk Selection",
+      "d": "Bulk selection enables users to select or deselect multiple items in a content view, such as lists, tables, or card views.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/patterns/card-view/text",
+      "n": "Card View",
+      "d": "A card view is a grid of cards in a gallery to facilitate browsing. Card views are typically used to present data set summaries, allowing users to drill down into any card to see more detailed cont...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/patterns/component-usage-and-behavior/text",
+      "n": "PatternFly component usage and behavior guidelines",
+      "d": "As you design with PatternFly, you might encounter common use cases where multiple components could be used. These guidelines outline which component to use in these situations and shares where to ...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/patterns/dashboard/text",
+      "n": "Dashboard",
+      "d": "A dashboard provides overviews of key metrics or performance indicators relevant to an application, process, or business. The overall experience of dashboards can vary greatly depending on their us...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/patterns/filters/text",
+      "n": "Filters",
+      "d": "Filters allow users to narrow down content from data in tables, data lists or card views, among many others.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/patterns/overview/text",
+      "n": "Patterns Overview",
+      "d": "Patterns are reusable, best practices solutions that solve common user problems. They offer complex guidance that often involves the relationship between multiple components. To outline a pattern's...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/patterns/primary-detail/text",
+      "n": "Primary Detail",
+      "d": "A primary-detail layout is an interface that shows a list of items and the corresponding details of the selected item.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/patterns/status-and-severity/text",
+      "n": "Communicating status versus severity",
+      "d": "Providing users with clearly defined status and severity states is essential when sharing important context about their data streams and systems. Ensuring that accessibility standards are met in th...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/releases/overview/text",
+      "n": "Releases Overview",
+      "d": "A PatternFly release refers to a newly published version of one or more PatternFly libraries, including major, minor, and patch releases.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/releases/release-highlights/text",
+      "n": "Release Highlights",
+      "d": "This release refines components and improves visual consistency to help you build better experiences. You'll find focused updates to typography, icons, and foundational components, plus important c...",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/releases/upgrade-guide/release-notes",
+      "n": "Upgrade Guide",
+      "d": "This resource organizes the PatternFly 5 to PatternFly 6 change log in a table that allows for searching, filtering, and sorting.",
+      "c": "markdown",
+      "q": 1
+    },
+    {
+      "p": "v6/releases/upgrade-guide/upgrade-guide",
+      "n": "Upgrade Guide",
+      "d": "To ensure your product is ready for PatternFly 6, complete the PatternFly 5 upgrade process first to address any necessary changes from our previous release.",
+      "c": "markdown",
+      "q": 1
+    }
+  ]
+}

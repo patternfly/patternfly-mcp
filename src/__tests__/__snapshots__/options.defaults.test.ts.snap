@@ -60,10 +60,11 @@ exports[`options defaults should return specific properties: defaults 1`] = `
       "enabled": false,
       "schedule": {
         "continueOnError": true,
+        "delayStartMs": 21600000,
         "intervalMs": 604800000,
         "repeat": Infinity,
       },
-      "timeoutMs": 120000,
+      "timeoutMs": 300000,
       "traversalPaths": [
         "examples",
       ],
@@ -149,8 +150,8 @@ exports[`options defaults should return specific properties: defaults 1`] = `
     },
     "usePatternFlyDocs": {
       "cacheErrors": false,
-      "cacheLimit": 10,
-      "expire": 60000,
+      "cacheLimit": 25,
+      "expire": 600000,
     },
   },
   "toolModules": [],

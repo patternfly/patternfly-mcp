@@ -95,7 +95,7 @@ interface FetchResponse {
  * @property status - Function to get the status of the fetch request.
  */
 interface SetFetch {
-  get: (url: string) => Promise<FetchResponse>;
+  get: (url: string, settings?: RequestInit) => Promise<FetchResponse>;
   // post: (url: string, data: unknown) => Promise<FetchResponse>;
   cancel: () => void;
   status: (callback?: (state: FetchState) => void) => FetchState | (() => void);
@@ -633,10 +633,11 @@ const setFetch = (options = getOptions()): SetFetch => {
   };
 
   return {
-    get: (url: string) => {
-      const key = `GET:${url}`;
+    get: (url: string, settings: RequestInit = {}) => {
+      const updatedSettings = { method: 'GET', ...(settings || {}) };
+      const key = `${updatedSettings.method}:${url}`;
 
-      return checkInflight(key, () => executeFetch(url, { method: 'GET' }));
+      return checkInflight(key, () => executeFetch(url, updatedSettings));
     },
     cancel: () => {
       if (state.phase !== 'loading') {

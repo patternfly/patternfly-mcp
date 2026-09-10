@@ -1,4 +1,5 @@
 import { randomInt } from 'node:crypto';
+import { jest } from '@jest/globals';
 import docs from '../../src/docs.json';
 import { checkUrl } from './utils/checkUrl';
 

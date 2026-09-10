@@ -8,7 +8,6 @@ exports[`collectionCallback should match snapshot for collection result 1`] = `
         "card": [
           {
             "category": "css",
-            "content": "Card css content",
             "contentType": "",
             "description": "PatternFly variables and tokens for Card CSS.",
             "displayName": "Card CSS",
@@ -28,3 +27,45 @@ exports[`collectionCallback should match snapshot for collection result 1`] = `
   ],
 }
 `;
+
+exports[`expandApiEmbeddedCollection should expand compressed records: expanded 1`] = `
+[
+  {
+    "content": "",
+    "contentType": "text/markdown",
+    "description": "A standard button component.",
+    "displayName": "Button",
+    "path": "https://main.patternfly-org.pages.dev/api/v1/components/Button/react",
+    "qualityScore": 1,
+    "resolvedPath": "https://main.patternfly-org.pages.dev/api/v1/components/Button/react",
+  },
+]
+`;
+
+exports[`getPatternFlyApiRecords should attempt to convert expanded embedded records into McpCollectionResult records, high quality score 1`] = `
+[
+  {
+    "data": {
+      "dolor": [
+        {
+          "category": "react",
+          "contentType": "text/markdown",
+          "description": "Dolor sit component description",
+          "displayName": "Dolor",
+          "id": "api::v1::components::dolor::react",
+          "path": "https://main.patternfly-org.pages.dev/api/v1/components/Dolor/react",
+          "pathSlug": "components-dolor-react",
+          "section": "components",
+          "source": "api",
+          "version": "v1",
+        },
+      ],
+    },
+    "id": "api::v1::components::dolor::react",
+    "sourceId": "https://main.patternfly-org.pages.dev/api/v1/components/Dolor/react",
+    "sourceType": "api",
+  },
+]
+`;
+
+exports[`getPatternFlyApiRecords should attempt to convert expanded embedded records into McpCollectionResult records, low quality score 1`] = `[]`;

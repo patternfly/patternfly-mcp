@@ -3,9 +3,11 @@ import {
   type McpCollectionRecord,
   type McpCollectionResult
 } from './collections';
-import { log } from './logger';
+import { formatUnknownError, log } from './logger';
 import { processDocsFunction } from './server.getResources';
 import { memo } from './server.caching';
+import { setFetch } from './server.fetch';
+import { deferTask } from './server.task';
 import { isPlainObject, joinUrl, timeoutFunction } from './server.helpers';
 import {
   getOptions,
@@ -21,7 +23,7 @@ import {
   extractApiName,
   normalizeSlug
 } from './collection.patternFlyApiHelpers';
-import { contentType } from './resource.helpers';
+import { contentType as extractContentType } from './resource.helpers';
 
 /**
  * Processed content for API responses.
@@ -45,7 +47,6 @@ interface ApiContent {
   description: string;
   displayName: string;
   category: string;
-  content: string;
   contentType: string;
   isLowQuality: boolean;
   id: string;
@@ -56,6 +57,59 @@ interface ApiContent {
   section: string;
   source: string;
   version: string;
+}
+
+/**
+ * Compressed PatternFly API embedded record.
+ *
+ * @property p - Relative path (after base URL)
+ * @property n - Display Name
+ * @property d - Description
+ * @property c - Content Type ('markdown' | 'json' | 'html')
+ * @property q - Quality Score (>= 0.95)
+ */
+interface ApiEmbedded {
+  p: string;
+  n: string;
+  d: string;
+  c: string;
+  q: number;
+}
+
+/**
+ * Expanded PatternFly API embedded record. See {@link ApiEmbedded}
+ *
+ * @property path - Full path, includes base URL
+ * @property displayName - Display Name
+ * @property description - Description
+ * @property content - Empty content placeholder
+ * @property contentType - Content Type ('markdown' | 'json' | 'html')
+ * @property resolvedPath - Full path, includes base URL
+ * @property qualityScore - Quality Score (>= 0.95)
+ */
+interface ApiEmbeddedExpanded {
+  path: string;
+  displayName: string;
+  description: string;
+  content: string;
+  contentType: string;
+  resolvedPath: string;
+  qualityScore: number;
+}
+
+/**
+ * Embedded (packaged with the MCP) API collection.
+ *
+ * @property version - Collection version associated with the underlying API.
+ * @property generated - Contains the timestamp indicating when the collection was generated.
+ * @property base - Represents the base URL or identifier for the collection.
+ * @property items - An array of `ApiEmbeddedItem` objects that are part of the collection.
+ */
+interface ApiEmbeddedCollection {
+  version: string;
+  generated: string;
+  base: string;
+  records: ApiEmbedded[];
 }
 
 /**
@@ -124,6 +178,77 @@ const DEFERRED_API_CATEGORIES = new Set<string>([
  * Min content quality threshold. See {@link calculateContentQualityScore}
  */
 const MIN_API_QUALITY_THRESHOLD = 0.95;
+
+/**
+ * Majority confirmation, is the API live and healthy?
+ *
+ * @param options - Global options.
+ * @returns `true` if 2 of 3 probes INCLUDING the last attempt confirms the API is live and healthy, otherwise `false`.
+ */
+const probeHealth = async (options = getOptions()): Promise<boolean> => {
+  const { base } = options.patternflyOptions.api;
+  const { get } = setFetch();
+  let successCount = 0;
+  let isLastSuccess = false;
+
+  const check = async () => {
+    isLastSuccess = false;
+
+    try {
+      const response = await get(base, { method: 'HEAD' });
+
+      if (response.status < 400) {
+        successCount += 1;
+        isLastSuccess = true;
+      }
+    } catch {
+      isLastSuccess = false;
+    }
+  };
+
+  const task = deferTask(check, {
+    repeat: 3,
+    intervalMs: 200,
+    continueOnError: true
+  })();
+
+  try {
+    await task.start();
+  } catch {
+    // Handled by continueOnError
+  }
+
+  return successCount >= 2 && isLastSuccess;
+};
+
+/**
+ * Expand and normalize embedded collections into expanded embedded content for
+ * metadata processing.
+ *
+ * @param {ApiEmbeddedCollection} collection - Embedded collection to expand.
+ * @returns {ApiEmbeddedExpanded[]} An array of expanded embedded content.
+ */
+const expandApiEmbeddedCollection = (collection: ApiEmbeddedCollection): ApiEmbeddedExpanded[] => {
+  if (!Array.isArray(collection.records)) {
+    return [];
+  }
+
+  const base = collection.base || '';
+
+  return collection.records.map(record => {
+    const updatedPath = base ? joinUrl(base, record.p) : record.p;
+
+    return {
+      path: updatedPath,
+      displayName: record.n,
+      description: record.d,
+      resolvedPath: updatedPath,
+      content: '',
+      contentType: record.c,
+      qualityScore: record.q
+    };
+  });
+};
 
 /**
  * Parses the given payload and determines its state and structure.
@@ -389,12 +514,12 @@ const apiSpider = async (options = getOptions()): Promise<ApiCrawler[]> => {
 /**
  * Light/Immediate process for content metadata from response paths.
  *
- * @param crawlerResponse - An entry with pre-metadata content.
+ * @param {ApiCrawler | ApiEmbeddedExpanded} record - An entry with either pre-metadata content or expanded embedded content.
  * @param [options] - Configuration options.
  * @returns The process metadata entry.
  */
-const contentMetadata = (crawlerResponse: ApiCrawler, options = getOptions()): ApiContent => {
-  const { content, resolvedPath, qualityScore } = crawlerResponse;
+const contentMetadata = (record: ApiCrawler | ApiEmbeddedExpanded, options = getOptions()): ApiContent => {
+  const { content, resolvedPath, qualityScore } = record;
   const { base } = options.patternflyOptions.api;
 
   // Relative path after '/api/'
@@ -426,8 +551,13 @@ const contentMetadata = (crawlerResponse: ApiCrawler, options = getOptions()): A
 
   const id = `api::${normalizedVersion}::${normalizedSection}::${normalizedItem}::${normalizedCategory}${normalizedDetailType ? `::${normalizedDetailType}::${normalizedDetail}` : ''}`;
 
-  const displayName = extractApiDisplayName(content, { slug: normalizedItem, category: normalizedCategory, section: normalizedSection });
-  const description = extractApiDescription(content, { displayName, category: normalizedCategory, detailType: normalizedDetailType });
+  const displayName = (record as ApiEmbeddedExpanded)?.displayName ||
+    extractApiDisplayName(content, { slug: normalizedItem, category: normalizedCategory, section: normalizedSection });
+
+  const description = (record as ApiEmbeddedExpanded)?.description ||
+    extractApiDescription(content, { displayName, category: normalizedCategory, detailType: normalizedDetailType });
+
+  const contentType = (record as ApiEmbeddedExpanded)?.contentType || extractContentType(content);
 
   const isLowQuality = qualityScore < MIN_API_QUALITY_THRESHOLD;
   const isDeferred = DEFERRED_API_CATEGORIES.has(normalizedCategory);
@@ -436,8 +566,7 @@ const contentMetadata = (crawlerResponse: ApiCrawler, options = getOptions()): A
     description,
     displayName,
     category: normalizedCategory,
-    content,
-    contentType: contentType(content),
+    contentType,
     isLowQuality,
     id,
     isDeferred,
@@ -451,12 +580,12 @@ const contentMetadata = (crawlerResponse: ApiCrawler, options = getOptions()): A
 };
 
 /**
- * Async collect and process entries for a collection. Add "conditional" metadata.
+ * Generate a structured collection of API records.
  *
- * @returns {Promise<McpCollectionResult>} Object containing a list of processed records.
+ * @param {ApiCrawler[] | ApiEmbeddedExpanded[]} entries - Array of crawler or embedded records for processing.
+ * @returns {McpCollectionResult} A structured collection of API records.
  */
-const collectionCallback = async (): Promise<McpCollectionResult> => {
-  const entries = await apiSpider();
+const getPatternFlyApiRecords = (entries: ApiCrawler[] | ApiEmbeddedExpanded[]): McpCollectionResult => {
   const recordsMap: Map<string, McpCollectionRecord> = new Map();
 
   for (const entry of entries) {
@@ -488,6 +617,51 @@ const collectionCallback = async (): Promise<McpCollectionResult> => {
 };
 
 /**
+ * Initial collection load. Load the embedded API catalog.
+ *
+ * @returns {Promise<McpCollectionResult>} The processed collection of API records.
+ */
+const collectionInitialCallback = async (): Promise<McpCollectionResult> => {
+  let embeddedCollection: ApiEmbeddedExpanded[] = [];
+
+  try {
+    let loaded;
+
+    if (process.env.NODE_ENV === 'local') {
+      loaded = (await import('./collection.patternFlyApi.json', { with: { type: 'json' } })).default;
+    } else {
+      loaded = (await import('#apiCatalog', { with: { type: 'json' } })).default;
+    }
+
+    embeddedCollection = expandApiEmbeddedCollection(loaded);
+  } catch (error) {
+    log.warn(`Failed to load embedded API catalog '#apiCatalog': ${formatUnknownError(error)}`);
+  }
+
+  return getPatternFlyApiRecords(embeddedCollection);
+};
+
+/**
+ * Async collect and process entries for a collection. Crawl the PatternFly API
+ * catalog.
+ *
+ * @returns {Promise<McpCollectionResult>} The processed collection of API records.
+ */
+const collectionCallback = async (): Promise<McpCollectionResult> => {
+  const isHealthy = await probeHealth();
+
+  if (!isHealthy) {
+    log.debug('PatternFly API health probe failed, skipping background updates.');
+
+    return { records: [] };
+  }
+
+  const entries = await apiSpider();
+
+  return getPatternFlyApiRecords(entries);
+};
+
+/**
  * Create a PatternFly API collection.
  *
  * @param options - Global options
@@ -499,11 +673,17 @@ const patternFlyApiCollection = (options = getOptions(), session = getSessionOpt
     runWithSession(session, async () =>
       runWithOptions(options, async () => collectionCallback()));
 
+  const initial = async () =>
+    runWithSession(session, async () =>
+      runWithOptions(options, async () => collectionInitialCallback()));
+
   return [
     'patternfly-api',
     callback,
     {
+      initial,
       runParallel: '#collectionPatternFlyApi',
+      retainLastViable: true,
       runSchedule: {
         ...options.patternflyOptions.api.schedule
       }
@@ -514,13 +694,21 @@ const patternFlyApiCollection = (options = getOptions(), session = getSessionOpt
 export {
   patternFlyApiCollection,
   collectionCallback,
+  collectionInitialCallback,
   apiSpider,
+  contentMetadata,
   crawler,
+  expandApiEmbeddedCollection,
+  getPatternFlyApiRecords,
   getUniqueUrls,
   isEmptyPayload,
   parsePayload,
+  probeHealth,
   type ApiContent,
   type ApiCrawler,
+  type ApiEmbeddedCollection,
+  type ApiEmbedded,
+  type ApiEmbeddedExpanded,
   type ParsePayload,
   type ParsePayloadApi
 };

@@ -187,6 +187,7 @@ interface ModeOptions {
  * @property api.schedule Schedule for crawling the PatternFly API. See {@link McpCollection} config for details.
  * @property api.schedule.continueOnError Continue crawling the PatternFly API on error.
  * @property api.schedule.intervalMs Interval in milliseconds, during server run, for crawling the PatternFly API.
+ * @property api.schedule.delayStartMs Delay in milliseconds, during server run, before starting crawling the PatternFly API.
  * @property api.schedule.repeat Number of times to repeat crawling the PatternFly API.
  * @property availableResourceVersions List of available PatternFly resource versions to the MCP server.
  * @property availableSearchVersions List of available PatternFly search versions to the MCP server.
@@ -211,6 +212,7 @@ interface PatternFlyOptions {
     schedule: {
       continueOnError: boolean;
       intervalMs: number;
+      delayStartMs?: number;
       repeat: number;
     }
   },
@@ -456,8 +458,8 @@ const RESOURCE_MEMO_OPTIONS = {
  */
 const TOOL_MEMO_OPTIONS = {
   usePatternFlyDocs: {
-    cacheLimit: 10,
-    expire: 1 * 60 * 1000, // 1 minute sliding cache
+    cacheLimit: 25,
+    expire: 10 * 60 * 1000, // 10 minute sliding cache
     cacheErrors: false
   },
   searchPatternFlyDocs: {
@@ -517,6 +519,15 @@ const CHANNEL_BASENAME = 'pf-mcp';
 
 /**
  * Default PatternFly-specific options.
+ *
+ * @note Current settings for time
+ * - `timeoutMs` is set to `5` minutes to accommodate the current average crawl time
+ *     of `75` seconds and potential network issues. This value should be adjusted as
+ *     the API grows.
+ * - `schedule.intervalMs` is set to `7` days. Most users, without persistence, will
+ *     never achieve this.
+ * - `schedule.delayStartMs` is set to `6` hours to accommodate an intense working
+ *     session. This may need to be extended until persistence is implemented.
  */
 const PATTERNFLY_OPTIONS: PatternFlyOptions = {
   api: {
@@ -529,13 +540,14 @@ const PATTERNFLY_OPTIONS: PatternFlyOptions = {
     traversalPaths: [
       'examples'
     ],
-    timeoutMs: 120_000,
+    timeoutMs: 300_000, // 5 minutes
     schedule: {
       continueOnError: true,
-      intervalMs: 86_400_000 * 7, // 7 days
+      intervalMs: 24 * 60 * 60 * 1000 * 7, // 7 days
+      delayStartMs: 6 * 60 * 60 * 1000, // 6 hours
       repeat: Infinity
     },
-    enabled: false
+    enabled: false // ToDo: confirm this is still used
   },
   availableResourceVersions: ['6.0.0'],
   availableSearchVersions: ['current', 'latest', 'v6'],
