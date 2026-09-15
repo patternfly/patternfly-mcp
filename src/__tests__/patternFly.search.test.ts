@@ -87,7 +87,7 @@ describe('calculateRelevance', () => {
         name: 'inline-alert-box',
         entries: []
       },
-      expected: 1
+      expected: 2
     },
     {
       description: 'no match on name or displayNames',
@@ -98,7 +98,7 @@ describe('calculateRelevance', () => {
           { displayName: 'Primary Button' }
         ]
       },
-      expected: 2
+      expected: 3
     },
     {
       description: 'undefined entries',
@@ -107,7 +107,7 @@ describe('calculateRelevance', () => {
         name: 'card',
         entries: undefined
       },
-      expected: 2
+      expected: 3
     },
     {
       description: 'missing or empty displayName entries',
@@ -119,7 +119,7 @@ describe('calculateRelevance', () => {
           { displayName: undefined }
         ]
       },
-      expected: 2
+      expected: 3
     }
   ])('should create a relevance score, $description', ({ query, result, expected }) => {
     const relevance = calculateRelevance(result as any, query);
@@ -361,11 +361,18 @@ describe('dynamicFilterPatternFly', () => {
       expectedNames: ['button', 'button', 'modal', 'card']
     },
     {
-      description: 'fallback to original when using a broad category',
+      description: 'fallback to original when using a broad category and defined maxResultsLimit',
+      searchQuery: 'view',
+      filters: {},
+      options: { maxResultsLimit: 1 },
+      expectedNames: ['button', 'button', 'modal', 'card']
+    },
+    {
+      description: 'do not fallback to original when using a broad category with dynamic maxResultsLimit',
       searchQuery: 'view',
       filters: {},
       options: {},
-      expectedNames: ['button', 'button', 'modal', 'card']
+      expectedNames: ['modal', 'card']
     },
     {
       description: 'skip iterative filter if useExistingFilters is true and filter is already set',
@@ -397,14 +404,28 @@ describe('dynamicFilterPatternFly', () => {
       description: 'name filter wins and aborts sibling section scans',
       searchQuery: 'modal',
       filters: {},
-      options: { searchFilters: ['name', 'section'] as const },
+      options: { searchFilters: ['name', 'section'], maxResultsLimit: 1 },
+      expectedNames: ['modal']
+    },
+    {
+      description: 'name filter wins and aborts sibling section scans, dynamic maxResultsLimit',
+      searchQuery: 'modal',
+      filters: {},
+      options: { searchFilters: ['name', 'section'] },
       expectedNames: ['modal']
     },
     {
       description: 'section filter wins and aborts sibling name scans',
       searchQuery: 'layouts',
       filters: {},
-      options: { searchFilters: ['section', 'name'] as const },
+      options: { searchFilters: ['section', 'name'], maxResultsLimit: 1 },
+      expectedNames: ['card']
+    },
+    {
+      description: 'section filter wins and aborts sibling name scans, dynamic maxResultsLimit',
+      searchQuery: 'layouts',
+      filters: {},
+      options: { searchFilters: ['section', 'name'] },
       expectedNames: ['card']
     }
   ])('should wire parallel filter passes with shared signal when $description', async ({
@@ -468,7 +489,7 @@ describe('dynamicFilterPatternFly', () => {
       'modal',
       {},
       mockResources as any,
-      { searchFilters: oversizedFilters as (keyof FilterPatternFlyFilters)[] }
+      { searchFilters: oversizedFilters as (keyof FilterPatternFlyFilters)[], maxResultsLimit: 1 }
     );
 
     expect(result.byEntry.map(entry => entry.name)).toEqual(['modal']);
@@ -598,6 +619,30 @@ describe('searchPatternFly', () => {
       ['patternfly://docs/button', new Map([['v6', ['button']], ['v5', ['button']]])],
       ['patternfly://docs/modal', new Map([['v6', ['modal']]])]
     ]),
+    uriIndex: new Map([
+      ['patternfly://docs/button', 'button'],
+      ['patternfly://docs/button?version=v6', 'button'],
+      ['patternfly://docs/button?version=v5', 'button'],
+      ['patternfly://docs/modal', 'modal'],
+      ['patternfly://docs/modal?version=v6', 'modal'],
+      ['patternfly://docs/btn-group', 'button'],
+      ['patternfly://docs/mdl-group', 'modal'],
+      ['patternfly://docs/btn-v6-hash', 'button'],
+      ['patternfly://docs/btn-v5-hash', 'button'],
+      ['patternfly://docs/mdl-v6-hash', 'modal'],
+      ['patternfly://schemas/button', 'button'],
+      ['patternfly://schemas/button?version=v6', 'button'],
+      ['patternfly://schemas/btn-group', 'button'],
+      ['patternfly://schemas/mdl-group', 'modal']
+    ]),
+    hashIndex: new Map([
+      ['btn-group', 'button'],
+      ['mdl-group', 'modal'],
+      ['btn-v6-hash', 'button'],
+      ['btn-v5-hash', 'button'],
+      ['mdl-v6-hash', 'modal']
+    ]),
+    pathIndex: new Map(),
     latestVersion: 'v6'
   };
 
@@ -648,6 +693,45 @@ describe('searchPatternFly', () => {
       expectedType: 'exact'
     },
     {
+      description: 'patternfly://docs/{groupId} with filter',
+      search: 'patternfly://docs/btn-group',
+      options: { dynamicFilter: true },
+      expectedLength: 1,
+      expectedName: 'button',
+      expectedType: 'exact'
+    },
+    {
+      description: 'patternfly://schemas/{groupId} with filter',
+      search: 'patternfly://schemas/btn-group',
+      options: { dynamicFilter: true },
+      expectedLength: 1,
+      expectedName: 'button',
+      expectedType: 'exact'
+    },
+    {
+      description: 'unparameterized doc URI patternfly://docs/button',
+      search: 'patternfly://docs/button',
+      options: { dynamicFilter: true },
+      expectedLength: 1,
+      expectedName: 'button',
+      expectedType: 'exact'
+    },
+    {
+      description: 'unparameterized schema URI patternfly://schemas/button',
+      search: 'patternfly://schemas/button',
+      options: { dynamicFilter: true },
+      expectedLength: 1,
+      expectedName: 'button',
+      expectedType: 'exact'
+    },
+    {
+      description: 'groupId bare hash without filter',
+      search: 'btn-group',
+      expectedLength: 1,
+      expectedName: 'button',
+      expectedType: 'exact'
+    },
+    {
       description: 'hash entry id with filter',
       search: 'btn-v6-hash',
       options: { dynamicFilter: true },
@@ -659,7 +743,7 @@ describe('searchPatternFly', () => {
       description: 'hash entry id without filter',
       search: 'btn-v6-hash',
       options: { dynamicFilter: false },
-      expectedLength: 2,
+      expectedLength: 1,
       expectedName: 'button',
       expectedType: 'exact'
     },

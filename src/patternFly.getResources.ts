@@ -77,6 +77,7 @@ interface PatternFlyMcpComponentNames {
  * @property displayCategory - The display category of document entry.
  * @property uri - The parent resource's general URI that can reflect a grouping of document entries.
  * @property uriId - The resource's exact URI for the document entry.
+ * @property uriGroupId - The resource's exact URI for the document entry's parent.
  * @property uriSchemas - The parent resource's general URI for the related component schemas, if they exist.
  * @property uriSchemasId - The resource's schemas URI for the component schemas, if they exist. Keyed by
  *     the parent resource's `groupId` since the URIs are the same for sibling entries.
@@ -88,6 +89,7 @@ type PatternFlyMcpDocsMeta = {
   displayCategory: string;
   uri: string;
   uriId: string;
+  uriGroupId: string;
   uriSchemas?: string | undefined;
   uriSchemasId?: string | undefined;
 };
@@ -510,8 +512,10 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
   catalog.forEach(([unifiedName, entries]) => {
     const name = normalizeKey(unifiedName);
     const groupId = generateHash(name);
+    const uriGroupId = `patternfly://docs/${encodeURIComponent(groupId)}`;
 
     hashIndexMap.set(groupId.toLowerCase(), name);
+    uriIndexMap.set(uriGroupId.toLowerCase(), name);
 
     if (!resources.has(name)) {
       // Include search and filter contextual `undefined` metadata for each resource.
@@ -535,10 +539,12 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
       const id = generateHash(entry.path || `${name}:${version}:${entry.section}:${entry.category}:${entry.pathSlug}`.toLowerCase());
       const isSchemasAvailable = versionContext.latestSchemasVersion === version && componentNamesByVersion.get(version)?.[name]?.isSchemasAvailable;
       const path = entry.path;
-      const uri = `patternfly://docs/${encodeURIComponent(name)}${buildSearchString({ version }, { prefix: true })}`;
+      const uriBase = `patternfly://docs/${encodeURIComponent(name)}`;
+      const uri = `${uriBase}${buildSearchString({ version }, { prefix: true })}`;
       const uriId = `patternfly://docs/${encodeURIComponent(id)}`;
 
       hashIndexMap.set(id.toLowerCase(), name);
+      uriIndexMap.set(uriBase.toLowerCase(), name);
       uriIndexMap.set(uri.toLowerCase(), name);
       uriIndexMap.set(uriId.toLowerCase(), name);
 
@@ -561,12 +567,15 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
       let uriSchemasId;
 
       if (isSchemasAvailable) {
-        uriSchemas = `patternfly://schemas/${encodeURIComponent(name)}${buildSearchString({ version }, { prefix: true })}`;
+        const uriSchemasBase = `patternfly://schemas/${encodeURIComponent(name)}`;
+
+        uriSchemas = `${uriSchemasBase}${buildSearchString({ version }, { prefix: true })}`;
         uriSchemasId = `patternfly://schemas/${encodeURIComponent(groupId)}`;
 
         resource.versions[version].uriSchemas = uriSchemas;
         resource.versions[version].uriSchemasId = uriSchemasId;
 
+        uriIndexMap.set(uriSchemasBase.toLowerCase(), name);
         uriIndexMap.set(uriSchemas.toLowerCase(), name);
         uriIndexMap.set(uriSchemasId.toLowerCase(), name);
       }
@@ -580,6 +589,7 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
         displayCategory,
         uri,
         uriId,
+        uriGroupId,
         uriSchemas,
         uriSchemasId
       } as (PatternFlyMcpDocsCatalogDoc & PatternFlyMcpDocsMeta);

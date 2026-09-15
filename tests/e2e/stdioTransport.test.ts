@@ -211,6 +211,38 @@ describe('Builtin tools, STDIO', () => {
       ]
     },
     {
+      description: 'groupId search query',
+      searchQuery: '96b45dfa08a88ff87015bf35852ce1bce2085de5',
+      contains: [
+        'Showing 1 exact match',
+        '**select**'
+      ]
+    },
+    {
+      description: 'groupId doc URI search query',
+      searchQuery: 'patternfly://docs/96b45dfa08a88ff87015bf35852ce1bce2085de5',
+      contains: [
+        'Showing 1 exact match',
+        '**select**'
+      ]
+    },
+    {
+      description: 'groupId schema URI search query',
+      searchQuery: 'patternfly://schemas/96b45dfa08a88ff87015bf35852ce1bce2085de5',
+      contains: [
+        'Showing 1 exact match',
+        '**select**'
+      ]
+    },
+    {
+      description: 'unparameterized doc URI search query',
+      searchQuery: 'patternfly://docs/button',
+      contains: [
+        'Showing 1 exact match',
+        '**button**'
+      ]
+    },
+    {
       description: 'hash search query',
       searchQuery: '3ca3928cad9f1dba8587c6080d2c213283f09260',
       contains: [
