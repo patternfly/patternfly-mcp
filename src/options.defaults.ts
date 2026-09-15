@@ -208,7 +208,6 @@ interface PatternFlyOptions {
     componentPaths: string[];
     traversalPaths: string[];
     timeoutMs: number;
-    enabled: boolean;
     schedule: {
       continueOnError: boolean;
       intervalMs: number;
@@ -546,8 +545,7 @@ const PATTERNFLY_OPTIONS: PatternFlyOptions = {
       intervalMs: 24 * 60 * 60 * 1000 * 7, // 7 days
       delayStartMs: 24 * 60 * 60 * 1000 * 7, // 7 days
       repeat: Infinity
-    },
-    enabled: false // ToDo: confirm this is still used
+    }
   },
   availableResourceVersions: ['6.0.0'],
   availableSearchVersions: ['current', 'latest', 'v6'],
