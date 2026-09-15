@@ -211,6 +211,38 @@ describe('Builtin tools, HTTP transport', () => {
         'No PatternFly resources found matching "lorem ipsum dolor sit amet"',
         'Use a search all'
       ]
+    },
+    {
+      description: 'groupId search query',
+      searchQuery: '96b45dfa08a88ff87015bf35852ce1bce2085de5',
+      contains: [
+        'Showing 1 exact match',
+        '**select**'
+      ]
+    },
+    {
+      description: 'groupId doc URI search query',
+      searchQuery: 'patternfly://docs/96b45dfa08a88ff87015bf35852ce1bce2085de5',
+      contains: [
+        'Showing 1 exact match',
+        '**select**'
+      ]
+    },
+    {
+      description: 'groupId schema URI search query',
+      searchQuery: 'patternfly://schemas/96b45dfa08a88ff87015bf35852ce1bce2085de5',
+      contains: [
+        'Showing 1 exact match',
+        '**select**'
+      ]
+    },
+    {
+      description: 'unparameterized doc URI search query',
+      searchQuery: 'patternfly://docs/button',
+      contains: [
+        'Showing 1 exact match',
+        '**button**'
+      ]
     }
   ])('should perform searchPatternFlyDocs: $description', async ({ searchQuery, version, contains }) => {
     const req = {

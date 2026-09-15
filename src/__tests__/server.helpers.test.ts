@@ -8,6 +8,7 @@ import {
   isPlainObject,
   isPromise,
   isReferenceLike,
+  isShaHexLike,
   isUrl,
   isUrlObject,
   isPath,
@@ -705,6 +706,105 @@ describe('isReferenceLike', () => {
     }
   ])('should determine a non-primitive for $description', ({ param, value }) => {
     expect(isReferenceLike(param)).toBe(value);
+  });
+});
+
+describe('isShaHexLike', () => {
+  it.each([
+    {
+      description: 'lowercase 40-char SHA-1',
+      value: '96b45dfa08a88ff87015bf35852ce1bce2085de5',
+      expected: true
+    },
+    {
+      description: 'uppercase 40-char SHA-1',
+      value: '96B45DFA08A88FF87015BF35852CE1BCE2085DE5',
+      expected: true
+    },
+    {
+      description: 'mixed-case 40-char SHA-1 with whitespace',
+      value: '  96b45dfa08A88ff87015bf35852ce1bce2085de5  ',
+      expected: true
+    },
+    {
+      description: 'valid 8-char SHA prefix',
+      value: '96b45dfa',
+      expected: true
+    },
+    {
+      description: 'valid 12-char SHA prefix',
+      value: '96b45dfa08a8',
+      expected: true
+    },
+    {
+      description: 'valid 39-char SHA prefix',
+      value: '96b45dfa08a88ff87015bf35852ce1bce2085de',
+      expected: true
+    },
+    {
+      description: 'string below default minLength, 7 chars',
+      value: '96b45df',
+      expected: false
+    },
+    {
+      description: 'string above default maxLength, 41 chars',
+      value: '96b45dfa08a88ff87015bf35852ce1bce2085de5a',
+      expected: false
+    },
+    {
+      description: 'non-hex characters in string',
+      value: '96b45dfa08a88ff87015bf35852ce1bce2085xyz',
+      expected: false
+    },
+    {
+      description: 'string with leading non-hex character',
+      value: 'g6b45dfa08a88ff87015bf35852ce1bce2085de5',
+      expected: false
+    },
+    {
+      description: 'empty string',
+      value: '',
+      expected: false
+    },
+    {
+      description: 'whitespace string',
+      value: '    ',
+      expected: false
+    },
+    {
+      description: 'null value',
+      value: null,
+      expected: false
+    },
+    {
+      description: 'undefined value',
+      value: undefined,
+      expected: false
+    },
+    {
+      description: 'number value',
+      value: 12345678,
+      expected: false
+    },
+    {
+      description: 'object value',
+      value: { sha: '96b45dfa' },
+      expected: false
+    },
+    {
+      description: 'custom minLength matching, short prefix',
+      value: '96b4',
+      options: { minLength: 4 },
+      expected: true
+    },
+    {
+      description: 'custom maxLength rejecting a longer value',
+      value: '96b45dfa08a8',
+      options: { maxLength: 10 },
+      expected: false
+    }
+  ])('should check if value is SHA hex-like, $description', ({ value, options, expected }) => {
+    expect(isShaHexLike(value, options)).toBe(expected);
   });
 });
 

@@ -1,12 +1,11 @@
 import {
   fuzzySearch,
-  normalizeString,
   type FuzzySearch,
   type FuzzySearchOptions,
   type FuzzySearchResult
 } from './server.search';
 import { memo } from './server.caching';
-import { generateHash } from './server.helpers';
+import { generateHash, isShaHexLike } from './server.helpers';
 import { DEFAULT_OPTIONS } from './options.defaults';
 import {
   getPatternFlyMcpResources,
@@ -15,6 +14,7 @@ import {
   type PatternFlyMcpResourceMetadata
 } from './patternFly.getResources';
 import { type PatternFlyMcpDocsCatalogDoc } from './docs.embedded';
+import { isPatternFlyUri } from './patternFly.support';
 
 /**
  * A filtered MCP resource.
@@ -172,7 +172,13 @@ type FilterPatternFlyMemoArgs = [
 ];
 
 /**
- * Rate how closely a search result matches a search query.
+ * Re-rank how closely a search result matches a search query.
+ *
+ * @note: This entire function needs to be refactored or removed since it's
+ * re-running distance checks just to resolved tied results. Future refactor
+ * should include expanding the `server.search` functions to use `Levenshtein`,
+ * `Jaccard`, and `cosine similarity`. We're temporarily leaving it in place
+ * as a patch to help move the PF API work forward.
  *
  * @note We prioritize **exact name matches** because users/agents respond best when
  * the returned item’s `name` (or any of its display names) exactly equals their typed
@@ -180,36 +186,28 @@ type FilterPatternFlyMemoArgs = [
  *
  * @param {SearchPatternFlyResult} result - Result object containing name and display name props.
  * @param query - Query string for comparison.
- * @returns `result` relevance to a `normalizedQuery`:
- *  - `0`: Exact match
- *  - `1`: Contains match
- *  - `2`: Everything else
+ * @param options - Option settings
+ * @param options.maxDistance - Max distance allowed for results.
+ * @returns Re-rank tied distance.
  */
 const calculateRelevance = (
   result: SearchPatternFlyResult,
-  query: string
+  query: string,
+  { maxDistance = 3 }: { maxDistance?: number } = {}
 ): number => {
-  const normalizedName = normalizeString.memo(result.name);
-  const normalizedQuery = normalizeString.memo(query);
+  const candidateNames = [
+    result.name,
+    ...(result.entries || []).map(entry => entry.name || ''),
+    ...(result.entries || []).map(entry => entry.displayName || '')
+  ].filter(Boolean);
 
-  if (normalizedName === normalizedQuery) {
-    return 0;
+  const nameMatch = fuzzySearch(query, candidateNames, { maxDistance }).results;
+
+  if (nameMatch.length) {
+    return Math.min(...nameMatch.map(result => result.distance));
   }
 
-  const displayNames = (result.entries || [])
-    .map(entry => (entry.displayName ? normalizeString.memo(entry.displayName) : ''))
-    .filter(Boolean);
-
-  if (displayNames.some(name => name === normalizedQuery)) {
-    return 0;
-  }
-
-  if (normalizedName.includes(normalizedQuery) ||
-    displayNames.some(name => name.includes(normalizedQuery))) {
-    return 1;
-  }
-
-  return 2;
+  return maxDistance;
 };
 
 /**
@@ -314,9 +312,13 @@ const filterPatternFly = async (
       const matchesVersion = !updatedFilters.version || String(entry.version).toLowerCase() === updatedFilters.version;
       const matchesCategory = !updatedFilters.category || filterMatch(entry.category, updatedFilters.category);
       const matchesSection = !updatedFilters.section || filterMatch(entry.section, updatedFilters.section);
-      const matchesPath = !updatedFilters.path || filterMatch(entry.path, updatedFilters.path) ||
-        filterMatch(entry.uriId, updatedFilters.path) || filterMatch(entry.uriSchemas, updatedFilters.path) ||
-        filterMatch(entry.uriSchemasId, updatedFilters.path) || filterMatch(entry.uri, updatedFilters.path);
+      const matchesPath = !updatedFilters.path ||
+        filterMatch(entry.path, updatedFilters.path) ||
+        filterMatch(entry.uriId, updatedFilters.path) ||
+        filterMatch(entry.uriGroupId, updatedFilters.path) ||
+        filterMatch(entry.uriSchemas, updatedFilters.path) ||
+        filterMatch(entry.uriSchemasId, updatedFilters.path) ||
+        filterMatch(entry.uri, updatedFilters.path);
 
       // Filter order matters specific id -> group id -> group name
       const matchesName = !updatedFilters.name || filterMatch(entry.id, updatedFilters.name) ||
@@ -436,10 +438,25 @@ const dynamicFilterPatternFly = async (
   {
     searchFilters = SEARCH_FILTERS,
     maxFilterPasses = MAX_DYNAMIC_FILTER_PASSES,
-    maxResultsLimit = 1,
+    maxResultsLimit,
     useExistingFilters = true
-  }: { searchFilters?: (keyof FilterPatternFlyFilters)[]; maxFilterPasses?: number; maxResultsLimit?: number; useExistingFilters?: boolean } = {}
+  }: { searchFilters?: (keyof FilterPatternFlyFilters)[]; maxFilterPasses?: number; maxResultsLimit?: number | undefined; useExistingFilters?: boolean } = {}
 ): Promise<FilterPatternFlyResults> => {
+  let isDynamicLimit = false;
+  let updatedMaxResultsLimit = maxResultsLimit ?? 1;
+  let updatedSearchFilters = searchFilters;
+
+  if (isPatternFlyUri(searchQuery)) {
+    updatedSearchFilters = ['path'];
+  } else if (isShaHexLike(searchQuery)) {
+    updatedSearchFilters = ['name'];
+  }
+
+  if (maxResultsLimit === undefined) {
+    isDynamicLimit = true;
+    updatedMaxResultsLimit = updatedSearchFilters.length;
+  }
+
   // Error name
   const dynamicFilterPassNotMatched = 'DynamicFilterPassNotMatchedError';
 
@@ -454,7 +471,7 @@ const dynamicFilterPatternFly = async (
 
   // Matching conditions based on options
   const isCloseMatch = (output: FilterPatternFlyResults) =>
-    output.byEntry.length === maxResultsLimit;
+    (isDynamicLimit ? output.byEntry.length > 0 : output.byEntry.length === updatedMaxResultsLimit);
 
   const abortController = new AbortController();
   const { signal } = abortController;
@@ -478,7 +495,7 @@ const dynamicFilterPatternFly = async (
     });
 
   // Limit the filters to ones not already set; cap parallel passes to avoid runaway fan-out.
-  const filtersToTry = searchFilters
+  const filtersToTry = updatedSearchFilters
     .filter(filter => !(useExistingFilters && filters && filters[filter]))
     .slice(0, maxFilterPasses);
 
@@ -556,6 +573,8 @@ const searchPatternFly = async (searchQuery: unknown, filters?: FilterPatternFly
   const coercedSearchQuery = String(searchQuery).trim();
   const updatedResources = await (mcpResources || getPatternFlyMcpResources.memo());
   const updatedFilters = filters || {};
+  const isUri = isPatternFlyUri(coercedSearchQuery);
+  const isSha = isShaHexLike(coercedSearchQuery);
   const isWildCardAll = coercedSearchQuery === '*' || coercedSearchQuery.toLowerCase() === 'all' || coercedSearchQuery === '';
   const isSearchWildCardAll = allowWildCardAll && isWildCardAll;
   const pathMatchName = updatedResources.pathIndex?.get(coercedSearchQuery.toLowerCase());
@@ -566,7 +585,11 @@ const searchPatternFly = async (searchQuery: unknown, filters?: FilterPatternFly
 
   // Perform wildcard all search or fuzzy search
   if (isSearchWildCardAll) {
-    searchResults = updatedResources.keywordsIndex.map(name => ({ matchType: 'all', distance: 0, item: name } as FuzzySearchResult));
+    searchResults = updatedResources.keywordsIndex.map(name => ({
+      matchType: 'all',
+      distance: 0,
+      item: name
+    } as FuzzySearchResult));
   } else if (pathMatchName || uriMatchName || hashMatchName) {
     searchResults = [
       {
@@ -575,7 +598,7 @@ const searchPatternFly = async (searchQuery: unknown, filters?: FilterPatternFly
         item: pathMatchName || uriMatchName || hashMatchName
       } as FuzzySearchResult
     ];
-  } else {
+  } else if (!isUri && !isSha) {
     const fuzzySearchSettings: FuzzySearchOptions = {
       maxDistance,
       maxResults,
@@ -624,7 +647,7 @@ const searchPatternFly = async (searchQuery: unknown, filters?: FilterPatternFly
 
   let filtered: FilterPatternFlyResults;
 
-  // Filter resources. Dynamic filtering applies the search query to each filter as a fallback.
+  // Filter resources. Dynamic filtering applies the search query to each filter as a fallback to help focus broad result sets.
   if (dynamicFilter && !isSearchWildCardAll) {
     filtered = await dynamicFilterPatternFly.memo(coercedSearchQuery, updatedFilters, searchResultsFilterMap);
   } else {
@@ -658,8 +681,8 @@ const searchPatternFly = async (searchQuery: unknown, filters?: FilterPatternFly
       return a.distance - b.distance;
     }
 
-    const relevantA = calculateRelevance(a, coercedSearchQuery);
-    const relevantB = calculateRelevance(b, coercedSearchQuery);
+    const relevantA = calculateRelevance(a, coercedSearchQuery, { maxDistance });
+    const relevantB = calculateRelevance(b, coercedSearchQuery, { maxDistance });
 
     if (relevantA !== relevantB) {
       return relevantA - relevantB;

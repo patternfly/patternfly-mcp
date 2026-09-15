@@ -228,6 +228,30 @@ describe('getPatternFlyMcpResources', () => {
     expect(Array.from(result.hashIndex.keys()).some(key => /[A-Z]/.test(key))).toBe(false);
   });
 
+  it('should index uriGroupId, unparameterized doc URIs, and schema URIs in uriIndex', async () => {
+    const result = await getPatternFlyMcpResources();
+    const buttonResource = result.resources.get('button');
+
+    expect(buttonResource).toBeDefined();
+    expect(buttonResource?.groupId).toBeDefined();
+
+    // Confirm uriIndex contains groupId and keys
+    const groupId = buttonResource?.groupId || '';
+
+    expect(result.uriIndex.get(`patternfly://docs/${groupId}`.toLowerCase())).toBe('button');
+    expect(result.uriIndex.get(`patternfly://schemas/${groupId}`.toLowerCase())).toBe('button');
+    expect(result.uriIndex.get('patternfly://docs/button')).toBe('button');
+    expect(result.uriIndex.get('patternfly://schemas/button')).toBe('button');
+
+    // Confirm hashIndex maps groupId
+    expect(result.hashIndex.get(groupId.toLowerCase())).toBe('button');
+
+    // Confirm entries have uriGroupId
+    const entries = buttonResource?.entries || [];
+
+    expect(entries.every(entry => (entry as any).uriGroupId.includes(groupId))).toBe(true);
+  });
+
   it('should generate unique hash IDs for pathless component entries', async () => {
     const result = await getPatternFlyMcpResources();
     const entries = Array.from(result.resources.values()).flatMap(resource => resource.entries);
