@@ -234,7 +234,7 @@ describe('collectionCallback', () => {
     expect(keys.length).toBe(1);
     const key: any = keys[0];
 
-    expect(key).toBe('button');
+    expect(key).toBe('Button');
 
     expect(first).toMatchObject({
       sourceId: `${BASE}/v1/components/Button/react`
@@ -284,7 +284,7 @@ describe('collectionCallback', () => {
 
     const key: any = rec?.data ? Object.keys(rec.data)[0] : '';
 
-    expect(key).toBe('card');
+    expect(key).toBe('Card');
     expect(rec?.data?.[key]).toContainEqual(expect.objectContaining({
       displayName: 'Card',
       category: 'overview'

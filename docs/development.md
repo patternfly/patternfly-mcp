@@ -8,7 +8,7 @@ Complete guide to using the PatternFly MCP Server for development including CLI 
 - [Experimental settings](./experimental.md)
 - [MCP tool plugins](#mcp-tool-plugins)
 - [Initial troubleshooting](#initial-troubleshooting)
-- [Project maintenance](#project-maintenance)
+- [Project development maintenance](#project-development-maintenance)
 - [In-progress and future work](#in-progress-and-future-work)
 
 ## CLI usage
@@ -446,9 +446,22 @@ These terms describe **how tools and their related properties are represented** 
 - **Missing tools/resources**: Verify the server started successfully and check logs with `--log-stderr`.
 - **Type errors**: Ensure TypeScript types are installed: `npm install --save-dev @types/node`
 
-## Project maintenance
+## Project development maintenance
 
-For information on how we manage project dependencies, including our biannual Node.js engine bump schedule, please refer to the [Maintenance section in CONTRIBUTING.md](../CONTRIBUTING.md#maintenance-nodejs-engine-bumps).
+For information on build maintenance, refer to [Maintenance in CONTRIBUTING.md](../CONTRIBUTING.md#nodejs-engine-bumps).
+
+### Updating collections
+
+The server packages pre-built collections (such as `src/collection.patternFlyApi.json`) to provide quick MCP startups.
+
+To refresh and validate the embedded API collection:
+
+```bash
+npm run build:collections
+```
+
+- **Execution**: Crawls live PatternFly API endpoints, filters quality records, updates `src/collection.patternFlyApi.json`, and executes collection-specific Jest validation tests (`jest --selectProjects collections`).
+- **When to run**: When PatternFly publishes new component API releases or when updating metadata/quality filters.
 
 ## In-progress and future work
 

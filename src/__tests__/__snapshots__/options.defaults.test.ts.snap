@@ -57,10 +57,9 @@ exports[`options defaults should return specific properties: defaults 1`] = `
         "props",
         "css",
       ],
-      "enabled": false,
       "schedule": {
         "continueOnError": true,
-        "delayStartMs": 21600000,
+        "delayStartMs": 604800000,
         "intervalMs": 604800000,
         "repeat": Infinity,
       },

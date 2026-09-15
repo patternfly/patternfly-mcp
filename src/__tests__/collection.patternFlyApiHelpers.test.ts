@@ -966,43 +966,43 @@ describe('extractApiName', () => {
       description: 'components section returns normalized item name',
       item: 'Button',
       section: 'components',
-      expected: 'button'
+      expected: 'Button'
     },
     {
       description: 'components section with uppercase and whitespace',
       item: '  Card  ',
       section: '  Components  ',
-      expected: 'card'
+      expected: 'Card'
     },
     {
       description: 'overview item with custom section adds suffix',
       item: 'overview',
       section: 'utilities',
-      expected: 'utilities-overview'
+      expected: 'UtilitiesOverview'
     },
     {
       description: 'item already prefixed with section avoids double prefix',
       item: 'charts-pie',
       section: 'charts',
-      expected: 'charts-pie'
+      expected: 'ChartsPie'
     },
     {
       description: 'item already prefixed with uppercase section name',
       item: 'Patterns-Gallery',
       section: 'patterns',
-      expected: 'patterns-gallery'
+      expected: 'PatternsGallery'
     },
     {
       description: 'non-prefixed item in custom section prefixes section',
       item: 'pie',
       section: 'charts',
-      expected: 'charts-pie'
+      expected: 'ChartsPie'
     },
     {
       description: 'non-prefixed item in patterns section prefixes section',
       item: 'gallery',
       section: 'patterns',
-      expected: 'patterns-gallery'
+      expected: 'PatternsGallery'
     }
   ])('should extract API name, $description', ({ item, section, expected }) => {
     expect(extractApiName(item, section)).toBe(expected);

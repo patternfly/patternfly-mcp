@@ -208,7 +208,6 @@ interface PatternFlyOptions {
     componentPaths: string[];
     traversalPaths: string[];
     timeoutMs: number;
-    enabled: boolean;
     schedule: {
       continueOnError: boolean;
       intervalMs: number;
@@ -526,8 +525,8 @@ const CHANNEL_BASENAME = 'pf-mcp';
  *     the API grows.
  * - `schedule.intervalMs` is set to `7` days. Most users, without persistence, will
  *     never achieve this.
- * - `schedule.delayStartMs` is set to `6` hours to accommodate an intense working
- *     session. This may need to be extended until persistence is implemented.
+ * - `schedule.delayStartMs` AFTER persistence is set up will be `6` hours. Short term
+ *     we've set it `7` days to align with the crawl interval.
  */
 const PATTERNFLY_OPTIONS: PatternFlyOptions = {
   api: {
@@ -544,10 +543,9 @@ const PATTERNFLY_OPTIONS: PatternFlyOptions = {
     schedule: {
       continueOnError: true,
       intervalMs: 24 * 60 * 60 * 1000 * 7, // 7 days
-      delayStartMs: 6 * 60 * 60 * 1000, // 6 hours
+      delayStartMs: 24 * 60 * 60 * 1000 * 7, // 7 days
       repeat: Infinity
-    },
-    enabled: false // ToDo: confirm this is still used
+    }
   },
   availableResourceVersions: ['6.0.0'],
   availableSearchVersions: ['current', 'latest', 'v6'],

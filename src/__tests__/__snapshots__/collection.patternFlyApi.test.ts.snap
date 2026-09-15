@@ -5,7 +5,7 @@ exports[`collectionCallback should match snapshot for collection result 1`] = `
   "records": [
     {
       "data": {
-        "card": [
+        "Card": [
           {
             "category": "css",
             "contentType": "",
@@ -46,7 +46,7 @@ exports[`getPatternFlyApiRecords should attempt to convert expanded embedded rec
 [
   {
     "data": {
-      "dolor": [
+      "Dolor": [
         {
           "category": "react",
           "contentType": "text/markdown",
