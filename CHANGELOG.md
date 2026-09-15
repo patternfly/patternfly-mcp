@@ -1,6 +1,28 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.4.0](https://github.com/patternfly/patternfly-mcp/compare/aa436229e18363530159aea5a326449457535a1c...65e15c063681eaa7fb73063708b2f4dedb44d2c1) (2026-09-15)
+
+
+### Features
+* **collections** pf-4402 activate patternfly api ([#296](https://github.com/patternfly/patternfly-mcp/pull/296)) ([8a408a5](https://github.com/patternfly/patternfly-mcp/commit/8a408a5d6c3e9f2fb46fc5648461d79e61059627))
+* **collections** pf-4402 generate pf api seed json ([#303](https://github.com/patternfly/patternfly-mcp/pull/303)) ([73e477f](https://github.com/patternfly/patternfly-mcp/commit/73e477fe607473cc30ba9d804269346bf86aee16))
+* **collections** pf-4402 delay start, hydrate ([#301](https://github.com/patternfly/patternfly-mcp/pull/301)) ([f9c32b1](https://github.com/patternfly/patternfly-mcp/commit/f9c32b1a7497d00ade557de25c1abf114daa10be))
+* **collections** pf-4402 pf api metadata helpers ([#295](https://github.com/patternfly/patternfly-mcp/pull/295)) ([0e66c41](https://github.com/patternfly/patternfly-mcp/commit/0e66c414acd84ac892ab5a9a7a400c5e0c9db5d0))
+* **resources** pf-4402 format markdown content ([#293](https://github.com/patternfly/patternfly-mcp/pull/293)) ([8690969](https://github.com/patternfly/patternfly-mcp/commit/86909696d13bab78acc33d3add3e7cd08cdb9806))
+
+### Code Refactoring
+* **search** pf-4402 focus results for hashes, uris ([#306](https://github.com/patternfly/patternfly-mcp/pull/306)) ([4eeaeba](https://github.com/patternfly/patternfly-mcp/commit/4eeaeba7412620d63210911536bf7af8fb4e7041))
+* **collections** pf-4402 pf api quality scores ([#302](https://github.com/patternfly/patternfly-mcp/pull/302)) ([458b37e](https://github.com/patternfly/patternfly-mcp/commit/458b37e1ec2807014052693ac52cbea6faf047fd))
+* **search** pf-4402 search results grouping, relevance sorting ([#294](https://github.com/patternfly/patternfly-mcp/pull/294)) ([576d08f](https://github.com/patternfly/patternfly-mcp/commit/576d08fd761860ea2d5208b72992d1531cdc0737))
+*  pf-4402 add tool, resource provenance ([#292](https://github.com/patternfly/patternfly-mcp/pull/292)) ([0d2efaf](https://github.com/patternfly/patternfly-mcp/commit/0d2efaf5aa45ba099c728dea9d2be41e071cd7e3))
+
+### Builds
+* **deps** lock update ([#308](https://github.com/patternfly/patternfly-mcp/pull/308)) ([65e15c0](https://github.com/patternfly/patternfly-mcp/commit/65e15c063681eaa7fb73063708b2f4dedb44d2c1))
+* **deps-dev** bump dev group with 9 updates ([#307](https://github.com/patternfly/patternfly-mcp/pull/307)) ([fd1f606](https://github.com/patternfly/patternfly-mcp/commit/fd1f60676c1eb4c36ca9bb141d5c2672bda6b32f))
+* **deps-dev** bump dev group with 6 updates ([#290](https://github.com/patternfly/patternfly-mcp/pull/290)) ([7244d58](https://github.com/patternfly/patternfly-mcp/commit/7244d58139f490fa2b78cf2c01e6cc926f3e3bce))
+* **deps-dev** bump changelog-light from 3.1.0 to 4.0.0 ([#291](https://github.com/patternfly/patternfly-mcp/pull/291)) ([a3e6ef7](https://github.com/patternfly/patternfly-mcp/commit/a3e6ef7333a46d66a04705677f97a8e766cfe72e))
+
 ## [2.3.0](https://github.com/patternfly/patternfly-mcp/compare/ef494382dad4b9e89e3eca75bca9c87a62f3b9cb...d8bf77fc2dc33de5adb7706ba2dda8409fded577) (2026-08-24)
 
 
