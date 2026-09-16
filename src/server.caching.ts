@@ -310,7 +310,7 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
           cache: [...cache]
         });
 
-        return cachedValue();
+        return typeof cachedValue === 'function' ? cachedValue() : cachedValue;
       }
 
       debug({
