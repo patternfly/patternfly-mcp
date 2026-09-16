@@ -363,6 +363,32 @@ describe('memo', () => {
     await expect(updateLog(logAsync)).resolves.toMatchSnapshot('async');
   });
 
+  it('should return cached sync objects with isError: true without calling them', () => {
+    let callCount = 0;
+    const memoized = memo((value: string) => {
+      callCount += 1;
+
+      return { isError: true, value, callCount };
+    }, { cacheLimit: 1, cacheErrors: true });
+
+    expect(memoized('a')).toEqual({ isError: true, value: 'a', callCount: 1 });
+    expect(memoized('a')).toEqual({ isError: true, value: 'a', callCount: 1 });
+    expect(callCount).toBe(1);
+  });
+
+  it('should return sync objects with isError: true when cacheErrors is false', () => {
+    let callCount = 0;
+    const memoized = memo((value: string) => {
+      callCount += 1;
+
+      return { isError: true, value, callCount };
+    }, { cacheLimit: 1, cacheErrors: false });
+
+    expect(memoized('a')).toEqual({ isError: true, value: 'a', callCount: 1 });
+    expect(memoized('a')).toEqual({ isError: true, value: 'a', callCount: 2 });
+    expect(callCount).toBe(2);
+  });
+
   it('should handle clear() without callback', () => {
     const mockDebug = jest.fn();
     const options = { cacheLimit: 1, debug: mockDebug };
