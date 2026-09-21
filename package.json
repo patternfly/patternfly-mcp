@@ -74,7 +74,7 @@
     "fastest-levenshtein": "1.0.16",
     "pid-port": "2.1.2",
     "semver": "7.8.5",
-    "zod": "4.4.3"
+    "zod": "4.5.4"
   },
   "devDependencies": {
     "@cdcabrera/eslint-config-toolkit": "^1.1.0",
