@@ -20,7 +20,7 @@ const assertProtocol = (
   { codeOrError }: { codeOrError?: AssertCodeOrError } = {}
 ) => {
   const validate = z.array(
-    z.string().url().refine(
+    z.url().refine(
       url => {
         try {
           const urlScheme = new URL(url).protocol;

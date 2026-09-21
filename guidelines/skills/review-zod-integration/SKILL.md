@@ -34,6 +34,7 @@ description: Reviews Zod dependency upgrades for PatternFly MCP—maps release n
 4. **Impact matrix**
    - For **every** release-note bullet (breaking, fixes, performance, locales), add one row to the report tables. Columns: **Release note**, **Used in PF MCP?** (Yes / No / Indirect — cite file or grep), **Impact** (None / Low / Medium / High), **Priority**, **Recommended fix** (or `None`). Priority rules: [reference.md — Priority rules](reference.md#priority-rules-pf-mcp).
    - Always include [reference.md — Updated P2 recommendations (Recurring)](reference.md#updated-p2-recommendations-recurring) in the report **Recommended fixes** section, even when tests pass.
+   - In **Documentation and agent guidance**, compare `guidelines/agent_coding.md` Zod detection text to `isZodSchema` in `src/server.schema.ts`; note match or drift on the `guidelines/agent_coding.md` row (see [reference.md — Report template](reference.md#report-template)).
    - Row patterns: [reference.md — Example impact rows](reference.md#example-impact-rows-pf-mcp).
 
 5. **Tests**
