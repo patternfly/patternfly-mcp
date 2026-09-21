@@ -20,12 +20,12 @@
 
 | File                                  | Zod role                                                                                                                      |
 |---------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
-| `src/server.schema.ts`                | `isZodSchema`, `isZodRawShape`, `jsonSchemaToZod`, `normalizeInputSchema`, `zodToJsonSchema`; v3 `_def` / v4 `_zod` detection |
+| `src/server.schema.ts`                | `isZodSchema`, `isZodRawShape`, `jsonSchemaToZod`, `normalizeInputSchema`, `zodToJsonSchema`; v3 `_def`, v4 `_zod`, public `.def` detection |
 | `src/server.tools.ts`                 | `z.looseObject({})` Tools Host fallback                                                                                       |
 | `src/server.toolsHost.ts`             | Normalize plugin schemas; manifest JSON Schema via `zodToJsonSchema`                                                          |
 | `src/server.toolsUser.ts`             | `normalizeInputSchema` for inline/static tools                                                                                |
-| `src/options.assertions.ts`           | `z.array(z.string().url().refine(...))`                                                                                       |
-| `src/tool.patternFlyDocs.ts`          | Raw Zod shape (`z.array`, `z.string`, `z.enum`, `.optional()`)                                                                |
+| `src/options.assertions.ts`           | `z.array(z.url().refine(...))`                                                                                                |
+| `src/tool.patternFlyDocs.ts`          | Raw Zod shape (`z.url()`, `z.array`, `z.string`, `z.enum`, `.optional()`)                                                     |
 | `src/tool.searchPatternFlyDocs.ts`    | Same                                                                                                                          |
 | `src/tool.searchPatternFly.ts`        | Same (experimental context-management search tool)                                                                            |
 | `src/__tests__/server.schema.test.ts` | Conversion tests + `toJSONSchema` snapshots                                                                                   |
@@ -61,7 +61,8 @@ If release notes only mention these, impact is usually **None**:
 | `toJSONSchema` | `zodToJsonSchema`, default `draft-2020-12` |
 | `z.object` / raw shapes | Built-in tools, `normalizeInputSchema` |
 | `z.looseObject` | `server.schema.ts`, `server.tools.ts`; Standard for "open" tool inputs in Zod 4.4+ |
-| `z.string().url()` + `.refine` | `options.assertions.ts` |
+| `z.url()` + `.refine` | `options.assertions.ts` |
+| `z.url()` | `tool.patternFlyDocs.ts` (`urlList`) |
 | `z.enum`, `.optional()`, `.max()`, `.min()` | Tool input schemas |
 
 ## Dependencies
@@ -164,11 +165,13 @@ Save as: **`reports/YYYYMMDD-HHMMSS-zod-{semver}-update-report.md`** (`YYYYMMDD-
 
 ## Documentation and agent guidance
 
+Compare `guidelines/agent_coding.md` (Zod detection) to `isZodSchema` in `src/server.schema.ts`; record match or drift on the `guidelines/agent_coding.md` row.
+
 | Asset | Status |
 |-------|--------|
 | `docs/development.md` | |
 | `docs/examples/*` | |
-| `guidelines/agent_coding.md` | |
+| `guidelines/agent_coding.md` | Match or drift vs `isZodSchema` |
 | `tests/e2e/` | |
 
 ---
@@ -221,7 +224,7 @@ Use these as patterns when mapping **your** target release notes. Re-grep the co
 | Required keys with `z.undefined()` | No — tools use `.optional()` on keys | None | None | None |
 | `.merge()` throws when receiver has refinements | No — no `.merge()` | None | None | None |
 | `toJSONSchema()` strips redundant `id` in `$defs` | Yes — `zodToJsonSchema`, Tools Host manifest | Low — no code reads `$defs.id` | None | None; re-run `server.schema` snapshots if manifest output changed |
-| `z.httpUrl()` stricter URL validation | No — uses `z.string().url()` + `refine` in `options.assertions.ts` | None | None | None |
+| `z.httpUrl()` stricter URL validation | No — uses `z.url()` + `refine` in `options.assertions.ts` | None | None | None |
 | Floating-point accuracy (`multipleOf`) | No — `multipleOf` not used in schemas | None | None | None |
 
 ### Other fixes — sample rows
@@ -289,6 +292,6 @@ These items MUST be included in the "Recommended Fixes (P2)" section of the repo
 
 - **DO**: Add detection for the public `.def` property (Zod 4.4+).
 - **DO**: Update `docs/development.md` to recommend JSON Schema or Zod 4 for *new* plugins.
-- **DO**: Migrate `z.string().url()` to `z.url()` where applicable (Zod 4.4+).
+- **DO**: Prefer `z.url()` over `z.string().url()` in new code (Zod 4.4+); grep `src/` for stragglers during reviews.
 - **DO NOT**: Remove the v3 `_def` branch in `isZodSchema`.
 - **DO NOT**: Remove the `passthrough()` fallback in `jsonSchemaToZod` while plugin/tool authors may supply Zod v3 schemas (even when the server pins Zod 4). Revisit only if PF MCP explicitly drops v3 plugin compatibility.

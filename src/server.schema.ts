@@ -31,6 +31,15 @@ const isZodSchema = (value: unknown): boolean => {
     }
   }
 
+  // Zod v4 public `.def` (when `_zod` is absent); keep additive alongside v3 `_def` below
+  if (has('def') && obj.def && typeof obj.def === 'object') {
+    const def = obj.def as Record<string, unknown>;
+
+    if (typeof def.type === 'string' && isFunc(obj.parse) && isFunc(obj.safeParse)) {
+      return true;
+    }
+  }
+
   // Zod v3 detection: `_def` object with both parse and safeParse functions
   if (has('_def') && obj._def && typeof obj._def === 'object') {
     if (isFunc(obj.parse) && isFunc(obj.safeParse)) {

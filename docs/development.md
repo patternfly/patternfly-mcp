@@ -422,7 +422,7 @@ These terms describe **how tools and their related properties are represented** 
 - **`Tool Factory`**: A function wrapper `(options) => Tool` (internal).
 - **`Tool Module`**: The programmatic result of `createMcpTool`, representing a collection of tools.
 - **`JSON Schema` (`plain object`)**: A plain object intended as JSON Schema (for example `type`, `properties`, `required`). Converted toward Zod where possible via `jsonSchemaToZod` / `fromJSONSchema`.
-- **`Zod schema`**: A Zod schema instance. Loosely detected with `isZodSchema`.
+- **`Zod schema`**: A Zod schema instance. Loosely detected with `isZodSchema` (Zod 4 `_zod` / public `.def`, Zod 3 `_def`).
 - **`Raw Zod shape` (`ZodRawShapeCompat`)**: A **non-empty** plain object whose **values** are Zod schemas; keys are field names. An empty `{}` is **not** a raw Zod shape. Detected with `isZodRawShape`.
 
 ## Initial troubleshooting
