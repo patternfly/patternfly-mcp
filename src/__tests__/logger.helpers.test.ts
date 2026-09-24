@@ -27,6 +27,53 @@ describe('sanitizeHeaderContent', () => {
       input: 'Authorization: Bearer abc123',
       options: { redacted: '<MASKED>' },
       expected: 'Authorization: Bearer <MASKED>'
+    },
+    {
+      description: 'api_key assignment',
+      input: 'api_key=xyz123',
+      expected: 'api_key=[REDACTED]'
+    },
+    {
+      description: 'api-key header',
+      input: 'api-key: xyz123',
+      expected: 'api-key: [REDACTED]'
+    },
+    {
+      description: 'token assignment',
+      input: 'token=abc456',
+      expected: 'token=[REDACTED]'
+    },
+    {
+      description: 'key assignment',
+      input: 'key=secret123',
+      expected: 'key=[REDACTED]'
+    },
+    {
+      description: 'auth assignment',
+      input: 'auth=secret123',
+      expected: 'auth=[REDACTED]'
+    },
+    {
+      description: 'authorization assignment',
+      input: 'authorization=secret123',
+      expected: 'authorization=[REDACTED]'
+    },
+    {
+      description: 'api-key without space after colon',
+      input: 'api-key:xyz123',
+      expected: 'api-key:[REDACTED]'
+    },
+    {
+      description: 'custom secretParamRegExp option',
+      input: 'custom_identifier=xyz123',
+      options: { secretParamRegExp: /custom_identifier/i },
+      expected: 'custom_identifier=[REDACTED]'
+    },
+    {
+      description: 'custom secretParamRegExp option with multiple search params',
+      input: 'custom_identifier=xyz123!&lorem=ipsum',
+      options: { secretParamRegExp: /custom_identifier/i },
+      expected: 'custom_identifier=[REDACTED]&lorem=ipsum'
     }
   ])('should sanitize header content, $description', ({ input, options, expected }) => {
     expect(sanitizeHeaderContent(input, options as any)).toBe(expected);
@@ -56,6 +103,31 @@ describe('sanitizeUrlContent', () => {
       expected: 'Fetch https://example.com/api?access_token=%5BREDACTED%5D now'
     },
     {
+      description: 'sanitize a URL with a parenthesis in its path',
+      input: 'Fetch https://example.com/a)path?token=abc123 now',
+      expected: 'Fetch https://example.com/a)path?token=%5BREDACTED%5D now'
+    },
+    {
+      description: 'sanitize a token ending in a parenthesis',
+      input: 'Fetch (https://example.com/docs?token=abc123)',
+      expected: 'Fetch (https://example.com/docs?token=%5BREDACTED%5D'
+    },
+    {
+      description: 'sanitize a token ending in nested parentheses',
+      input: 'Fetch ((https://example.com/a)path?token=abc123))',
+      expected: 'Fetch ((https://example.com/a)path?token=%5BREDACTED%5D'
+    },
+    {
+      description: 'sanitize a token ending in square brackets',
+      input: 'Fetch [https://example.com/docs?token=abc123]',
+      expected: 'Fetch [https://example.com/docs?token=%5BREDACTED%5D'
+    },
+    {
+      description: 'sanitize a token ending in an angle bracket',
+      input: 'Fetch <https://example.com/docs?token=abc123>',
+      expected: 'Fetch <https://example.com/docs?token=%5BREDACTED%5D'
+    },
+    {
       description: 'non-string input',
       input: null,
       expected: undefined
@@ -66,7 +138,8 @@ describe('sanitizeUrlContent', () => {
       options: { redacted: '<MASKED>' },
       expected: 'https://example.com/docs?token=%3CMASKED%3E'
     }
-  ])('should sanitize url content, $description', ({ input, options, expected }) => {
+  ])('should sanitize url content while maintaining delimiter-like characters, $description', ({ input, options, expected }) => {
+    // IMPORTANT: Delimiter-like characters are intentionally kept intact and not stripped from URLs.
     expect(sanitizeUrlContent(input as any, options as any)).toBe(expected);
   });
 });
@@ -136,6 +209,11 @@ describe('sanitizeMessage', () => {
       description: 'non-string serializable object',
       input: { auth: 'Authorization: Bearer abc123' },
       expected: '{"auth":"Authorization: Bearer [REDACTED]"}'
+    },
+    {
+      description: 'sanitize non-URL api_key and token assignments',
+      input: 'Failed upstream: api_key=xyz123 and token=abc456',
+      expected: 'Failed upstream: api_key=[REDACTED] and token=[REDACTED]'
     }
   ])('should sanitize message content, $description', ({ input, expected }) => {
     expect(sanitizeMessage(input)).toContain(expected);
