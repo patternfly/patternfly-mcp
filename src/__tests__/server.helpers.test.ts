@@ -20,7 +20,7 @@ import {
   portValid,
   splitUri,
   stringJoin,
-  timeoutFunction
+  timeoutFunction, isBase64Like
 } from '../server.helpers';
 
 describe('buildSearchString', () => {
@@ -706,6 +706,137 @@ describe('isReferenceLike', () => {
     }
   ])('should determine a non-primitive for $description', ({ param, value }) => {
     expect(isReferenceLike(param)).toBe(value);
+  });
+});
+
+describe('isBase64Like', () => {
+  it.each([
+    {
+      description: 'default strict accepts valid padded base64',
+      value: 'YWJjZA==',
+      expected: true
+    },
+    {
+      description: 'default strict rejects missing padding',
+      value: 'YWJjZA',
+      expected: false
+    },
+    {
+      description: 'loose valid unpadded base64, match modulo-4',
+      value: 'TWFu', // "Man"
+      options: { isStrict: false },
+      expected: true
+    },
+    {
+      description: 'loose valid unpadded base64, requireSignalChars rejects alpha-only base64',
+      value: 'TWFu',
+      options: { isStrict: false, requireSignalChars: true },
+      expected: false
+    },
+    {
+      description: 'loose valid padded base64 with ==',
+      value: 'YWJjZA==', // "abcd"
+      options: { isStrict: false },
+      expected: true
+    },
+    {
+      description: 'loose missing trailing padding still accepted',
+      value: 'YWJjZA', // decodes/re-encodes to YWJjZA==
+      options: { isStrict: false },
+      expected: true
+    },
+    {
+      description: 'loose trims leading/trailing whitespace',
+      value: '  YWJjZA==  ',
+      options: { isStrict: false },
+      expected: true
+    },
+    {
+      description: 'loose invalid alphabet character',
+      value: 'YWJjZA*=',
+      options: { isStrict: false },
+      expected: false
+    },
+    {
+      description: 'loose invalid padding shape',
+      value: 'abcde=',
+      options: { isStrict: false },
+      expected: false
+    },
+    {
+      description: 'loose too short for configured minLength',
+      value: 'TWFu',
+      options: { isStrict: false, minLength: 8 },
+      expected: false
+    },
+    {
+      description: 'strict valid 4-char unpadded base64, potential false positive',
+      value: 'TWFu',
+      options: { isStrict: true },
+      expected: true
+    },
+    {
+      description: 'strict valid 4-char unpadded base64, potential false positive, requireSignalChars',
+      value: 'TWFu',
+      options: { isStrict: true, requireSignalChars: true },
+      expected: false
+    },
+    {
+      description: 'strict valid padded base64 with ==',
+      value: 'YWJjZA==',
+      options: { isStrict: true },
+      expected: true
+    },
+    {
+      description: 'strict valid padded base64 with ==, requireSignalChars',
+      value: 'YWJjZA==',
+      options: { isStrict: true, requireSignalChars: true },
+      expected: true
+    },
+    {
+      description: 'strict fails modulo-4 length check when padding is missing',
+      value: 'YWJjZA', // length 6
+      options: { isStrict: true },
+      expected: false
+    },
+    {
+      description: 'strict invalid alphabet character',
+      value: 'YWJjZA*=',
+      options: { isStrict: true },
+      expected: false
+    },
+    {
+      description: 'strict too short for configured minLength',
+      value: 'TWFu',
+      options: { isStrict: true, minLength: 8 },
+      expected: false
+    },
+    {
+      description: 'guard loose non-string number',
+      value: 1234,
+      options: { isStrict: false },
+      expected: false
+    },
+    {
+      description: 'guard strict non-string null',
+      value: null,
+      options: { isStrict: true },
+      expected: false
+    },
+    {
+      description: 'strict behavior unchanged when requireSignalChars is false',
+      value: 'QUJDREVG',
+      options: { isStrict: true, requireSignalChars: false },
+      expected: true
+    },
+    {
+      description: 'strict behavior when requireSignalChars is true',
+      value: 'QUJDREVG',
+      options: { isStrict: true, requireSignalChars: true },
+      expected: false
+    }
+  ])('check if value is base64-like, $description', ({ value, options = {}, expected }) => {
+    expect(isBase64Like(value, { minLength: 4, ...options })).toBe(expected);
   });
 });
 

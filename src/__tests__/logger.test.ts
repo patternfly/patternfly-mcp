@@ -111,6 +111,12 @@ describe('formatUnknownError', () => {
   ])('should attempt to return a formatted error on non-errors, $description', ({ err }) => {
     expect(formatUnknownError(err)).toMatchSnapshot();
   });
+
+  it('should support sanitizing messages', () => {
+    const input = 'Authorization: Bearer abc123';
+
+    expect(formatUnknownError(input)).toBe('Authorization: Bearer [REDACTED]');
+  });
 });
 
 describe('formatLogEvent', () => {
@@ -151,6 +157,16 @@ describe('formatLogEvent', () => {
     }
   ])('should return a formatted log event, $description', ({ event }) => {
     expect(formatLogEvent(event as any)).toMatchSnapshot();
+  });
+
+  it('should support sanitizing messages', () => {
+    const event = {
+      level: 'info',
+      msg: 'Authorization: Bearer abc123',
+      args: ['https://patternfly.org?lorem=ipsum&private_token=dolor']
+    };
+
+    expect(formatLogEvent(event as any)).toMatchSnapshot('sanitized');
   });
 });
 

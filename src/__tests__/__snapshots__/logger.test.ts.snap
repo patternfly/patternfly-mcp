@@ -43,6 +43,8 @@ exports[`formatLogEvent should return a formatted log event, partial 1`] = `"[DE
 
 exports[`formatLogEvent should return a formatted log event, undefined 1`] = `"[INFO]:"`;
 
+exports[`formatLogEvent should support sanitizing messages: sanitized 1`] = `"[INFO]: Authorization: Bearer [REDACTED]	:https://patternfly.org/?lorem=ipsum&private_token=%5BREDACTED%5D"`;
+
 exports[`formatUnknownError should attempt to return a formatted error on non-errors, bigint 1`] = `"9007199254740991n"`;
 
 exports[`formatUnknownError should attempt to return a formatted error on non-errors, boolean 1`] = `"Non-Error thrown: true"`;
