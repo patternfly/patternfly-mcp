@@ -10,6 +10,7 @@ import { isUrl, isPath, createError } from './server.helpers';
 import { FetchError, setFetch } from './server.fetch';
 import { delay } from './server.task';
 import { log, formatUnknownError } from './logger';
+import { sanitizeMessage } from './logger.helpers';
 
 /**
  * Represents a successful document processing attempt.
@@ -392,7 +393,7 @@ const processDocsFunction = async <T extends Record<string, unknown> = Record<st
 
     docs.push({
       ...(metadata as Omit<T, 'doc'>),
-      content: `❌ Failed to load ${errorPath}: ${errorMessage}`,
+      content: `❌ Failed to load ${sanitizeMessage(errorPath)}: ${formatUnknownError(errorMessage)}`,
       path: errorPath,
       resolvedPath: errorResolvedPath,
       isSuccess: false

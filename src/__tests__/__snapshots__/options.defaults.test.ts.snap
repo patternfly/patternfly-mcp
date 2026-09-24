@@ -178,6 +178,7 @@ exports[`options defaults should return specific properties: defaults 1`] = `
     "allowBinary": false,
     "maxSizeBytes": 5242880,
     "preflightHead": false,
+    "sanitizeMessages": true,
     "timeoutMs": 15000,
   },
 }
