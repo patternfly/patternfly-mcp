@@ -183,7 +183,7 @@ describe('registerCollections', () => {
     const onUpdate = jest.fn();
     const handler = jest.fn().mockResolvedValue({ records: [] });
     const collections: any[] = [
-      ['test-collection', handler]
+      ['test-collection', undefined, handler]
     ];
 
     await registerCollections(collections, { onUpdate });
@@ -201,7 +201,7 @@ describe('registerCollections', () => {
   it('should handle isRequired and throw if it fails', async () => {
     const handler = jest.fn().mockRejectedValue(new Error('Failed'));
     const collections: any[] = [
-      ['lorem-collection', handler, { isRequired: true }]
+      ['lorem-collection', undefined, handler, { isRequired: true }]
     ];
 
     await expect(registerCollections(collections)).rejects.toThrow('Required collection lorem-collection failed to load.');
@@ -210,7 +210,7 @@ describe('registerCollections', () => {
   it('should not throw if optional collection fails during initial gatekeep', async () => {
     const handler = jest.fn().mockRejectedValue(new Error('Failed'));
     const collections: any[] = [
-      ['dolor-collection', handler, { isRequired: false }]
+      ['dolor-collection', undefined, handler, { isRequired: false }]
     ];
 
     await expect(registerCollections(collections)).resolves.not.toThrow();
@@ -225,7 +225,7 @@ describe('registerCollections', () => {
     const handler = jest.fn().mockImplementation(() => asyncPromise);
 
     const collections: any[] = [
-      ['dual-phase-collection', handler, { initial: { records: initialRecords } }]
+      ['dual-phase-collection', {}, handler, { initial: { records: initialRecords } }]
     ];
 
     const registrationPromise = registerCollections(collections);
@@ -242,7 +242,7 @@ describe('registerCollections', () => {
     const handler = jest.fn().mockResolvedValue({ records: [] });
 
     const collections: any[] = [
-      ['retained-collection', handler, { initial: { records: initialRecords }, retainLastViable: true }]
+      ['retained-collection', {}, handler, { initial: { records: initialRecords }, retainLastViable: true }]
     ];
 
     await registerCollections(collections);
@@ -256,7 +256,7 @@ describe('registerCollections', () => {
     const handler = jest.fn().mockRejectedValue(new Error('Network failure'));
 
     const collections: any[] = [
-      ['error-retained-collection', handler, { initial: { records: initialRecords }, retainLastViable: true }]
+      ['error-retained-collection', {}, handler, { initial: { records: initialRecords }, retainLastViable: true }]
     ];
 
     await registerCollections(collections);
@@ -281,7 +281,7 @@ describe('registerCollections', () => {
     });
 
     const collections: any[] = [
-      ['custom-func-collection', handler, {
+      ['custom-func-collection', {}, handler, {
         initial: { records: initialRecords },
         retainLastViable: customPredicate
       }]
@@ -301,7 +301,7 @@ describe('registerCollections', () => {
   it('should not write invalid collections to the registry', async () => {
     const handler = jest.fn().mockResolvedValue({ records: [{ id: 'invalid-record' }] });
 
-    await registerCollections([['invalid-collection', handler]]);
+    await registerCollections([['invalid-collection', {}, handler]]);
 
     expect(getServerRecordsRegistry({ collectionName: 'invalid-collection' })).toBeUndefined();
   });
@@ -310,7 +310,7 @@ describe('registerCollections', () => {
     const onRequired = jest.fn();
     const handler = jest.fn().mockResolvedValue({ records: [{ id: '1', sourceId: 'mock', sourceType: 'mock' }] });
     const collections: any[] = [
-      ['req', handler, { isRequired: true }]
+      ['req', {}, handler, { isRequired: true }]
     ];
 
     await registerCollections(collections, { onRequired });
@@ -332,8 +332,8 @@ describe('registerCollections', () => {
     const handler2 = jest.fn().mockRejectedValue(new Error('Fail'));
 
     const collections: any[] = [
-      ['c1', handler1],
-      ['c2', handler2]
+      ['c1', {}, handler1],
+      ['c2', {}, handler2]
     ];
 
     await registerCollections(collections, { onSettle });
@@ -348,7 +348,7 @@ describe('registerCollections', () => {
   it('should follow the options pattern by allowing creators to use mocked options', async () => {
     const mockOptions = { custom: 'value' };
     const handler = jest.fn().mockResolvedValue({ records: [] });
-    const creator = (opt: unknown): any => ['opt-collection', () => handler(opt)];
+    const creator = (opt: unknown): any => ['opt-collection', {}, () => handler(opt)];
     const collection = creator(mockOptions);
 
     await registerCollections([collection]);

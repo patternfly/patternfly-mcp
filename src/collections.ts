@@ -47,8 +47,10 @@ interface McpCollectionResult {
  * `async (options) => boolean | #${string}` for dynamic configs.
  *
  * 0. `name` `{string}`: Unique identifier/name
- * 1. `handler` `{Function}`: callback function accepting an optional argument
- * 2. `_config` `{Object}`: Application level record source configuration. Unavailable to
+ * 1. `config` `{Object}`: Application level record source configuration. Available to plugins.
+ *    - `title`: Optional title for the collection.
+ * 2. `handler` `{Function}`: callback function accepting an optional argument
+ * 3. `_config` `{Object}`: Application level record source configuration. Unavailable to
  *     record collection plugins.
  *    - `_config.initial`: Optional initial collection records or loader function executed
  *        immediately at server startup prior to background scheduled runs or worker execution.
@@ -68,6 +70,9 @@ interface McpCollectionResult {
  */
 type McpCollection = [
   name: string,
+  config: {
+    title?: string;
+  } | undefined,
   handler: (arg?: unknown) => McpCollectionResult | Promise<McpCollectionResult>,
   _config?: {
     initial?: McpCollectionResult | (() => McpCollectionResult | Promise<McpCollectionResult>);
@@ -386,12 +391,12 @@ const registerCollections = async (
   log.debug(`Reviewing registration for ${collections.length} collections.`);
 
   // Step 1: Immediate hydration for collections with `_config.initial`
-  for (const [name, , config] of collections) {
-    if (config?.initial) {
+  for (const [name, , , _config] of collections) {
+    if (_config?.initial) {
       try {
-        const initialResult = typeof config.initial === 'function'
-          ? await config.initial()
-          : config.initial;
+        const initialResult = typeof _config.initial === 'function'
+          ? await _config.initial()
+          : _config.initial;
 
         if (isMcpCollectionResult(initialResult)) {
           await setServerRecordsRegistry({ name, response: initialResult, error: undefined });
@@ -406,7 +411,7 @@ const registerCollections = async (
 
   // Step 2: Main collection execution (handles scheduled/worker/background callbacks)
   // Wrapper for each loader; handle incremental updates
-  const registrationPromises = collections.map(async ([name, callback, config]) => {
+  const registrationPromises = collections.map(async ([name, , callback, _config]) => {
     let error: unknown | undefined;
     let response: McpCollectionResult | undefined;
     let isSuccess = false;
@@ -428,7 +433,7 @@ const registerCollections = async (
     const previous = getServerRecordsRegistry({ collectionName: name }) as McpCollectionResult | undefined;
     let shouldRetain = false;
 
-    if (config?.retainLastViable) {
+    if (_config?.retainLastViable) {
       try {
         const context: RetainLastViableContext = {
           name,
@@ -439,8 +444,8 @@ const registerCollections = async (
         };
 
         shouldRetain = await Promise.resolve(
-          typeof config.retainLastViable === 'function'
-            ? (config.retainLastViable as RetainLastViableCollection)(context)
+          typeof _config.retainLastViable === 'function'
+            ? (_config.retainLastViable as RetainLastViableCollection)(context)
             : defaultRetainCollection(context)
         );
       } catch (err) {
@@ -468,7 +473,7 @@ const registerCollections = async (
   });
 
   // Determine which collections are required and optional
-  const required = registrationPromises.filter((_, index) => collections[index]?.[2]?.isRequired);
+  const required = registrationPromises.filter((_, index) => collections[index]?.[3]?.isRequired);
 
   // Gatekeep on any required collections
   const results = await Promise.all(required);

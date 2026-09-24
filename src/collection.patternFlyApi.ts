@@ -669,7 +669,7 @@ const collectionCallback = async (): Promise<McpCollectionResult> => {
  * @returns {McpCollection} The collection definition tuple
  */
 const patternFlyApiCollection = (options = getOptions(), session = getSessionOptions()): McpCollection => {
-  const callback: McpCollection[1] = async () =>
+  const callback: McpCollection[2] = async () =>
     runWithSession(session, async () =>
       runWithOptions(options, async () => collectionCallback()));
 
@@ -679,6 +679,9 @@ const patternFlyApiCollection = (options = getOptions(), session = getSessionOpt
 
   return [
     'patternfly-api',
+    {
+      title: 'PatternFly API'
+    },
     callback,
     {
       initial,
