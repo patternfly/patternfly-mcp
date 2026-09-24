@@ -418,6 +418,49 @@ const generateHash = (anyValue: unknown, { isLowercase = false }: { isLowercase?
 };
 
 /**
+ * Check if a value is a Base64-like string.
+ *
+ * @param value - Value to check.
+ * @param [options] - Options.
+ * @param [options.isStrict] - Enforce strict Base64 validation. Defaults to `true`.
+ * @param [options.minLength] - Minimum length of the Base64 string.
+ * @param [options.requireSignalChars] - Require characters potentially unique to Base64. Defaults to `false`.
+ * @returns `true` if the value is a Base64-like string
+ */
+const isBase64Like = (value: unknown, {
+  isStrict = true,
+  minLength = 8,
+  requireSignalChars = false
+}: { isStrict?: boolean; minLength?: number, requireSignalChars?: boolean } = {}) => {
+  const updatedValue = typeof value === 'string' ? value.trim() : '';
+
+  if (!updatedValue || updatedValue.length < minLength || (isStrict && updatedValue.length % 4 !== 0)) {
+    return false;
+  }
+
+  const looseBase64Regex = /^[A-Za-z0-9+/]+={0,2}$/;
+  const strictBase64Regex = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
+  const base64Regex = isStrict ? strictBase64Regex : looseBase64Regex;
+
+  if (!base64Regex.test(updatedValue)) {
+    return false;
+  }
+
+  if (requireSignalChars && /^[A-Za-z]+$/.test(updatedValue)) {
+    return false;
+  }
+
+  const buff = Buffer.from(updatedValue, 'base64');
+  const recoded = buff.toString('base64');
+
+  if (isStrict) {
+    return updatedValue === recoded;
+  }
+
+  return updatedValue === recoded || updatedValue === recoded.replace(/=+$/, '');
+};
+
+/**
  * Check if a value is an SHA-1 hex string.
  *
  * @param value - Value to check.
@@ -543,9 +586,18 @@ const listIncrementalCombinations = (values: string[]): string[][] =>
  *     This will match against the provided URI. If the URI does not start with the prefix, `undefined` is returned.
  * @param [options.normalizeSearchParamKeys=true] - If `true`, search param keys are normalized to lowercase. Default: `true`
  * @param [options.isStrict] - If `true`, only strict URL and path validation is performed. Default: `true`
+ * @param [options.asUrlObject] - If `true`, the parsed URL is returned as a URL object. Default: `false`
  * @returns Parsed URI, or `undefined` if parsing fails.
  */
-const parseUrl = (url: string, { prefix, normalizeSearchParamKeys = true, isStrict = true }: { prefix?: string, normalizeSearchParamKeys?: boolean, isStrict?: boolean } = {}) => {
+const parseUrl = (
+  url: string,
+  {
+    prefix,
+    normalizeSearchParamKeys = true,
+    isStrict = true,
+    asUrlObject = false
+  }: { prefix?: string, normalizeSearchParamKeys?: boolean, isStrict?: boolean, asUrlObject?: boolean } = {}
+) => {
   const isPrefix = typeof prefix === 'string' && prefix.length > 0 && !prefix.includes(':') && !prefix.includes('/');
   const opts = isPrefix ? { allowedProtocols: [prefix] } : {};
   const isUri = isUrl(url, { ...opts, isStrict });
@@ -561,37 +613,38 @@ const parseUrl = (url: string, { prefix, normalizeSearchParamKeys = true, isStri
     return Object.fromEntries(searchParams);
   };
 
-  if (isUri) {
-    try {
-      const updatedUrl = new URL(url);
+  const buildUrl = (): URL | undefined => {
+    if (isUri) {
+      return new URL(url);
+    }
 
-      return {
-        protocol: updatedUrl.protocol,
-        hostname: updatedUrl.hostname,
-        path: updatedUrl.pathname.replace(/^\//, ''),
-        params: normalizeParamKeys(updatedUrl.searchParams)
-      };
-    } catch {
+    if (isPrefix && isPath(url, { isStrict })) {
+      return new URL(`${prefix}://${url}`);
+    }
+
+    return undefined;
+  };
+
+  try {
+    const updatedUrl = buildUrl();
+
+    if (!updatedUrl) {
       return undefined;
     }
-  }
 
-  if (isPrefix && isPath(url, { isStrict })) {
-    try {
-      const updatedUrl = new URL(`${prefix}://${url}`);
-
-      return {
-        protocol: updatedUrl.protocol,
-        hostname: updatedUrl.hostname,
-        path: updatedUrl.pathname.replace(/^\//, ''),
-        params: normalizeParamKeys(updatedUrl.searchParams)
-      };
-    } catch {
-      return undefined;
+    if (asUrlObject) {
+      return updatedUrl;
     }
-  }
 
-  return undefined;
+    return {
+      protocol: updatedUrl.protocol,
+      hostname: updatedUrl.hostname,
+      path: updatedUrl.pathname.replace(/^\//, ''),
+      params: normalizeParamKeys(updatedUrl.searchParams)
+    };
+  } catch {
+    return undefined;
+  }
 };
 
 /**
@@ -821,6 +874,7 @@ export {
   hashCode,
   hashNormalizeValue,
   isAsync,
+  isBase64Like,
   isObject,
   isPath,
   isPlainObject,
