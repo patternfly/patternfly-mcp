@@ -81,6 +81,42 @@ describe('decodeStream', () => {
   });
 });
 
+describe('FetchError', () => {
+  it.each([
+    {
+      description: 'should sanitize an error message',
+      options: {
+        message: 'Failed to fetch https://patternfly.org/x?private_token=abc123',
+        sanitize: true
+      },
+      expected: 'private_token=%5BREDACTED%5D'
+    },
+    {
+      description: 'should not sanitize an error message',
+      options: {
+        message: 'Failed to fetch https://patternfly.org/x?private_token=abc123',
+        sanitize: false
+      },
+      expected: 'private_token=abc123'
+    }
+  ])('should sanitize an error message', ({ options, expected }) => {
+    const err = new FetchError(options);
+
+    expect(err.message).toContain(expected);
+  });
+
+  it('should preserve raw cause object identity', () => {
+    const cause = new Error('upstream fail private_token=abc123');
+    const err = new FetchError({
+      message: 'wrapper',
+      cause,
+      sanitize: true
+    });
+
+    expect(err.cause).toBe(cause);
+  });
+});
+
 describe('parsePayload', () => {
   it('should parse valid JSON', async () => {
     const payload = { kind: 'text' as const, mimeType: 'application/json', text: '{"key": "value"}' };
@@ -251,6 +287,30 @@ describe('setFetch', () => {
     expect(postPhase).toBe('error');
   });
 
+  it('should sanitize URL secrets in FetchError message for non-ok response', async () => {
+    const mockResponse = {
+      ok: false,
+      status: 401,
+      statusText: 'Unauthorized',
+      headers: {
+        get: () => null
+      }
+    };
+
+    (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
+
+    const { get } = setFetch();
+    const urlWithSecret = 'https://patternfly.org/secure?private_token=abc123&view=full';
+
+    await expect(get(urlWithSecret)).rejects.toMatchObject({
+      message: expect.stringContaining('private_token=%5BREDACTED%5D')
+    });
+
+    await expect(get(urlWithSecret)).rejects.toMatchObject({
+      message: expect.not.stringContaining('private_token=abc123')
+    });
+  });
+
   it('should check content-length against maxSizeBytes', async () => {
     const mockResponse = {
       ok: true,
@@ -275,7 +335,7 @@ describe('setFetch', () => {
     expect((status() as any).phase).toBe('error');
   });
 
-  it('should reject redirected URLs that are not whitelisted', async () => {
+  it('should reject redirected URLs that are not allowlisted', async () => {
     const mockResponse = {
       ok: true,
       url: 'https://untrusted.com/data',
@@ -289,6 +349,54 @@ describe('setFetch', () => {
 
     await expect(get('https://patternfly.org/redirect')).rejects.toThrow('must be within the whitelisted URLs');
     expect(mockResponse.body.cancel).toHaveBeenCalled();
+  });
+
+  it('should sanitize secrets in pre-request allowlist errors', async () => {
+    const options = {
+      ...getOptions(),
+      whitelist: {
+        urls: ['https://allowed.patternfly.org']
+      }
+    };
+    const { get } = setFetch(options as any);
+
+    await expect(get('https://blocked.patternfly.org/path?private_token=abc123')).rejects.toMatchObject({
+      message: expect.stringContaining('private_token=%5BREDACTED%5D')
+    });
+
+    await expect(get('https://blocked.patternfly.org/path?private_token=abc123')).rejects.toMatchObject({
+      message: expect.not.stringContaining('private_token=abc123')
+    });
+  });
+
+  it('should sanitize secrets in post-redirect allowlist errors', async () => {
+    const options = {
+      ...getOptions(),
+      whitelist: {
+        urls: ['https://www.patternfly.org']
+      }
+    };
+
+    const mockResponse = {
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      url: 'https://error.patternfly.org/landing?access_token=secret123',
+      headers: { get: () => 'text/plain' },
+      body: new ReadableStream({ start(controller) { controller.close(); } })
+    };
+
+    (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
+    const { get } = setFetch(options as any);
+
+    // Leverage an allowlist url to check post-redirect
+    await expect(get('https://www.patternfly.org/start')).rejects.toMatchObject({
+      message: expect.stringContaining('access_token=%5BREDACTED%5D')
+    });
+
+    await expect(get('https://www.patternfly.org/start')).rejects.toMatchObject({
+      message: expect.not.stringContaining('access_token=secret123')
+    });
   });
 
   it('should de-duplicate concurrent requests to the same URL', async () => {
@@ -378,5 +486,14 @@ describe('setFetch', () => {
     expect((status() as any).phase).toBe('error');
 
     jest.useRealTimers();
+  });
+
+  it('should wrap sanitized unknown errors into FetchError', async () => {
+    (global.fetch as jest.Mock).mockRejectedValue(new Error('lorem ipsum private_token=abc123'));
+    const { get } = setFetch();
+
+    await expect(get('https://patternfly.org/data')).rejects.toMatchObject({
+      message: expect.stringContaining('lorem ipsum private_token=[REDACTED]')
+    });
   });
 });

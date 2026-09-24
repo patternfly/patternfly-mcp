@@ -2,6 +2,7 @@ import { Readable } from 'node:stream';
 import { type ReadableStream } from 'node:stream/web';
 import { getOptions } from './options.context';
 import { formatUnknownError, log } from './logger';
+import { sanitizeMessage } from './logger.helpers';
 import { memo } from './server.caching';
 import { assertInputUrlWhiteListed } from './server.assertions';
 import { isUrl } from './server.helpers';
@@ -202,6 +203,7 @@ class FetchError extends Error {
    * @param options.statusText - HTTP status text.
    * @param options.cause - Cause of the error.
    * @param options.cancelled - Indicates if the fetch operation was canceled.
+   * @param options.sanitize - Activates message sanitizing.
    */
   constructor(options: {
     message: string;
@@ -209,8 +211,11 @@ class FetchError extends Error {
     statusText?: string | undefined;
     cause?: unknown | undefined;
     cancelled?: boolean | undefined;
+    sanitize?: boolean | undefined;
   }) {
-    super(options.message);
+    const updatedMessage = options.sanitize ? sanitizeMessage(options.message) : options.message;
+
+    super(updatedMessage);
 
     this.status = options.status;
     this.statusText = options.statusText;
@@ -524,7 +529,7 @@ const setFetch = (options = getOptions()): SetFetch => {
       assertInputUrlWhiteListed(url, updatedWhitelist, {
         allowedProtocols: whitelist.protocols,
         inputDisplayName: 'setFetch URL',
-        codeOrError: (message, cause) => new FetchError({ message, cause })
+        codeOrError: (message, cause) => new FetchError({ message, cause, sanitize: true })
       });
 
       if (xhrFetch.preflightHead) {
@@ -553,7 +558,7 @@ const setFetch = (options = getOptions()): SetFetch => {
         await Promise.resolve().then(() => assertInputUrlWhiteListed(response.url, updatedWhitelist, {
           allowedProtocols: whitelist.protocols,
           inputDisplayName: 'setFetch URL',
-          codeOrError: (message, cause) => new FetchError({ message, cause })
+          codeOrError: (message, cause) => new FetchError({ message, cause, sanitize: true })
         })).catch(error => {
           response.body?.cancel?.().catch(() => {});
           throw error;
@@ -564,7 +569,8 @@ const setFetch = (options = getOptions()): SetFetch => {
         throw new FetchError({
           message: `Failed to fetch ${url}: ${response.status} ${response.statusText}`,
           status: response.status,
-          statusText: response.statusText
+          statusText: response.statusText,
+          sanitize: true
         });
       }
 
@@ -578,7 +584,8 @@ const setFetch = (options = getOptions()): SetFetch => {
         throw new FetchError({
           message,
           status: response.status,
-          statusText: response.statusText
+          statusText: response.statusText,
+          sanitize: true
         });
       };
 

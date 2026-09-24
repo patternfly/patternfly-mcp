@@ -387,7 +387,7 @@ const processDocsFunction = async <T extends Record<string, unknown> = Record<st
 
     docs.push({
       ...(metadata as Omit<T, 'doc'>),
-      content: `❌ Failed to load ${errorPath}: ${errorMessage}`,
+      content: `❌ Failed to load document.`,
       path: errorPath,
       resolvedPath: errorResolvedPath,
       isSuccess: false

@@ -2,6 +2,7 @@ import { channel, unsubscribe, subscribe } from 'node:diagnostics_channel';
 import { inspect } from 'node:util';
 import { type LoggingSession } from './options.defaults';
 import { getLoggerOptions } from './options.context';
+import { sanitizeMessage } from './logger.helpers';
 
 type LogLevel = LoggingSession['level'];
 
@@ -82,53 +83,68 @@ const truncate = (str: string, { max = 250, suffix = '...[truncated]' }: { max?:
  * Format an unknown value as a string, for logging.
  *
  * @param value
+ * @param [options] - Configurable options
+ * @param [options.sanitize] - Sanitize the output string, defaults to `true`.
  * @returns Formatted string
  */
-const formatUnknownError = (value: unknown): string => {
-  if (value instanceof Error) {
-    const message = value.stack || value.message;
+const formatUnknownError = (value: unknown, { sanitize = true }: { sanitize?: boolean } = {}): string => {
+  const getMessage = () => {
+    if (value instanceof Error) {
+      const message = value.stack || value.message;
 
-    if (message) {
-      return message;
+      if (message) {
+        return message;
+      }
+
+      try {
+        return String(value);
+      } catch {
+        return Object.prototype.toString.call(value);
+      }
+    }
+
+    if (typeof value === 'string') {
+      return value;
     }
 
     try {
-      return String(value);
+      return `Non-Error thrown: ${truncate(JSON.stringify(value))}`;
     } catch {
-      return Object.prototype.toString.call(value);
+      try {
+        return truncate(inspect(value, {
+          depth: 3,
+          maxArrayLength: 50,
+          breakLength: 120
+        }));
+      } catch {
+        return Object.prototype.toString.call(value);
+      }
     }
-  }
+  };
 
-  if (typeof value === 'string') {
-    return value;
-  }
-
-  try {
-    return `Non-Error thrown: ${truncate(JSON.stringify(value))}`;
-  } catch {
-    try {
-      return truncate(inspect(value, { depth: 3, maxArrayLength: 50, breakLength: 120 }));
-    } catch {
-      return Object.prototype.toString.call(value);
-    }
-  }
+  return sanitize ? sanitizeMessage(getMessage()) : getMessage();
 };
 
 /**
  * Format a structured log event for output to stderr.
  *
  * @param event - Log event to format
+ * @param [options] - Configurable options
+ * @param [options.sanitize] - Sanitize the output string, defaults to `true`.
  */
-const formatLogEvent = (event: LogEvent) => {
+const formatLogEvent = (event: LogEvent, { sanitize = true }: { sanitize?: boolean } = {}) => {
+  const sanitizeInput = (input: string) => (sanitize ? sanitizeMessage(input) : input);
   const level = event?.level?.toUpperCase() || 'INFO';
   const eventLevel = `[${level}]`;
-  const message = event?.msg || '';
+  const message = sanitizeInput(event?.msg || '');
 
   const rest = event?.args?.map(arg => {
     try {
-      return typeof arg === 'string' ? arg : JSON.stringify(arg);
+      const updatedArg = typeof arg === 'string' ? arg : JSON.stringify(arg);
+
+      return sanitizeInput(updatedArg);
     } catch {
-      return String(arg);
+      return sanitizeInput(String(arg));
     }
   }).join(' ') || '';
 
