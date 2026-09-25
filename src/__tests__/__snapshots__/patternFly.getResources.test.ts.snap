@@ -3,9 +3,7 @@
 exports[`getPatternFlyComponentNames should return multiple organized facets: properties 1`] = `
 [
   "componentNamesIndex",
-  "componentNamesIndexMap",
   "byVersion",
-  "byDocs",
 ]
 `;
 
@@ -21,6 +19,7 @@ exports[`getPatternFlyMcpResources should return multiple organized facets: prop
   "latestSchemasVersion",
   "isEnvTheLatestVersion",
   "isEnvTheLatestSchemasVersion",
+  "collections",
   "resources",
   "docsIndex",
   "componentsIndex",
