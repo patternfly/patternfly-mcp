@@ -49,12 +49,17 @@ type McpCollectionConfig = {
 /**
  * Registered collections.
  *
+ * @note {@link registerCollections} registers every tuple by `name` and optional `config` before
+ * handlers or `_config.initial` run, which means a store entry can exist with no `response`,
+ * see {@link getServerCollectionsRegistry}. Registry listeners run only when an update includes
+ * `response`.
+ *
  * @property {McpCollectionConfig} config - Optional plugin-visible metadata.
- * @property {McpCollectionResult} response - Collection records.
+ * @property {McpCollectionResult} response - Collection records. Set when records are available.
  */
 type McpCollectionRegistryEntry = {
   config?: McpCollectionConfig;
-  response: McpCollectionResult;
+  response?: McpCollectionResult;
 };
 
 /**
@@ -273,32 +278,77 @@ const getServerCollectionsRegistry = ({ collectionName }: { collectionName?: str
 };
 
 /**
- * Executes a collection callback, invalidates any cache, and then any next-call to the functions
- * blends the returned records and "re-memos" the results.
+ * Register tuple `name` and optional `config` before records are available (sync).
  *
- * @param {McpCollectionResult} collection - Collection.
+ * @param name - Collection name (tuple index 0).
+ * @param [config] - Plugin-visible metadata (tuple index 1).
+ */
+const registerInitialCollection = (name: string, config?: McpCollectionConfig) => {
+  const previous = serverCollectionsRegistry.get(name);
+  const entry: McpCollectionRegistryEntry = {};
+
+  if (previous?.response !== undefined) {
+    entry.response = previous.response;
+  }
+
+  if (config !== undefined) {
+    entry.config = config;
+  } else if (previous?.config !== undefined) {
+    entry.config = previous.config;
+  }
+
+  serverCollectionsRegistry.set(name, entry);
+};
+
+/**
+ * Register or update a collection in the server registry.
+ *
+ * A collection may be registered with only a `name` (and optional `config`) before records exist.
+ *
+ * @param collection - Collection registration item.
  */
 const setServerRecordsRegistry = async (collection: RegisterCollectionItem) => {
-  const { name, response, config } = collection || {};
+  const { name, response, config, error } = collection || {};
 
   try {
-    if (name && response) {
-      const previous = serverCollectionsRegistry.get(name);
-      const entry: McpCollectionRegistryEntry = { response };
+    if (!name) {
+      return;
+    }
 
-      if (config !== undefined) {
-        entry.config = config;
-      } else if (previous?.config !== undefined) {
-        entry.config = previous.config;
-      }
+    const previous = serverCollectionsRegistry.get(name);
+    const entry: McpCollectionRegistryEntry = {};
 
-      serverCollectionsRegistry.set(name, entry);
+    if (response !== undefined) {
+      entry.response = response;
+    } else if (previous?.response !== undefined) {
+      entry.response = previous.response;
+    }
+
+    if (config !== undefined) {
+      entry.config = config;
+    } else if (previous?.config !== undefined) {
+      entry.config = previous.config;
+    }
+
+    serverCollectionsRegistry.set(name, entry);
+
+    if (entry.response !== undefined) {
+      const item: RegisterCollectionItem = {
+        name,
+        config: entry.config,
+        response: entry.response,
+        error
+      };
 
       for (const listener of serverCollectionsRegistryListeners) {
-        await invokeServerCollectionsRegistryListener(listener, collection);
+        await invokeServerCollectionsRegistryListener(listener, item);
       }
+    }
 
-      log.debug(`Storing server collection ${name} records. (${response?.records?.length})`);
+    if (entry.response) {
+      log.debug(`Storing server collection ${name} records. (${entry.response.records?.length})`);
+    } else {
+      log.debug(`Registering server collection ${name}.`);
     }
   } catch (error) {
     log.error(`Failed to store server collection ${name}:`, error);
@@ -405,6 +455,13 @@ const isMcpCollectionResult = (value: unknown): value is McpCollectionResult =>
  * - When the required collections resolve, `onRequired` is called.
  * - When all collections are settled `onSettle` is called.
  *
+ * @note **Revisit:**
+ * - Collections with `_config.runSchedule` (e.g. long `delayStartMs` or `repeat: Infinity`) still run in
+ *     the same per-tuple handler `await` and settlement path as loaders. This means `onSettle` may not run
+ *     until those handlers return. Revisit this if a use case for earlier settlement pops up.
+ * - Initial tuple name and configs are registered before records exist. This does not invoke
+ *     {@link onUpdateServerRecordsRegistry} listeners or `replay`. Revisit if late listeners need replay.
+ *
  * @param {McpCollection[]} collections - An array of collection sources to be registered. Each source is represented as a tuple.
  * @param [options] - Options callback functions to handle registration events.
  * @param [options.onSettle] - A non-blocking consumer-facing callback executed after all collection registrations are
@@ -423,6 +480,11 @@ const registerCollections = async (
   } = {}
 ): Promise<void> => {
   log.debug(`Reviewing registration for ${collections.length} collections.`);
+
+  // Step 0: Register each collection tuple before records load.
+  for (const [name, config] of collections) {
+    registerInitialCollection(name, config);
+  }
 
   // Step 1: Immediate hydration for collections with `_config.initial`
   for (const [name, config, , _config] of collections) {
@@ -574,6 +636,7 @@ export {
   isMcpCollectionResult,
   onUpdateServerRecordsRegistry,
   registerCollections,
+  registerInitialCollection,
   setServerRecordsRegistry,
   type OnUpdateServerRecordsRegistryOptions,
   type RetainLastViableContext,
