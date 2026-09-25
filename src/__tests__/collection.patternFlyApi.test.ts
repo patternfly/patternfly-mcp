@@ -27,14 +27,15 @@ describe('patternFlyApiCollection', () => {
   });
 
   it('should return the correct collection name and configuration', async () => {
-    const [name, callback, config] = patternFlyApiCollection();
+    const [name, config, callback, _config] = patternFlyApiCollection();
 
     expect(name).toBe('patternfly-api');
+    expect(config).toBeDefined();
     expect(callback).toBeDefined();
-    expect(typeof config?.initial).toBe('function');
-    expect(config?.retainLastViable).toBe(true);
-    expect(config?.runParallel).toContain('#collection');
-    expect(config?.runSchedule).toBeDefined();
+    expect(typeof _config?.initial).toBe('function');
+    expect(_config?.retainLastViable).toBe(true);
+    expect(_config?.runParallel).toContain('#collection');
+    expect(_config?.runSchedule).toBeDefined();
   });
 });
 
