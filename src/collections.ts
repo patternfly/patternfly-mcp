@@ -47,10 +47,10 @@ interface McpCollectionResult {
  * `async (options) => boolean | #${string}` for dynamic configs.
  *
  * 0. `name` `{string}`: Unique identifier/name
- * 1. `config` `{Object}`: Application level record source configuration. Available to plugins.
+ * 1. `config` `{Object}`: Plugin-visible metadata. Available to plugins.
  *    - `title`: Optional title for the collection.
  * 2. `handler` `{Function}`: callback function accepting an optional argument
- * 3. `_config` `{Object}`: Application level record source configuration. Unavailable to
+ * 3. `_config` `{Object}`: Internal runtime configuration. Unavailable to
  *     record collection plugins.
  *    - `_config.initial`: Optional initial collection records or loader function executed
  *        immediately at server startup prior to background scheduled runs or worker execution.
