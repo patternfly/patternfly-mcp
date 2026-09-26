@@ -27,54 +27,64 @@ describe('setCategoryDisplayLabel', () => {
   });
 
   beforeAll(async () => {
-    // Inject mock collections to ensure tests are isolated and don't rely on filesystem
     await setPatternFlyCollection('patternfly-docs', {
-      records: [
-        {
-          id: 'docs::button',
-          sourceId: 'button',
-          sourceType: 'local',
-          data: {
-            button: [
-              {
-                displayName: 'Button',
-                description: 'Button description',
-                pathSlug: 'button',
-                section: 'components',
-                category: 'react',
-                path: 'https://www.patternfly.org/v6/components/button',
-                version: 'v6'
-              }
-            ]
+      config: { title: 'PatternFly Docs' },
+      response: {
+        records: [
+          {
+            id: 'docs::button',
+            sourceId: 'button',
+            sourceType: 'local',
+            data: {
+              button: [
+                {
+                  displayName: 'Button',
+                  description: 'Button description',
+                  pathSlug: 'button',
+                  section: 'components',
+                  category: 'react',
+                  path: 'https://www.patternfly.org/v6/components/button',
+                  version: 'v6'
+                }
+              ]
+            }
           }
-        }
-      ]
+        ]
+      }
     });
 
     await setPatternFlyCollection('patternfly-component-schemas', {
-      records: [
-        {
-          id: 'schema::button',
-          sourceId: 'button',
-          sourceType: 'package',
-          data: {
-            button: [
-              {
-                displayName: 'Button',
-                description: 'PatternFly React component: Button',
-                pathSlug: 'schemas-button',
-                category: 'react',
-                section: 'components',
-                source: 'schemas',
-                version: 'v6',
-                isSchemasAvailable: true
-              }
-            ]
+      config: { title: 'Component Schemas' },
+      response: {
+        records: [
+          {
+            id: 'schema::button',
+            sourceId: 'button',
+            sourceType: 'package',
+            data: {
+              button: [
+                {
+                  displayName: 'Button',
+                  description: 'PatternFly React component: Button',
+                  pathSlug: 'schemas-button',
+                  category: 'react',
+                  section: 'components',
+                  source: 'schemas',
+                  version: 'v6',
+                  isSchemasAvailable: true
+                }
+              ]
+            }
           }
-        }
-      ]
+        ]
+      }
     });
   });
+
+  afterAll(() => {
+    setPatternFlyCollection.clear();
+  });
+
   it.each([
     {
       description: 'empty string',
@@ -131,6 +141,39 @@ describe('setCategoryDisplayLabel', () => {
 });
 
 describe('getPatternFlyComponentSchema', () => {
+  beforeAll(async () => {
+    await setPatternFlyCollection('patternfly-component-schemas', {
+      config: { title: 'Component Schemas' },
+      response: {
+        records: [
+          {
+            id: 'schema::button',
+            sourceId: 'button',
+            sourceType: 'package',
+            data: {
+              button: [
+                {
+                  displayName: 'Button',
+                  description: 'PatternFly React component: Button',
+                  pathSlug: 'schemas-button',
+                  category: 'react',
+                  section: 'components',
+                  source: 'schemas',
+                  version: 'v6',
+                  isSchemasAvailable: true
+                }
+              ]
+            }
+          }
+        ]
+      }
+    });
+  });
+
+  afterAll(() => {
+    setPatternFlyCollection.clear();
+  });
+
   it.each([
     {
       description: 'default',
@@ -210,6 +253,65 @@ describe('mutateKeyWordsMap', () => {
 });
 
 describe('getPatternFlyMcpResources', () => {
+  beforeAll(async () => {
+    await setPatternFlyCollection('patternfly-docs', {
+      config: { title: 'PatternFly Docs' },
+      response: {
+        records: [
+          {
+            id: 'docs::button',
+            sourceId: 'button',
+            sourceType: 'local',
+            data: {
+              button: [
+                {
+                  displayName: 'Button',
+                  description: 'Button description',
+                  pathSlug: 'button',
+                  section: 'components',
+                  category: 'react',
+                  path: 'https://www.patternfly.org/v6/components/button',
+                  version: 'v6'
+                }
+              ]
+            }
+          }
+        ]
+      }
+    });
+
+    await setPatternFlyCollection('patternfly-component-schemas', {
+      config: { title: 'Component Schemas' },
+      response: {
+        records: [
+          {
+            id: 'schema::button',
+            sourceId: 'button',
+            sourceType: 'package',
+            data: {
+              button: [
+                {
+                  displayName: 'Button',
+                  description: 'PatternFly React component: Button',
+                  pathSlug: 'schemas-button',
+                  category: 'react',
+                  section: 'components',
+                  source: 'schemas',
+                  version: 'v6',
+                  isSchemasAvailable: true
+                }
+              ]
+            }
+          }
+        ]
+      }
+    });
+  });
+
+  afterAll(() => {
+    setPatternFlyCollection.clear();
+  });
+
   it('should return multiple organized facets', async () => {
     const result = await getPatternFlyMcpResources();
 
@@ -255,6 +357,7 @@ describe('getPatternFlyMcpResources', () => {
   it('should generate unique hash IDs for pathless component entries', async () => {
     const result = await getPatternFlyMcpResources();
     const entries = Array.from(result.resources.values()).flatMap(resource => resource.entries);
+
     const ids = entries.map(entry => entry.id);
     const pathlessEntries = entries.filter(entry => !entry.path);
 

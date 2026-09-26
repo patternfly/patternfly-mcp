@@ -18,7 +18,7 @@ import {
 } from './docs.embedded';
 import {
   onUpdateServerRecordsRegistry,
-  type McpCollectionResult,
+  type McpCollectionRegistryEntry,
   type RegisterCollectionItem
 } from './collections';
 
@@ -57,15 +57,11 @@ type PatternFlyMcpComponentNamesDoc = Omit<PatternFlyMcpDocsCatalogDoc, 'path'> 
  * @interface PatternFlyMcpComponentNames
  *
  * @property componentNamesIndex - Component names index.
- * @property componentNamesIndexMap - Component names index map.
  * @property byVersion - Component names by version map.
- * @property byDocs - Component names by docs map.
  */
 interface PatternFlyMcpComponentNames {
   componentNamesIndex: string[];
-  componentNamesIndexMap: Map<string, string>;
   byVersion: Map<string, PatternFlyMcpComponentNamesByVersion>;
-  byDocs: Map<string, PatternFlyMcpComponentNamesDoc[]>;
 }
 
 /**
@@ -73,6 +69,8 @@ interface PatternFlyMcpComponentNames {
  *
  * @property id - The unique identifier of document entry.
  * @property groupId - The unique identifier for the document's parent.
+ * @property collection - Unique name for the record's primary collection.
+ * @property displayCollection - The display name for the record's primary collection.
  * @property name - The name of document entry.
  * @property displayCategory - The display category of document entry.
  * @property uri - The parent resource's general URI that can reflect a grouping of document entries.
@@ -85,6 +83,8 @@ interface PatternFlyMcpComponentNames {
 type PatternFlyMcpDocsMeta = {
   id: string;
   groupId: string;
+  collection?: string;
+  displayCollection?: string;
   name: string;
   displayCategory: string;
   uri: string;
@@ -167,6 +167,7 @@ type PatternFlyMcpResourceMetadata = {
  * @interface PatternFlyMcpAvailableDocs
  * @extends PatternFlyVersionContext
  *
+ * @property collections = List of available collection names.
  * @property resources - Patternfly available documentation and metadata by resource name.
  * @property docsIndex - `@deprecated Under review. Use Array.from(resources.keys()) instead`. Patternfly available documentation index.
  * @property componentsIndex - `@deprecated Under review. Use keywordsIndex for search or byVersionComponentNames for lookups`.
@@ -183,6 +184,7 @@ type PatternFlyMcpResourceMetadata = {
  * @property byVersionComponentNames - Patternfly documentation by version with component names
  */
 interface PatternFlyMcpAvailableResources extends PatternFlyVersionContext {
+  collections: string[];
   resources: Map<string, PatternFlyMcpResourceMetadata>;
   docsIndex: string[];
   componentsIndex: string[];
@@ -199,9 +201,14 @@ interface PatternFlyMcpAvailableResources extends PatternFlyVersionContext {
 }
 
 /**
+ * Loaded collections enhanced with a collection name.
+ */
+type PatternFlyMcpCollectionRegistryEntry = McpCollectionRegistryEntry & { name: string };
+
+/**
  * Central in-memory registry for all PatternFly collection records
  */
-const patternFlyRecordsRegistry = new Map<string, McpCollectionResult>();
+const patternFlyRecordsRegistry = new Map<string, PatternFlyMcpCollectionRegistryEntry>();
 
 /**
  * Set the category display label based on the entry's section and category.
@@ -261,14 +268,10 @@ const setCategoryDisplayLabel = (entry?: PatternFlyMcpDocsCatalogDoc) => {
  */
 const getPatternFlyComponentNames = async (contextPathOverride?: string): Promise<PatternFlyMcpComponentNames> => {
   const componentSchemasCollection = patternFlyRecordsRegistry.get('patternfly-component-schemas');
-  const schemaRecords = componentSchemasCollection?.records || [];
-
+  const schemaRecords = componentSchemasCollection?.response?.records || [];
   const { latestSchemasVersion } = await getPatternFlyVersionContext.memo(contextPathOverride);
 
-  const componentNamesIndex: string[] = [];
-  const componentNamesIndexMap = new Map<string, string>();
-  const latestByNameMap = new Map<string, { isSchemasAvailable: boolean, displayName: string }>();
-  const byDocs = new Map<string, PatternFlyMcpComponentNamesDoc[]>();
+  const latestByNameMap: PatternFlyMcpComponentNamesByVersion = {};
 
   schemaRecords.forEach(({ data }) => {
     if (!data) {
@@ -278,30 +281,22 @@ const getPatternFlyComponentNames = async (contextPathOverride?: string): Promis
     Object.entries(data as Record<string, PatternFlyMcpComponentNamesDoc[]>).forEach(([normalizedName, entries]) => {
       const entry = entries[0];
 
-      if (!entry) {
-        return;
+      if (entry) {
+        latestByNameMap[normalizedName] = {
+          isSchemasAvailable: Boolean(entry.isSchemasAvailable),
+          displayName: entry.displayName || normalizedName
+        };
       }
-
-      componentNamesIndex.push(normalizedName);
-      componentNamesIndexMap.set(normalizedName, entry.displayName);
-      latestByNameMap.set(normalizedName, {
-        isSchemasAvailable: entry.isSchemasAvailable,
-        displayName: entry.displayName
-      });
-      byDocs.set(normalizedName, entries);
     });
   });
 
-  componentNamesIndex.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
-  const byVersion: PatternFlyMcpComponentNames['byVersion'] = new Map();
-
-  byVersion.set(latestSchemasVersion, Object.fromEntries(latestByNameMap));
+  const byVersion = new Map([[latestSchemasVersion, latestByNameMap]]);
+  const componentNamesIndex = Object.keys(latestByNameMap).sort((a, b) =>
+    a.localeCompare(b, undefined, { sensitivity: 'base' }));
 
   return {
     componentNamesIndex,
-    componentNamesIndexMap,
-    byVersion,
-    byDocs
+    byVersion
   };
 };
 
@@ -491,15 +486,29 @@ const normalizeKey = (key: string): string => {
 const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<PatternFlyMcpAvailableResources> => {
   const versionContext = await getPatternFlyVersionContext.memo(contextPathOverride);
   const componentNames = await getPatternFlyComponentNames.memo(contextPathOverride);
-  const { componentNamesIndex, byVersion: componentNamesByVersion, byDocs: componentNamesByDocs } = componentNames;
+  const { componentNamesIndex, byVersion: componentNamesByVersion } = componentNames;
 
   const originalDocs = patternFlyRecordsRegistry.get('patternfly-docs');
+  const componentSchemas = patternFlyRecordsRegistry.get('patternfly-component-schemas');
   const apiCollection = patternFlyRecordsRegistry.get('patternfly-api');
 
+  const availableCollections = new Map<string, string>();
+
+  // Apply a collection name for records.
+  const setCollectionName = (id: string, collection: PatternFlyMcpCollectionRegistryEntry | undefined) => [
+    ...((collection?.response?.records || [])?.flatMap(({ data }) => {
+      const collectionName = collection?.name || id;
+
+      availableCollections.set(collectionName, collection?.config?.title || collectionName);
+
+      return Object.entries(data as Record<string, unknown[]>).map(entry => [...entry, collectionName] as const);
+    }) || [])
+  ];
+
   const catalog = [
-    ...originalDocs?.records?.flatMap(({ data }) => Object.entries(data as Record<string, unknown[]>)) || [],
-    ...Array.from(componentNamesByDocs),
-    ...apiCollection?.records?.flatMap(({ data }) => Object.entries(data as Record<string, unknown[]>)) || []
+    ...setCollectionName('patternfly-docs', originalDocs),
+    ...setCollectionName('patternfly-component-schemas', componentSchemas),
+    ...setCollectionName('patternfly-api', apiCollection)
   ];
 
   const resources = new Map<string, PatternFlyMcpResourceMetadata>();
@@ -511,7 +520,7 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
   const hashIndexMap = new Map<string, string>();
   const rawKeywordsMap: PatternFlyMcpKeywordsMap = new Map();
 
-  catalog.forEach(([unifiedName, entries]) => {
+  catalog.forEach(([unifiedName, entries, collectionName]) => {
     const name = normalizeKey(unifiedName);
     const groupId = generateHash(name);
     const uriGroupId = `patternfly://docs/${encodeURIComponent(groupId)}`;
@@ -536,6 +545,9 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
     const resource = resources.get(name) as PatternFlyMcpResourceMetadata;
 
     (entries as any[]).forEach(entry => {
+      const collection = entry.collection || collectionName;
+      const displayCollection = availableCollections.get(collection);
+
       // Technically, we could just dump `entry` into generateHash as the fallback, but it'd be prone to frequent shifting based on updates.
       const version = (entry.version || 'unknown').toLowerCase();
       const id = generateHash(entry.path || `${name}:${version}:${entry.section}:${entry.category}:${entry.pathSlug}`.toLowerCase());
@@ -586,6 +598,8 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
         ...entry,
         id,
         groupId,
+        collection,
+        displayCollection,
         name,
         displayName,
         displayCategory,
@@ -612,6 +626,14 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
       byVersion[version]?.push(extendedEntry);
 
       mutateKeyWordsMap(rawKeywordsMap, { keyword: name, name, version });
+
+      if (displayCollection) {
+        mutateKeyWordsMap(rawKeywordsMap, { keyword: displayCollection, name, version });
+      }
+
+      if (entry.source) {
+        mutateKeyWordsMap(rawKeywordsMap, { keyword: entry.source, name, version });
+      }
 
       if (entry.displayName) {
         mutateKeyWordsMap(rawKeywordsMap, { keyword: entry.displayName, name, version });
@@ -642,12 +664,13 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
 
   return {
     ...versionContext,
+    collections: Array.from(availableCollections.keys()).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })),
     resources,
     // @deprecated docsIndex - Under review
     docsIndex: Array.from(resources.keys()).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })),
     // @deprecated componentsIndex - Under review
     componentsIndex: componentNamesIndex,
-    isFallbackDocumentation: Boolean(originalDocs?.isFallback),
+    isFallbackDocumentation: Boolean(originalDocs?.response?.isFallback),
     keywordsIndex: Array.from(new Set([
       ...componentNamesIndex,
       ...Array.from(filteredKeywords.keys())
@@ -703,16 +726,16 @@ getPatternFlyComponentSchema.memo = memo(getPatternFlyComponentSchema, DEFAULT_O
  * blends the returned records and "re-memos" the results.
  *
  * @param name - Collection name.
- * @param {McpCollectionResult} collection - Collection result.
+ * @param {McpCollectionRegistryEntry} collection - Collection registry entry.
  */
 const setPatternFlyCollection = async (
   name: string,
-  collection: McpCollectionResult
+  collection: McpCollectionRegistryEntry
 ) => {
   try {
-    if (collection.records) {
+    if (collection?.response?.records) {
       // Update the patternFlyRecordsRegistry with the new records
-      patternFlyRecordsRegistry.set(name, collection);
+      patternFlyRecordsRegistry.set(name, { ...collection, name });
 
       try {
         // Invalidate the component schemas breakdown
@@ -728,11 +751,28 @@ const setPatternFlyCollection = async (
         log.warn('Failed getPatternFlyMcpResources clear.', error);
       }
 
-      log.debug(`Merging collection ${name} records. (${collection.records.length})`);
+      log.debug(`Merging collection ${name} records. (${collection?.response?.records?.length || 0})`);
     }
   } catch (error) {
     log.error(`Failed to update collection [${name}]:`, error);
   }
+};
+
+/**
+ * Reset one or all collections in the registry and clear memo caches.
+ *
+ * @param name - Name of the collection to clear, otherwise all collections are cleared.
+ */
+setPatternFlyCollection.clear = (name?: string) => {
+  if (name) {
+    patternFlyRecordsRegistry.delete(name);
+  } else {
+    patternFlyRecordsRegistry.clear();
+  }
+
+  getPatternFlyComponentNames.memo.clear();
+  getPatternFlyComponentSchema.memo.clear();
+  getPatternFlyMcpResources.memo.clear();
 };
 
 /**
@@ -741,9 +781,9 @@ const setPatternFlyCollection = async (
  * @note We don't need to use the `replay` option here, all of PF collections we need are `required`
  * currently, any future updates to this logic may consider adding the `replay` option.
  */
-onUpdateServerRecordsRegistry(({ name, response, error }: RegisterCollectionItem) => {
+onUpdateServerRecordsRegistry(({ name, config, response, error }: RegisterCollectionItem) => {
   if (name && response) {
-    setPatternFlyCollection(name, response);
+    setPatternFlyCollection(name, { response, config });
     log.info(`Update collection: ${name}`);
   }
 
