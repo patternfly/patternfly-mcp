@@ -133,7 +133,7 @@ describe('Builtin tools, HTTP transport', () => {
       description: 'exact match for Button',
       searchQuery: 'Button',
       contains: [
-        '# Search results for PatternFly version "v6" and "Button". Showing',
+        '# Search results for "Button". Showing',
         '**button**',
         'Use a search all'
       ]
@@ -142,7 +142,7 @@ describe('Builtin tools, HTTP transport', () => {
       description: 'with trimmed query',
       searchQuery: ' Button   ',
       contains: [
-        '# Search results for PatternFly version "v6" and " Button   ". Showing',
+        '# Search results for " Button   ". Showing',
         '**button**',
         'Use a search all'
       ]
@@ -151,7 +151,7 @@ describe('Builtin tools, HTTP transport', () => {
       description: 'with lower case match',
       searchQuery: 'button',
       contains: [
-        '# Search results for PatternFly version "v6" and "button". Showing',
+        '# Search results for "button". Showing',
         '**button**',
         'Use a search all'
       ]
@@ -160,7 +160,7 @@ describe('Builtin tools, HTTP transport', () => {
       description: 'with upper case match',
       searchQuery: 'BUTTON',
       contains: [
-        '# Search results for PatternFly version "v6" and "BUTTON". Showing',
+        '# Search results for "BUTTON". Showing',
         '**button**',
         'Use a search all'
       ]
@@ -169,7 +169,7 @@ describe('Builtin tools, HTTP transport', () => {
       description: 'wildcard search',
       searchQuery: '*',
       contains: [
-        '# Search results for PatternFly version "v6" and "all" resources. Only showing the first',
+        '# Search results for "all" resources. Only showing the first',
         '**a',
         'Use a search all'
       ]
@@ -178,7 +178,7 @@ describe('Builtin tools, HTTP transport', () => {
       description: 'fuzzy search for partial name',
       searchQuery: 'ton',
       contains: [
-        '# Search results for PatternFly version "v6" and "ton". Showing',
+        '# Search results for "ton". Showing',
         '**button**',
         'Use a search all'
       ]
@@ -188,7 +188,7 @@ describe('Builtin tools, HTTP transport', () => {
       searchQuery: 'Button',
       version: 'v6',
       contains: [
-        '# Search results for PatternFly version "v6" and "Button". Showing',
+        '# Search results for "Button". Showing',
         '**button**',
         'Use a search all'
       ]
@@ -197,7 +197,7 @@ describe('Builtin tools, HTTP transport', () => {
       description: 'with multiple words',
       searchQuery: 'Button Card Table',
       contains: [
-        '# Search results for PatternFly version "v6" and "Button Card Table". Showing',
+        '# Search results for "Button Card Table". Showing',
         '**button**',
         '**card**',
         '**table**',
@@ -208,7 +208,7 @@ describe('Builtin tools, HTTP transport', () => {
       description: 'made up search query',
       searchQuery: 'lorem ipsum dolor sit amet',
       contains: [
-        'No PatternFly resources found matching "lorem ipsum dolor sit amet"',
+        'No collection resources found matching "lorem ipsum dolor sit amet"',
         'Use a search all'
       ]
     },

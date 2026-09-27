@@ -11,7 +11,7 @@ exports[`searchPatternFlyDocsTool should have a consistent return structure: str
 exports[`searchPatternFlyDocsTool, callback should have a specific markdown format: Button 1`] = `
 [
   {
-    "text": "# Search results for PatternFly version "v6" and "button". Showing 1 exact match.
+    "text": "# Search results for "button". Showing 1 exact match.
 1. **button**:
   "usePatternFlyDocs" resource parameter "name" and "URLs"
     - **Name**: button
@@ -34,6 +34,6 @@ exports[`searchPatternFlyDocsTool, callback should have a specific markdown form
 ]
 `;
 
-exports[`searchPatternFlyDocsTool, callback should parse parameters, exact match 1`] = `"# Search results for PatternFly version "v6" and "button". Showing 1 exact match."`;
+exports[`searchPatternFlyDocsTool, callback should parse parameters, exact match 1`] = `"# Search results for "button". Showing 1 exact match."`;
 
-exports[`searchPatternFlyDocsTool, callback should parse parameters, wildcard search 1`] = `"# Search results for PatternFly version "v6" and "all" resources. Only showing the first 1 results. There are 50 potential match variations. Try searching with a more specific query."`;
+exports[`searchPatternFlyDocsTool, callback should parse parameters, wildcard search 1`] = `"# Search results for "all" resources. Only showing the first 1 results. There are 50 potential match variations. Try searching with a more specific query."`;
