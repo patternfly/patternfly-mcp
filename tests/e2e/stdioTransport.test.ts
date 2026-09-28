@@ -463,7 +463,7 @@ describe('Builtin resources, STDIO', () => {
     const content = response?.result.contents[0];
 
     expect(content.uri).toBe(uri);
-    expect(content.text).toContain('PatternFly Documentation Index');
+    expect(content.text).toContain('Documentation Index');
   });
 
   it('should read a doc through a template', async () => {

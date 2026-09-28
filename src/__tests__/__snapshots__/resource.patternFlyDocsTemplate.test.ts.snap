@@ -9,6 +9,7 @@ exports[`patternFlyDocsTemplateResource should have a consistent return structur
     "_callbacks": {
       "complete": {
         "category": [Function],
+        "collection": [Function],
         "name": [Function],
         "section": [Function],
         "version": [Function],
@@ -33,11 +34,12 @@ exports[`patternFlyDocsTemplateResource should have a consistent return structur
             "version",
             "category",
             "section",
+            "collection",
           ],
           "operator": "?",
         },
       ],
-      "template": "patternfly://docs/{name}{?version,category,section}",
+      "template": "patternfly://docs/{name}{?version,category,section,collection}",
     },
   },
 }

@@ -83,8 +83,8 @@ interface PatternFlyMcpComponentNames {
 type PatternFlyMcpDocsMeta = {
   id: string;
   groupId: string;
-  collection?: string;
-  displayCollection?: string;
+  collection: string;
+  displayCollection: string;
   name: string;
   displayCategory: string;
   uri: string;
@@ -116,6 +116,13 @@ type PatternFlyMcpResourcesByPath = {
  */
 type PatternFlyMcpResourcesByUri = {
   [uri: string]: (PatternFlyMcpDocsCatalogDoc & PatternFlyMcpDocsMeta)[];
+};
+
+/**
+ * PatternFly resources by collection with a list of entries.
+ */
+type PatternFlyMcpResourcesByCollection = {
+  [collection: string]: (PatternFlyMcpDocsCatalogDoc & PatternFlyMcpDocsMeta)[];
 };
 
 /**
@@ -180,6 +187,7 @@ type PatternFlyMcpResourceMetadata = {
  * @property pathIndex - Patternfly documentation path->name map for helping refine search results.
  * @property uriIndex - Patternfly documentation uri->name map for helping refine search results.
  * @property hashIndex - Patternfly documentation hash->name map for helping refine search results.
+ * @property byCollection - Patternfly documentation by collection with a list of entries.
  * @property byPath - Patternfly documentation by path with entries
  * @property byUri - `@deprecated Under review. Use uriIndex`. Patternfly documentation by uri with entries
  * @property byVersion - Patternfly documentation by version with entries
@@ -198,6 +206,7 @@ interface PatternFlyMcpAvailableResources extends PatternFlyVersionContext {
   pathIndex: Map<string, string>;
   uriIndex: Map<string, string>;
   hashIndex: Map<string, string>;
+  byCollection: PatternFlyMcpResourcesByCollection;
   byPath: PatternFlyMcpResourcesByPath;
   byUri: PatternFlyMcpResourcesByUri;
   byVersion: PatternFlyMcpResourcesByVersion;
@@ -519,6 +528,7 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
   const byPath: PatternFlyMcpResourcesByPath = {};
   const byUri: PatternFlyMcpResourcesByUri = {};
   const byVersion: PatternFlyMcpResourcesByVersion = {};
+  const byCollection: PatternFlyMcpResourcesByCollection = {};
   const pathIndexMap = new Map<string, string>();
   const uriIndexMap = new Map<string, string>();
   const hashIndexMap = new Map<string, string>();
@@ -638,6 +648,9 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
         byUri[uriSchemas]?.push(extendedEntry);
       }
 
+      byCollection[collection] ??= [];
+      byCollection[collection]?.push(extendedEntry);
+
       byVersion[version] ??= [];
       byVersion[version]?.push(extendedEntry);
 
@@ -676,6 +689,10 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
     entries.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
   });
 
+  Object.entries(byCollection).forEach(([_collection, entries]) => {
+    entries.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+  });
+
   const filteredKeywords = filterKeywords(rawKeywordsMap);
 
   Object.values(versionsByCollection).forEach(list =>
@@ -700,6 +717,7 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
     pathIndex: pathIndexMap,
     uriIndex: uriIndexMap,
     hashIndex: hashIndexMap,
+    byCollection,
     byPath,
     // @deprecated byUri - Under review
     byUri,
@@ -843,6 +861,7 @@ export {
   type PatternFlyMcpResourceMetadata,
   type PatternFlyMcpDocsMeta,
   type PatternFlyMcpResources,
+  type PatternFlyMcpResourcesByCollection,
   type PatternFlyMcpResourcesByPath,
   type PatternFlyMcpResourcesByUri,
   type PatternFlyMcpResourcesByVersion

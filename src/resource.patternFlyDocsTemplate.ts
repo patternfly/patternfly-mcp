@@ -3,18 +3,21 @@ import { ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js';
 import { type McpResource, type McpResourceMetadataComplete } from './mcpSdk';
 import { processDocsFunction } from './server.getResources';
 import { stringJoin } from './server.helpers';
-import { assertInput, assertInputStringLength } from './server.assertions';
+import { assertInput, assertInputStringLength, assertInputStringNumberEnumLike } from './server.assertions';
 import { getOptions, runWithOptions } from './options.context';
 import { getPatternFlyMcpResources } from './patternFly.getResources';
-import { normalizeEnumeratedPatternFlyVersion } from './patternFly.helpers';
 import { filterPatternFly } from './patternFly.search';
 import {
+  uriCollectionComplete,
   uriCategoryComplete,
   uriNameComplete,
   uriSectionComplete,
   uriVersionComplete
 } from './resource.patternFlyDocsIndex';
-import { formatContentForMarkdown } from './resource.helpers';
+import {
+  formatContentForMarkdown,
+  normalizeEnumeratedCollectionVersion
+} from './resource.helpers';
 
 /**
  * Name of the resource template.
@@ -24,12 +27,12 @@ const NAME = 'patternfly-docs-template';
 /**
  * URI template for the resource.
  */
-const URI_TEMPLATE = 'patternfly://docs/{name}{?version,category,section}';
+const URI_TEMPLATE = 'patternfly://docs/{name}{?version,category,section,collection}';
 
 /**
  * URI description for the resource.
  */
-const URI_DESCRIPTION = `Filter by PatternFly version, category, and section. ${URI_TEMPLATE}`;
+const URI_DESCRIPTION = `Filter by PatternFly version, category, section, and collection. ${URI_TEMPLATE}`;
 
 /**
  * Resource configuration.
@@ -49,16 +52,32 @@ const CONFIG = {
  * @returns The resource contents.
  */
 const resourceCallback = async (passedUri: URL, variables: Record<string, string | string[]>, options = getOptions()) => {
-  const { category, name, section, version } = variables || {};
+  const { category, collection, name, section, version } = variables || {};
 
   assertInputStringLength(name, {
     ...options.minMax.inputStrings,
     inputDisplayName: 'name'
   });
 
+  if (collection) {
+    assertInputStringLength(collection, {
+      ...options.minMax.inputStrings,
+      inputDisplayName: 'collection'
+    });
+  }
+
   if (version) {
     assertInputStringLength(version, {
-      ...options.minMax.inputStrings,
+      max: options.minMax.inputStrings.max,
+      min: 2,
+      inputDisplayName: 'version'
+    });
+  }
+
+  const { collectionVersions } = await getPatternFlyMcpResources.memo();
+
+  if (version) {
+    assertInputStringNumberEnumLike(version, collectionVersions, {
       inputDisplayName: 'version'
     });
   }
@@ -77,18 +96,12 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
     });
   }
 
-  const { availableVersions, latestVersion } = await getPatternFlyMcpResources.memo();
-  const normalizedVersion = await normalizeEnumeratedPatternFlyVersion.memo(version);
-
-  assertInput(
-    !version || Boolean(normalizedVersion),
-    `Invalid PatternFly version "${version?.trim()}". Available versions are: ${availableVersions.join(', ')}`
-  );
-
-  const updatedVersion = normalizedVersion || latestVersion;
+  const normalizedVersion = await normalizeEnumeratedCollectionVersion.memo(version, collection);
+  const updatedVersion = normalizedVersion || (version && String(version).trim()) || undefined;
   const updatedName = name.trim();
 
   const { byEntry } = await filterPatternFly.memo({
+    collection,
     version: updatedVersion,
     name: updatedName,
     category,
@@ -100,9 +113,10 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
     () => {
       let suggestionMessage = '';
 
-      if (version || category || section) {
+      if (version || category || section || collection) {
         const variableList = [
           (version && 'version') || undefined,
+          (collection && 'collection') || undefined,
           (category && 'category') || undefined,
           (section && 'section') || undefined
         ].filter(Boolean).join(', ');
@@ -149,9 +163,10 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
     () => {
       let suggestionMessage = '';
 
-      if (version || category || section) {
+      if (version || category || section || collection) {
         const variableList = [
           (version && 'version') || undefined,
+          (collection && 'collection') || undefined,
           (category && 'category') || undefined,
           (section && 'section') || undefined
         ].filter(Boolean).join(', ');
@@ -198,6 +213,7 @@ const patternFlyDocsTemplateResource = (options = getOptions()): McpResource => 
 
   const complete: { [callback: string]: McpResourceMetadataComplete } = {
     category: async (...args) => runWithOptions(options, async () => uriCategoryComplete.memo(...args)),
+    collection: async (...args) => runWithOptions(options, async () => uriCollectionComplete.memo(...args)),
     name: async (...args) => runWithOptions(options, async () => uriNameComplete.memo(...args)),
     section: async (...args) => runWithOptions(options, async () => uriSectionComplete.memo(...args)),
     version: async (...args) => runWithOptions(options, async () => uriVersionComplete.memo(...args))
