@@ -12,6 +12,7 @@ import { patternFlySchemasTemplateResource } from './resource.patternFlySchemasT
 import { patternFlyDocsCollection } from './collection.patternFlyDocs';
 import { patternFlySchemasCollection } from './collection.patternFlySchemas';
 import { patternFlyApiCollection } from './collection.patternFlyApi';
+import { aiHandbookCollection } from './collection.aiHandbook';
 
 /**
  * Built-in tools.
@@ -46,7 +47,8 @@ const builtinResources: McpResourceCreator[] = [
 const builtinCollections: McpCollectionCreator[] = [
   patternFlyDocsCollection,
   patternFlySchemasCollection,
-  patternFlyApiCollection
+  patternFlyApiCollection,
+  aiHandbookCollection
 ];
 
 export { builtinCollections, builtinResources, builtinTools };
