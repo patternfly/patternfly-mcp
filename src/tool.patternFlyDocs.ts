@@ -278,7 +278,7 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
         name: z.string().max(options.minMax.inputStrings.max)
           .optional().describe('The name of a PatternFly component or patternfly:// URI resource to fetch documentation for (e.g., "Button", "patternfly://docs/Button")'),
         version: z.string()
-          .optional().describe(`Filter results by a specific PatternFly version (e.g. "v5", "v6")`)
+          .optional().describe(`Filter results by a specific collection version (e.g. "v5", "v6")`)
       }
     },
     callback,
