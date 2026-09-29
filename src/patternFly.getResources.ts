@@ -17,7 +17,7 @@ import {
   type PatternFlyMcpDocsCatalogDoc
 } from './docs.embedded';
 import {
-  onUpdateServerRecordsRegistry,
+  onUpdateServerCollectionsRegistry,
   type McpCollectionResult,
   type RegisterCollectionItem
 } from './collections';
@@ -741,7 +741,7 @@ const setPatternFlyCollection = async (
  * @note We don't need to use the `replay` option here, all of PF collections we need are `required`
  * currently, any future updates to this logic may consider adding the `replay` option.
  */
-onUpdateServerRecordsRegistry(({ name, response, error }: RegisterCollectionItem) => {
+onUpdateServerCollectionsRegistry(({ name, response, error }: RegisterCollectionItem) => {
   if (name && response) {
     setPatternFlyCollection(name, response);
     log.info(`Update collection: ${name}`);

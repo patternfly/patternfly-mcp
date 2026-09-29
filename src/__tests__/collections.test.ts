@@ -1,8 +1,8 @@
 import {
   registerCollections,
   getServerCollectionsRegistry,
-  onUpdateServerRecordsRegistry,
-  setServerRecordsRegistry
+  onUpdateServerCollectionsRegistry,
+  setServerCollectionsRegistry
 } from '../collections';
 
 jest.mock('../logger', () => ({
@@ -32,7 +32,7 @@ describe('getServerCollectionsRegistry', () => {
   });
 
   it('should return a specific collection when called with a collection name', async () => {
-    await setServerRecordsRegistry({
+    await setServerCollectionsRegistry({
       name: 'hello',
       config: { title: 'Hello' },
       response: { records: [] } as any
@@ -45,7 +45,7 @@ describe('getServerCollectionsRegistry', () => {
   });
 });
 
-describe('onUpdateServerRecordsRegistry', () => {
+describe('onUpdateServerCollectionsRegistry', () => {
   beforeEach(() => {
     jest.useFakeTimers();
     const registry = getServerCollectionsRegistry() as Map<string, any>;
@@ -58,7 +58,7 @@ describe('onUpdateServerRecordsRegistry', () => {
   afterEach(() => jest.useRealTimers());
 
   it('should return a no-op unsubscribe when callback is not a function', () => {
-    const unsubscribe = onUpdateServerRecordsRegistry(null as any);
+    const unsubscribe = onUpdateServerCollectionsRegistry(null as any);
 
     expect(unsubscribe()).toBe(false);
   });
@@ -66,11 +66,11 @@ describe('onUpdateServerRecordsRegistry', () => {
   it('should not replay existing registry entries by default', async () => {
     const response = { records: [{ id: '1' }] } as any;
 
-    await setServerRecordsRegistry({ name: 'cached', response });
+    await setServerCollectionsRegistry({ name: 'cached', response });
 
     const handler = jest.fn();
 
-    onUpdateServerRecordsRegistry(handler);
+    onUpdateServerCollectionsRegistry(handler);
 
     await jest.runAllTimersAsync();
 
@@ -81,12 +81,12 @@ describe('onUpdateServerRecordsRegistry', () => {
     const docs = { records: [{ id: 'docs' }] } as any;
     const schemas = { records: [{ id: 'schemas' }] } as any;
 
-    await setServerRecordsRegistry({ name: 'patternfly-docs', response: docs });
-    await setServerRecordsRegistry({ name: 'patternfly-component-schemas', response: schemas });
+    await setServerCollectionsRegistry({ name: 'patternfly-docs', response: docs });
+    await setServerCollectionsRegistry({ name: 'patternfly-component-schemas', response: schemas });
 
     const handler = jest.fn();
 
-    onUpdateServerRecordsRegistry(handler, { replay: true });
+    onUpdateServerCollectionsRegistry(handler, { replay: true });
 
     await jest.runAllTimersAsync();
 
@@ -108,7 +108,7 @@ describe('onUpdateServerRecordsRegistry', () => {
   it('should replay configuration when enabled', async () => {
     const docs = { records: [{ id: 'docs' }] } as any;
 
-    await setServerRecordsRegistry({
+    await setServerCollectionsRegistry({
       name: 'patternfly-docs',
       config: { title: 'PatternFly Docs' },
       response: docs
@@ -116,7 +116,7 @@ describe('onUpdateServerRecordsRegistry', () => {
 
     const handler = jest.fn();
 
-    onUpdateServerRecordsRegistry(handler, { replay: true });
+    onUpdateServerCollectionsRegistry(handler, { replay: true });
 
     await jest.runAllTimersAsync();
 
@@ -131,17 +131,17 @@ describe('onUpdateServerRecordsRegistry', () => {
   it('should attempt to fire the callback again after replay on a subsequent update', async () => {
     const response = { records: [{ id: '1' }] } as any;
 
-    await setServerRecordsRegistry({ name: 'repeatable', response });
+    await setServerCollectionsRegistry({ name: 'repeatable', response });
 
     const handler = jest.fn();
 
-    onUpdateServerRecordsRegistry(handler, { replay: true });
+    onUpdateServerCollectionsRegistry(handler, { replay: true });
 
     await jest.runAllTimersAsync();
 
     expect(handler).toHaveBeenCalledTimes(1);
 
-    await setServerRecordsRegistry({ name: 'repeatable', response });
+    await setServerCollectionsRegistry({ name: 'repeatable', response });
 
     expect(handler).toHaveBeenCalledTimes(2);
   });
@@ -159,7 +159,7 @@ describe('get, set, update the server records registry', () => {
   it('should return a specific collection by name when available', async () => {
     const response = { records: [{ id: '1', sourceId: 's', sourceType: 'local' }] } as any;
 
-    await setServerRecordsRegistry({ name: 'hello', response });
+    await setServerCollectionsRegistry({ name: 'hello', response });
 
     expect(getServerCollectionsRegistry({ collectionName: 'hello' }))
       .toEqual(expect.objectContaining({ response }));
@@ -169,16 +169,16 @@ describe('get, set, update the server records registry', () => {
 
   it('should register and unregister listeners correctly', async () => {
     const handler = jest.fn();
-    const unsubscribe = onUpdateServerRecordsRegistry(handler);
+    const unsubscribe = onUpdateServerCollectionsRegistry(handler);
 
-    await setServerRecordsRegistry({ name: 'ipsum', response: { records: [] } as any });
+    await setServerCollectionsRegistry({ name: 'ipsum', response: { records: [] } as any });
 
     expect(handler).toHaveBeenCalledWith({ name: 'ipsum', response: { records: [] }, error: undefined });
 
     expect(unsubscribe()).toBe(true);
     expect(unsubscribe()).toBe(false);
 
-    await setServerRecordsRegistry({ name: 'ipsum', response: { records: [] } as any });
+    await setServerCollectionsRegistry({ name: 'ipsum', response: { records: [] } as any });
     expect(handler).toHaveBeenCalledTimes(1);
   });
 
@@ -186,22 +186,22 @@ describe('get, set, update the server records registry', () => {
     const faulty = jest.fn().mockRejectedValue(new Error('lorem ipsum'));
     const good = jest.fn();
 
-    onUpdateServerRecordsRegistry(faulty);
-    onUpdateServerRecordsRegistry(good);
+    onUpdateServerCollectionsRegistry(faulty);
+    onUpdateServerCollectionsRegistry(good);
 
-    await setServerRecordsRegistry({ name: 'sit', response: { records: [] } as any });
+    await setServerCollectionsRegistry({ name: 'sit', response: { records: [] } as any });
     expect(good).toHaveBeenCalled();
   });
 
   it('should store records when name and response are provided', async () => {
-    await setServerRecordsRegistry({ name: 'lorem-ipsum', response: { records: [{ id: 'x' }] } as any });
+    await setServerCollectionsRegistry({ name: 'lorem-ipsum', response: { records: [{ id: 'x' }] } as any });
 
     expect(getServerCollectionsRegistry({ collectionName: 'lorem-ipsum' }))
       .toEqual(expect.objectContaining({ response: { records: [{ id: 'x' }] } }));
   });
 
   it('should store plugin-visible config when provided with records', async () => {
-    await setServerRecordsRegistry({
+    await setServerCollectionsRegistry({
       name: 'meta-collection',
       config: { title: 'My Collection' },
       response: { records: [] } as any
@@ -214,9 +214,9 @@ describe('get, set, update the server records registry', () => {
   it('should not store or notify when response is missing', async () => {
     const listener = jest.fn();
 
-    onUpdateServerRecordsRegistry(listener);
+    onUpdateServerCollectionsRegistry(listener);
 
-    await setServerRecordsRegistry({ name: 'dolor' });
+    await setServerCollectionsRegistry({ name: 'dolor' });
 
     expect(getServerCollectionsRegistry({ collectionName: 'dolor' })).toBeUndefined();
     expect(listener).not.toHaveBeenCalled();
@@ -267,7 +267,7 @@ describe('registerCollections', () => {
     await expect(registerCollections(collections)).resolves.not.toThrow();
   });
 
-  it('should immediately hydrate serverRecordsRegistry when config.initial is provided', async () => {
+  it('should immediately hydrate serverCollectionsRegistry when config.initial is provided', async () => {
     const initialRecords = [{ id: 'init-1', sourceId: 'local', sourceType: 'api' }] as any;
     let resolveHandler: (res: any) => void;
     const asyncPromise = new Promise(resolve => {
@@ -281,7 +281,7 @@ describe('registerCollections', () => {
 
     const registrationPromise = registerCollections(collections);
 
-    // Immediate check: serverRecordsRegistry has initial records before handler finishes
+    // Immediate check: serverCollectionsRegistry has initial records before handler finishes
     expect(getServerCollectionsRegistry({ collectionName: 'dual-phase-collection' }))
       .toEqual(expect.objectContaining({ response: { records: initialRecords } }));
 
