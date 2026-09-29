@@ -494,18 +494,14 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
   const availableCollections = new Map<string, string>();
 
   // Apply a collection name for records.
-  const setCollectionName = (id: string, collection: PatternFlyMcpCollectionRegistryEntry | undefined) => {
-    if (!collection) {
-      return [];
-    }
+  const setCollectionName = (id: string, collection: PatternFlyMcpCollectionRegistryEntry | undefined) =>
+    (collection?.response?.records || []).flatMap(({ data }) => {
+      const collectionName = collection?.name || id;
 
-    const collectionName = collection?.name || id;
+      availableCollections.set(collectionName, collection?.config?.title || collectionName);
 
-    availableCollections.set(collectionName, collection?.config?.title || collectionName);
-
-    return (collection?.response?.records || []).flatMap(({ data }) =>
-      Object.entries(data as Record<string, PatternFlyMcpDocsCatalogDoc[]>).map(entry => [...entry, collectionName] as const));
-  };
+      return Object.entries(data as Record<string, PatternFlyMcpDocsCatalogDoc[]>).map(entry => [...entry, collectionName] as const);
+    });
 
   const catalog = [
     ...setCollectionName('patternfly-docs', originalDocs),
