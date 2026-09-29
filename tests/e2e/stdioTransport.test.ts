@@ -182,9 +182,9 @@ describe('Builtin tools, STDIO', () => {
       ]
     },
     {
-      description: 'explicit version search',
+      description: 'explicit collection search',
       searchQuery: 'Button',
-      version: 'v6',
+      collection: 'patternfly-docs',
       contains: [
         '# Search results for "Button". Showing',
         '**button**',
@@ -274,12 +274,12 @@ describe('Builtin tools, STDIO', () => {
         'Use a search all'
       ]
     }
-  ])('should perform searchPatternFlyDocs: $description', async ({ searchQuery, version, contains }) => {
+  ])('should perform searchPatternFlyDocs: $description', async ({ searchQuery, collection, contains }) => {
     const req = {
       method: 'tools/call',
       params: {
         name: 'searchPatternFlyDocs',
-        arguments: version ? { searchQuery, version } : { searchQuery }
+        arguments: collection ? { searchQuery, collection } : { searchQuery }
       }
     };
 
