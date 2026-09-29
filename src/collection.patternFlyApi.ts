@@ -365,7 +365,10 @@ const crawler = async (
     return [];
   }
 
-  const settled = await processDocsFunction(uniqueUrls) || [];
+  const settled = await processDocsFunction(
+    uniqueUrls, { loadLimit: 200, parallelLoadLimit: 15, parallelLoadThrottleMs: 75 }
+  ) || [];
+
   const content: ApiCrawler[] = [];
 
   for (const res of settled) {

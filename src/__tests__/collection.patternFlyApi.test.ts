@@ -445,7 +445,8 @@ describe('crawler', () => {
     // It should have called for sub-item AND default componentPaths (props, css)
     // but my mock returns 'leaf' for everything else
     expect(res.length).toBeGreaterThanOrEqual(1);
-    expect(mockedProcessDocsFunction).toHaveBeenCalledWith(['https://api.com/v1']);
+    expect(mockedProcessDocsFunction)
+      .toHaveBeenCalledWith(expect.arrayContaining(['https://api.com/v1']), expect.objectContaining({}));
   });
 
   it('aborts crawling early when signal is aborted', async () => {

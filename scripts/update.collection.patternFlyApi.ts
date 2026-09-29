@@ -4,29 +4,132 @@ import { fileURLToPath } from 'node:url';
 import {
   apiSpider,
   contentMetadata,
+  type ApiContent,
   type ApiCrawler,
   type ApiEmbedded,
   type ApiEmbeddedCollection
 } from '../src/collection.patternFlyApi';
-import { getOptions, runWithOptions } from '../src/options.context';
+import { getSessionOptions, getOptions, runWithOptions } from '../src/options.context';
+import { createLogger } from '../src/logger';
+import { type LoggingSession } from '../src/options.defaults';
 
 /**
- * Create a light diff report between old and new collections.
+ * Reason classification for omitted or removed API records.
+ */
+type RemovalReason =
+  'lacks quality' |
+  'empty response' |
+  'loading error' |
+  'deferred category' |
+  'upstream removed';
+
+/**
+ * Entry describing a removed record with its determined reason and details.
+ */
+interface RemovedRecordReport {
+  record: ApiEmbedded;
+  reason: RemovalReason;
+  details?: string;
+}
+
+/**
+ * Entry describing a modified record and the changed fields.
+ */
+interface ModifiedRecordReport {
+  record: ApiEmbedded;
+  reasons: string[];
+}
+
+/**
+ * Create a diff report with annotated reasons between old and new collections.
  *
  * @param oldRecords - Previous collection
  * @param newRecords - Updated collection
+ * @param crawledMap - Map of all crawled entries and evaluated metadata
  */
-const diffCollections = (oldRecords: ApiEmbedded[], newRecords: ApiEmbedded[]) => {
+const diffCollections = (
+  oldRecords: ApiEmbedded[],
+  newRecords: ApiEmbedded[],
+  crawledMap: Map<string, { entry: ApiCrawler; metadata: ApiContent }>
+) => {
   const oldMap = new Map(oldRecords.map(record => [record.p, record]));
   const newMap = new Map(newRecords.map(record => [record.p, record]));
 
   const added = newRecords.filter(record => !oldMap.has(record.p));
-  const removed = oldRecords.filter(record => !newMap.has(record.p));
-  const modified = newRecords.filter(record => {
+
+  const removed: RemovedRecordReport[] = [];
+
+  for (const oldRecord of oldRecords) {
+    if (newMap.has(oldRecord.p)) {
+      continue;
+    }
+
+    const crawled = crawledMap.get(oldRecord.p);
+
+    if (!crawled) {
+      removed.push({
+        record: oldRecord,
+        reason: 'upstream removed',
+        details: 'Endpoint no longer referenced upstream'
+      });
+    } else if (!crawled.entry.content || crawled.entry.content.trim() === '' || crawled.entry.content === '{}' || crawled.entry.content === '[]') {
+      removed.push({
+        record: oldRecord,
+        reason: 'empty response',
+        details: 'Empty payload returned'
+      });
+    } else if (crawled.metadata.isDeferred) {
+      removed.push({
+        record: oldRecord,
+        reason: 'deferred category',
+        details: `Category '${crawled.metadata.category}' is deferred`
+      });
+    } else if (crawled.metadata.isLowQuality || crawled.entry.qualityScore < 0.95) {
+      removed.push({
+        record: oldRecord,
+        reason: 'lacks quality',
+        details: `Evaluated Q: ${crawled.entry.qualityScore} < 0.95 threshold`
+      });
+    } else {
+      removed.push({
+        record: oldRecord,
+        reason: 'lacks quality',
+        details: `Evaluated Q: ${crawled.entry.qualityScore}`
+      });
+    }
+  }
+
+  const modified: ModifiedRecordReport[] = [];
+
+  for (const record of newRecords) {
     const prev = oldMap.get(record.p);
 
-    return prev && (prev.q !== record.q || prev.n !== record.n || prev.d !== record.d || prev.c !== record.c);
-  });
+    if (!prev) {
+      continue;
+    }
+
+    const reasons: string[] = [];
+
+    if (prev.q !== record.q) {
+      reasons.push(`quality score (${prev.q} -> ${record.q})`);
+    }
+
+    if (prev.n !== record.n) {
+      reasons.push(`name ("${prev.n}" -> "${record.n}")`);
+    }
+
+    if (prev.d !== record.d) {
+      reasons.push('description updated');
+    }
+
+    if (prev.c !== record.c) {
+      reasons.push(`content-type (${prev.c} -> ${record.c})`);
+    }
+
+    if (reasons.length > 0) {
+      modified.push({ record, reasons });
+    }
+  }
 
   return { added, removed, modified };
 };
@@ -59,16 +162,20 @@ const diffReport = (diff: ReturnType<typeof diffCollections>) => {
 
   if (removed.length > 0) {
     console.log(`   ➖ Removed (${removed.length}):`);
-    removed.slice(0, 10).forEach(record => console.log(`      - ${record.p}`));
+    removed.slice(0, 15).forEach(({ record, reason, details }) => {
+      console.log(`      - ${record.p} (Previous Q: ${record.q}) [Reason: ${reason}${details ? ` — ${details}` : ''}]`);
+    });
 
-    if (removed.length > 10) {
-      console.log(`      ... and ${removed.length - 10} more`);
+    if (removed.length > 15) {
+      console.log(`      ... and ${removed.length - 15} more`);
     }
   }
 
   if (modified.length > 0) {
     console.log(`   🔄 Modified (${modified.length}):`);
-    modified.slice(0, 10).forEach(record => console.log(`      ~ ${record.p} (Q: ${record.q})`));
+    modified.slice(0, 10).forEach(({ record, reasons }) => {
+      console.log(`      ~ ${record.p} [${reasons.join(', ')}]`);
+    });
 
     if (modified.length > 10) {
       console.log(`      ... and ${modified.length - 10} more`);
@@ -89,6 +196,13 @@ const run = async (
     filterLowQualityRecords = false
   }: { isPrettyPrint?: boolean; filterLowQualityRecords?: boolean; } = {}
 ) => {
+  // 1. Enable stderr logging so all diagnostics_channel logs (debug, info, warn, error) are printed
+  const unsubscribeLogger = createLogger({
+    channelName: getSessionOptions().channelName,
+    stderr: true,
+    level: 'debug'
+  } as LoggingSession);
+
   console.log('🚀 Generating PatternFly API embedded collection...');
   const keepAlive = setTimeout(() => {}, 86_400_000);
 
@@ -105,16 +219,18 @@ const run = async (
     }
 
     const recordsMap = new Map<string, ApiEmbedded>();
+    const crawledMap = new Map<string, { entry: ApiCrawler; metadata: ApiContent }>();
 
     for (const entry of entries) {
       // Generate full metadata using the shared contentMetadata function
       const metadata = contentMetadata(entry, options);
+      const relativePath = metadata.path.replace(base, '').replace(/^\//, '');
+
+      crawledMap.set(relativePath, { entry, metadata });
 
       if (filterLowQualityRecords && (metadata.isDeferred || metadata.isLowQuality)) {
         continue;
       }
-
-      const relativePath = metadata.path.replace(base, '').replace(/^\//, '');
 
       if (recordsMap.has(relativePath)) {
         continue;
@@ -162,9 +278,10 @@ const run = async (
     console.log(`   - File Size: ${sizeKb} KB`);
     console.log(`   - Time Elapsed: ${durationSec}s`);
 
-    diffReport(diffCollections(oldRecords, records));
+    diffReport(diffCollections(oldRecords, records, crawledMap));
   } finally {
     clearTimeout(keepAlive);
+    unsubscribeLogger();
   }
 };
 
@@ -175,3 +292,9 @@ run({ isPrettyPrint: true, filterLowQualityRecords: true }).catch(error => {
   console.error('❌ Failed to update API collection:', error);
   process.exit(1);
 });
+
+export {
+  type ModifiedRecordReport,
+  type RemovalReason,
+  type RemovedRecordReport
+};

@@ -541,7 +541,7 @@ const PATTERNFLY_OPTIONS: PatternFlyOptions = {
     traversalPaths: [
       'examples'
     ],
-    timeoutMs: 300_000, // 5 minutes
+    timeoutMs: 1_200_000, // 20 minutes
     schedule: {
       continueOnError: true,
       intervalMs: 24 * 60 * 60 * 1000 * 7, // 7 days
