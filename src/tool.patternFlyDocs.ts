@@ -72,8 +72,7 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
 
     if (isVersion) {
       assertInputStringLength(version, {
-        max: options.minMax.inputStrings.max,
-        min: 2,
+        ...options.minMax.inputStrings,
         inputDisplayName: 'version'
       });
 

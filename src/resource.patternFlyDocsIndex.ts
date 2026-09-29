@@ -38,7 +38,7 @@ const CONFIG = {
 };
 
 /**
- * List resources callback for the URI template by available versions only.
+ * List resources callback for the URI template by documentation collection.
  *
  * @note It's important to keep lists focused and concise, avoid listing all resources.
  *
@@ -202,8 +202,7 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
 
   if (version) {
     assertInputStringLength(version, {
-      max: options.minMax.inputStrings.max,
-      min: 2,
+      ...options.minMax.inputStrings,
       inputDisplayName: 'version'
     });
   }

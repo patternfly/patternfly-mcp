@@ -68,8 +68,7 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
 
   if (version) {
     assertInputStringLength(version, {
-      max: options.minMax.inputStrings.max,
-      min: 2,
+      ...options.minMax.inputStrings,
       inputDisplayName: 'version'
     });
   }
