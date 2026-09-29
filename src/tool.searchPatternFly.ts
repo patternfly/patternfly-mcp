@@ -6,8 +6,7 @@ import { assertInput, assertInputStringLength, assertInputStringNumberEnumLike }
 import { findClosest } from './server.search';
 import { getOptions } from './options.context';
 import { searchPatternFly } from './patternFly.search';
-import { getPatternFlyMcpResources } from './patternFly.getResources';
-import { normalizeEnumeratedPatternFlyVersion } from './patternFly.helpers';
+import { getPatternFlyCollection, getPatternFlyMcpResources } from './patternFly.getResources';
 
 /**
  * searchPatternFly tool function
@@ -25,40 +24,35 @@ import { normalizeEnumeratedPatternFlyVersion } from './patternFly.helpers';
  */
 const searchPatternFlyTool = (options = getOptions()): McpTool => {
   const callback = async (args: any = {}) => {
-    const { query: searchQuery, version } = args;
-    const isVersion = typeof version === 'string' && version.length > 0;
+    const { collection, query: searchQuery } = args;
+    const isCollection = typeof collection === 'string' && collection.length > 0;
 
     assertInputStringLength(searchQuery, {
       ...options.minMax.inputStrings,
       inputDisplayName: 'query'
     });
 
-    if (isVersion) {
-      assertInputStringLength(version, {
-        max: options.minMax.inputStrings.max,
-        min: 2,
-        inputDisplayName: 'version'
-      });
+    const { collections } = await getPatternFlyMcpResources.memo();
 
-      assertInputStringNumberEnumLike(version, options.patternflyOptions.availableSearchVersions, {
-        inputDisplayName: 'version'
+    if (isCollection) {
+      assertInputStringNumberEnumLike(collection, collections, {
+        inputDisplayName: 'collection'
       });
     }
 
-    const { keywordsIndex, latestVersion } = await getPatternFlyMcpResources.memo();
-    const normalizedVersion = await normalizeEnumeratedPatternFlyVersion(version);
-    const updatedVersion = normalizedVersion || latestVersion;
+    const { keywordsIndex } = await getPatternFlyMcpResources.memo();
+    const updatedCollection = isCollection ? collection : undefined;
 
     const { isSearchWildCardAll, exactMatches, remainingMatches, searchResults, totalPotentialMatches } = await searchPatternFly.memo(
       searchQuery,
-      { version: updatedVersion },
+      { collection: updatedCollection },
       { allowWildCardAll: true, dynamicFilter: true, maxResults: options.minMax.toolSearches.max }
     );
 
     assertInput(
       !isSearchWildCardAll || (isSearchWildCardAll && searchResults.length > 0),
       stringJoin.newline(
-        `Internal Search Error: The server failed to retrieve PatternFly resources for query "${searchQuery}"`,
+        `Internal Search Error: The server failed to retrieve collection resources for query "${searchQuery}"`,
         'Ensure documentation resources are loaded or restart the server.'
       ),
       ErrorCode.InternalError
@@ -71,7 +65,7 @@ const searchPatternFlyTool = (options = getOptions()): McpTool => {
         content: [{
           type: 'text',
           text: stringJoin.filtered(
-            `No PatternFly resources found matching "${searchQuery}".`,
+            `No collection resources found matching "${searchQuery}".`,
             hint && `Try a search for "${hint}".`
           )
         }]
@@ -117,7 +111,8 @@ const searchPatternFlyTool = (options = getOptions()): McpTool => {
             name: `${record.displayName} - ${record.displayCategory} (${record.version})`,
             description: record.description,
             mimeType: 'text/markdown',
-            groupId: result.groupId
+            groupId: result.groupId,
+            primaryCollection: record.collection
           });
         }
 
@@ -216,9 +211,7 @@ const searchPatternFlyTool = (options = getOptions()): McpTool => {
       return (a.name as string).localeCompare(b.name as string);
     });
 
-    const summaryTitlePatternFly = updatedVersion
-      ? `Search results for PatternFly version "${updatedVersion}" and`
-      : `Search results for`;
+    const summaryTitlePatternFly = `Search results for`;
 
     const totalCollectionsRecords = numberCollections + numberRecords;
     const basePluralResource = totalCollectionsRecords === 1 ? 'resource' : 'resources';
@@ -260,18 +253,23 @@ const searchPatternFlyTool = (options = getOptions()): McpTool => {
     };
   };
 
+  const getCollections: string[] = Object.keys(getPatternFlyCollection() || {});
+  const availableCollections = getCollections.length ? getCollections : ['patternfly-docs', 'patternfly-component-schemas', 'patternfly-api'];
+
   return [
     'searchPatternFly',
     {
-      description: `Search PatternFly components, documentation, guidelines, and resource links by keywords or '*' for all.`,
+      description: `Search ${
+        availableCollections.length > 1 ? 'collections, ' : ''
+      }components, documentation, guidelines, versions, and resource links by keywords or '*' for all.`,
       inputSchema: {
         query: z.string()
           .min(options.minMax.inputStrings.min)
           .max(options.minMax.inputStrings.max)
-          .describe('Case-insensitive, full or partial keyword query (e.g., "button", "react", "*")'),
-        version: z.enum(options.patternflyOptions.availableSearchVersions)
+          .describe('Case-insensitive query for full or partial keywords, resource names, versions and more (e.g., "button", "card v6", "react", "*")'),
+        collection: z.string()
           .optional()
-          .describe(`Filter results by a specific PatternFly version (e.g. ${options.patternflyOptions.availableSearchVersions.map(value => `"${value}"`).join(', ')})`)
+          .describe(`Filter results by a primary collection of records (e.g. ${availableCollections.map(value => `"${value}"`).join(', ')})`)
       }
     },
     callback,

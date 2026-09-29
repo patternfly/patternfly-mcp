@@ -62,6 +62,8 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
       }
     }
 
+    const { collectionVersions } = await getPatternFlyMcpResources.memo();
+
     if (isVersion) {
       assertInputStringLength(version, {
         max: options.minMax.inputStrings.max,
@@ -69,15 +71,15 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
         inputDisplayName: 'version'
       });
 
-      assertInputStringNumberEnumLike(version, options.patternflyOptions.availableSearchVersions, {
+      assertInputStringNumberEnumLike(version, collectionVersions, {
         inputDisplayName: 'version'
       });
     }
 
     const updatedUrlList: string[] = isUrlList ? urlList.slice(0, options.minMax.docsToLoad.max) : [];
-    const { latestVersion, latestSchemasVersion, byPath } = await getPatternFlyMcpResources.memo();
+    const { latestSchemasVersion, byPath } = await getPatternFlyMcpResources.memo();
     const normalizedVersion = await normalizeEnumeratedPatternFlyVersion(version);
-    const updatedVersion = normalizedVersion || latestVersion;
+    const updatedVersion = normalizedVersion || (isVersion && version) || undefined;
     const updatedName = name?.trim();
 
     const pfUris: string[] = [];
@@ -126,7 +128,7 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
     const docResults: string[] = [];
 
     const addSchemaResult = async (
-      { name: componentName, displayName, version }: { name: string; displayName: string; version: string }
+      { name: componentName, displayName, version }: { name: string; displayName: string; version?: string | undefined }
     ) => {
       if (schemasSeen.has(componentName)) {
         return;
@@ -137,7 +139,7 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
 
       if (schema) {
         schemaResults.push(stringJoin.newline(
-          `# Component Schema for ${displayName} (${version})`,
+          `# Component Schema for ${displayName}${version ? ` (${version})` : ''}`,
           `This machine-readable JSON schema defines the component's props, types, and validation rules.`,
           '```json',
           JSON.stringify(schema, null, 2),
@@ -269,7 +271,7 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
           .optional().describe(`The list of patternfly:// URIs or URLs to fetch the documentation from (max ${options.minMax.docsToLoad.max} at a time)`),
         name: z.string().max(options.minMax.inputStrings.max)
           .optional().describe('The name of a PatternFly component or patternfly:// URI resource to fetch documentation for (e.g., "Button", "patternfly://docs/Button")'),
-        version: z.enum(options.patternflyOptions.availableSearchVersions)
+        version: z.string()
           .optional().describe(`Filter results by a specific PatternFly version (e.g. ${options.patternflyOptions.availableSearchVersions.map(value => `"${value}"`).join(', ')})`)
       }
     },

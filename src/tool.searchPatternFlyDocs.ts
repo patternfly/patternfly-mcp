@@ -6,8 +6,10 @@ import { assertInput, assertInputStringLength, assertInputStringNumberEnumLike }
 import { findClosest } from './server.search';
 import { getOptions } from './options.context';
 import { searchPatternFly } from './patternFly.search';
-import { getPatternFlyMcpResources } from './patternFly.getResources';
-import { normalizeEnumeratedPatternFlyVersion } from './patternFly.helpers';
+import {
+  getPatternFlyCollection,
+  getPatternFlyMcpResources
+} from './patternFly.getResources';
 
 /**
  * searchPatternFlyDocs tool function
@@ -24,40 +26,35 @@ import { normalizeEnumeratedPatternFlyVersion } from './patternFly.helpers';
  */
 const searchPatternFlyDocsTool = (options = getOptions()): McpTool => {
   const callback = async (args: any = {}) => {
-    const { searchQuery, version } = args;
-    const isVersion = typeof version === 'string' && version.length > 0;
+    const { searchQuery, collection } = args;
+    const isCollection = typeof collection === 'string' && collection.length > 0;
 
     assertInputStringLength(searchQuery, {
       ...options.minMax.inputStrings,
       inputDisplayName: 'searchQuery'
     });
 
-    if (isVersion) {
-      assertInputStringLength(version, {
-        max: options.minMax.inputStrings.max,
-        min: 2,
-        inputDisplayName: 'version'
-      });
+    const { collections } = await getPatternFlyMcpResources.memo();
 
-      assertInputStringNumberEnumLike(version, options.patternflyOptions.availableSearchVersions, {
-        inputDisplayName: 'version'
+    if (isCollection) {
+      assertInputStringNumberEnumLike(collection, collections, {
+        inputDisplayName: 'collection'
       });
     }
 
-    const { keywordsIndex, latestVersion } = await getPatternFlyMcpResources.memo();
-    const normalizedVersion = await normalizeEnumeratedPatternFlyVersion(version);
-    const updatedVersion = normalizedVersion || latestVersion;
+    const { keywordsIndex } = await getPatternFlyMcpResources.memo();
+    const updatedCollection = isCollection ? collection : undefined;
 
     const { isSearchWildCardAll, exactMatches, remainingMatches, searchResults, totalPotentialMatches } = await searchPatternFly.memo(
       searchQuery,
-      { version: updatedVersion },
+      { collection: updatedCollection },
       { allowWildCardAll: true, dynamicFilter: true, maxResults: options.minMax.toolSearches.max }
     );
 
     assertInput(
       !isSearchWildCardAll || (isSearchWildCardAll && searchResults.length > 0),
       stringJoin.newline(
-        `Internal Search Error: The server failed to retrieve PatternFly resources for query "${searchQuery}"`,
+        `Internal Search Error: The server failed to retrieve collection resources for query "${searchQuery}"`,
         'Ensure documentation resources are loaded or restart the server.'
       ),
       ErrorCode.InternalError
@@ -71,7 +68,7 @@ const searchPatternFlyDocsTool = (options = getOptions()): McpTool => {
           type: 'text',
           text: stringJoin.newlineFiltered(
             stringJoin.filtered(
-              `No PatternFly resources found matching "${searchQuery}".`,
+              `No collection resources found matching "${searchQuery}".`,
               suggestion && `Try a search for "${suggestion}".`
             ),
             options.separator,
@@ -94,9 +91,7 @@ const searchPatternFlyDocsTool = (options = getOptions()): McpTool => {
       parseResults = searchResults.filter(result => result.distance === 1);
     }
 
-    const searchTitlePatternFly = updatedVersion
-      ? `Search results for PatternFly version "${updatedVersion}" and`
-      : `Search results for`;
+    const searchTitlePatternFly = `Search results for`;
 
     let searchTitle = stringJoin.basic(
       `# ${searchTitlePatternFly} "${searchQuery}".`,
@@ -121,8 +116,20 @@ const searchPatternFlyDocsTool = (options = getOptions()): McpTool => {
         .filter(entry => entry.path)
         .map(entry => `      - [${entry.displayName} - (${entry.version}) - ${entry.description}](${entry.path})`);
 
-      const uri = result.uri;
-      const uriSchemas = result.uriSchemas;
+      // Unique URIs
+      const uris = Array.from(
+        new Set([result.uri, ...result.entries.map(entry => entry.uri)].filter(Boolean))
+      );
+
+      // Unique URI Schemas
+      const uriSchemas = Array.from(
+        new Set([result.uriSchemas, ...result.entries.map(entry => entry.uriSchemas)].filter(Boolean))
+      );
+
+      const uriList = [
+        ...uris.map(uri => `      - **URI**: ${uri}`),
+        ...uriSchemas.map(schema => `      - **JSON Schemas**: ${schema}`)
+      ];
 
       return stringJoin.newlineFiltered(
         `${index + 1}. **${result.name}**:`,
@@ -130,9 +137,8 @@ const searchPatternFlyDocsTool = (options = getOptions()): McpTool => {
         `    - **Name**: ${result.name}`,
         urlList.length ? `    - **URLs**:` : undefined,
         urlList.length ? urlList.join('\n') : undefined,
-        uri || uriSchemas ? `    - **Resources**:` : undefined,
-        uri ? `      - **URI**: ${uri}` : undefined,
-        uriSchemas ? `      - **JSON Schemas**: ${uriSchemas}` : undefined
+        uriList.length ? `    - **Resources**:` : undefined,
+        uriList.length ? uriList.join('\n') : undefined
       ) + '\n';
     });
 
@@ -151,13 +157,16 @@ const searchPatternFlyDocsTool = (options = getOptions()): McpTool => {
     };
   };
 
+  const getCollections: string[] = Object.keys(getPatternFlyCollection() || {});
+  const availableCollections = getCollections.length ? getCollections : ['patternfly-docs', 'patternfly-component-schemas', 'patternfly-api'];
+
   return [
     'searchPatternFlyDocs',
     {
-      description: `Search PatternFly resources and get component names with documentation and guidance URLs. Supports case-insensitive partial and all ("*") matches.
+      description: `Search ${availableCollections.length > 1 ? 'collections' : 'resources'} and get component names with documentation and guidance URLs. Supports case-insensitive partial, version-specific (e.g., "card v5"), and all ("*") matches.
 
       **Usage**:
-        1. Input a "searchQuery" to find PatternFly documentation and guideline URLs, resource URIs, and component names.
+        1. Input a "searchQuery" to find documentation and guideline URLs, resource URIs, and component names.
         2. Use the returned resource names OR URLs OR URIs OR version with the "usePatternFlyDocs" tool to get markdown documentation, guidelines, and component JSON schemas.
 
       **Returns**:
@@ -169,10 +178,10 @@ const searchPatternFlyDocsTool = (options = getOptions()): McpTool => {
         searchQuery: z.string()
           .min(options.minMax.inputStrings.min)
           .max(options.minMax.inputStrings.max)
-          .describe('Full or partial resource or component name to search for (e.g., "button", "react", "*")'),
-        version: z.enum(options.patternflyOptions.availableSearchVersions)
+          .describe('Case-insensitive query for full or partial keywords, resource names, versions and more (e.g., "button", "card v6", "react", "*")'),
+        collection: z.string()
           .optional()
-          .describe(`Filter results by a specific PatternFly version (e.g. ${options.patternflyOptions.availableSearchVersions.map(value => `"${value}"`).join(', ')})`)
+          .describe(`Filter results by a primary collection of records (e.g. ${availableCollections.map(value => `"${value}"`).join(', ')})`)
       }
     },
     callback,

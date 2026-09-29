@@ -44,6 +44,9 @@ describe('usePatternFlyDocsTool, callback', () => {
     mockGetResources.mockResolvedValue({
       latestVersion: 'v6',
       latestSchemasVersion: 'v6',
+      collections: ['patternfly-docs', 'patternfly-component-schemas', 'patternfly-api'],
+      collectionVersions: ['v4', 'v5', 'v6'],
+      versionsByCollection: { 'patternfly-docs': ['v4', 'v5', 'v6'] },
       byPath: {
         'components/loremButton.md': { name: 'button', version: 'v6', displayName: 'Button' }
       }
@@ -131,13 +134,26 @@ describe('usePatternFlyDocsTool, callback', () => {
       description: 'with both urlList and name',
       error: 'Provide either a string',
       urlList: ['components/button.md'],
-      name: 'lorem ipsum'
+      name: 'lorem ipsum',
+      version: undefined
+    },
+    {
+      description: 'with a non-existent version',
+      error: '"version" must be one of the following values',
+      urlList: undefined,
+      name: 'button',
+      version: 'v01'
     }
-  ])('should handle errors, $description', async ({ error, urlList, name }) => {
+  ])('should handle errors, $description', async ({ error, urlList, name, version }) => {
     const [_name, _schema, callback] = usePatternFlyDocsTool();
+    const params = {
+      ...(urlList !== undefined ? { urlList } : {}),
+      ...(name !== undefined ? { name } : {}),
+      ...(version !== undefined ? { version } : {})
+    };
 
-    await expect(callback({ urlList, name })).rejects.toThrow(McpError);
-    await expect(callback({ urlList, name })).rejects.toThrow(error);
+    await expect(callback(params)).rejects.toThrow(McpError);
+    await expect(callback(params)).rejects.toThrow(error);
   });
 
   it('should handle processing errors', async () => {

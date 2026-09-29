@@ -131,7 +131,7 @@ describe('Builtin tools, STDIO', () => {
       description: 'exact match for Button',
       searchQuery: 'Button',
       contains: [
-        '# Search results for PatternFly version "v6" and "Button". Showing',
+        '# Search results for "Button". Showing',
         '**button**',
         'Use a search all'
       ]
@@ -140,7 +140,7 @@ describe('Builtin tools, STDIO', () => {
       description: 'with trimmed query',
       searchQuery: ' Button   ',
       contains: [
-        '# Search results for PatternFly version "v6" and " Button   ". Showing',
+        '# Search results for " Button   ". Showing',
         '**button**',
         'Use a search all'
       ]
@@ -149,7 +149,7 @@ describe('Builtin tools, STDIO', () => {
       description: 'with lower case match',
       searchQuery: 'button',
       contains: [
-        '# Search results for PatternFly version "v6" and "button". Showing',
+        '# Search results for "button". Showing',
         '**button**',
         'Use a search all'
       ]
@@ -158,7 +158,7 @@ describe('Builtin tools, STDIO', () => {
       description: 'with upper case match',
       searchQuery: 'BUTTON',
       contains: [
-        '# Search results for PatternFly version "v6" and "BUTTON". Showing',
+        '# Search results for "BUTTON". Showing',
         '**button**',
         'Use a search all'
       ]
@@ -167,7 +167,7 @@ describe('Builtin tools, STDIO', () => {
       description: 'wildcard search',
       searchQuery: '*',
       contains: [
-        '# Search results for PatternFly version "v6" and "all" resources. Only showing the first',
+        '# Search results for "all" resources. Only showing the first',
         '**a',
         'Use a search all'
       ]
@@ -176,17 +176,17 @@ describe('Builtin tools, STDIO', () => {
       description: 'fuzzy search for partial name',
       searchQuery: 'ton',
       contains: [
-        '# Search results for PatternFly version "v6" and "ton". Showing',
+        '# Search results for "ton". Showing',
         '**button**',
         'Use a search all'
       ]
     },
     {
-      description: 'explicit version search',
+      description: 'explicit collection search',
       searchQuery: 'Button',
-      version: 'v6',
+      collection: 'patternfly-docs',
       contains: [
-        '# Search results for PatternFly version "v6" and "Button". Showing',
+        '# Search results for "Button". Showing',
         '**button**',
         'Use a search all'
       ]
@@ -195,7 +195,7 @@ describe('Builtin tools, STDIO', () => {
       description: 'with multiple words',
       searchQuery: 'Button Card Table',
       contains: [
-        '# Search results for PatternFly version "v6" and "Button Card Table". Showing',
+        '# Search results for "Button Card Table". Showing',
         '**button**',
         '**card**',
         '**table**',
@@ -206,7 +206,7 @@ describe('Builtin tools, STDIO', () => {
       description: 'made up search query',
       searchQuery: 'lorem ipsum dolor sit amet',
       contains: [
-        'No PatternFly resources found matching "lorem ipsum dolor sit amet"',
+        'No collection resources found matching "lorem ipsum dolor sit amet"',
         'Use a search all'
       ]
     },
@@ -254,7 +254,7 @@ describe('Builtin tools, STDIO', () => {
       description: 'partial hash search query',
       searchQuery: '19b2a',
       contains: [
-        'No PatternFly resources found matching "19b2a"',
+        'No collection resources found matching "19b2a"',
         'Use a search all'
       ]
     },
@@ -270,16 +270,16 @@ describe('Builtin tools, STDIO', () => {
       description: 'partial uri search query',
       searchQuery: 'patternfly://docs/3ca3928',
       contains: [
-        'No PatternFly resources found matching "patternfly://docs/3ca3928"',
+        'No collection resources found matching "patternfly://docs/3ca3928"',
         'Use a search all'
       ]
     }
-  ])('should perform searchPatternFlyDocs: $description', async ({ searchQuery, version, contains }) => {
+  ])('should perform searchPatternFlyDocs: $description', async ({ searchQuery, collection, contains }) => {
     const req = {
       method: 'tools/call',
       params: {
         name: 'searchPatternFlyDocs',
-        arguments: version ? { searchQuery, version } : { searchQuery }
+        arguments: collection ? { searchQuery, collection } : { searchQuery }
       }
     };
 

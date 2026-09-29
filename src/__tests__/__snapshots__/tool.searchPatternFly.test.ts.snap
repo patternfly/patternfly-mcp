@@ -11,7 +11,7 @@ exports[`searchPatternFlyTool should have a consistent return structure: structu
 exports[`searchPatternFlyTool, callback should have a specific markdown format: Button 1`] = `
 [
   {
-    "text": "# Search results for PatternFly version "v6" and "button".
+    "text": "# Search results for "button".
 Found 2 collections with 5 related resources. Use the attached resources to access and read full content.",
     "type": "text",
   },
@@ -28,6 +28,7 @@ Found 2 collections with 5 related resources. Use the attached resources to acce
     "groupId": "654321",
     "mimeType": "text/markdown",
     "name": "Lorem Button - Design (v6)",
+    "primaryCollection": "patternfly-docs",
     "type": "resource_link",
     "uri": "patternfly://docs/e34567",
   },
@@ -36,6 +37,7 @@ Found 2 collections with 5 related resources. Use the attached resources to acce
     "groupId": "654321",
     "mimeType": "text/markdown",
     "name": "Lorem Button - Guidelines (v6)",
+    "primaryCollection": "patternfly-docs",
     "type": "resource_link",
     "uri": "patternfly://docs/34567",
   },
@@ -60,6 +62,7 @@ Found 2 collections with 5 related resources. Use the attached resources to acce
     "groupId": "123456",
     "mimeType": "text/markdown",
     "name": "Button - Design (v6)",
+    "primaryCollection": "patternfly-docs",
     "type": "resource_link",
     "uri": "patternfly://docs/34567b",
   },
@@ -74,6 +77,6 @@ Found 2 collections with 5 related resources. Use the attached resources to acce
 ]
 `;
 
-exports[`searchPatternFlyTool, callback should parse parameters, exact match 1`] = `"# Search results for PatternFly version "v6" and "button"."`;
+exports[`searchPatternFlyTool, callback should parse parameters, exact match 1`] = `"# Search results for "button"."`;
 
-exports[`searchPatternFlyTool, callback should parse parameters, wildcard search 1`] = `"# Search results for PatternFly version "v6" and "all" resources."`;
+exports[`searchPatternFlyTool, callback should parse parameters, wildcard search 1`] = `"# Search results for "all" resources."`;

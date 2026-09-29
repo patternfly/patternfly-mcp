@@ -107,7 +107,7 @@ exports[`Builtin tools, HTTP transport should initialize MCP session over HTTP 1
 `;
 
 exports[`Builtin tools, HTTP transport should return expected markdown structure for search results: markdown 1`] = `
-"# Search results for PatternFly version "v6" and "button". Showing 2 exact matches.
+"# Search results for "button". Showing 2 exact matches.
 1. **button**:
   "usePatternFlyDocs" resource parameter "name" and "URLs"
     - **Name**: button

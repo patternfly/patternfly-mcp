@@ -35,6 +35,8 @@ describe('searchPatternFlyTool, callback', () => {
     jest.clearAllMocks();
 
     mockGetResources.mockResolvedValue({
+      collections: ['patternfly-docs', 'patternfly-component-schemas', 'patternfly-api'],
+      keywordsIndex: [],
       latestVersion: 'v6'
     } as any);
 
@@ -85,6 +87,26 @@ describe('searchPatternFlyTool, callback', () => {
     expect(result.content[0].text.split('\n')[0]).toMatchSnapshot();
   });
 
+  it('should pass collection filter to searchPatternFly', async () => {
+    mockSearch.mockResolvedValue({
+      isSearchWildCardAll: false,
+      exactMatches: [],
+      remainingMatches: [],
+      searchResults: [{ displayName: 'Button', version: 'v6', description: 'Docs', path: 'pf/button.md' }],
+      totalPotentialMatches: 1
+    } as any);
+
+    const [_name, _schema, callback] = searchPatternFlyTool();
+
+    await callback({ query: 'button', collection: 'patternfly-docs' });
+
+    expect(mockSearch).toHaveBeenCalledWith(
+      'button',
+      { collection: 'patternfly-docs' },
+      expect.any(Object)
+    );
+  });
+
   it.each([
     {
       description: 'with empty query',
@@ -107,14 +129,17 @@ describe('searchPatternFlyTool, callback', () => {
       query: 123
     },
     {
-      description: 'with a non-existent version',
-      error: '"version" must be one of the following values',
+      description: 'with a non-existent collection',
+      error: '"collection" must be one of the following values',
       query: 'button',
-      version: 'v01'
+      collection: 'invalid-collection'
     }
-  ])('should handle errors, $description', async ({ error, query, version }) => {
+  ])('should handle errors, $description', async ({ error, query, collection }) => {
     const [_name, _schema, callback] = searchPatternFlyTool();
-    const updatedParams = version ? { query, version } : { query };
+    const updatedParams = {
+      query,
+      ...(collection ? { collection } : {})
+    };
 
     await expect(callback(updatedParams)).rejects.toThrow(McpError);
     await expect(callback(updatedParams)).rejects.toThrow(error);
@@ -131,6 +156,8 @@ describe('searchPatternFlyTool, callback', () => {
             {
               displayName: 'Lorem Button',
               displayCategory: 'Guidelines',
+              displayCollection: 'PatternFly Docs',
+              collection: 'patternfly-docs',
               version: 'v6',
               description: 'Design Guidelines',
               path: 'https://pf.org/button.md',
@@ -139,6 +166,8 @@ describe('searchPatternFlyTool, callback', () => {
             }, {
               displayName: 'Lorem Button',
               displayCategory: 'Design',
+              displayCollection: 'PatternFly Docs',
+              collection: 'patternfly-docs',
               version: 'v6',
               description: 'Design Guidelines',
               path: 'https://pf.org/button.md',
@@ -153,6 +182,8 @@ describe('searchPatternFlyTool, callback', () => {
           entries: [{
             displayName: 'Button',
             displayCategory: 'Design',
+            displayCollection: 'PatternFly Docs',
+            collection: 'patternfly-docs',
             version: 'v6',
             description: 'Design Guidelines',
             path: 'https://pf.org/button.md',

@@ -1,6 +1,6 @@
 import { getComponentSchema } from '@patternfly/patternfly-component-schemas/json';
 import { memo } from './server.caching';
-import { buildSearchString, generateHash } from './server.helpers';
+import { buildSearchString, freezeObject, generateHash } from './server.helpers';
 import { DEFAULT_OPTIONS } from './options.defaults';
 import {
   getPatternFlyVersionContext,
@@ -151,7 +151,6 @@ type PatternFlyMcpResourceMetadata = {
   entries: (PatternFlyMcpDocsCatalogDoc & PatternFlyMcpDocsMeta)[];
   versions: Record<string, Omit<PatternFlyMcpResourceMetadata, 'name' | 'versions'>>;
   groupId: string;
-
   isSchemasAvailable: boolean | undefined;
   uri: string | undefined;
   uriSchemas: string | undefined;
@@ -167,7 +166,10 @@ type PatternFlyMcpResourceMetadata = {
  * @interface PatternFlyMcpAvailableDocs
  * @extends PatternFlyVersionContext
  *
- * @property collections = List of available collection names.
+ * @property collections - List of available collection names.
+ * @property collectionVersions - List of all available documentation/resource versions across all collections. There can be
+ *     overlapping versions across collections.
+ * @property versionsByCollection - List of all available documentation/resource versions by collection.
  * @property resources - Patternfly available documentation and metadata by resource name.
  * @property docsIndex - `@deprecated Under review. Use Array.from(resources.keys()) instead`. Patternfly available documentation index.
  * @property componentsIndex - `@deprecated Under review. Use keywordsIndex for search or byVersionComponentNames for lookups`.
@@ -185,6 +187,8 @@ type PatternFlyMcpResourceMetadata = {
  */
 interface PatternFlyMcpAvailableResources extends PatternFlyVersionContext {
   collections: string[];
+  collectionVersions: string[];
+  versionsByCollection: Record<string, string[]>;
   resources: Map<string, PatternFlyMcpResourceMetadata>;
   docsIndex: string[];
   componentsIndex: string[];
@@ -509,6 +513,8 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
     ...setCollectionName('patternfly-api', apiCollection)
   ];
 
+  const availableCollectionVersionsSet = new Set<string>();
+  const versionsByCollection: Record<string, string[]> = {};
   const resources = new Map<string, PatternFlyMcpResourceMetadata>();
   const byPath: PatternFlyMcpResourcesByPath = {};
   const byUri: PatternFlyMcpResourcesByUri = {};
@@ -545,6 +551,18 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
     (entries as (PatternFlyMcpDocsCatalogDoc & Partial<PatternFlyMcpDocsMeta>)[]).forEach(entry => {
       const collection = entry.collection || collectionName;
       const displayCollection = availableCollections.get(collection);
+      const baseVersion = entry.version;
+
+      if (baseVersion) {
+        const normalizedVer = baseVersion.toLowerCase();
+
+        availableCollectionVersionsSet.add(normalizedVer);
+        versionsByCollection[collection] ??= [];
+
+        if (!versionsByCollection[collection].includes(normalizedVer)) {
+          versionsByCollection[collection].push(normalizedVer);
+        }
+      }
 
       // Technically, we could just dump `entry` into generateHash as the fallback, but it'd be prone to frequent shifting based on updates.
       const version = (entry.version || 'unknown').toLowerCase();
@@ -660,9 +678,14 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
 
   const filteredKeywords = filterKeywords(rawKeywordsMap);
 
+  Object.values(versionsByCollection).forEach(list =>
+    list.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })));
+
   return {
     ...versionContext,
     collections: Array.from(availableCollections.keys()).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })),
+    collectionVersions: Array.from(availableCollectionVersionsSet).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })),
+    versionsByCollection,
     resources,
     // @deprecated docsIndex - Under review
     docsIndex: Array.from(resources.keys()).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })),
@@ -718,6 +741,20 @@ const getPatternFlyComponentSchema = async (componentName: string) => {
  * Memoized version of getPatternFlyComponentSchema.
  */
 getPatternFlyComponentSchema.memo = memo(getPatternFlyComponentSchema, DEFAULT_OPTIONS.toolMemoOptions.usePatternFlyDocs);
+
+/**
+ * Return a registered collection by name or all registered collections.
+ *
+ * @param [name] - Collection name.
+ * @returns - Either a registered collection or undefined if not found, or all registered collections as an object.
+ */
+const getPatternFlyCollection = (name?: string) => {
+  if (name) {
+    return freezeObject(patternFlyRecordsRegistry.get(name)) as Readonly<PatternFlyMcpCollectionRegistryEntry> | undefined;
+  }
+
+  return freezeObject(Object.fromEntries(patternFlyRecordsRegistry)) as Readonly<Record<string, PatternFlyMcpCollectionRegistryEntry>>;
+};
 
 /**
  * Executes a collection callback, invalidates any cache, and then any next-call to the functions
@@ -793,6 +830,7 @@ onUpdateServerCollectionsRegistry(({ name, config, response, error }: RegisterCo
 export {
   getPatternFlyComponentSchema,
   getPatternFlyMcpResources,
+  getPatternFlyCollection,
   getPatternFlyComponentNames,
   mutateKeyWordsMap,
   setCategoryDisplayLabel,
