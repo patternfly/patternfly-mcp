@@ -18,18 +18,19 @@ describe('composeCollections', () => {
 
   it('should wrap builtin creators and set _isInternal: true', async () => {
     const mockHandler = jest.fn();
-    const mockCreator: any = jest.fn(() => ['test-collection', mockHandler, { isRequired: true }]);
+    const mockCreator: any = jest.fn(() => ['test-collection', {}, mockHandler, { isRequired: true }]);
 
     const builtinCreators = [mockCreator];
     const result: any = await composeCollections(builtinCreators);
 
     expect(result.length).toBe(1);
 
-    const [name, callback, config] = result[0]({});
+    const [name, config, callback, _config] = result[0]({});
 
     expect(name).toBe('test-collection');
-    expect(config?._isInternal).toBe(true);
-    expect(config?.isRequired).toBe(true);
+    expect(config).toBeDefined();
+    expect(_config?._isInternal).toBe(true);
+    expect(_config?.isRequired).toBe(true);
     expect(callback).toBe(mockHandler);
   });
 
@@ -37,6 +38,7 @@ describe('composeCollections', () => {
     const mockHandler = jest.fn();
     const mockCreator: any = jest.fn(() => [
       'parallel-collection',
+      {},
       mockHandler,
       { runParallel: '#collectionLoremIpsum' }
     ]);
@@ -52,11 +54,12 @@ describe('composeCollections', () => {
 
     expect(result.length).toBe(1);
 
-    const [name, handler, config] = result[0]();
+    const [name, config, handler, _config] = result[0]();
 
     expect(name).toBe('parallel-collection');
-    expect(config?._isInternal).toBe(true);
-    expect(config?.runParallel).toBe('#collectionLoremIpsum');
+    expect(config).toBeDefined();
+    expect(_config?._isInternal).toBe(true);
+    expect(_config?.runParallel).toBe('#collectionLoremIpsum');
 
     const executionResult = await handler({ inputArg: 'test' });
 
@@ -81,6 +84,7 @@ describe('composeCollections', () => {
     const mockHandler = jest.fn().mockResolvedValue({ records: [{ id: 'row-1' }] });
     const mockCreator: any = jest.fn(() => [
       'scheduled-collection',
+      {},
       mockHandler,
       { runSchedule: { cancelMs: 100, intervalMs: 50 } }
     ]);
@@ -89,10 +93,11 @@ describe('composeCollections', () => {
 
     expect(result.length).toBe(1);
 
-    const [name, handler, config] = result[0]();
+    const [name, config, handler, _config] = result[0]();
 
     expect(name).toBe('scheduled-collection');
-    expect(config?._isInternal).toBe(true);
+    expect(config).toBeDefined();
+    expect(_config?._isInternal).toBe(true);
     expect(handler).not.toBe(mockHandler);
 
     const executionResult = await handler({ inputArg: 'test' });
@@ -105,12 +110,13 @@ describe('composeCollections', () => {
     const mockHandler = jest.fn().mockResolvedValue(undefined);
     const mockCreator: any = jest.fn(() => [
       'scheduled-empty-collection',
+      {},
       mockHandler,
       { runSchedule: { cancelMs: 100, intervalMs: 50 } }
     ]);
 
     const result: any = await composeCollections([mockCreator]);
-    const [, handler] = result[0]();
+    const [, , handler] = result[0]();
     const executionResult = await handler();
 
     expect(executionResult).toEqual({ records: [] });
@@ -126,7 +132,7 @@ describe('composeCollections', () => {
     (getOptions as jest.Mock).mockReturnValue(options);
     (getSessionOptions as jest.Mock).mockReturnValue(session);
 
-    const mockCreator: any = jest.fn(() => ['test', jest.fn()]);
+    const mockCreator: any = jest.fn(() => ['test', {}, jest.fn()]);
     const result: any = await composeCollections([mockCreator], options as any, session as any);
 
     expect(result.length).toBe(1);
@@ -134,13 +140,13 @@ describe('composeCollections', () => {
   });
 
   it('should match snapshot for composed collection creators', async () => {
-    const mockCreator: any = jest.fn(() => ['snap-collection', jest.fn(), { isRequired: false }]);
+    const mockCreator: any = jest.fn(() => ['snap-collection', {}, jest.fn(), { isRequired: false }]);
     const result: any = await composeCollections([mockCreator]);
 
     const output = result.map((collection: any) => {
-      const [name, , config] = collection();
+      const [name, , , _config] = collection();
 
-      return { name, config };
+      return { name, _config };
     });
 
     expect(output).toMatchSnapshot();

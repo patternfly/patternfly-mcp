@@ -126,12 +126,13 @@ interface ServerInstance {
  */
 const registerServerCollections = async (collections: McpCollectionCreator[], options = getOptions(), session = getSessionOptions()) => {
   const updatedCollections = collections.map(collectionCreator => {
-    const [name, callback, _config] = collectionCreator(options);
+    const [name, config, callback, _config] = collectionCreator(options);
 
     log.info(`Registered collection: ${name}`);
 
     return [
       name,
+      config,
       async () => runWithSession(session, async () =>
         runWithOptions(options, async () => {
           log.debug(

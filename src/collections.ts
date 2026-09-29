@@ -38,6 +38,26 @@ interface McpCollectionResult {
 }
 
 /**
+ * Plugin-visible collection metadata (tuple index 1).
+ *
+ * @property title - Optional title for the collection.
+ */
+type McpCollectionConfig = {
+  title?: string;
+} | undefined;
+
+/**
+ * Registered collections.
+ *
+ * @property {McpCollectionConfig} config - Optional plugin-visible metadata.
+ * @property {McpCollectionResult} response - Collection records.
+ */
+type McpCollectionRegistryEntry = {
+  config?: McpCollectionConfig;
+  response: McpCollectionResult;
+};
+
+/**
  * Standardized Tuple-based Record Source.
  *
  * @note **Future**: `priority` and `group` are future properties being considered in the
@@ -47,8 +67,10 @@ interface McpCollectionResult {
  * `async (options) => boolean | #${string}` for dynamic configs.
  *
  * 0. `name` `{string}`: Unique identifier/name
- * 1. `handler` `{Function}`: callback function accepting an optional argument
- * 2. `_config` `{Object}`: Application level record source configuration. Unavailable to
+ * 1. `config` `{Object}`: Plugin-visible metadata. Available to plugins.
+ *    - `title`: Optional title for the collection.
+ * 2. `handler` `{Function}`: callback function accepting an optional argument
+ * 3. `_config` `{Object}`: Internal runtime configuration. Unavailable to
  *     record collection plugins.
  *    - `_config.initial`: Optional initial collection records or loader function executed
  *        immediately at server startup prior to background scheduled runs or worker execution.
@@ -68,6 +90,7 @@ interface McpCollectionResult {
  */
 type McpCollection = [
   name: string,
+  config: McpCollectionConfig,
   handler: (arg?: unknown) => McpCollectionResult | Promise<McpCollectionResult>,
   _config?: {
     initial?: McpCollectionResult | (() => McpCollectionResult | Promise<McpCollectionResult>);
@@ -126,11 +149,13 @@ type McpCollectionCreator = (options?: GlobalOptions) => McpCollection;
  * {@link registerCollections} callback settings.
  *
  * @property name - Name of the collection item.
+ * @property [config] - Plugin-visible collection metadata from the tuple.
  * @property {McpCollectionResult|undefined} [response] - Optional response associated with the item.
  * @property [error] - Optional error object if an error occurred during the collection process.
  */
 type RegisterCollectionItem = {
   name: string;
+  config?: McpCollectionConfig;
   response?: McpCollectionResult | undefined;
   error?: unknown;
 };
@@ -140,19 +165,20 @@ type RegisterCollectionItem = {
  *
  * @param {RegisterCollectionItem} item - The updated collection item.
  * @param item.name - The name of the collection item.
+ * @param [item.config] - Plugin-visible collection metadata from the tuple.
  * @param {McpCollectionResult|undefined} [item.response] - Optional response associated with the item.
  * @param [item.error] - Optional error object if an error occurred during the collection process.
  */
-type RegisterOnUpdate = ({ name, response, error }: RegisterCollectionItem) => void | Promise<void>;
+type RegisterOnUpdate = ({ name, config, response, error }: RegisterCollectionItem) => void | Promise<void>;
 
 /**
- * Options for {@link onUpdateServerRecordsRegistry}.
+ * Options for {@link onUpdateServerCollectionsRegistry}.
  *
  * @property replay - When `true`, invokes the callback once for each collection already in the registry.
  *     Live updates after subscribe **MAY INVOKE THE CALLBACK AGAIN** for the same collection.
  *     Deduplication is the consumer's responsibility.
  */
-type OnUpdateServerRecordsRegistryOptions = {
+type OnUpdateServerCollectionsRegistryOptions = {
   replay?: boolean;
 };
 
@@ -205,14 +231,14 @@ type RegisterCollectionsResult = {
 };
 
 /**
- * Central in-memory registry for all PatternFly collection records
+ * Central in-memory registry for registered collections.
  */
-const serverRecordsRegistry = new Map<string, McpCollectionResult>();
+const serverCollectionsRegistry = new Map<string, McpCollectionRegistryEntry>();
 
 /**
- * Listeners for server records registry updates
+ * Listeners for server collection registry updates
  */
-const serverRecordsRegistryListeners = new Set<RegisterOnUpdate>();
+const serverCollectionsRegistryListeners = new Set<RegisterOnUpdate>();
 
 /**
  * Invokes a server records registry listener and logs errors without rethrowing.
@@ -220,31 +246,30 @@ const serverRecordsRegistryListeners = new Set<RegisterOnUpdate>();
  * @param callback - Listener to invoke/fire.
  * @param item - Collection item passed to the listener.
  */
-const invokeServerRecordsRegistryListener = async (
+const invokeServerCollectionsRegistryListener = async (
   callback: RegisterOnUpdate,
   item: RegisterCollectionItem
 ) => {
   try {
     await callback(item);
   } catch (error) {
-    log.error(`Error in server records registry listener:`, error);
+    log.error(`Error in server registry listener:`, error);
   }
 };
 
 /**
- * Retrieves the server collections/records registry, all or for a given collection name.
+ * Retrieves either a server collection or the entire registry.
  *
- * @param params - Optional parameters.
- * @param params.collectionName - Name of the collection to retrieve.
- * @returns The entire server collections/records registry, or the registry for the specified collection name
- *     if provided and available, otherwise returns `undefined`.
+ * @param [params] - Optional parameters.
+ * @param [params.collectionName] - When set, returns that entry or `undefined`.
+ * @returns Full registry map when `collectionName` is omitted.
  */
-const getServerRecordsRegistry = ({ collectionName }: { collectionName?: string } = {}) => {
+const getServerCollectionsRegistry = ({ collectionName }: { collectionName?: string } = {}) => {
   if (collectionName) {
-    return serverRecordsRegistry.get(collectionName);
+    return serverCollectionsRegistry.get(collectionName);
   }
 
-  return serverRecordsRegistry;
+  return serverCollectionsRegistry;
 };
 
 /**
@@ -253,15 +278,24 @@ const getServerRecordsRegistry = ({ collectionName }: { collectionName?: string 
  *
  * @param {McpCollectionResult} collection - Collection.
  */
-const setServerRecordsRegistry = async (collection: RegisterCollectionItem) => {
-  const { name, response } = collection || {};
+const setServerCollectionsRegistry = async (collection: RegisterCollectionItem) => {
+  const { name, response, config } = collection || {};
 
   try {
     if (name && response) {
-      serverRecordsRegistry.set(name, response);
+      const previous = serverCollectionsRegistry.get(name);
+      const entry: McpCollectionRegistryEntry = { response };
 
-      for (const listener of serverRecordsRegistryListeners) {
-        await invokeServerRecordsRegistryListener(listener, collection);
+      if (config !== undefined) {
+        entry.config = config;
+      } else if (previous?.config !== undefined) {
+        entry.config = previous.config;
+      }
+
+      serverCollectionsRegistry.set(name, entry);
+
+      for (const listener of serverCollectionsRegistryListeners) {
+        await invokeServerCollectionsRegistryListener(listener, collection);
       }
 
       log.debug(`Storing server collection ${name} records. (${response?.records?.length})`);
@@ -274,7 +308,7 @@ const setServerRecordsRegistry = async (collection: RegisterCollectionItem) => {
 /**
  * Register a listener callback to be fired whenever a server record in the registry is updated.
  *
- * @note Using the `replay` {@link OnUpdateServerRecordsRegistryOptions.replay} option means the
+ * @note Using the `replay` {@link OnUpdateServerCollectionsRegistryOptions.replay} option means the
  * callback can be fired multiple times for the same collection. Deduplication is the consumer's
  * responsibility. This isn't needed if your collections are `required`.
  *
@@ -282,36 +316,41 @@ const setServerRecordsRegistry = async (collection: RegisterCollectionItem) => {
  * @param [options] - Subscribe options.
  * @param [options.replay] - When `true`, fire the registry-level callback for each collection
  *     already stored in the registry. Useful for callbacks registered after the registry-level callback
- *     has already fired. Defaults to `false`. See {@link OnUpdateServerRecordsRegistryOptions.replay}
+ *     has already fired. Defaults to `false`. See {@link OnUpdateServerCollectionsRegistryOptions.replay}
  * @returns A function to unregister/unsubscribe the listener.
  */
-const onUpdateServerRecordsRegistry = (
+const onUpdateServerCollectionsRegistry = (
   callback: RegisterOnUpdate,
-  { replay = false }: OnUpdateServerRecordsRegistryOptions = {}
+  { replay = false }: OnUpdateServerCollectionsRegistryOptions = {}
 ) => {
   if (typeof callback !== 'function') {
-    log.warn('onUpdateServerRecordsRegistry: callback must be a function');
+    log.warn('onUpdateServerCollectionsRegistry: callback must be a function');
 
     return () => false;
   }
 
-  serverRecordsRegistryListeners.add(callback);
+  serverCollectionsRegistryListeners.add(callback);
 
   if (replay) {
     void (async () => {
-      for (const [name, response] of serverRecordsRegistry) {
-        if (!serverRecordsRegistryListeners.has(callback)) {
+      for (const [name, entry] of serverCollectionsRegistry) {
+        if (!serverCollectionsRegistryListeners.has(callback)) {
           break;
         }
 
-        await invokeServerRecordsRegistryListener(callback, { name, response, error: undefined });
+        await invokeServerCollectionsRegistryListener(callback, {
+          name,
+          config: entry.config,
+          response: entry.response,
+          error: undefined
+        });
       }
     })();
   }
 
   return () => {
-    if (serverRecordsRegistryListeners.has(callback)) {
-      serverRecordsRegistryListeners.delete(callback);
+    if (serverCollectionsRegistryListeners.has(callback)) {
+      serverCollectionsRegistryListeners.delete(callback);
 
       return true;
     }
@@ -366,6 +405,10 @@ const isMcpCollectionResult = (value: unknown): value is McpCollectionResult =>
  * - When the required collections resolve, `onRequired` is called.
  * - When all collections are settled `onSettle` is called.
  *
+ * @note **Future**: Review dispatching `onUpdate` with the caught `error` payload if initial
+ * hydration (`_config.initial`) fails during `Step 1`, ensuring downstream listeners and plugins
+ * are notified of hydration issues instead of only logging a passive warning.
+ *
  * @param {McpCollection[]} collections - An array of collection sources to be registered. Each source is represented as a tuple.
  * @param [options] - Options callback functions to handle registration events.
  * @param [options.onSettle] - A non-blocking consumer-facing callback executed after all collection registrations are
@@ -386,15 +429,15 @@ const registerCollections = async (
   log.debug(`Reviewing registration for ${collections.length} collections.`);
 
   // Step 1: Immediate hydration for collections with `_config.initial`
-  for (const [name, , config] of collections) {
-    if (config?.initial) {
+  for (const [name, config, , _config] of collections) {
+    if (_config?.initial) {
       try {
-        const initialResult = typeof config.initial === 'function'
-          ? await config.initial()
-          : config.initial;
+        const initialResult = typeof _config.initial === 'function'
+          ? await _config.initial()
+          : _config.initial;
 
         if (isMcpCollectionResult(initialResult)) {
-          await setServerRecordsRegistry({ name, response: initialResult, error: undefined });
+          await setServerCollectionsRegistry({ name, config, response: initialResult, error: undefined });
         } else {
           throw new Error(`Invalid collection response "${name}"`);
         }
@@ -406,7 +449,7 @@ const registerCollections = async (
 
   // Step 2: Main collection execution (handles scheduled/worker/background callbacks)
   // Wrapper for each loader; handle incremental updates
-  const registrationPromises = collections.map(async ([name, callback, config]) => {
+  const registrationPromises = collections.map(async ([name, config, callback, _config]) => {
     let error: unknown | undefined;
     let response: McpCollectionResult | undefined;
     let isSuccess = false;
@@ -425,10 +468,11 @@ const registerCollections = async (
       log.error(`Error loading collection ${name}: ${formatUnknownError(err)}`);
     }
 
-    const previous = getServerRecordsRegistry({ collectionName: name }) as McpCollectionResult | undefined;
+    const previousCollection = getServerCollectionsRegistry({ collectionName: name }) as McpCollectionRegistryEntry | undefined;
+    const previous = previousCollection?.response;
     let shouldRetain = false;
 
-    if (config?.retainLastViable) {
+    if (_config?.retainLastViable) {
       try {
         const context: RetainLastViableContext = {
           name,
@@ -439,8 +483,8 @@ const registerCollections = async (
         };
 
         shouldRetain = await Promise.resolve(
-          typeof config.retainLastViable === 'function'
-            ? (config.retainLastViable as RetainLastViableCollection)(context)
+          typeof _config.retainLastViable === 'function'
+            ? (_config.retainLastViable as RetainLastViableCollection)(context)
             : defaultRetainCollection(context)
         );
       } catch (err) {
@@ -453,22 +497,22 @@ const registerCollections = async (
         log.warn(`Collection "${name}" update triggered retention policy; keeping previous viable response (${previous?.records?.length || 0} records).`);
         response = previous;
       } else if (response) {
-        await setServerRecordsRegistry({ name, response, error });
+        await setServerCollectionsRegistry({ name, config, response, error });
       }
     } catch (err) {
-      log.error(`Error "setServerRecordsRegistry" for collection ${name}: ${formatUnknownError(err)}`);
+      log.error(`Error "setServerCollectionsRegistry" for collection ${name}: ${formatUnknownError(err)}`);
     }
 
     // Fire-and-forget if it exists. Review using `Promise.try` in the future.
     Promise.resolve()
-      .then(() => onUpdate?.({ name, response, error }))
+      .then(() => onUpdate?.({ name, config, response, error }))
       .catch(err => log.debug(`Error calling "onUpdate": ${formatUnknownError(err)}`));
 
-    return { name, response, isSuccess, error };
+    return { name, config, response, isSuccess, error };
   });
 
   // Determine which collections are required and optional
-  const required = registrationPromises.filter((_, index) => collections[index]?.[2]?.isRequired);
+  const required = registrationPromises.filter((_, index) => collections[index]?.[3]?.isRequired);
 
   // Gatekeep on any required collections
   const results = await Promise.all(required);
@@ -484,7 +528,7 @@ const registerCollections = async (
 
   // Fire-and-forget if it exists. Review using `Promise.try` in the future.
   Promise.resolve()
-    .then(() => onRequired?.(results.map(({ name, response, error }) => ({ name, response, error }))))
+    .then(() => onRequired?.(results.map(({ name, config, response, error }) => ({ name, config, response, error }))))
     .catch(err => log.debug(`Error calling "onRequired": ${formatUnknownError(err)}`));
 
   // Wait for all loaders to settle
@@ -529,18 +573,20 @@ const registerCollections = async (
 
 export {
   defaultRetainCollection,
-  getServerRecordsRegistry,
+  getServerCollectionsRegistry,
   isMcpCollectionRecord,
   isMcpCollectionResult,
-  onUpdateServerRecordsRegistry,
+  onUpdateServerCollectionsRegistry,
   registerCollections,
-  setServerRecordsRegistry,
-  type OnUpdateServerRecordsRegistryOptions,
+  setServerCollectionsRegistry,
+  type OnUpdateServerCollectionsRegistryOptions,
   type RetainLastViableContext,
   type RetainLastViableOption,
   type RetainLastViableCollection,
   type McpCollection,
+  type McpCollectionConfig,
   type McpCollectionCreator,
+  type McpCollectionRegistryEntry,
   type McpCollectionRecord,
   type McpCollectionResult,
   type RegisterCollectionItem,

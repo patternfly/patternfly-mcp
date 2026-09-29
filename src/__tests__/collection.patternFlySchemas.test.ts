@@ -16,11 +16,12 @@ describe('patternFlySchemasCollection', () => {
   });
 
   it('should return the correct collection name and configuration', () => {
-    const [name, callback, config] = patternFlySchemasCollection();
+    const [name, config, callback, _config] = patternFlySchemasCollection();
 
     expect(name).toBe('patternfly-component-schemas');
+    expect(config).toBeDefined();
     expect(callback).toBeDefined();
-    expect(config?.isRequired).toBe(true);
+    expect(_config?.isRequired).toBe(true);
   });
 });
 

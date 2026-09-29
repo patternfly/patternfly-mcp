@@ -20,7 +20,7 @@ const makeParallelProxyCreator = ({
   exportName = 'default'
 }: { creator: McpCollectionCreator, moduleSpecifier: string, exportName?: string },
 options: GlobalOptions = getOptions()): McpCollectionCreator => () => {
-  const [name, _callback, config] = creator(options);
+  const [name, config, _callback, _config] = creator(options);
 
   const handler = async (args?: unknown): Promise<McpCollectionResult> => {
     const currentOptions = getOptions();
@@ -35,14 +35,14 @@ options: GlobalOptions = getOptions()): McpCollectionCreator => () => {
     });
   };
 
-  return config ? [name, handler, { ...config }] : [name, handler];
+  return _config ? [name, config, handler, { ..._config }] : [name, config, handler];
 };
 
 /**
  * Proxy a collection creator with a deferred task wrapper.
  *
  * @param {McpCollectionCreator} creator - Original creator.
- * @param {NonNullable<McpCollection[2]>['runSchedule']} runSchedule - Schedule config sourced from the collection's
+ * @param {NonNullable<McpCollection[3]>['runSchedule']} runSchedule - Schedule config sourced from the collection's
  *     `_config.runSchedule`. Provides `cancelMs` and `intervalMs` used to build {@link deferTask}.
  * @param {GlobalOptions} options - Global options.
  * @returns {McpCollectionCreator} The proxied creator function.
@@ -50,9 +50,9 @@ options: GlobalOptions = getOptions()): McpCollectionCreator => () => {
 const makeScheduledProxyCreator = ({
   creator,
   runSchedule
-}: { creator: McpCollectionCreator, runSchedule: NonNullable<McpCollection[2]>['runSchedule'] },
+}: { creator: McpCollectionCreator, runSchedule: NonNullable<McpCollection[3]>['runSchedule'] },
 options: GlobalOptions = getOptions()): McpCollectionCreator => () => {
-  const [name, callback, config] = creator(options);
+  const [name, config, callback, _config] = creator(options);
   const deferOptions = {
     ...(typeof runSchedule?.cancelMs === 'number' ? { cancelMs: runSchedule.cancelMs } : {}),
     ...(typeof runSchedule?.intervalMs === 'number' ? { intervalMs: runSchedule.intervalMs } : {}),
@@ -74,7 +74,7 @@ options: GlobalOptions = getOptions()): McpCollectionCreator => () => {
     return response || { records: [] };
   };
 
-  return config ? [name, handler, { ...config }] : [name, handler];
+  return _config ? [name, config, handler, { ..._config }] : [name, config, handler];
 };
 
 /**
@@ -94,13 +94,14 @@ const composeCollections = async (
 
   // Wrap built-in creators to enforce trusted _isInternal. Ties into what options, session values are available.
   const securedBuiltinCreators = builtinCreators.map((creator): McpCollectionCreator => opt => {
-    const [name, callback, config] = creator(opt);
+    const [name, config, callback, _config] = creator(opt);
 
     return [
       name,
+      config,
       callback,
       {
-        ...config,
+        ..._config,
         _isInternal: true
       }
     ];
@@ -111,9 +112,9 @@ const composeCollections = async (
   }
 
   for (const creator of securedBuiltinCreators) {
-    const [, , config] = creator(options);
-    const runHostValue = config?.runParallel;
-    const runScheduleConfig = config?.runSchedule;
+    const [, , , _config] = creator(options);
+    const runHostValue = _config?.runParallel;
+    const runScheduleConfig = _config?.runSchedule;
     let updatedCreator = creator;
 
     if (typeof runHostValue === 'string' && runHostValue.startsWith('#')) {

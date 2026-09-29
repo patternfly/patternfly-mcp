@@ -7,11 +7,12 @@ describe('patternFlyDocsCollection', () => {
   });
 
   it('should return the correct collection name and configuration', () => {
-    const [name, callback, config] = patternFlyDocsCollection();
+    const [name, config, callback, _config] = patternFlyDocsCollection();
 
     expect(name).toBe('patternfly-docs');
+    expect(config).toBeDefined();
     expect(callback).toBeDefined();
-    expect(config?.isRequired).toBe(true);
+    expect(_config?.isRequired).toBe(true);
   });
 });
 

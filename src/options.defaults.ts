@@ -184,7 +184,7 @@ interface ModeOptions {
  * @property api.componentPaths List of additional PatternFly API component paths to try and terminate with expected content.
  * @property api.traversalPaths List of additional PatternFly API traversal paths to iteratively try.
  * @property api.timeoutMs Timeout in milliseconds, during server run, for crawling the PatternFly API.
- * @property api.schedule Schedule for crawling the PatternFly API. See {@link McpCollection} config for details.
+ * @property api.schedule Schedule for crawling the PatternFly API. Applied to {@link McpCollection} `_config.runSchedule`.
  * @property api.schedule.continueOnError Continue crawling the PatternFly API on error.
  * @property api.schedule.intervalMs Interval in milliseconds, during server run, for crawling the PatternFly API.
  * @property api.schedule.delayStartMs Delay in milliseconds, during server run, before starting crawling the PatternFly API.

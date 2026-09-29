@@ -3,7 +3,7 @@
 exports[`composeCollections should match snapshot for composed collection creators 1`] = `
 [
   {
-    "config": {
+    "_config": {
       "_isInternal": true,
       "isRequired": false,
     },

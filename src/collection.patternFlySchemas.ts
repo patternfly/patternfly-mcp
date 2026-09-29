@@ -81,12 +81,15 @@ const collectionCallback = async () => {
  * @returns {McpCollection} The collection definition tuple
  */
 const patternFlySchemasCollection = (options = getOptions(), session = getSessionOptions()): McpCollection => {
-  const callback: McpCollection[1] = async () =>
+  const callback: McpCollection[2] = async () =>
     runWithSession(session, async () =>
       runWithOptions(options, async () => collectionCallback()));
 
   return [
     'patternfly-component-schemas',
+    {
+      title: 'Component Schemas'
+    },
     callback,
     {
       isRequired: true

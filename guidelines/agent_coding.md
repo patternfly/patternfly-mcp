@@ -59,6 +59,7 @@ All tools and resources MUST follow the **Creator Pattern** for dependency injec
 - **Options Injection Pattern**: Environment-dependent helpers should accept an optional `options` parameter that defaults to `getOptions()`. This allows for explicit dependency injection in tests while maintaining ergonomics via `AsyncLocalStorage` in production. Pure transforms should remain option-agnostic.
 - **Internal Tools**: `(options = getOptions()): McpTool` -> Returns `[name, schema, handler]`.
 - **Internal Resources**: `(options = getOptions()): McpResource` -> Returns `[name, uri, config, handler]`.
+- **Internal Collections**: `(options = getOptions()): McpCollection` -> Returns `[name, config, handler, _config?]` (see `McpCollection` in `src/collections.ts`).
 - **External Tool Plugins**: Authored with `createMcpTool` from `@patternfly/patternfly-mcp/tools`, using an object configuration, exported as `default`.
 - **Testing**: Creators allow easy mocking: `const tool = usePatternFlyDocsTool(mockOptions)`.
 
