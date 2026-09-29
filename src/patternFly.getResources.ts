@@ -263,8 +263,7 @@ const setCategoryDisplayLabel = (entry?: PatternFlyMcpDocsCatalogDoc) => {
  * @param contextPathOverride - Context path for updating the returned PatternFly versions.
  * @returns A multifaceted React component breakdown.  Use the "memoized" property for performance.
  * - `componentNamesIndex`: ALL component names across ALL versions,
- * - `componentNamesIndexMap`: Map of lowercase ALL component names to original case component names,
- * - `byVersion`: Map of lowercase PatternFly versions to Map of lowercase component names to { isSchemasAvailable: boolean, displayName: string }
+ * - `byVersion`: Map of PatternFly versions to component name metadata (`isSchemasAvailable`, `displayName`)
  */
 const getPatternFlyComponentNames = async (contextPathOverride?: string): Promise<PatternFlyMcpComponentNames> => {
   const componentSchemasCollection = patternFlyRecordsRegistry.get('patternfly-component-schemas');
@@ -495,15 +494,18 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
   const availableCollections = new Map<string, string>();
 
   // Apply a collection name for records.
-  const setCollectionName = (id: string, collection: PatternFlyMcpCollectionRegistryEntry | undefined) => [
-    ...((collection?.response?.records || [])?.flatMap(({ data }) => {
-      const collectionName = collection?.name || id;
+  const setCollectionName = (id: string, collection: PatternFlyMcpCollectionRegistryEntry | undefined) => {
+    if (!collection) {
+      return [];
+    }
 
-      availableCollections.set(collectionName, collection?.config?.title || collectionName);
+    const collectionName = collection?.name || id;
 
-      return Object.entries(data as Record<string, unknown[]>).map(entry => [...entry, collectionName] as const);
-    }) || [])
-  ];
+    availableCollections.set(collectionName, collection?.config?.title || collectionName);
+
+    return (collection?.response?.records || []).flatMap(({ data }) =>
+      Object.entries(data as Record<string, PatternFlyMcpDocsCatalogDoc[]>).map(entry => [...entry, collectionName] as const));
+  };
 
   const catalog = [
     ...setCollectionName('patternfly-docs', originalDocs),
@@ -544,7 +546,7 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
 
     const resource = resources.get(name) as PatternFlyMcpResourceMetadata;
 
-    (entries as any[]).forEach(entry => {
+    (entries as (PatternFlyMcpDocsCatalogDoc & Partial<PatternFlyMcpDocsMeta>)[]).forEach(entry => {
       const collection = entry.collection || collectionName;
       const displayCollection = availableCollections.get(collection);
 
@@ -576,7 +578,7 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
       };
 
       const displayName = entry.displayName || name;
-      const displayCategory = setCategoryDisplayLabel(entry as PatternFlyMcpDocsCatalogDoc);
+      const displayCategory = setCategoryDisplayLabel(entry);
       let uriSchemas;
       let uriSchemasId;
 
