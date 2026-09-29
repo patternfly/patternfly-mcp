@@ -134,8 +134,8 @@ describe('filterPatternFly', () => {
       name: 'button',
       groupId: 'button-group-id',
       entries: [
-        { id: 'btn-v6-react', name: 'button', version: 'v6', section: 'components', category: 'action', groupId: 'button-group-id' },
-        { id: 'btn-v5-react', name: 'button', version: 'v5', section: 'components', category: 'action', groupId: 'button-group-id' }
+        { id: 'btn-v6-react', name: 'button', version: 'v6', section: 'components', category: 'action', groupId: 'button-group-id', collection: 'patternfly-docs', displayCollection: 'PatternFly Docs' },
+        { id: 'btn-v5-react', name: 'button', version: 'v5', section: 'components', category: 'action', groupId: 'button-group-id', collection: 'patternfly-docs', displayCollection: 'PatternFly Docs' }
       ],
       versions: {
         v6: {
@@ -153,7 +153,7 @@ describe('filterPatternFly', () => {
     ['modal', {
       name: 'modal',
       entries: [
-        { name: 'modal', section: 'components', category: 'view', version: 'v6' }
+        { name: 'modal', section: 'components', category: 'view', version: 'v6', collection: 'patternfly-api', displayCollection: 'PatternFly API' }
       ]
     }]
   ]);
@@ -198,6 +198,21 @@ describe('filterPatternFly', () => {
       description: 'category, action',
       filters: { category: 'action' },
       expectedNames: ['button', 'button']
+    },
+    {
+      description: 'collection, patternfly-docs',
+      filters: { collection: 'patternfly-docs' },
+      expectedNames: ['button', 'button']
+    },
+    {
+      description: 'collection, displayCollection match (PatternFly API)',
+      filters: { collection: 'PatternFly API' },
+      expectedNames: ['modal']
+    },
+    {
+      description: 'collection, partial prefix match',
+      filters: { collection: 'patternfly-a' },
+      expectedNames: ['modal']
     }
   ])('should return filtered results, $description', async ({ filters, expectedNames }) => {
     const result = await filterPatternFly(filters as any, mockResources as any);
@@ -313,14 +328,14 @@ describe('dynamicFilterPatternFly', () => {
     ['button', {
       name: 'button',
       entries: [
-        { name: 'button', section: 'components', category: 'action', version: 'v6' },
-        { name: 'button', section: 'components', category: 'action', version: 'v5' }
+        { name: 'button', section: 'components', category: 'action', version: 'v6', collection: 'patternfly-docs', displayCollection: 'PatternFly Docs' },
+        { name: 'button', section: 'components', category: 'action', version: 'v5', collection: 'patternfly-docs', displayCollection: 'PatternFly Docs' }
       ]
     }],
     ['modal', {
       name: 'modal',
       entries: [
-        { name: 'modal', section: 'components', category: 'view', version: 'v6' }
+        { name: 'modal', section: 'components', category: 'view', version: 'v6', collection: 'patternfly-api', displayCollection: 'PatternFly API' }
       ]
     }],
     ['card', {
@@ -387,6 +402,13 @@ describe('dynamicFilterPatternFly', () => {
       filters: {},
       options: { searchFilters: ['category'], maxResultsLimit: 2 },
       expectedNames: ['modal', 'card']
+    },
+    {
+      description: 'find single match by applying searchQuery to "collection"',
+      searchQuery: 'patternfly-api',
+      filters: {},
+      options: { searchFilters: ['collection'] },
+      expectedNames: ['modal']
     }
   ])('should $description', async ({ searchQuery, filters, options, expectedNames }) => {
     const result = await dynamicFilterPatternFly(
@@ -556,7 +578,7 @@ describe('dynamicFilterPatternFly', () => {
     let resourceLoads = 0;
 
     // Represents the number of filters and fallback.
-    const failThroughLoad = 7;
+    const failThroughLoad = 8;
     const flakyMcpResources = {
       then(onFulfilled?: (value: any) => any, onRejected?: (reason: any) => any) {
         resourceLoads += 1;
@@ -588,8 +610,8 @@ describe('searchPatternFly', () => {
         name: 'button',
         groupId: 'btn-group',
         entries: [
-          { id: 'btn-v6-hash', name: 'button', version: 'v6', section: 'components', category: 'action', groupId: 'btn-group' },
-          { id: 'btn-v5-hash', name: 'button', version: 'v5', section: 'components', category: 'action', groupId: 'btn-group' }
+          { id: 'btn-v6-hash', name: 'button', version: 'v6', section: 'components', category: 'action', groupId: 'btn-group', collection: 'patternfly-docs', displayCollection: 'PatternFly Docs' },
+          { id: 'btn-v5-hash', name: 'button', version: 'v5', section: 'components', category: 'action', groupId: 'btn-group', collection: 'patternfly-docs', displayCollection: 'PatternFly Docs' }
         ],
         versions: {
           v6: { uri: 'patternfly://docs/button?version=v6', isSchemasAvailable: true },
@@ -599,7 +621,7 @@ describe('searchPatternFly', () => {
       ['modal', {
         name: 'modal',
         groupId: 'mdl-group',
-        entries: [{ id: 'mdl-v6-hash', name: 'modal', version: 'v6', section: 'components', category: 'view', groupId: 'mdl-group' }],
+        entries: [{ id: 'mdl-v6-hash', name: 'modal', version: 'v6', section: 'components', category: 'view', groupId: 'mdl-group', collection: 'patternfly-api', displayCollection: 'PatternFly API' }],
         versions: { v6: { uri: 'patternfly://docs/modal?version=v6', isSchemasAvailable: true } }
       }]
     ]),
@@ -754,6 +776,22 @@ describe('searchPatternFly', () => {
       expectedLength: 1,
       expectedName: 'button',
       expectedType: 'exact'
+    },
+    {
+      description: 'filter by collection matching patternfly-docs',
+      search: 'button',
+      filters: { collection: 'patternfly-docs' },
+      expectedLength: 1,
+      expectedName: 'button',
+      expectedType: 'exact'
+    },
+    {
+      description: 'filter by collection excluding unmatched resources',
+      search: 'button',
+      filters: { collection: 'patternfly-api' },
+      expectedLength: 0,
+      expectedName: undefined,
+      expectedType: undefined
     }
   ])('should return search results, $description', async ({ search, filters, options, expectedLength, expectedName, expectedType }) => {
     const { searchResults } = await searchPatternFly(search, { ...filters }, { ...options, ...mockOptions });

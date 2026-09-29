@@ -31,6 +31,7 @@ type PatternFlyMcpResourceFilteredMetadata = Omit<PatternFlyMcpResourceMetadata,
  * @interface FilterPatternFlyFilters
  *
  * @property [version] - PatternFly version to filter search results. Defaults to undefined for all versions.
+ * @property [collection] - Collection to filter search results. Defaults to undefined for all collections.
  * @property [category] - Category to filter search results. Defaults to undefined for all categories.
  * @property [section] - Section to filter search results. Defaults to undefined for all sections.
  * @property [name] - Name, or hash id, to filter search results. Defaults to undefined for all names and IDs.
@@ -38,6 +39,7 @@ type PatternFlyMcpResourceFilteredMetadata = Omit<PatternFlyMcpResourceMetadata,
  */
 interface FilterPatternFlyFilters {
   version?: string | undefined;
+  collection?: string | undefined;
   category?: string | undefined;
   section?: string | undefined;
   name?: string | undefined;
@@ -136,7 +138,7 @@ interface FilterPatternFlySettings {
  * (e.g. `name` first for hash/entry id and URI narrowing). Do not randomize — truncation
  * and `Promise.any` both keep this sequence; reorder only with intentional product priority.
  */
-const SEARCH_FILTERS: (keyof FilterPatternFlyFilters)[] = ['name', 'section', 'category', 'version', 'path'];
+const SEARCH_FILTERS: (keyof FilterPatternFlyFilters)[] = ['name', 'section', 'category', 'version', 'collection', 'path'];
 
 /**
  * Max parallel dynamic-filter passes (excluding the always-included base pass). Matches
@@ -309,6 +311,10 @@ const filterPatternFly = async (
         return false;
       }
 
+      const matchesCollection = !updatedFilters.collection ||
+        filterMatch(entry.collection, updatedFilters.collection) ||
+        filterMatch(entry.displayCollection, updatedFilters.collection);
+
       const matchesVersion = !updatedFilters.version || String(entry.version).toLowerCase() === updatedFilters.version;
       const matchesCategory = !updatedFilters.category || filterMatch(entry.category, updatedFilters.category);
       const matchesSection = !updatedFilters.section || filterMatch(entry.section, updatedFilters.section);
@@ -325,7 +331,7 @@ const filterPatternFly = async (
         filterMatch(entry.groupId, updatedFilters.name) || filterMatch(entry.name, updatedFilters.name);
 
       // Any missing filter registers as true. Only filters that are active run their check.
-      return matchesVersion && matchesCategory && matchesSection && matchesPath && matchesName;
+      return matchesCollection && matchesVersion && matchesCategory && matchesSection && matchesPath && matchesName;
     });
 
     if (signal?.aborted) {
