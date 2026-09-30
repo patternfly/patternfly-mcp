@@ -12,10 +12,16 @@ import {
 } from './server.assertions';
 import { getOptions } from './options.context';
 import { searchPatternFly, type SearchPatternFlyResult } from './patternFly.search';
-import { getPatternFlyMcpResources, getPatternFlyComponentSchema, setCategoryDisplayLabel } from './patternFly.getResources';
-import { normalizeEnumeratedPatternFlyVersion } from './patternFly.helpers';
+import {
+  getPatternFlyMcpResources,
+  getPatternFlyComponentSchema,
+  setCategoryDisplayLabel
+} from './patternFly.getResources';
 import { isPatternFlyUri } from './patternFly.support';
-import { formatContentForMarkdown } from './resource.helpers';
+import {
+  formatContentForMarkdown,
+  normalizeEnumeratedCollectionVersion
+} from './resource.helpers';
 
 /**
  * usePatternFlyDocs tool function
@@ -66,8 +72,7 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
 
     if (isVersion) {
       assertInputStringLength(version, {
-        max: options.minMax.inputStrings.max,
-        min: 2,
+        ...options.minMax.inputStrings,
         inputDisplayName: 'version'
       });
 
@@ -78,7 +83,7 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
 
     const updatedUrlList: string[] = isUrlList ? urlList.slice(0, options.minMax.docsToLoad.max) : [];
     const { latestSchemasVersion, byPath } = await getPatternFlyMcpResources.memo();
-    const normalizedVersion = await normalizeEnumeratedPatternFlyVersion(version);
+    const normalizedVersion = await normalizeEnumeratedCollectionVersion.memo(version);
     const updatedVersion = normalizedVersion || (isVersion && version) || undefined;
     const updatedName = name?.trim();
 
@@ -272,7 +277,7 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
         name: z.string().max(options.minMax.inputStrings.max)
           .optional().describe('The name of a PatternFly component or patternfly:// URI resource to fetch documentation for (e.g., "Button", "patternfly://docs/Button")'),
         version: z.string()
-          .optional().describe(`Filter results by a specific PatternFly version (e.g. ${options.patternflyOptions.availableSearchVersions.map(value => `"${value}"`).join(', ')})`)
+          .optional().describe(`Filter results by a specific collection version (e.g. "v5", "v6")`)
       }
     },
     callback,

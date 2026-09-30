@@ -1,4 +1,5 @@
 import { type McpResource } from './mcpSdk';
+import { getPatternFlyMcpResources } from './patternFly.getResources';
 import { stringJoin } from './server.helpers';
 import { getOptions, runWithOptions } from './options.context';
 
@@ -17,7 +18,7 @@ const URI_TEMPLATE = 'patternfly://context';
  */
 const CONFIG = {
   title: 'PatternFly Design System Context',
-  description: 'Information about the PatternFly design system and how to use this MCP server, including environment and troubleshooting information.',
+  description: 'Information about the PatternFly design system, documentation collections, and how to use this MCP server, including environment and troubleshooting information.',
   mimeType: 'text/markdown'
 };
 
@@ -49,20 +50,26 @@ const resourceCallback = async (passedUri: URL, options = getOptions()) => {
     ? '- **MCP resources:** Can be used to list and access available documentation resources.'
     : '- **MCP resources:** Can be used to list, filter, and read available documentation resources.';
 
-  const availableToolFunctions = options.contextManagement ? 'search, list and access' : 'search, fetch and display';
+  const availableToolFunctions = options.contextManagement ? 'search, list, filter, and access' : 'search, fetch, filter, and display';
+
+  const { byCollection } = await getPatternFlyMcpResources.memo();
+  const availableCollections = Object.keys(byCollection).length
+    ? Object.entries(byCollection).map(([collection, entry]) => entry[0]?.displayCollection || collection).join(', ')
+    : 'Core Docs, PatternFly API, and Component Schemas';
+
   const context = `PatternFly is an open-source design system for building consistent, accessible user interfaces.
 
 **What is PatternFly?**
-PatternFly provides React components, design guidelines, and development tools for creating enterprise applications. It is used by Red Hat and other organizations to build consistent UIs with reusable components and design principles.
+PatternFly provides React components, design guidelines, API references, and development tools for creating enterprise applications. It is used by Red Hat and other organizations to build consistent UIs with reusable components and design principles.
 
 **Key Features:**
 - React component library with TypeScript support
 - Design guidelines and accessibility standards
 - JSON Schema validation for component props
-- Comprehensive documentation, examples, and AI guidance
+- Comprehensive documentation collections: ${availableCollections}
 
 **PatternFly MCP Server:**
-This MCP server provides tools and resources to access all PatternFly documentation resources ranging from design to development.
+This MCP server provides tools and resources to access all PatternFly documentation resources across collections ranging from design to development.
 - **MCP tools:** Can be used to ${availableToolFunctions} available documentation resources.
 ${availableMcpResources}
 

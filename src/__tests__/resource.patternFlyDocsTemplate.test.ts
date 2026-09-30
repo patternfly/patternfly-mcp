@@ -97,6 +97,7 @@ describe('resourceCallback', () => {
   ])('should attempt to return resource content, $description', async ({ variables }) => {
     MockMcpResources.mockResolvedValue({
       availableVersions: ['v6'],
+      collectionVersions: ['v6'],
       latestVersion: 'v6'
     } as any);
 
@@ -140,7 +141,7 @@ describe('resourceCallback', () => {
   it.each([
     {
       description: 'invalid version',
-      error: 'Invalid PatternFly version',
+      error: '"version" must be one of the following values',
       variables: {
         name: 'Button',
         version: 'v5'
@@ -187,14 +188,14 @@ describe('resourceCallback', () => {
     },
     {
       description: 'wrong version',
-      error: 'Invalid PatternFly version',
+      error: '"version" must be one of the following values',
       variables: {
         name: 'button',
         version: 'v5'
       }
     }
   ])('should handle variable errors, $description', async ({ error, variables }) => {
-    MockMcpResources.mockResolvedValue({ availableVersions: ['v6'], latestVersion: 'v6' } as any);
+    MockMcpResources.mockResolvedValue({ availableVersions: ['v6'], collectionVersions: ['v6'], latestVersion: 'v6' } as any);
     MockFilter.mockResolvedValue({ byEntry: [] } as any);
 
     const mockContent = `Mock content for ${variables.name}`;

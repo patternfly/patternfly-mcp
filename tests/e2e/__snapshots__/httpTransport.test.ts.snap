@@ -25,13 +25,14 @@ exports[`Builtin resources, HTTP transport should read meta resources, patternfl
 {
   "mimeType": "text/markdown",
   "text": "# PatternFly Documentation Index Metadata
-Use these parameters to filter the PatternFly documentation index.
+Use these parameters to filter the documentation index.
 
 ## Available Parameters
 
 | Parameter | Valid Values | Description |
 | :--- | :--- | :--- |
 | \`category\` | \`about\`, \`about-rapid-prototyping\`, \`accessibility\`, \`analytics\`, \`chat-bot\`, \`css\`, \`customizing%20messages\`, \`demo\`, \`demo-demos\`, \`design-guidelines\`, \`design-tokens\`, \`development-guide\`, \`development-guidelines\`, \`enhancing-existing-projects\`, \`general\`, \`grammar\`, \`html\`, \`new-prototypes\`, \`overview\`, \`react\`, \`release-notes\`, \`text\`, \`upgrade-guide\`, \`writing-guidelines\`, \`writing-guides\` | Filter by category |
+| \`collection\` | \`patternfly-api\`, \`patternfly-component-schemas\`, \`patternfly-docs\` | Filter by collection |
 | \`section\` | \`accessibility\`, \`ai\`, \`charts\`, \`components\`, \`content-design\`, \`developer-guides\`, \`extensions\`, \`foundations-and-styles\`, \`get-help\`, \`get-involved\`, \`get-started\`, \`guidelines\`, \`layouts\`, \`patterns\`, \`releases\`, \`resources\`, \`upgrade\` | Filter by section |
 | \`version\` | \`v4\`, \`v5\`, \`v6\` | Filter by version |
 
@@ -43,7 +44,15 @@ Use these parameters to filter the PatternFly documentation index.
 - **Filtered View (section=...)**: \`patternfly://docs/index?section=...\`
 - **Filtered View (version=...&section=...)**: \`patternfly://docs/index?version=...&section=...\`
 - **Filtered View (category=...&section=...)**: \`patternfly://docs/index?category=...&section=...\`
-- **Filtered View (version=...&category=...&section=...)**: \`patternfly://docs/index?version=...&category=...&section=...\`",
+- **Filtered View (version=...&category=...&section=...)**: \`patternfly://docs/index?version=...&category=...&section=...\`
+- **Filtered View (collection=...)**: \`patternfly://docs/index?collection=...\`
+- **Filtered View (version=...&collection=...)**: \`patternfly://docs/index?version=...&collection=...\`
+- **Filtered View (category=...&collection=...)**: \`patternfly://docs/index?category=...&collection=...\`
+- **Filtered View (version=...&category=...&collection=...)**: \`patternfly://docs/index?version=...&category=...&collection=...\`
+- **Filtered View (section=...&collection=...)**: \`patternfly://docs/index?section=...&collection=...\`
+- **Filtered View (version=...&section=...&collection=...)**: \`patternfly://docs/index?version=...&section=...&collection=...\`
+- **Filtered View (category=...&section=...&collection=...)**: \`patternfly://docs/index?category=...&section=...&collection=...\`
+- **Filtered View (version=...&category=...&section=...&collection=...)**: \`patternfly://docs/index?version=...&category=...&section=...&collection=...\`",
   "uri": "patternfly://docs/meta",
 }
 `;

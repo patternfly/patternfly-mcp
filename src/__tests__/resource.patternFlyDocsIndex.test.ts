@@ -2,6 +2,7 @@ import { McpError } from '@modelcontextprotocol/sdk/types.js';
 import {
   patternFlyDocsIndexResource,
   listResources,
+  uriCollectionComplete,
   uriNameComplete,
   uriCategoryComplete,
   uriSectionComplete,
@@ -47,7 +48,7 @@ describe('patternFlyDocsIndexResource', () => {
 
 describe('listResources', () => {
   it('should return a list of resources', async () => {
-    MockMcpResources.mockResolvedValue({ availableVersions: ['v6'], byVersion: { v6: [] } } as any);
+    MockMcpResources.mockResolvedValue({ byCollection: { 'patternfly-docs': [] } } as any);
 
     const resources = await listResources();
 
@@ -108,19 +109,30 @@ describe('uriVersionComplete', () => {
   });
 });
 
+describe('uriCollectionComplete', () => {
+  it('should attempt to return collections on completion', async () => {
+    MockParamCompletion.mockResolvedValue({ collections: ['patternfly-docs'] } as any);
+
+    const result = await uriCollectionComplete('patternfly');
+
+    expect(MockParamCompletion).toHaveBeenCalledWith(expect.objectContaining({ collection: 'patternfly' }));
+    expect(result).toEqual(['patternfly-docs']);
+  });
+});
+
 describe('resourceCallback', () => {
   it.each([
     {
       description: 'default',
       variables: {},
-      expected: '# PatternFly Documentation Index for "v6"'
+      expected: '# Documentation Index'
     },
     {
       description: 'explicit valid version',
       variables: {
         version: 'v6'
       },
-      expected: '# PatternFly Documentation Index for "v6"'
+      expected: '# Documentation Index for "v6"'
     },
     {
       description: 'category',
@@ -145,7 +157,7 @@ describe('resourceCallback', () => {
       expected: 'category=accessibility&section=components'
     }
   ])('should return context content, $description', async ({ variables, expected }) => {
-    MockMcpResources.mockResolvedValue({ availableVersions: ['v6'], latestVersion: 'v6' } as any);
+    MockMcpResources.mockResolvedValue({ availableVersions: ['v6'], collectionVersions: ['v6'], latestVersion: 'v6' } as any);
     MockFilter.mockResolvedValue({
       byResource: new Map([
         ['button', {
@@ -169,10 +181,10 @@ describe('resourceCallback', () => {
       variables: {
         version: 'v5'
       },
-      error: 'Invalid PatternFly version'
+      error: '"version" must be one of the following values'
     }
   ])('should handle variable errors, $description', async ({ error, variables }) => {
-    MockMcpResources.mockResolvedValue({ availableVersions: ['v6'], latestVersion: 'v6' } as any);
+    MockMcpResources.mockResolvedValue({ availableVersions: ['v6'], collectionVersions: ['v6'], latestVersion: 'v6' } as any);
     MockFilter.mockResolvedValue({ byResource: new Map() } as any);
 
     await expect(resourceCallback(undefined as any, variables as any)).rejects.toThrow(McpError);

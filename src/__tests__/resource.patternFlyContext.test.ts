@@ -41,7 +41,7 @@ describe('resourceCallback', () => {
         nodeVersion: 22
       },
       expected: [
-        'search, list and access',
+        'search, list, filter, and access',
         'list and access available documentation resources',
         'Active Experimental Features',
         'contextManagement'

@@ -9,6 +9,7 @@ exports[`patternFlyDocsIndexResource should have a consistent return structure: 
     "_callbacks": {
       "complete": {
         "category": [Function],
+        "collection": [Function],
         "section": [Function],
         "version": [Function],
       },
@@ -24,11 +25,12 @@ exports[`patternFlyDocsIndexResource should have a consistent return structure: 
             "version",
             "category",
             "section",
+            "collection",
           ],
           "operator": "?",
         },
       ],
-      "template": "patternfly://docs/index{?version,category,section}",
+      "template": "patternfly://docs/index{?version,category,section,collection}",
     },
   },
 }
