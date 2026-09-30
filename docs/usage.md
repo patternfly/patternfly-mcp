@@ -24,12 +24,23 @@ Use this to search for PatternFly documentation URLs, `patternfly://` resource U
 > **Transitional URI support**: The default tools also return and accept `patternfly://` URIs for compatibility. Using and passing URIs through these tools is supported as a compatibility bridge for the intended workflow; see [experimental context management](./experimental.md#contextmanagement) for details on the transitional allowance for limited MCP clients.
 
 **Parameters:**
-- `searchQuery`: `string` (required) - Full or partial component name to search for (e.g., "button", "table", "*" for all components)
+- `searchQuery`: `string` (required) - Case-insensitive query for full or partial keywords, resource names, versions and more (e.g., `"button"`, `"card v6"`, `"react"`, `"*"`)
+- `collection`: `string` (optional) - Filter results by a primary collection of records (e.g., `"patternfly-docs"`, `"patternfly-component-schemas"`, `"patternfly-api"`)
 
-**Example:**
+**Examples:**
+
+Search across all collections:
 ```json
 {
   "searchQuery": "button"
+}
+```
+
+Search filtered by collection:
+```json
+{
+  "searchQuery": "button",
+  "collection": "patternfly-docs"
 }
 ```
 
@@ -42,6 +53,7 @@ Fetch full documentation and component JSON schemas for specific PatternFly URLs
 **Parameters:** _Parameters are mutually exclusive. Provide either `name` OR `urlList`, not both._
 - `name`: `string` (optional) - A PatternFly component or resource name (e.g., `"Button"`, `"Modal"`), or a `patternfly://` URI (e.g., `"patternfly://docs/button"`). Names are **recommended** for known component lookups.
 - `urlList`: `string[]` (optional) - A list of documentation URLs and/or `patternfly://` URIs from `searchPatternFlyDocs` (max 15 at a time).
+- `version`: `string` (optional) - Filter results by a specific collection version (e.g., `"v5"`, `"v6"`).
 
 > **Transitional URI support**: Prefer reading `patternfly://` URIs with MCP `resources/read` when your client supports it. Passing URIs through this tool is supported as a compatibility bridge for the intended workflow; see [experimental context management](./experimental.md#contextmanagement) for details on the transitional allowance for limited MCP clients.
 
@@ -79,7 +91,7 @@ The server exposes a resource-centric architecture via the `patternfly://` URI s
 
 Use these indexes to discover what is available in the library:
 
-- **`patternfly://docs/index{?version,category,section}`**: A comprehensive index of all available PatternFly documentation pages.
+- **`patternfly://docs/index{?version,category,section,collection}`**: A comprehensive index of all available PatternFly documentation pages, filterable by version, category, section, or collection.
 - **`patternfly://docs/meta{?version}`**: Metadata discovery for available PatternFly documentation pages, helpful for understanding available filter parameters.
 - **`patternfly://components/index{?version,category}`**: A list of all available PatternFly component names.
 - **`patternfly://components/meta{?version}`**: Metadata discovery for components, helpful for understanding available filter parameters.
@@ -90,7 +102,7 @@ Use these indexes to discover what is available in the library:
 
 Access specific component documentation or technical specifications using the following URI templates (RFC 6570):
 
-- **`patternfly://docs/{name}{?version,category,section}`**: Full human-readable documentation for a specific component (e.g., `patternfly://docs/button`) or guideline.
+- **`patternfly://docs/{name}{?version,category,section,collection}`**: Full human-readable documentation for a specific component (e.g., `patternfly://docs/button`) or guideline.
 - **`patternfly://schemas/{name}{?version,category}`**: Machine-readable JSON Schema for a specific component, detailing props, types, and validation rules (e.g., `patternfly://schemas/button`).
 
 ### Context and guidelines

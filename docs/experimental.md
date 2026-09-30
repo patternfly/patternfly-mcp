@@ -53,7 +53,7 @@ Search PatternFly components, documentation, guidelines, and JSON schemas by key
 
 **Parameters:**
 - `query`: `string` (required) — Case-insensitive query for full or partial keywords, resource names, versions and more (e.g., `"button"`, `"card v6"`, `"react"`, `"*"`)
-- `collection`: `string` (optional) — Filter results by a primary collection of records (e.g., `"patternfly-docs"`, `"patternfly-component-schemas"`, `"patternfly-api"`)
+- `collection`: `string` (optional) — Filter results by a primary collection of records (e.g., `"patternfly-docs"`, `"patternfly-component-schemas"`, `"patternfly-api"`). Note that additional specialized or experimental collections outside the primary core set may also be available or shift across releases.
 
 **Examples:**
 
