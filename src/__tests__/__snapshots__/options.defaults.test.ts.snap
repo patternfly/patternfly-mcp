@@ -168,6 +168,8 @@ exports[`options defaults should return specific properties: defaults 1`] = `
       "https://www.github.com/patternfly",
       "https://main.patternfly-org.pages.dev",
       "https://raw.githubusercontent.com/patternfly",
+      "https://github.com/rh-uxd",
+      "https://raw.githubusercontent.com/rh-uxd",
     ],
   },
   "xhrFetch": {

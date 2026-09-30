@@ -496,7 +496,9 @@ const WHITELIST_OPTIONS: WhitelistOptions = {
     'https://github.com/patternfly',
     'https://www.github.com/patternfly',
     'https://main.patternfly-org.pages.dev',
-    'https://raw.githubusercontent.com/patternfly'
+    'https://raw.githubusercontent.com/patternfly',
+    'https://github.com/rh-uxd',
+    'https://raw.githubusercontent.com/rh-uxd'
   ],
   protocols: ['http', 'https']
 };
