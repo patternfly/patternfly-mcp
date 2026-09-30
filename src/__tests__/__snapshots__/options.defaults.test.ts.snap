@@ -63,7 +63,7 @@ exports[`options defaults should return specific properties: defaults 1`] = `
         "intervalMs": 604800000,
         "repeat": Infinity,
       },
-      "timeoutMs": 300000,
+      "timeoutMs": 1200000,
       "traversalPaths": [
         "examples",
       ],
