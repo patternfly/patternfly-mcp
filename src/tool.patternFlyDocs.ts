@@ -162,7 +162,7 @@ const usePatternFlyDocsTool = (options = getOptions()): McpTool => {
     }
 
     try {
-      const processedDocs = await processDocsFunction.memo([...finalUrlList]);
+      const processedDocs = await processDocsFunction.memo([...finalUrlList], { loadLimit: options.minMax.docsToLoad.max });
       const primaryDocs: ProcessedDoc[] = [];
       const secondaryDocs: ProcessedDoc[] = [];
       const tertiaryDocs: ProcessedDoc[] = [];

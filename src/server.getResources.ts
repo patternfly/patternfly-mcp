@@ -326,7 +326,10 @@ const promiseQueue = async (queue: string[], { limit = 5, throttleMs = 250 } = {
  *
  * @template T - Metadata fields on `{ doc, ...metadata }` inputs, merged into each result.
  * @param inputs - List of paths or URLs to load
- * @param options - Optional options
+ * @param [settings] - Configuration options.
+ * @param [settings.loadLimit] - Maximum number of docs to load.
+ * @param [settings.parallelLoadLimit] - Maximum number of docs to load in parallel.
+ * @param [settings.parallelLoadThrottleMs] - Throttle time in ms between parallel loads.
  * @returns An array of {@link ProcessedDoc} entries:
  *   - `content` is the loaded content string.
  *   - `path` is the original input path or URL.
@@ -335,7 +338,9 @@ const promiseQueue = async (queue: string[], { limit = 5, throttleMs = 250 } = {
  */
 const processDocsFunction = async <T extends Record<string, unknown> = Record<string, unknown>>(
   inputs: (string | ({ doc: string } & T))[],
-  options = getOptions()
+  {
+    loadLimit = 100, parallelLoadLimit = 10, parallelLoadThrottleMs = 100
+  }: { loadLimit?: number; parallelLoadLimit?: number; parallelLoadThrottleMs?: number; } = {}
 ): Promise<ProcessedDoc<Omit<T, 'doc'>>[]> => {
   const normalizeInputs = inputs.map(input =>
     (typeof input === 'string' ? { doc: input } : input) as { doc: string } & T);
@@ -354,10 +359,10 @@ const processDocsFunction = async <T extends Record<string, unknown> = Record<st
     }
   }
 
-  const uniqueInputsList = Array.from(uniqueInputsMap.values()).slice(0, options.minMax.docsToLoad.max);
+  const uniqueInputsList = Array.from(uniqueInputsMap.values()).slice(0, loadLimit);
   const list = uniqueInputsList.map(input => input.doc);
 
-  const settled = await promiseQueue(list);
+  const settled = await promiseQueue(list, { limit: parallelLoadLimit, throttleMs: parallelLoadThrottleMs });
   const docs: ProcessedDoc<Omit<T, 'doc'>>[] = [];
 
   settled.forEach((res, index) => {

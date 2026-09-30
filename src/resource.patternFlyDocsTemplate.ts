@@ -137,7 +137,7 @@ const resourceCallback = async (passedUri: URL, variables: Record<string, string
 
     if (docPaths.length > 0) {
       // `processDocsFunction` has de-dup docs baked in
-      const processedDocs = await processDocsFunction.memo(docPaths);
+      const processedDocs = await processDocsFunction.memo(docPaths, { loadLimit: options.minMax.docsToLoad.max });
 
       // Failures are `log.debugged` in `processDocsFunction`.
       for (const response of processedDocs) {

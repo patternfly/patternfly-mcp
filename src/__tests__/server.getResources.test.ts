@@ -12,7 +12,6 @@ import {
   resolveLocalPathFunction
 } from '../server.getResources';
 import { runWithOptions } from '../options.context';
-import { type GlobalOptions } from '../options';
 import { DEFAULT_OPTIONS } from '../options.defaults';
 
 // Mock dependencies
@@ -377,7 +376,6 @@ describe('processDocsFunction', () => {
         'local-file.md',
         'https://example.com/remote.md'
       ],
-      options: {},
       fileMemoHits: 1,
       fetchMemoHits: 1
     },
@@ -390,7 +388,6 @@ describe('processDocsFunction', () => {
         'https://example.com/remote.md',
         'https://example.com/remote.md'
       ],
-      options: {},
       fileMemoHits: 1,
       fetchMemoHits: 1
     },
@@ -403,7 +400,6 @@ describe('processDocsFunction', () => {
         '   ',
         'file2.md'
       ],
-      options: {},
       fileMemoHits: 2
     },
     {
@@ -412,7 +408,6 @@ describe('processDocsFunction', () => {
         { doc: 'file.md', lorem: 'ipsum' },
         { doc: 'file.md', dolor: 'sit' }
       ],
-      options: {},
       fileMemoHits: 1
     },
     {
@@ -420,22 +415,10 @@ describe('processDocsFunction', () => {
       inputs: [
         { doc: 'file.md', lorem: 'ispum', dolor: 'sit' }
       ],
-      options: {},
       fileMemoHits: 1
     }
-  ])('should process local and remote inputs, $description', async ({ inputs, options, fileMemoHits = 0, fetchMemoHits = 0 }) => {
-    const result = await processDocsFunction(inputs, {
-      isHttp: false,
-      minMax: {
-        docsToLoad: {
-          min: 1,
-          max: 10
-        }
-      },
-      separator: '\n\n---\n\n',
-      urlRegex: /^(https?:)\/\//i,
-      ...options
-    } as GlobalOptions);
+  ])('should process local and remote inputs, $description', async ({ inputs, fileMemoHits = 0, fetchMemoHits = 0 }) => {
+    const result = await processDocsFunction(inputs, { loadLimit: 10 });
 
     expect(result).toMatchSnapshot();
     expect(readLocalFileFunction.memo).toHaveBeenCalledTimes(fileMemoHits);
@@ -443,18 +426,6 @@ describe('processDocsFunction', () => {
   });
 
   it('should handle errors gracefully', async () => {
-    const mockOptions = {
-      isHttp: false,
-      minMax: {
-        docsToLoad: {
-          min: 1,
-          max: 10
-        }
-      },
-      separator: '\n\n---\n\n',
-      urlRegex: /^(https?:)\/\//i
-    };
-
     // Mock one success and one failure
     readLocalFileFunction.memo = jest.fn()
       .mockResolvedValueOnce('success content')
@@ -465,7 +436,7 @@ describe('processDocsFunction', () => {
       'bad-file.md'
     ];
 
-    const result = await processDocsFunction(inputs, mockOptions as GlobalOptions);
+    const result = await processDocsFunction(inputs, { loadLimit: 10 });
 
     expect(result).toMatchSnapshot('errors');
   });
