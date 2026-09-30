@@ -24,6 +24,10 @@ Instead of a standalone "discovery" tool, the server implements a robust **Libra
 
 > This discovery layer treats the MCP server as a living library. It enables the server to provide updates for all built-in tools and resources while maintaining a tailored experience based on user patterns (e.g., tailoring responses for designers vs. developers).
 
+#### Collections and extensible sources
+
+The server organizes records across primary collections (such as `patternfly-docs`, `patternfly-component-schemas`, and `patternfly-api`). Outside of these core collections, additional specialized, supplemental, or experimental collections may be dynamically registered or evolve across server releases.
+
 #### Library synchronization (in-progress)
 
 We'll be introducing more updates based on our library synchronization concept in upcoming releases. The base concept balances stability and currentness by integrating core guidelines and standards directly into the server while syncing from the latest available PatternFly implementation.

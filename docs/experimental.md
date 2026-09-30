@@ -52,13 +52,23 @@ Registered only when context management is enabled.
 Search PatternFly components, documentation, guidelines, and JSON schemas by keyword. Returns MCP `resource_link` content items (collections, docs, and schemas).
 
 **Parameters:**
-- `query`: `string` (required) — Case-insensitive, full or partial keyword query (e.g., `"button"`, `"react"`, `"*"` for all resources)
-- `version`: `string` (optional) — Filter by PatternFly version (`"current"`, `"latest"`, or `"v6"`)
+- `query`: `string` (required) — Case-insensitive query for full or partial keywords, resource names, versions and more (e.g., `"button"`, `"card v6"`, `"react"`, `"*"`)
+- `collection`: `string` (optional) — Filter results by a primary collection of records (e.g., `"patternfly-docs"`, `"patternfly-component-schemas"`, `"patternfly-api"`). Note that additional specialized or experimental collections outside the primary core set may also be available or shift across releases.
 
-**Example:**
+**Examples:**
+
+Search across all collections:
 ```json
 {
   "query": "button"
+}
+```
+
+Search filtered by collection:
+```json
+{
+  "query": "button",
+  "collection": "patternfly-docs"
 }
 ```
 
