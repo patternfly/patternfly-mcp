@@ -98,7 +98,7 @@ const generateReportCsv = ({
   newRecords,
   crawledMap: _crawledMap
 }: GenerateCsvReportOptions): string => {
-  const headers = ['status', 'path', 'name', 'qualityScore', 'contentType', 'reason', 'details'];
+  const headers = ['status', 'path', 'name', 'previousQualityScore', 'contentType', 'reason', 'details'];
   const rows: (string | number | undefined | null)[][] = [];
 
   for (const record of diff.added) {
