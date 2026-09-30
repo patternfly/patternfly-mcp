@@ -1,5 +1,5 @@
-import { readFile, writeFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   apiSpider,
@@ -40,6 +40,93 @@ interface ModifiedRecordReport {
   record: ApiEmbedded;
   reasons: string[];
 }
+
+/**
+ * Options for generating CSV report output.
+ */
+interface GenerateCsvReportOptions {
+  diff: ReturnType<typeof diffCollections>;
+  oldRecords: ApiEmbedded[];
+  newRecords: ApiEmbedded[];
+  crawledMap: Map<string, { entry: ApiCrawler; metadata: ApiContent }>;
+}
+
+/**
+ * Safely escape and format a field for standard RFC 4180 CSV output.
+ *
+ * @param field - Value to format for CSV
+ */
+const escapeCsvField = (field: unknown): string => {
+  if (field === null || field === undefined) {
+    return '';
+  }
+
+  const str = String(field);
+
+  if (str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r')) {
+    return `"${str.replace(/"/g, '""')}"`;
+  }
+
+  return str;
+};
+
+/**
+ * Format rows and headers into standard CSV string.
+ *
+ * @param headers - Column headers
+ * @param rows - Table rows
+ */
+const formatCsv = (headers: string[], rows: (string | number | undefined | null)[][]): string => {
+  const headerLine = headers.map(escapeCsvField).join(',');
+  const rowLines = rows.map(row => row.map(escapeCsvField).join(','));
+
+  return [headerLine, ...rowLines].join('\n') + '\n';
+};
+
+/**
+ * Generate a complete, non-truncated CSV report for additions, removals, modifications, and unchanged records.
+ *
+ * @param options - Generation options
+ * @param options.diff - Diff calculation between old and new records
+ * @param options.oldRecords - Previous collection records
+ * @param options.newRecords - Current collection records
+ * @param options.crawledMap - Map of crawled entries and metadata
+ */
+const generateReportCsv = ({
+  diff,
+  oldRecords: _oldRecords,
+  newRecords,
+  crawledMap: _crawledMap
+}: GenerateCsvReportOptions): string => {
+  const headers = ['status', 'path', 'name', 'qualityScore', 'contentType', 'reason', 'details'];
+  const rows: (string | number | undefined | null)[][] = [];
+
+  for (const record of diff.added) {
+    rows.push(['ADDED', record.p, record.n, record.q, record.c, '', '']);
+  }
+
+  for (const { record, reason, details } of diff.removed) {
+    rows.push(['REMOVED', record.p, record.n, record.q, record.c, reason, details || '']);
+  }
+
+  for (const { record, reasons } of diff.modified) {
+    rows.push(['MODIFIED', record.p, record.n, record.q, record.c, 'property changes', reasons.join('; ')]);
+  }
+
+  const changedPaths = new Set([
+    ...diff.added.map(record => record.p),
+    ...diff.removed.map(removedItem => removedItem.record.p),
+    ...diff.modified.map(modifiedItem => modifiedItem.record.p)
+  ]);
+
+  for (const record of newRecords) {
+    if (!changedPaths.has(record.p)) {
+      rows.push(['UNCHANGED', record.p, record.n, record.q, record.c, '', '']);
+    }
+  }
+
+  return formatCsv(headers, rows);
+};
 
 /**
  * Create a diff report with annotated reasons between old and new collections.
@@ -190,12 +277,16 @@ const diffReport = (diff: ReturnType<typeof diffCollections>) => {
  * @param [options] - Optional configuration options.
  * @param [options.isPrettyPrint=true] - Whether to pretty-print the JSON output.
  * @param [options.filterLowQualityRecords=false] - Whether to filter low-quality records based on the collection's criteria.
+ * @param [options.outputCsv=true] - Whether to generate and save a full CSV diff report.
+ * @param [options.csvOutputPath] - Custom path to write CSV report.
  */
 const run = async (
   {
     isPrettyPrint = true,
-    filterLowQualityRecords = false
-  }: { isPrettyPrint?: boolean; filterLowQualityRecords?: boolean; } = {}
+    filterLowQualityRecords = false,
+    outputCsv = true,
+    csvOutputPath
+  }: { isPrettyPrint?: boolean; filterLowQualityRecords?: boolean; outputCsv?: boolean; csvOutputPath?: string; } = {}
 ) => {
   // 1. Enable stderr logging so all diagnostics_channel logs (debug, info, warn, error) are printed
   const unsubscribeLogger = createLogger({
@@ -279,7 +370,21 @@ const run = async (
     console.log(`   - File Size: ${sizeKb} KB`);
     console.log(`   - Time Elapsed: ${durationSec}s`);
 
-    diffReport(diffCollections(oldRecords, records, crawledMap));
+    const diff = diffCollections(oldRecords, records, crawledMap);
+
+    diffReport(diff);
+
+    if (outputCsv) {
+      const targetCsvPath = csvOutputPath ||
+        process.env.CSV_REPORT_PATH ||
+        resolve(fileURLToPath(new URL('../reports/collection.patternFlyApi.report.csv', import.meta.url)));
+
+      await mkdir(dirname(targetCsvPath), { recursive: true });
+      const csvContent = generateReportCsv({ diff, oldRecords, newRecords: records, crawledMap });
+
+      await writeFile(targetCsvPath, csvContent, 'utf-8');
+      console.log(`📄 Exported full CSV report: ${targetCsvPath}`);
+    }
   } finally {
     clearTimeout(keepAlive);
     unsubscribeLogger();
@@ -288,13 +393,21 @@ const run = async (
 
 /**
  * Configurable options for maintainers.
+ * Only execute when explicitly requested via UPDATE_COLLECTIONS=true
  */
-run({ isPrettyPrint: true, filterLowQualityRecords: true }).catch(error => {
-  console.error('❌ Failed to update API collection:', error);
-  process.exit(1);
-});
+if (process.env.UPDATE_COLLECTIONS === 'true') {
+  run({ isPrettyPrint: true, filterLowQualityRecords: true }).catch(error => {
+    console.error('❌ Failed to update API collection:', error);
+    process.exit(1);
+  });
+}
 
 export {
+  diffCollections,
+  escapeCsvField,
+  formatCsv,
+  generateReportCsv,
+  run,
   type ModifiedRecordReport,
   type RemovalReason,
   type RemovedRecordReport
