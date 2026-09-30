@@ -54,14 +54,29 @@ interface GenerateCsvReportOptions {
 /**
  * Safely escape and format a field for standard RFC 4180 CSV output.
  *
+ * Note on CSV / Formula Injection (CWE-1236):
+ * Standard RFC 4180 escaping (double quote wrapping) does not prevent spreadsheet
+ * applications (such as Microsoft Excel, Google Sheets, or LibreOffice Calc) from
+ * executing cells starting with `=`, `+`, `-`, `@`, `\t`, or `\r` as formulas.
+ *
+ * By default (`sanitizeFormulas = true`), leading formula trigger characters are
+ * prefixed with a single quote to prevent spreadsheet execution. Pass `false` to
+ * preserve strict raw string fidelity for automated downstream parsers.
+ *
  * @param field - Value to format for CSV
+ * @param [sanitizeFormulas=true] - Whether to prefix formula trigger characters with a single quote
+ * @returns RFC 4180 compliant CSV cell string
  */
-const escapeCsvField = (field: unknown): string => {
+const escapeCsvField = (field: unknown, sanitizeFormulas = true): string => {
   if (field === null || field === undefined) {
     return '';
   }
 
-  const str = String(field);
+  let str = String(field);
+
+  if (sanitizeFormulas && /^[=+\-@\t\r]/.test(str)) {
+    str = `'${str}`;
+  }
 
   if (str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r')) {
     return `"${str.replace(/"/g, '""')}"`;
@@ -77,8 +92,8 @@ const escapeCsvField = (field: unknown): string => {
  * @param rows - Table rows
  */
 const formatCsv = (headers: string[], rows: (string | number | undefined | null)[][]): string => {
-  const headerLine = headers.map(escapeCsvField).join(',');
-  const rowLines = rows.map(row => row.map(escapeCsvField).join(','));
+  const headerLine = headers.map(field => escapeCsvField(field)).join(',');
+  const rowLines = rows.map(row => row.map(cell => escapeCsvField(cell)).join(','));
 
   return [headerLine, ...rowLines].join('\n') + '\n';
 };

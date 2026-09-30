@@ -68,6 +68,22 @@ describe('collection.patternFlyApi CSV Report Generator', () => {
     expect(escapeCsvField(123)).toBe('123');
   });
 
+  it('should sanitize formula injection characters by default', () => {
+    expect(escapeCsvField('=SUM(1+1)')).toBe("'=SUM(1+1)");
+    expect(escapeCsvField('+123')).toBe("'+123");
+    expect(escapeCsvField('-456')).toBe("'-456");
+    expect(escapeCsvField('@lookup')).toBe("'@lookup");
+    expect(escapeCsvField('\ttabPrefix')).toBe("'\ttabPrefix");
+    expect(escapeCsvField('\rreturnPrefix')).toBe('"\'\rreturnPrefix"');
+  });
+
+  it('should preserve raw formula characters when sanitizeFormulas is set to false', () => {
+    expect(escapeCsvField('=SUM(1+1)', false)).toBe('=SUM(1+1)');
+    expect(escapeCsvField('+123', false)).toBe('+123');
+    expect(escapeCsvField('-456', false)).toBe('-456');
+    expect(escapeCsvField('@lookup', false)).toBe('@lookup');
+  });
+
   it('should format header and row lines into standard CSV', () => {
     const headers = ['col1', 'col2'];
     const rows = [
