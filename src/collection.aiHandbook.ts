@@ -91,8 +91,9 @@ const aiHandbookCollection = (options = getOptions(), session = getSessionOption
     },
     callback,
     {
-      isRequired: false,
-      initial: () => ({ records: [] }),
+      // FixMe: Temporarily requiring this collection to bypass MCP resource memoization. The solution involves leveraging the
+      //  "on update" collection handler to inform the server of changes.
+      isRequired: true,
       retainLastViable: true
     }
   ];
