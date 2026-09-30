@@ -10,7 +10,7 @@ describe('aiHandbookCollection', () => {
     jest.resetAllMocks();
   });
 
-  it('should return the correct collection name and 4-tuple configuration', () => {
+  it('should return the correct collection name and configuration', () => {
     const [name, config, callback, _config] = aiHandbookCollection();
 
     expect(name).toBe('ai-handbook');
@@ -19,13 +19,9 @@ describe('aiHandbookCollection', () => {
     });
     expect(typeof callback).toBe('function');
     expect(_config).toBeDefined();
-    expect(_config?.isRequired).toBe(false);
+    expect(_config?.isRequired).toBe(true);
     expect(_config?.retainLastViable).toBe(true);
-    expect(typeof _config?.initial).toBe('function');
-
-    const initialResult = typeof _config?.initial === 'function' ? _config.initial() : _config?.initial;
-
-    expect(initialResult).toEqual({ records: [] });
+    expect(_config?.initial).toBeUndefined();
   });
 
   it('should execute callback and return collection results', async () => {

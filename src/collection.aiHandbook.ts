@@ -3,7 +3,22 @@ import { type McpCollection, type McpCollectionRecord } from './collections';
 import { getOptions, getSessionOptions, runWithOptions, runWithSession } from './options.context';
 import { formatUnknownError, log } from './logger';
 import { isPlainObject } from './server.helpers';
+import { type PatternFlyMcpDocsCatalogEntry } from './docs.embedded';
 
+/**
+ * AI Handbook collection of records.
+ *
+ * @property {PatternFlyMcpDocsCatalogEntry} docs - Primary documentation entry.
+ * @property [key] - Additional props with keys.
+ */
+type AiHandbookCollection = {
+  docs: PatternFlyMcpDocsCatalogEntry;
+  [key: string]: unknown;
+};
+
+/**
+ * AI Handbook collection URL.
+ */
 const COLLECTION_DOCS = 'https://raw.githubusercontent.com/rh-uxd/ai-handbook/refs/heads/main/docs.json';
 
 /**
@@ -12,10 +27,10 @@ const COLLECTION_DOCS = 'https://raw.githubusercontent.com/rh-uxd/ai-handbook/re
  * @param [collectionDocs] - URL to the documentation catalog JSON.
  * @returns Documentation catalog JSON.
  */
-const getCatalog = async (collectionDocs = COLLECTION_DOCS): Promise<Record<string, any>> => {
+const getCatalog = async (collectionDocs = COLLECTION_DOCS): Promise<AiHandbookCollection> => {
   let docsCatalog = { docs: {} };
 
-  const settled = (await processDocsFunction([collectionDocs])) || [];
+  const settled = await processDocsFunction([collectionDocs]) || [];
 
   for (const res of settled) {
     if (!res.isSuccess) {
