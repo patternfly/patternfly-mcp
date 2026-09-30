@@ -54,14 +54,9 @@ interface GenerateCsvReportOptions {
 /**
  * Safely escape and format a field for standard RFC 4180 CSV output.
  *
- * Note on CSV / Formula Injection (CWE-1236):
- * Standard RFC 4180 escaping (double quote wrapping) does not prevent spreadsheet
- * applications (such as Microsoft Excel, Google Sheets, or LibreOffice Calc) from
- * executing cells starting with `=`, `+`, `-`, `@`, `\t`, or `\r` as formulas.
- *
- * By default (`sanitizeFormulas = true`), leading formula trigger characters are
- * prefixed with a single quote to prevent spreadsheet execution. Pass `false` to
- * preserve strict raw string fidelity for automated downstream parsers.
+ * @note **CSV / Formula Injection:** By default (`sanitizeFormulas = true`), leading formula
+ * trigger characters are prefixed with a single quote to prevent spreadsheet execution. Pass
+ * `false` to preserve strict raw string fidelity for automated downstream parsers.
  *
  * @param field - Value to format for CSV
  * @param [sanitizeFormulas=true] - Whether to prefix formula trigger characters with a single quote
