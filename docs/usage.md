@@ -25,7 +25,7 @@ Use this to search for PatternFly documentation URLs, `patternfly://` resource U
 
 **Parameters:**
 - `searchQuery`: `string` (required) - Case-insensitive query for full or partial keywords, resource names, versions and more (e.g., `"button"`, `"card v6"`, `"react"`, `"*"`)
-- `collection`: `string` (optional) - Filter results by a primary collection of records (e.g., `"patternfly-docs"`, `"patternfly-component-schemas"`, `"patternfly-api"`)
+- `collection`: `string` (optional) - Filter results by a primary collection of records (e.g., `"patternfly-docs"`, `"patternfly-component-schemas"`, `"patternfly-api"`). Note that additional specialized or experimental collections outside the primary core set may also be available or shift across releases.
 
 **Examples:**
 
@@ -92,7 +92,7 @@ The server exposes a resource-centric architecture via the `patternfly://` URI s
 Use these indexes to discover what is available in the library:
 
 - **`patternfly://docs/index{?version,category,section,collection}`**: A comprehensive index of all available PatternFly documentation pages, filterable by version, category, section, or collection.
-- **`patternfly://docs/meta{?version}`**: Metadata discovery for available PatternFly documentation pages, helpful for understanding available filter parameters.
+- **`patternfly://docs/meta{?collection}`**: Metadata discovery for available PatternFly documentation pages, helpful for understanding available filter parameters.
 - **`patternfly://components/index{?version,category}`**: A list of all available PatternFly component names.
 - **`patternfly://components/meta{?version}`**: Metadata discovery for components, helpful for understanding available filter parameters.
 - **`patternfly://schemas/index{?version,category}`**: An index of all available component JSON schemas.
