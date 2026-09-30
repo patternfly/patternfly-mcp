@@ -12,20 +12,10 @@ import {
   resolveLocalPathFunction
 } from '../server.getResources';
 import { runWithOptions } from '../options.context';
-import { type GlobalOptions } from '../options';
 import { DEFAULT_OPTIONS } from '../options.defaults';
 
 // Mock dependencies
 jest.mock('node:fs/promises');
-jest.mock('../server.caching', () => ({
-  memo: jest.fn(fn => {
-    const memoized = fn;
-
-    memoized.clear = jest.fn();
-
-    return memoized;
-  })
-}));
 
 const mockReadFile = readFile as jest.MockedFunction<typeof readFile>;
 
@@ -364,10 +354,6 @@ describe('promiseQueue', () => {
 describe('processDocsFunction', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-
-    // Mock the memo functions
-    readLocalFileFunction.memo = jest.fn().mockResolvedValue('local file content') as any;
-    fetchUrlFunction.memo = jest.fn().mockResolvedValue('fetched content') as any;
   });
 
   it.each([
@@ -377,7 +363,6 @@ describe('processDocsFunction', () => {
         'local-file.md',
         'https://example.com/remote.md'
       ],
-      options: {},
       fileMemoHits: 1,
       fetchMemoHits: 1
     },
@@ -390,7 +375,6 @@ describe('processDocsFunction', () => {
         'https://example.com/remote.md',
         'https://example.com/remote.md'
       ],
-      options: {},
       fileMemoHits: 1,
       fetchMemoHits: 1
     },
@@ -403,7 +387,6 @@ describe('processDocsFunction', () => {
         '   ',
         'file2.md'
       ],
-      options: {},
       fileMemoHits: 2
     },
     {
@@ -412,7 +395,6 @@ describe('processDocsFunction', () => {
         { doc: 'file.md', lorem: 'ipsum' },
         { doc: 'file.md', dolor: 'sit' }
       ],
-      options: {},
       fileMemoHits: 1
     },
     {
@@ -420,22 +402,13 @@ describe('processDocsFunction', () => {
       inputs: [
         { doc: 'file.md', lorem: 'ispum', dolor: 'sit' }
       ],
-      options: {},
       fileMemoHits: 1
     }
-  ])('should process local and remote inputs, $description', async ({ inputs, options, fileMemoHits = 0, fetchMemoHits = 0 }) => {
-    const result = await processDocsFunction(inputs, {
-      isHttp: false,
-      minMax: {
-        docsToLoad: {
-          min: 1,
-          max: 10
-        }
-      },
-      separator: '\n\n---\n\n',
-      urlRegex: /^(https?:)\/\//i,
-      ...options
-    } as GlobalOptions);
+  ])('should process local and remote inputs, $description', async ({ inputs, fileMemoHits = 0, fetchMemoHits = 0 }) => {
+    readLocalFileFunction.memo = jest.fn().mockResolvedValue('local file content') as any;
+    fetchUrlFunction.memo = jest.fn().mockResolvedValue('fetched content') as any;
+
+    const result = await processDocsFunction(inputs, { loadLimit: 10 });
 
     expect(result).toMatchSnapshot();
     expect(readLocalFileFunction.memo).toHaveBeenCalledTimes(fileMemoHits);
@@ -443,30 +416,74 @@ describe('processDocsFunction', () => {
   });
 
   it('should handle errors gracefully', async () => {
-    const mockOptions = {
-      isHttp: false,
-      minMax: {
-        docsToLoad: {
-          min: 1,
-          max: 10
-        }
-      },
-      separator: '\n\n---\n\n',
-      urlRegex: /^(https?:)\/\//i
-    };
-
     // Mock one success and one failure
     readLocalFileFunction.memo = jest.fn()
       .mockResolvedValueOnce('success content')
       .mockRejectedValueOnce(new Error('File not found')) as any;
+    fetchUrlFunction.memo = jest.fn().mockResolvedValue('fetched content') as any;
 
     const inputs = [
       'good-file.md',
       'bad-file.md'
     ];
 
-    const result = await processDocsFunction(inputs, mockOptions as GlobalOptions);
+    const result = await processDocsFunction(inputs, { loadLimit: 10 });
 
     expect(result).toMatchSnapshot('errors');
+  });
+
+  it.each([
+    {
+      description: 'truncate input list to custom loadLimit',
+      inputs: ['file1.md', 'file2.md', 'file3.md', 'file4.md'],
+      settings: { loadLimit: 2 },
+      expectedCount: 2,
+      expectedPaths: ['file1.md', 'file2.md']
+    },
+    {
+      description: 'handle loadLimit of 0',
+      inputs: ['file1.md', 'file2.md'],
+      settings: { loadLimit: 0 },
+      expectedCount: 0,
+      expectedPaths: []
+    },
+    {
+      description: 'fall back to default loadLimit (100) when settings are omitted or empty',
+      inputs: ['file1.md', 'file2.md'],
+      settings: {},
+      expectedCount: 2,
+      expectedPaths: ['file1.md', 'file2.md']
+    },
+    {
+      description: 'process items with custom concurrency and throttle options',
+      inputs: ['file1.md', 'file2.md'],
+      settings: { parallelLoadLimit: 1, parallelLoadThrottleMs: 10 },
+      expectedCount: 2,
+      expectedPaths: ['file1.md', 'file2.md']
+    }
+  ])('should handle custom settings: $description', async ({ inputs, settings, expectedCount, expectedPaths }) => {
+    readLocalFileFunction.memo = jest.fn().mockImplementation(async (path: string) => `content of ${path}`) as any;
+    fetchUrlFunction.memo = jest.fn().mockImplementation(async (url: string) => `content of ${url}`) as any;
+
+    const result = await processDocsFunction(inputs, settings);
+
+    expect(result).toHaveLength(expectedCount);
+    expect(result.map(doc => doc.path)).toEqual(expectedPaths);
+  });
+
+  it('should return cached results on subsequent calls with identical settings', async () => {
+    processDocsFunction.memo.clear();
+    readLocalFileFunction.memo = jest.fn().mockImplementation(async (path: string) => `content of ${path}`) as any;
+
+    const inputs = ['file1.md', 'file2.md'];
+    const settings = { loadLimit: 5 };
+
+    const firstResult = await processDocsFunction.memo(inputs, settings);
+    const secondResult = await processDocsFunction.memo(inputs, { ...settings });
+
+    expect(firstResult).toEqual(secondResult);
+    expect(readLocalFileFunction.memo).toHaveBeenCalledTimes(2); // Only executed during the first invocation
+
+    processDocsFunction.memo.clear();
   });
 });

@@ -126,6 +126,10 @@ const formatLogEvent = (event: LogEvent) => {
 
   const rest = event?.args?.map(arg => {
     try {
+      if (arg instanceof Error) {
+        return arg.stack || arg.message;
+      }
+
       return typeof arg === 'string' ? arg : JSON.stringify(arg);
     } catch {
       return String(arg);
