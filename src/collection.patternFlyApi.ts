@@ -698,6 +698,7 @@ const patternFlyApiCollection = (options = getOptions(), session = getSessionOpt
 };
 
 export {
+  MIN_API_QUALITY_THRESHOLD,
   patternFlyApiCollection,
   collectionCallback,
   collectionInitialCallback,

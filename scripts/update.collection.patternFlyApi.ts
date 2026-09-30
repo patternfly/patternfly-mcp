@@ -7,7 +7,8 @@ import {
   type ApiContent,
   type ApiCrawler,
   type ApiEmbedded,
-  type ApiEmbeddedCollection
+  type ApiEmbeddedCollection,
+  MIN_API_QUALITY_THRESHOLD
 } from '../src/collection.patternFlyApi';
 import { getSessionOptions, getOptions, runWithOptions } from '../src/options.context';
 import { createLogger } from '../src/logger';
@@ -19,9 +20,9 @@ import { type LoggingSession } from '../src/options.defaults';
 type RemovalReason =
   'lacks quality' |
   'empty response' |
-  'loading error' |
   'deferred category' |
-  'upstream removed';
+  'upstream removed' |
+  'other';
 
 /**
  * Entry describing a removed record with its determined reason and details.
@@ -84,17 +85,17 @@ const diffCollections = (
         reason: 'deferred category',
         details: `Category '${crawled.metadata.category}' is deferred`
       });
-    } else if (crawled.metadata.isLowQuality || crawled.entry.qualityScore < 0.95) {
+    } else if (crawled.metadata.isLowQuality || crawled.entry.qualityScore < MIN_API_QUALITY_THRESHOLD) {
       removed.push({
         record: oldRecord,
         reason: 'lacks quality',
-        details: `Evaluated Q: ${crawled.entry.qualityScore} < 0.95 threshold`
+        details: `Evaluated Q: ${crawled.entry.qualityScore} < ${MIN_API_QUALITY_THRESHOLD} threshold`
       });
     } else {
       removed.push({
         record: oldRecord,
-        reason: 'lacks quality',
-        details: `Evaluated Q: ${crawled.entry.qualityScore}`
+        reason: 'other',
+        details: `Excluded during crawl processing (Q: ${crawled.entry.qualityScore})`
       });
     }
   }
