@@ -696,12 +696,12 @@ const getPatternFlyMcpResources = async (contextPathOverride?: string): Promise<
   const filteredKeywords = filterKeywords(rawKeywordsMap);
 
   Object.values(versionsByCollection).forEach(list =>
-    list.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })));
+    list.sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })));
 
   return {
     ...versionContext,
     collections: Array.from(availableCollections.keys()).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })),
-    collectionVersions: Array.from(availableCollectionVersionsSet).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })),
+    collectionVersions: Array.from(availableCollectionVersionsSet).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })),
     versionsByCollection,
     resources,
     // @deprecated docsIndex - Under review

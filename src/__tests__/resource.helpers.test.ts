@@ -689,9 +689,9 @@ describe('normalizeEnumeratedCollectionVersion', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     MockMcpResources.mockResolvedValue({
-      collectionVersions: ['v4', 'v5', 'v6', '1.0.0', '2.0.0'],
+      collectionVersions: ['v4', 'v5', 'v6', '10', '1.0.0', '2.0.0'],
       versionsByCollection: {
-        'patternfly-docs': ['v4', 'v5', 'v6'],
+        'patternfly-docs': ['v4', 'v5', 'v6', '10'],
         'patternfly-api': ['1.0.0', '2.0.0'],
         'ai-handbook': []
       }

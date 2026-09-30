@@ -592,6 +592,16 @@ const formatContentForMarkdown = (
  * {@link getPatternFlyMcpResources}. Not providing a collection removes the ability to
  * resolve for a "latest" version.
  *
+ * @note Behavior around current/latest is a remnant of {@link normalizeEnumeratedPatternFlyVersion}
+ * for the newer collections concept where any collection can have an arbitrary versioning scheme
+ * this needs to be re-evaluated. Future considerations could include:
+ * - A required or optional configuration setting on the collection tuple that explicitly
+ *     designates what the latest version is.
+ * - A required or optional property in the collection resource that is ingested as part of the
+ *     collection metadata along with all potential versions available — this would also resolve
+ *     the need to determine all available collection versions post-ingestion.
+ * - Placement we haven't thought of yet.
+ *
  * @param version - Version string or alias ('latest', 'current') to normalize.
  * @param [collection] - Optional collection name to scope "latest" version resolution.
  * @returns A resolved version string, or `undefined` if no match is found.
@@ -609,7 +619,7 @@ const normalizeEnumeratedCollectionVersion = async (version?: string, collection
   if (trimmedVersion === 'latest' || trimmedVersion === 'current') {
     if (collection && versionsByCollection[collection]?.length) {
       const versions = [...(versionsByCollection[collection] || [])].sort((a, b) =>
-        b.localeCompare(a, undefined, { sensitivity: 'base' }));
+        b.localeCompare(a, undefined, { numeric: true, sensitivity: 'base' }));
 
       return versions.length ? versions[0] : undefined;
     }
