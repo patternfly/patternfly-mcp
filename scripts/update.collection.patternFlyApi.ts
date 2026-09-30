@@ -94,23 +94,28 @@ const formatCsv = (headers: string[], rows: (string | number | undefined | null)
  */
 const generateReportCsv = ({
   diff,
-  oldRecords: _oldRecords,
+  oldRecords,
   newRecords,
-  crawledMap: _crawledMap
+  crawledMap
 }: GenerateCsvReportOptions): string => {
-  const headers = ['status', 'path', 'name', 'previousQualityScore', 'contentType', 'reason', 'details'];
+  const oldMap = new Map(oldRecords.map(record => [record.p, record]));
+  const headers = ['status', 'path', 'name', 'previousQualityScore', 'newQualityScore', 'contentType', 'reason', 'details'];
   const rows: (string | number | undefined | null)[][] = [];
 
   for (const record of diff.added) {
-    rows.push(['ADDED', record.p, record.n, record.q, record.c, '', '']);
+    rows.push(['ADDED', record.p, record.n, '', record.q, record.c, '', '']);
   }
 
   for (const { record, reason, details } of diff.removed) {
-    rows.push(['REMOVED', record.p, record.n, record.q, record.c, reason, details || '']);
+    const newQualityScore = crawledMap.get(record.p)?.entry.qualityScore ?? '';
+
+    rows.push(['REMOVED', record.p, record.n, record.q, newQualityScore, record.c, reason, details || '']);
   }
 
   for (const { record, reasons } of diff.modified) {
-    rows.push(['MODIFIED', record.p, record.n, record.q, record.c, 'property changes', reasons.join('; ')]);
+    const previousQualityScore = oldMap.get(record.p)?.q ?? '';
+
+    rows.push(['MODIFIED', record.p, record.n, previousQualityScore, record.q, record.c, 'property changes', reasons.join('; ')]);
   }
 
   const changedPaths = new Set([
@@ -121,7 +126,7 @@ const generateReportCsv = ({
 
   for (const record of newRecords) {
     if (!changedPaths.has(record.p)) {
-      rows.push(['UNCHANGED', record.p, record.n, record.q, record.c, '', '']);
+      rows.push(['UNCHANGED', record.p, record.n, record.q, record.q, record.c, '', '']);
     }
   }
 

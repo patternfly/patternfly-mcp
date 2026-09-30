@@ -116,11 +116,11 @@ describe('collection.patternFlyApi CSV Report Generator', () => {
     const csv = generateReportCsv({ diff, oldRecords, newRecords, crawledMap });
     const lines = csv.trim().split('\n');
 
-    expect(lines[0]).toBe('status,path,name,previousQualityScore,contentType,reason,details');
-    expect(lines.some(line => line.startsWith('ADDED,endpoint/added'))).toBe(true);
-    expect(lines.some(line => line.startsWith('REMOVED,endpoint/removed') && line.includes('lacks quality'))).toBe(true);
-    expect(lines.some(line => line.startsWith('MODIFIED,endpoint/modified') && line.includes('quality score'))).toBe(true);
-    expect(lines.some(line => line.startsWith('UNCHANGED,endpoint/unchanged'))).toBe(true);
+    expect(lines[0]).toBe('status,path,name,previousQualityScore,newQualityScore,contentType,reason,details');
+    expect(lines.some(line => line.startsWith('ADDED,endpoint/added,New Doc,,0.97'))).toBe(true);
+    expect(lines.some(line => line.startsWith('REMOVED,endpoint/removed,Old Doc,0.96,0.8') && line.includes('lacks quality'))).toBe(true);
+    expect(lines.some(line => line.startsWith('MODIFIED,endpoint/modified,Mod Doc,0.95,0.99') && line.includes('quality score'))).toBe(true);
+    expect(lines.some(line => line.startsWith('UNCHANGED,endpoint/unchanged,Unchanged Doc,0.98,0.98'))).toBe(true);
   });
 
   it('should generate a CSV report from a sample of collection records', () => {
@@ -145,7 +145,7 @@ describe('collection.patternFlyApi CSV Report Generator', () => {
     });
     const lines = csv.trim().split('\n');
 
-    expect(lines[0]).toBe('status,path,name,previousQualityScore,contentType,reason,details');
+    expect(lines[0]).toBe('status,path,name,previousQualityScore,newQualityScore,contentType,reason,details');
     expect(lines.length).toBe(sampleRecords.length + 1);
     expect(lines.slice(1).every(line => line.startsWith('UNCHANGED,'))).toBe(true);
   });
