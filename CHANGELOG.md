@@ -1,6 +1,38 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.5.0](https://github.com/patternfly/patternfly-mcp/compare/e5fee54e9eb0c015504af0af899437139398c9f6...570eb8c5e719d1428a44d9bfb4e2b5341c42a904) (2026-09-30)
+
+
+### Features
+* **collections** pf-4589 activate ai handbook ([#324](https://github.com/patternfly/patternfly-mcp/pull/324)) ([7f3aceb](https://github.com/patternfly/patternfly-mcp/commit/7f3aceba5b28a38ba8437ad3e158a842da4430b5))
+* **search** pf-4589 add collection filtering ([#321](https://github.com/patternfly/patternfly-mcp/pull/321)) ([2e27051](https://github.com/patternfly/patternfly-mcp/commit/2e27051b9ffe01582cf91fe18121f106df666e3c))
+* **collections** pf-4589 allow configurable metadata ([#318](https://github.com/patternfly/patternfly-mcp/pull/318)) ([54ce848](https://github.com/patternfly/patternfly-mcp/commit/54ce84824e73bd93d64117ef5e4c8d6693ac5b1e))
+
+### Documentation
+*  pf-4589 collection parameters, resource templates ([#328](https://github.com/patternfly/patternfly-mcp/pull/328)) ([daa9423](https://github.com/patternfly/patternfly-mcp/commit/daa94237dfcb06bf3d20befb1a26f4d9eb18dde1))
+
+### Code Refactoring
+* **resources** pf-4589 allow collection completion ([#323](https://github.com/patternfly/patternfly-mcp/pull/323)) ([0c1b37f](https://github.com/patternfly/patternfly-mcp/commit/0c1b37fa93c96b29503d930d255312d00b9bc73a))
+* **tools** pf-4589 replace version with collection param ([#322](https://github.com/patternfly/patternfly-mcp/pull/322)) ([b7de186](https://github.com/patternfly/patternfly-mcp/commit/b7de1864958c80f2ceb124c8db1ac1b1bd8b3c88))
+* **resources** pf-4589 collection, display name for records ([#320](https://github.com/patternfly/patternfly-mcp/pull/320)) ([7326efb](https://github.com/patternfly/patternfly-mcp/commit/7326efba78497f8d4ed6569e7bffde3f8f4787c7))
+
+### Chores
+* **collections** pf-4402 re-seed pf api ([#332](https://github.com/patternfly/patternfly-mcp/pull/332)) ([570eb8c](https://github.com/patternfly/patternfly-mcp/commit/570eb8c5e719d1428a44d9bfb4e2b5341c42a904))
+
+### Builds
+* **deps** lock update ([#330](https://github.com/patternfly/patternfly-mcp/pull/330)) ([5d338e0](https://github.com/patternfly/patternfly-mcp/commit/5d338e016039567b7c88af2a4aec7ca3679012ce))
+* **deps-dev** bump the dev group with 6 updates ([#314](https://github.com/patternfly/patternfly-mcp/pull/314)) ([c312f35](https://github.com/patternfly/patternfly-mcp/commit/c312f3564f2bf9d233aab86577be7fac4ad403b8))
+* **deps** bump zod from 4.4.3 to 4.5.4 ([#311](https://github.com/patternfly/patternfly-mcp/pull/311)) ([3920ef7](https://github.com/patternfly/patternfly-mcp/commit/3920ef707154efa4e20cc1a07a316c5f69206ba3))
+* **deps** bump pid-port from 2.1.1 to 2.1.2 ([#310](https://github.com/patternfly/patternfly-mcp/pull/310)) ([43d1d87](https://github.com/patternfly/patternfly-mcp/commit/43d1d87b9ec131625dacd4c45652629ffbbe8e24))
+
+### Bug Fixes
+* **collection** pf-4402 increase pf api crawler limits ([#325](https://github.com/patternfly/patternfly-mcp/pull/325)) ([40785d6](https://github.com/patternfly/patternfly-mcp/commit/40785d66796554420abde2dc193d5c79118f05e4))
+* **server** pf-4402 allow custom resource load limits ([#331](https://github.com/patternfly/patternfly-mcp/pull/331)) ([042d7cd](https://github.com/patternfly/patternfly-mcp/commit/042d7cdb8b07882d631e6292616889a21cb75d4a))
+* **collections** pf-4589 optional registration without initial response ([#319](https://github.com/patternfly/patternfly-mcp/pull/319)) ([66f9a64](https://github.com/patternfly/patternfly-mcp/commit/66f9a64c778130ca71367d48b52bb802ea953b0d))
+* **schema** add zod 4 .def detection ([#313](https://github.com/patternfly/patternfly-mcp/pull/313)) ([370b3e8](https://github.com/patternfly/patternfly-mcp/commit/370b3e82e98b28e35b57c795937573ddeb741f3b))
+* **caching** guard isError values before calling ([#312](https://github.com/patternfly/patternfly-mcp/pull/312)) ([2808694](https://github.com/patternfly/patternfly-mcp/commit/28086946d3a99e15a20bc40748da154d88ad096a))
+
 ## [2.4.0](https://github.com/patternfly/patternfly-mcp/compare/aa436229e18363530159aea5a326449457535a1c...65e15c063681eaa7fb73063708b2f4dedb44d2c1) (2026-09-15)
 
 
