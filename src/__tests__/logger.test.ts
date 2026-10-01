@@ -168,6 +168,21 @@ describe('formatLogEvent', () => {
 
     expect(formatLogEvent(event as any)).toMatchSnapshot('sanitized');
   });
+
+  it('should support sanitizing Error instances in args', () => {
+    const secretError = new Error('Failed connecting to https://patternfly.org?token=secret123 with Authorization: Bearer abc123');
+    const event = {
+      level: 'error',
+      msg: 'Fetch operation failed',
+      args: [secretError]
+    };
+
+    const formatted = formatLogEvent(event as any);
+
+    expect(formatted).not.toContain('secret123');
+    expect(formatted).not.toContain('abc123');
+    expect(formatted).toContain('[REDACTED]');
+  });
 });
 
 describe('publish', () => {

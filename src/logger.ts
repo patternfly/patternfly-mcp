@@ -141,7 +141,7 @@ const formatLogEvent = (event: LogEvent, { sanitize = true }: { sanitize?: boole
   const rest = event?.args?.map(arg => {
     try {
       if (arg instanceof Error) {
-        return arg.stack || arg.message;
+        return sanitizeInput(arg.stack || arg.message || '');
       }
 
       const updatedArg = typeof arg === 'string' ? arg : JSON.stringify(arg);
