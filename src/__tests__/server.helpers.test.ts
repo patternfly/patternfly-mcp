@@ -20,7 +20,8 @@ import {
   portValid,
   splitUri,
   stringJoin,
-  timeoutFunction, isBase64Like
+  timeoutFunction,
+  isBase64Like
 } from '../server.helpers';
 
 describe('buildSearchString', () => {
@@ -835,7 +836,7 @@ describe('isBase64Like', () => {
       options: { isStrict: true, requireSignalChars: true },
       expected: false
     }
-  ])('check if value is base64-like, $description', ({ value, options = {}, expected }) => {
+  ])('should confirm a value is base64-like, $description', ({ value, options = {}, expected }) => {
     expect(isBase64Like(value, { minLength: 4, ...options })).toBe(expected);
   });
 });
