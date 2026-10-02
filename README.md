@@ -6,6 +6,10 @@ The PatternFly MCP server is a comprehensive library resource for PatternFly.
 It is intended to be extensible to meet the needs of different teams and projects, from simple to complex, from design to development.
 [Read more about our roadmap and how we've structured the server in our architecture docs](./docs/architecture.md).
 
+## The AIX Standards - A design assistance collection inside the PatternFly MCP
+
+The AIX Standards are Red Hat UIE design standards for AI experiences. They are organized by what they help you accomplish—not by product—so the same guidance applies across consoles, IDEs, CLIs, and other surfaces. The PatternFly MCP exposes this collection as design assistance you can invoke when making AI UX decisions in MCP-enabled tools. See the [AIX Standards repository](https://gitlab.cee.redhat.com/uie-uxd/ai-handbook) for the source content, and the [Getting started for designers](https://gitlab.cee.redhat.com/uie-uxd/ai-handbook/-/blob/main/docs/getting-started-for-designers/getting-started-for-designers.md) guide for setup in Cursor and other MCP clients.
+
 ## Requirements
 - [Node.js 22+](https://nodejs.org/)
 - NPM (or equivalent package manager)
