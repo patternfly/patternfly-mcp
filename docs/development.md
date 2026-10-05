@@ -502,12 +502,12 @@ Internal and custom collections implement the `McpCollection` tuple structure:
 type McpCollection = [
   name: string,
   config: { title?: string },
-  handler: (arg?: unknown) => Promise<McpCollectionResult>,
+  handler: (arg?: unknown) => McpCollectionResult | Promise<McpCollectionResult>,
   _config?: {
-    initial?: McpCollectionResult | (() => Promise<McpCollectionResult>);
+    initial?: McpCollectionResult | (() => McpCollectionResult | Promise<McpCollectionResult>);
     runParallel?: `#${string}`;
-    runSchedule?: { intervalMs?: number; cancelMs?: number; continueOnError?: boolean };
-    retainLastViable?: boolean | ((curr, next) => boolean);
+    runSchedule?: { intervalMs?: number; cancelMs?: number; delayStartMs?: number; continueOnError?: boolean; repeat?: number; };
+    retainLastViable?: boolean | ((context) => boolean | Promise<boolean>);
     isRequired?: boolean;
   }
 ];
@@ -517,7 +517,7 @@ type McpCollection = [
 
 - **`name`** (`string`): Unique identifier for the collection (e.g., `'patternfly-docs'`).
 - **`config`** (`object`): Plugin-visible metadata, such as `title`.
-- **`handler`** (`function`): Async function returning an `McpCollectionResult` object containing `{ records: [...] }`.
+- **`handler`** (`function`): Sync, or async, function returning an `McpCollectionResult` object containing `{ records: [...] }`.
 - **`_config.initial`**: Synchronous or async initial data loader executed at server startup ($t=0$) before scheduled tasks or worker threads run.
 - **`_config.runParallel`**: Subpath import specifier (`#specifier`) used to execute the collection handler in a background worker pool thread (`server.workerPool`).
 - **`_config.runSchedule`**: Configuration for recurring background refresh intervals via `deferTask`.
