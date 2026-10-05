@@ -14,16 +14,6 @@ exports[`EMBEDDED_DOCS should export the expected embedded docs structure: docs 
         "source": "github",
         "version": "v6",
       },
-      {
-        "category": "react",
-        "description": "AI guidance for PatternFly React development rules.",
-        "displayName": "React Development Rules",
-        "path": "https://raw.githubusercontent.com/patternfly/ai-helpers/refs/heads/main/docs/README.md",
-        "pathSlug": "react-development",
-        "section": "guidelines",
-        "source": "github",
-        "version": "v6",
-      },
     ],
     "patternfly": [
       {
@@ -60,7 +50,7 @@ exports[`EMBEDDED_DOCS should export the expected embedded docs structure: docs 
   },
   "meta": {
     "source": "patternfly-mcp-fallback",
-    "totalDocs": 5,
+    "totalDocs": 4,
     "totalEntries": 2,
   },
 }

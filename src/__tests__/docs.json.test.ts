@@ -84,9 +84,9 @@ describe('docs.json', () => {
      * | patternfly-org | v5 | 1 | One-off |
      * | patternfly-react | 6f2385bbcc03de22a7ae8be506481e1b4d653200 | 100 | **Primary** |
      * | pf-codemods | 63df51df5cc6af2f3d83de4c0991c9e65625675f | 3 | One-off |
-     * | **Total** | **10 unique refs** | **341** | |
+     * | **Total** | **9 unique refs** | **321** | |
      */
-    expect(baseHashes.size).toBe(10);
+    expect(baseHashes.size).toBe(9);
 
     /**
      * Confirm total docs count matches metadata

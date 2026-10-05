@@ -14,7 +14,7 @@ describe('EMBEDDED_DOCS', () => {
 
     const allDocs = Object.values(docs).flat();
 
-    expect(allDocs.length).toBeGreaterThanOrEqual(5);
+    expect(allDocs.length).toBeGreaterThanOrEqual(4);
   });
 
   it('should have metadata reflective of its JSON content', () => {
