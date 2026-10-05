@@ -24,8 +24,8 @@ Use this to search for PatternFly documentation URLs, `patternfly://` resource U
 > **Transitional URI support**: The default tools also return and accept `patternfly://` URIs for compatibility. Using and passing URIs through these tools is supported as a compatibility bridge for the intended workflow; see [experimental context management](./experimental.md#contextmanagement) for details on the transitional allowance for limited MCP clients.
 
 **Parameters:**
-- `searchQuery`: `string` (required) - Case-insensitive query for full or partial keywords, resource names, versions and more (e.g., `"button"`, `"card v6"`, `"react"`, `"*"`)
-- `collection`: `string` (optional) - Filter results by a primary collection of records (e.g., `"patternfly-docs"`, `"patternfly-component-schemas"`, `"patternfly-api"`). Note that additional specialized or experimental collections outside the primary core set may also be available or shift across releases.
+- `searchQuery`: `string` (required) - Case-insensitive query for keywords, component names, or versions (e.g., `"button"`, `"card v6"`, `"react"`, `"*"`)
+- `collection`: `string` (optional) - Filter results by a specific collection (e.g., `"patternfly-docs"`, `"patternfly-component-schemas"`, `"patternfly-api"`, `"ai-handbook"`). Note that additional specialized or experimental collections outside the primary core set may also be available or shift across releases.
 
 **Examples:**
 
@@ -85,7 +85,7 @@ Fetch full documentation and component JSON schemas for specific PatternFly URLs
 
 The server exposes a resource-centric architecture via the `patternfly://` URI scheme. MCP clients can use these resources directly. [Review the roadmap for future resource updates](./architecture.md#roadmap).
 
-> **Note on AI content**: Specialized AI guidance resources are sourced from the [patternfly/ai-helpers](https://github.com/patternfly/ai-helpers) integration. These are specifically optimized to help LLMs generate more accurate PatternFly code. [See Data sources and integrations in architecture](./architecture.md#data-sources-and-integrations).
+> **Note on AI content**: Specialized AI guidance and engineering patterns are sourced from support collections like [rh-uxd/ai-handbook](https://github.com/rh-uxd/ai-handbook). [See Collections and data sources in architecture](./architecture.md#collections-and-data-sources).
 
 ### Discovery resources
 
@@ -119,7 +119,7 @@ Most MCP clients use JSON configuration to specify how the server is started. Be
 
 Depending on your environment, you may have to delay updating to the minimum Node.js version required by the server. If you are unable to upgrade your Node.js version and must remain on a previous Node.js version, you can pin your MCP configuration to the last compatible version of the server.
 
-> **Note**: Currently, pinning to an older PatternFly MCP version means you will not receive updated documentation or new features until you "update" your pinned version. In the future, pinning a version may still make an allowance for documentation updates. [See our planned architecture.](./architecture.md#library-synchronization-in-progress) 
+> **Note**: Currently, pinning to an older PatternFly MCP version means you will not receive updated documentation or new features until you "update" your pinned version. In the future, pinning a version may still make an allowance for documentation updates. [See our planned architecture.](./architecture.md#collections-and-data-sources)
 
 #### When to choose `@latest` or a pinned version for configuration
 

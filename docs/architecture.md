@@ -12,8 +12,6 @@ The PatternFly MCP server is centered on a **Library of Records and Collections*
 - **Reading records**: Accessing full documentation and machine-readable schemas via exact hashes.
 - **Discovering collections**: Navigating the library via logical groupings of records.
 
-> [A more in-depth version of our **library synchronization** concept is currently in progress](#library-synchronization-in-progress).
-
 #### Discovery layer (library metadata)
 
 Instead of a standalone "discovery" tool, the server implements a robust **Library Metadata system**. This system:
@@ -24,31 +22,28 @@ Instead of a standalone "discovery" tool, the server implements a robust **Libra
 
 > This discovery layer treats the MCP server as a living library. It enables the server to provide updates for all built-in tools and resources while maintaining a tailored experience based on user patterns (e.g., tailoring responses for designers vs. developers).
 
-#### Collections and extensible sources
+### Collections and data sources
 
-The server organizes records across primary collections (such as `patternfly-docs`, `patternfly-component-schemas`, and `patternfly-api`). Outside of these core collections, additional specialized, supplemental, or experimental collections may be dynamically registered or evolve across server releases.
+First and foremost, the MCP server is an application. Collections are aggregated to provide domain-specific knowledge and directly influence MCP search relevance and retrieval precision, rather than serving as promotional metrics.
 
-#### Library synchronization (in-progress)
+#### Primary collections
 
-We'll be introducing more updates based on our library synchronization concept in upcoming releases. The base concept balances stability and currentness by integrating core guidelines and standards directly into the server while syncing from the latest available PatternFly implementation.
-- **Baseline data**: Core guidelines and standards integrated directly into the server for standalone purposes, quick starts, and immediate access.
-- **Dynamic content**: Content synced from the latest available PatternFly implementation while you work, ensuring the LLM always has access to the latest documentation and patterns.
+- **`patternfly-docs`**: Curated Markdown documentation and guidelines catalog (`src/docs.json`) aggregating pinned upstream repositories (`patternfly-org`, `patternfly-react`, `ai-helpers`, `uxd-ai-helpers`, `patternfly-cli`, `patternfly-elements`, `patternfly-mcp`, and `pf-codemods`).
+- **`patternfly-component-schemas`**: Machine-readable component JSON schemas (`@patternfly/patternfly-component-schemas`) providing runtime prop definitions and validation rules.
+- **`patternfly-api`**: Live-crawled and pre-built component API specifications from PatternFly documentation endpoints.
 
-### Configuration and Experimental Features
+#### Support collections
+
+- **`ai-handbook`**: Specialized Red Hat Unified Intelligence Engineering (UIE) design standards for AI experiences, fetched dynamically from [`rh-uxd/ai-handbook`](https://github.com/rh-uxd/ai-handbook).
+
+#### Collection architecture
+
+- **Multi-collection partitioning**: Records are partitioned into distinct collections within the unified library, preventing namespace collisions and enabling targeted retrieval across documentation types.
+- **Worker pool and background synchronization**: Background collection processing runs on dedicated worker pools and periodic schedules, with resilience fallback ensuring server availability during transient network issues.
+
+### Configuration and experimental features
 
 The server utilizes a centralized **Option Registry** to handle programmatic and CLI configurations. This registry manages stability by isolating new capabilities behind `experimental` flags, allowing for rapid iteration of context management and persistence features.
-
-### Data sources and integrations
-
-The PatternFly MCP server aggregates content from multiple official sources to provide a comprehensive development resource.
-
-#### PatternFly ai-helpers
-The server integrates the [patternfly/ai-helpers](https://github.com/patternfly/ai-helpers) repository to provide specialized, LLM-optimized guidance. This integration powers several key resource categories:
-- **AI Guidance**: Specialized patterns for React Charts, Chatbot, and general React development.
-- **Styling Standards**: CSS and styling requirements tailored for AI code generation.
-- **Prompt Engineering**: Includes `ai-prompt-guidance.md` to help users write more effective prompts for PatternFly.
-
-These helpers are a core part of our [Library synchronization](#library-synchronization-in-progress), acting as the bridge between stable design patterns and dynamic implementation details.
 
 ### Tools, resources, and prompts as customizable plugins
 
@@ -57,7 +52,7 @@ this actively plays a role in the library architecture because it allows us to f
 
 Key goals aided by moving towards plugins:
 - **Providing a tailored experience for users** - Plugins a designer uses may differ from those of a developer, researcher, or community member.
-- **Evolving/future-proofing** - Plugins can evolve over time, and the MCP server can evolve to support them. (e.g., a new JS framework or design framework)
+- **Evolving/future-proofing** - Plugins can evolve over time, and the MCP server can evolve to support them (e.g., a new JS framework or design framework).
 - **Maintainability** - MCP server core can focus on features and issues while plugins are added and maintained by the community.
 
 ## Server architecture
@@ -95,20 +90,29 @@ flowchart TD
 Our roadmap focuses on expanding the server's reach and providing a more integrated user experience.
 
 #### In-progress
-- **Experimental Context Management**: Streamlining MCP resources into two primary types: **collections** and **records**. This includes providing exact hashes for records to ensure context stability.
-- **PatternFly API Integration**: Transitioning to the unified Library concept for standalone purposes and latest PatternFly version access.
-   - **SQLite Persistence Layer (Opt-in)**: Leveraging **Node.js 22+** to provide an optional persistence layer for up-to-date library records and resource caching.
-   - **Record Seed Integration**: A "fallback" set of resource records applied to every PatternFly MCP server instance that ensures users who do not opt into SQLite persistence still receive up-to-date documentation within an average MCP server use session.
+
+- **Dynamic MCP collection and resource invalidation and change notifications**: Emitting `sendResourceListChanged` notifications to connected MCP clients and invalidating memoized resource index caches when asynchronous or optional collections finish hydrating.
+- **SQLite persistence layer (opt-in)**: Leveraging **Node.js 22+** built-in SQLite capabilities to provide an optional persistence layer for up-to-date library records and fast server startup.
+- **PatternFly API crawler hardening**: Crawler throughput controls, quality filtering, and incremental crawl resume.
 
 #### In-planning and under review
+
+- **Resource-Tool integration**: Moving experimental MCP resources used under `experimental-context-management` into stable tooling; converting two MCP tools into a single MCP tool.
+- **Collection indexing**: Indexing collections, record quality filtering, and incremental indexing.
+- **Focused MCP resources**: Moving the current MCP resources to two primary resources: collections and records.
 - **Skills-as-Tools (On Track)**: Expand MCP functionality with agent skills using common Markdown. This provides consumers with significant customization without modifying the PatternFly MCP server core. You can start contributing to the MCP now by adding skills through our [AI Plugin Marketplace](https://github.com/rh-uxd/ai-helpers).
-- **Resource-Tool Integration**: Directly integrate MCP resources into tool responses to reduce token counts and allow tools to accept URI links as inputs.
-- **Environment & Analysis Tooling**: A built-in tool falling under "use PatternFly", focused on environment snapshots, code analysis, and whitelisted resource access for local project analysis.
-- **Agentless MCP Client**: An MCP client for use without an LLM, allowing PatternFly tooling to integrate into CLI tools and CI/CD pipelines.
-- **Resource/Helper Sharing**: Mechanisms to share resources and helper functions across external tool plugins.
+- **Environment & analysis tooling**: A built-in tool falling under "use PatternFly", focused on environment snapshots, code analysis, and whitelisted resource access for local project analysis.
+- **Resource and helper sharing**: Mechanisms to share resources and helper functions across external tool plugins.
+
+#### Future concepts
+
+- **Request-scoped session credentials**: Utilizing `AsyncLocalStorage` for credential passing to support private or token-gated collection sources.
+- **Collection priority and dynamic overrides**: Introducing priority and grouping configurations for sorting and selective record overrides across overlapping collections.
 
 #### Deprioritized concepts and planning
-- ~~**YAML Configuration**: Remote tool, resource, and prompt plugins configured via YAML.~~ Currently, superseded by Skills-as-Tools and [AI Plugin Marketplace](https://github.com/rh-uxd/ai-helpers).
+
+- **Agentless MCP client**: An MCP client for use without an LLM, allowing PatternFly tooling to integrate into CLI tools and CI/CD pipelines.
+- ~~**YAML Configuration**: Remote tool, resource, and prompt plugins configured via YAML.~~ Currently superseded by Skills-as-Tools and [AI Plugin Marketplace](https://github.com/rh-uxd/ai-helpers).
 
 > **Contribution alignment**
 > 
