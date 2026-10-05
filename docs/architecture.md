@@ -101,14 +101,14 @@ Our roadmap focuses on expanding the server's reach and providing a more integra
    - **Record Seed Integration**: A "fallback" set of resource records applied to every PatternFly MCP server instance that ensures users who do not opt into SQLite persistence still receive up-to-date documentation within an average MCP server use session.
 
 #### In-planning and under review
-- **Skills-as-Tools (On Track)**: Expand MCP functionality with agent skills using common Markdown. This provides consumers with significant customization without modifying the PatternFly MCP server core. You can start contributing to the MCP now by adding skills through our [AI Plugin Marketplace](https://github.com/patternfly/ai-helpers).
+- **Skills-as-Tools (On Track)**: Expand MCP functionality with agent skills using common Markdown. This provides consumers with significant customization without modifying the PatternFly MCP server core. You can start contributing to the MCP now by adding skills through our [AI Plugin Marketplace](https://github.com/rh-uxd/ai-helpers).
 - **Resource-Tool Integration**: Directly integrate MCP resources into tool responses to reduce token counts and allow tools to accept URI links as inputs.
 - **Environment & Analysis Tooling**: A built-in tool falling under "use PatternFly", focused on environment snapshots, code analysis, and whitelisted resource access for local project analysis.
 - **Agentless MCP Client**: An MCP client for use without an LLM, allowing PatternFly tooling to integrate into CLI tools and CI/CD pipelines.
 - **Resource/Helper Sharing**: Mechanisms to share resources and helper functions across external tool plugins.
 
 #### Deprioritized concepts and planning
-- ~~**YAML Configuration**: Remote tool, resource, and prompt plugins configured via YAML.~~ Currently, superseded by Skills-as-Tools and [AI Plugin Marketplace](https://github.com/patternfly/ai-helpers).
+- ~~**YAML Configuration**: Remote tool, resource, and prompt plugins configured via YAML.~~ Currently, superseded by Skills-as-Tools and [AI Plugin Marketplace](https://github.com/rh-uxd/ai-helpers).
 
 > **Contribution alignment**
 > 

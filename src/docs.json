@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generated": "2026-07-28T18:53:01.848Z",
+  "generated": "2026-10-05T16:07:16.920Z",
   "meta": {
     "totalEntries": 137,
     "totalDocs": 341,
@@ -157,7 +157,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/rh-uxd/ai-helpers/34913b0c96df0eaf10597717827bb62272726571/README.md",
+        "path": "https://raw.githubusercontent.com/rh-uxd/ai-helpers/e8cca17430a8ccb062ed1878073165417a081b34/README.md",
         "version": "v6"
       },
       {
@@ -167,7 +167,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/rh-uxd/ai-helpers/34913b0c96df0eaf10597717827bb62272726571/CONTRIBUTING-SKILLS.md",
+        "path": "https://raw.githubusercontent.com/rh-uxd/ai-helpers/e8cca17430a8ccb062ed1878073165417a081b34/CONTRIBUTING-SKILLS.md",
         "version": "v6"
       },
       {
@@ -177,7 +177,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/rh-uxd/ai-helpers/34913b0c96df0eaf10597717827bb62272726571/CONTRIBUTING.md",
+        "path": "https://raw.githubusercontent.com/rh-uxd/ai-helpers/e8cca17430a8ccb062ed1878073165417a081b34/CONTRIBUTING.md",
         "version": "v6"
       },
       {
@@ -187,7 +187,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/rh-uxd/ai-helpers/34913b0c96df0eaf10597717827bb62272726571/FAQ.md",
+        "path": "https://raw.githubusercontent.com/rh-uxd/ai-helpers/e8cca17430a8ccb062ed1878073165417a081b34/FAQ.md",
         "version": "v6"
       },
       {
@@ -197,7 +197,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/rh-uxd/ai-helpers/34913b0c96df0eaf10597717827bb62272726571/PLUGINS.md",
+        "path": "https://raw.githubusercontent.com/rh-uxd/ai-helpers/e8cca17430a8ccb062ed1878073165417a081b34/PLUGINS.md",
         "version": "v6"
       },
       {
@@ -207,7 +207,7 @@
         "section": "components",
         "category": "design-guidelines",
         "source": "github",
-        "path": "https://raw.githubusercontent.com/rh-uxd/ai-helpers/34913b0c96df0eaf10597717827bb62272726571/QUICKSTART.md",
+        "path": "https://raw.githubusercontent.com/rh-uxd/ai-helpers/e8cca17430a8ccb062ed1878073165417a081b34/QUICKSTART.md",
         "version": "v6"
       }
     ],
