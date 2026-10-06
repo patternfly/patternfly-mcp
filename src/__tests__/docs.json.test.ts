@@ -74,7 +74,6 @@ describe('docs.json', () => {
      *
      * | Repository | Hash / Branch | Count | Type |
      * |---|---|---|---|
-     * | ai-helpers | f7f8160c3f28b0bc7f64181d9466a425ac8329fc | 20 | **Primary** |
      * | uxd-ai-helpers | e8cca17430a8ccb062ed1878073165417a081b34 | 6 | **Primary** |
      * | patternfly-cli | ce032cd16ddb90c540cb4f18c6830e190cd9e3e9 | 1 | One-off |
      * | patternfly-elements | 402b3b0e7ed73cb2aa21531e0eab4216c2211212 | 1 | One-off |
