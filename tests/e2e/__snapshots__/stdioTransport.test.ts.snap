@@ -33,7 +33,7 @@ Use these parameters to filter the documentation index.
 | :--- | :--- | :--- |
 | \`category\` | \`about\`, \`about-rapid-prototyping\`, \`accessibility\`, \`analytics\`, \`chat-bot\`, \`css\`, \`customizing%20messages\`, \`dark-theme-handbook\`, \`demo\`, \`demo-demos\`, \`design-guidelines\`, \`design-tokens\`, \`development-guide\`, \`development-guidelines\`, \`enhancing-existing-projects\`, \`general\`, \`glass-mode-handbook\`, \`grammar\`, \`high-contrast-handbook\`, \`html\`, \`new-prototypes\`, \`org-demos\`, \`overview\`, \`react\`, \`release-notes\`, \`text\`, \`text-demos\`, \`text-deprecated\`, \`tree-shaking\`, \`upgrade-guide\`, \`writing-guidelines\`, \`writing-guides\` | Filter by category |
 | \`collection\` | \`patternfly-api\`, \`patternfly-component-schemas\`, \`patternfly-docs\` | Filter by collection |
-| \`section\` | \`accessibility\`, \`ai\`, \`charts\`, \`components\`, \`content-design\`, \`developer-guides\`, \`extensions\`, \`foundations-and-styles\`, \`get-help\`, \`get-involved\`, \`get-started\`, \`guidelines\`, \`layouts\`, \`patterns\`, \`releases\`, \`resources\`, \`upgrade\` | Filter by section |
+| \`section\` | \`accessibility\`, \`ai\`, \`charts\`, \`components\`, \`content-design\`, \`developer-guides\`, \`extensions\`, \`foundations-and-styles\`, \`get-help\`, \`get-involved\`, \`get-started\`, \`layouts\`, \`patterns\`, \`releases\`, \`upgrade\` | Filter by section |
 | \`version\` | \`v4\`, \`v5\`, \`v6\` | Filter by version |
 
 ## Available Patterns

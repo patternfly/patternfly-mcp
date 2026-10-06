@@ -28,7 +28,7 @@ First and foremost, the MCP server is an application. Collections are aggregated
 
 #### Primary collections
 
-- **`patternfly-docs`**: Curated Markdown documentation and guidelines catalog (`src/docs.json`) aggregating pinned upstream repositories (`patternfly-org`, `patternfly-react`, `ai-helpers`, `uxd-ai-helpers`, `patternfly-cli`, `patternfly-elements`, `patternfly-mcp`, and `pf-codemods`).
+- **`patternfly-docs`**: Curated Markdown documentation and guidelines catalog (`src/docs.json`) aggregating pinned upstream repositories (`patternfly-org`, `patternfly-react`, `uxd-ai-helpers`, `patternfly-cli`, `patternfly-elements`, `patternfly-mcp`, and `pf-codemods`)
 - **`patternfly-component-schemas`**: Machine-readable component JSON schemas (`@patternfly/patternfly-component-schemas`) providing runtime prop definitions and validation rules.
 - **`patternfly-api`**: Live-crawled and pre-built component API specifications from PatternFly documentation endpoints.
 
