@@ -34,7 +34,7 @@ First and foremost, the MCP server is an application. Collections are aggregated
 
 #### Support collections
 
-- **`ai-handbook`**: Specialized Red Hat Unified Intelligence Engineering (UIE) design standards for AI experiences, fetched dynamically from [`rh-uxd/ai-handbook`](https://github.com/rh-uxd/ai-handbook).
+- **`ai-handbook`**: Specialized Red Hat Unified Intelligence Engineering (UIE) AI Experience (AIX) Standards for designing AI experiences, fetched dynamically from [`rh-uxd/ai-handbook`](https://github.com/rh-uxd/ai-handbook). Read the [Getting started for designers guide](https://github.com/rh-uxd/ai-handbook/blob/main/docs/getting-started-for-designers/getting-started-for-designers.md) for prompting best practices.
 
 #### Collection architecture
 
