@@ -495,6 +495,7 @@ const WHITELIST_OPTIONS: WhitelistOptions = {
     'https://www.patternfly.org',
     'https://github.com/patternfly',
     'https://www.github.com/patternfly',
+    'https://api.patternfly.org',
     'https://main.patternfly-org.pages.dev',
     'https://raw.githubusercontent.com/patternfly',
     'https://github.com/rh-uxd',
@@ -530,8 +531,8 @@ const CHANNEL_BASENAME = 'pf-mcp';
  */
 const PATTERNFLY_OPTIONS: PatternFlyOptions = {
   api: {
-    base: 'https://main.patternfly-org.pages.dev/api',
-    versions: 'https://main.patternfly-org.pages.dev/api/versions',
+    base: 'https://api.patternfly.org/api',
+    versions: 'https://api.patternfly.org/api/versions',
     componentPaths: [
       'props',
       'css'
