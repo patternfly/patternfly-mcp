@@ -1,7 +1,7 @@
 {
   "version": "1",
   "generated": "2026-09-30T21:56:29.488Z",
-  "base": "https://main.patternfly-org.pages.dev/api",
+  "base": "https://api.patternfly.org/api",
   "records": [
     {
       "p": "v6/accessibility/design/text",
