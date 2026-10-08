@@ -13,6 +13,7 @@ import {
 import { processDocsFunction } from '../server.getResources';
 import { getOptions } from '../options.context';
 import { setFetch } from '../server.fetch';
+import { DEFAULT_OPTIONS } from '../options.defaults';
 
 jest.mock('../server.getResources');
 jest.mock('../server.fetch');
@@ -137,13 +138,15 @@ describe('expandApiEmbeddedCollection', () => {
 });
 
 describe('getPatternFlyApiRecords', () => {
+  const BASE = DEFAULT_OPTIONS.patternflyOptions.api.base;
+
   it.each([
     {
       description: 'high quality score',
       expandedRecords: [
         {
-          path: 'https://main.patternfly-org.pages.dev/api/v1/components/Dolor/react',
-          resolvedPath: 'https://main.patternfly-org.pages.dev/api/v1/components/Dolor/react',
+          path: `${BASE}/v1/components/Dolor/react`,
+          resolvedPath: `${BASE}/v1/components/Dolor/react`,
           displayName: 'Dolor',
           description: 'Dolor sit component description',
           content: '',
@@ -156,8 +159,8 @@ describe('getPatternFlyApiRecords', () => {
       description: 'low quality score',
       expandedRecords: [
         {
-          path: 'https://main.patternfly-org.pages.dev/api/v1/components/Lorem/react',
-          resolvedPath: 'https://main.patternfly-org.pages.dev/api/v1/components/Lorem/react',
+          path: `${BASE}/v1/components/Lorem/react`,
+          resolvedPath: `${BASE}/v1/components/Lorem/react`,
           displayName: 'Lorem',
           description: 'Lorem ipsum component description',
           content: '',
@@ -185,7 +188,7 @@ describe('collectionInitialCallback', () => {
 });
 
 describe('collectionCallback', () => {
-  const BASE = 'https://main.patternfly-org.pages.dev/api';
+  const BASE = DEFAULT_OPTIONS.patternflyOptions.api.base;
   const VERSIONS = `${BASE}/versions`;
   let mockGet: jest.Mock;
 
