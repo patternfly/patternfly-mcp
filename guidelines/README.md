@@ -37,6 +37,7 @@ Agents should use these phrases as signals to consult specific documentation and
 | **"review development guide"**      | Review `docs/development.md` for CLI, API, and plugin authoring.                                                                                       |
 | **"create an example tool plugin"** | Review `guidelines/agent_coding.md`, `docs/development.md`, `docs/examples/*`, and `src/*` for context, coding standards, and existing example formats. |
 | **"add documentation links"** / **"add doc entries"** / **"register docs"** / **"update docs.json"** / **"contribute to docs.json"** | Follow `guidelines/skills/add-docs-links/SKILL.md`: docs.json format, duplicate check, raw URL confirmation, then run unit tests and update meta. |
+| **"reseed collections"** / **"update collections"** / **"build collections"** | Follow `docs/development.md#how-collection-and-source-data-get-updated`: run `npm run build:collections` (or `build:collections-api`) to sync API records manifests. |
 | **"review zod"** / **"zod upgrade"** / **"zod integration review"** / **"zod update report"** | Follow `guidelines/skills/review-zod-integration/SKILL.md`: release notes vs codebase, tests, report at `reports/YYYYMMDD-HHMMSS-zod-{semver}-update-report.md` (UTC). |
 | **"troubleshoot server"** / **"debug server"** | Review `docs/usage.md#troubleshooting` and the PatternFly MCP server resource `patternfly://context` |
 

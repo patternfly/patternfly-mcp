@@ -193,6 +193,14 @@ The `Node.js` engine requirements are updated on a predictable biannual schedule
 
 ### Project maintenance
 
+#### Collection reseeding
+
+When PatternFly releases new documentation or component features, reseed local catalog data:
+- `npm run build:collections`: Runs the complete crawler and manifest update pipeline and runs collection tests.
+- `npm run build:collections-api`: Updates `src/collection.patternFlyApi.json` and outputs CSV diffs to `reports/`.
+
+For information on project development maintenance tasks, refer to [Project development maintenance in docs/development.md](./docs/development.md#project-development-maintenance).
+
 #### Releases and post-release review
 
 Full maintainer process: **[Releasing the MCP](./docs/development.md#releasing-the-mcp)** in the development guide. Day-to-day commits use [conventional commits](#pull-request-commits-messaging) to feed [CHANGELOG.md](./CHANGELOG.md).
