@@ -1,10 +1,18 @@
 import { randomInt } from 'node:crypto';
+import { existsSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { jest } from '@jest/globals';
-import docs from '../../src/docs.json';
+import { type PatternFlyMcpDocsCatalog } from '../../src/docs.embedded';
 import { checkUrl } from './utils/checkUrl';
 
 describe('Documentation Link Audit', () => {
   let auditSet: string[] = [];
+
+  const collectionPath = resolve(process.cwd(), 'src/docs.json');
+
+  const docs: PatternFlyMcpDocsCatalog = existsSync(collectionPath)
+    ? JSON.parse(readFileSync(collectionPath, 'utf-8'))
+    : { meta: { totalEntries: 0, totalDocs: 0, source: '' }, docs: {} };
 
   /**
    * Extracts and returns a prefix based on the provided URL.
