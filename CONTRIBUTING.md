@@ -197,6 +197,7 @@ The `Node.js` engine requirements are updated on a predictable biannual schedule
 When PatternFly releases new documentation or component features, reseed local catalog data:
 - `npm run build:collections`: Runs the complete crawler and manifest update pipeline and runs collection tests.
 - `npm run build:collections-api`: Updates `src/collection.patternFlyApi.json` and outputs CSV diffs to `reports/`.
+- `npm run build:collections-docs`: Updates `src/docs.json` with latest repository hashes and prunes API duplicates.
 
 For information on project development maintenance tasks, refer to [Project development maintenance in docs/development.md](./docs/development.md#project-development-maintenance).
 

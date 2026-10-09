@@ -460,9 +460,13 @@ The server maintains multiple record collections that provide documentation and 
 
 The original curated Markdown collection. It pins remote repository URLs to specific Git commit SHAs to guarantee consistent documentation and remove upstream breaking changes.
 
-- **Update workflow**: Follow the [add-docs-links skill](../guidelines/skills/add-docs-links/SKILL.md) to add, update, or remove entries.
+- **Update workflow**: Follow the [add-docs-links skill](../guidelines/skills/add-docs-links/SKILL.md) for manual additions/edits, or run the automated reseeding script:
+  ```bash
+  npm run build:collections-docs
+  ```
+- **Automated synchronization**: The Docs reseeding pipeline (`tooling/collections/update.patternFlyDocs.ts`) automatically resolves the latest commit SHAs across referenced GitHub repositories, prunes redundant AI guideline entries superseded by high-quality API endpoints, recalculates `meta.totalEntries` and `meta.totalDocs`, and generates an audit diff report at `reports/YYYYMMDD-collection.patternFlyDocs.report.csv`.
 - **Validation**: Ensure all raw URLs are HTTPS, match the domain whitelist in `src/options.defaults.ts`, and return 2xx responses.
-- **Testing**: Run `npm test` and update `baseHashes` and the Repository Breakdown table in `src/__tests__/docs.json.test.ts` whenever refs change.
+- **Testing**: Run `npm run test:collections` or `npm test`, updating `baseHashes` and the Repository Breakdown table in `src/__tests__/docs.json.test.ts` when refs change.
 
 #### 2. Pre-built API collection (`src/collection.patternFlyApi.json`)
 
@@ -470,15 +474,15 @@ The server packages pre-seeded API endpoints to enable instant server startup wi
 
 - **Update commands**:
   ```bash
-  # Reseed the API collection and run collection test suites
+  # Reseed both API and Docs collections and run collection test suites
   npm run build:collections
 
-  # Reseed the API collection
+  # Reseed only the API collection
   npm run build:collections-api
 
   # Run collection test suites only
   npm run test:collections
-  
+
   # Run collection test suites in watch mode
   npm run test:collections-dev
   ```
