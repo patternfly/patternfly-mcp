@@ -1,7 +1,7 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { expandApiEmbeddedCollection, type ApiEmbeddedCollection } from '../../src/collection.patternFlyApi';
-import { escapeCsvField, formatCsv, generateReportCsv, diffCollections, run } from '../../scripts/update.collection.patternFlyApi';
+import { expandApiEmbeddedCollection, type ApiEmbeddedCollection } from '../../../src/collection.patternFlyApi';
+import { generateReportCsv, diffCollections, run } from '../update.patternFlyApi';
 
 const COLLECTION_PATH = resolve(process.cwd(), 'src/collection.patternFlyApi.json');
 
@@ -58,44 +58,6 @@ describe('collection.patternFlyApi', () => {
 });
 
 describe('collection.patternFlyApi CSV Report Generator', () => {
-  it('should correctly escape fields with commas, quotes, and newlines', () => {
-    expect(escapeCsvField('normal')).toBe('normal');
-    expect(escapeCsvField('with,comma')).toBe('"with,comma"');
-    expect(escapeCsvField('with "quotes"')).toBe('"with ""quotes"""');
-    expect(escapeCsvField('with\nnewline')).toBe('"with\nnewline"');
-    expect(escapeCsvField(null)).toBe('');
-    expect(escapeCsvField(undefined)).toBe('');
-    expect(escapeCsvField(123)).toBe('123');
-  });
-
-  it('should sanitize formula injection characters by default', () => {
-    expect(escapeCsvField('=SUM(1+1)')).toBe("'=SUM(1+1)");
-    expect(escapeCsvField('+123')).toBe("'+123");
-    expect(escapeCsvField('-456')).toBe("'-456");
-    expect(escapeCsvField('@lookup')).toBe("'@lookup");
-    expect(escapeCsvField('\ttabPrefix')).toBe("'\ttabPrefix");
-    expect(escapeCsvField('\rreturnPrefix')).toBe('"\'\rreturnPrefix"');
-  });
-
-  it('should preserve raw formula characters when sanitizeFormulas is set to false', () => {
-    expect(escapeCsvField('=SUM(1+1)', false)).toBe('=SUM(1+1)');
-    expect(escapeCsvField('+123', false)).toBe('+123');
-    expect(escapeCsvField('-456', false)).toBe('-456');
-    expect(escapeCsvField('@lookup', false)).toBe('@lookup');
-  });
-
-  it('should format header and row lines into standard CSV', () => {
-    const headers = ['col1', 'col2'];
-    const rows = [
-      ['val1', 'val2'],
-      ['val3,with,comma', 'val4 "quoted"']
-    ];
-
-    const result = formatCsv(headers, rows);
-
-    expect(result).toBe('col1,col2\nval1,val2\n"val3,with,comma","val4 ""quoted"""\n');
-  });
-
   it('should produce a full structured CSV report for added, removed, modified, and unchanged records', () => {
     const oldRecords = [
       { p: 'endpoint/removed', n: 'Old Doc', d: 'Desc', c: 'text/html', q: 0.96 },

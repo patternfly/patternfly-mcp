@@ -1,5 +1,5 @@
-import { readFile, writeFile, mkdir } from 'node:fs/promises';
-import { dirname, resolve } from 'node:path';
+import { readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   apiSpider,
@@ -9,10 +9,16 @@ import {
   type ApiEmbedded,
   type ApiEmbeddedCollection,
   MIN_API_QUALITY_THRESHOLD
-} from '../src/collection.patternFlyApi';
-import { getSessionOptions, getOptions, runWithOptions } from '../src/options.context';
-import { createLogger } from '../src/logger';
-import { type LoggingSession } from '../src/options.defaults';
+} from '../../src/collection.patternFlyApi';
+import { getLoggerOptions, getOptions, runWithOptions } from '../../src/options.context';
+import { createLogger } from '../../src/logger';
+import {
+  generateDiffCsv,
+  getDefaultReportPath,
+  saveCsvReport
+} from './csv';
+import { runUpdateTask, writeJsonCollection } from './helpers';
+import { printDiffSummary } from './summary';
 
 /**
  * Reason classification for omitted or removed API records.
@@ -52,46 +58,9 @@ interface GenerateCsvReportOptions {
 }
 
 /**
- * Safely escape and format a field for standard RFC 4180 CSV output.
- *
- * @note **CSV / Formula Injection:** By default (`sanitizeFormulas = true`), leading formula
- * trigger characters are prefixed with a single quote to prevent spreadsheet execution. Pass
- * `false` to preserve strict raw string fidelity for automated downstream parsers.
- *
- * @param field - Value to format for CSV
- * @param [sanitizeFormulas=true] - Whether to prefix formula trigger characters with a single quote
- * @returns RFC 4180 compliant CSV cell string
+ * Configurable default filename for the API report.
  */
-const escapeCsvField = (field: unknown, sanitizeFormulas = true): string => {
-  if (field === null || field === undefined) {
-    return '';
-  }
-
-  let str = String(field);
-
-  if (sanitizeFormulas && /^[=+\-@\t\r]/.test(str)) {
-    str = `'${str}`;
-  }
-
-  if (str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r')) {
-    return `"${str.replace(/"/g, '""')}"`;
-  }
-
-  return str;
-};
-
-/**
- * Format rows and headers into standard CSV string.
- *
- * @param headers - Column headers
- * @param rows - Table rows
- */
-const formatCsv = (headers: string[], rows: (string | number | undefined | null)[][]): string => {
-  const headerLine = headers.map(field => escapeCsvField(field)).join(',');
-  const rowLines = rows.map(row => row.map(cell => escapeCsvField(cell)).join(','));
-
-  return [headerLine, ...rowLines].join('\n') + '\n';
-};
+const DEFAULT_API_REPORT_FILENAME = 'collection.patternFlyApi.report.csv';
 
 /**
  * Generate a complete, non-truncated CSV report for additions, removals, modifications, and unchanged records.
@@ -109,38 +78,39 @@ const generateReportCsv = ({
   crawledMap
 }: GenerateCsvReportOptions): string => {
   const oldMap = new Map(oldRecords.map(record => [record.p, record]));
-  const headers = ['status', 'path', 'name', 'previousQualityScore', 'newQualityScore', 'contentType', 'reason', 'details'];
-  const rows: (string | number | undefined | null)[][] = [];
-
-  for (const record of diff.added) {
-    rows.push(['ADDED', record.p, record.n, '', record.q, record.c, '', '']);
-  }
-
-  for (const { record, reason, details } of diff.removed) {
-    const newQualityScore = crawledMap.get(record.p)?.entry.qualityScore ?? '';
-
-    rows.push(['REMOVED', record.p, record.n, record.q, newQualityScore, record.c, reason, details || '']);
-  }
-
-  for (const { record, reasons } of diff.modified) {
-    const previousQualityScore = oldMap.get(record.p)?.q ?? '';
-
-    rows.push(['MODIFIED', record.p, record.n, previousQualityScore, record.q, record.c, 'property changes', reasons.join('; ')]);
-  }
-
   const changedPaths = new Set([
     ...diff.added.map(record => record.p),
     ...diff.removed.map(removedItem => removedItem.record.p),
     ...diff.modified.map(modifiedItem => modifiedItem.record.p)
   ]);
+  const unchanged = newRecords.filter(record => !changedPaths.has(record.p));
 
-  for (const record of newRecords) {
-    if (!changedPaths.has(record.p)) {
-      rows.push(['UNCHANGED', record.p, record.n, record.q, record.q, record.c, '', '']);
+  return generateDiffCsv(
+    { ...diff, unchanged },
+    {
+      headers: ['status', 'path', 'name', 'previousQualityScore', 'newQualityScore', 'contentType', 'reason', 'details'],
+      added: record => [record.p, record.n, '', record.q, record.c, '', ''],
+      removed: ({ record, reason, details }) => [
+        record.p,
+        record.n,
+        record.q,
+        crawledMap.get(record.p)?.entry.qualityScore ?? '',
+        record.c,
+        reason,
+        details || ''
+      ],
+      modified: ({ record, reasons }) => [
+        record.p,
+        record.n,
+        oldMap.get(record.p)?.q ?? '',
+        record.q,
+        record.c,
+        'property changes',
+        reasons.join('; ')
+      ],
+      unchanged: record => [record.p, record.n, record.q, record.q, record.c, '', '']
     }
-  }
-
-  return formatCsv(headers, rows);
+  );
 };
 
 /**
@@ -238,52 +208,17 @@ const diffCollections = (
 };
 
 /**
- * Create a light diff report between old and new collections.
+ * Create a diff report with annotated reasons between old and new collections.
  *
- * @param diff - Diff report
+ * @param diff - Complete diff result
  */
 const diffReport = (diff: ReturnType<typeof diffCollections>) => {
-  const { added, removed, modified } = diff;
-  const hasChanges = added.length > 0 || removed.length > 0 || modified.length > 0;
-
-  console.log('\n📊 Collection Diff Report:');
-
-  if (!hasChanges) {
-    console.log('   ✨ No record additions, removals, or property modifications detected.');
-
-    return;
-  }
-
-  if (added.length > 0) {
-    console.log(`   ➕ Added (${added.length}):`);
-    added.slice(0, 10).forEach(record => console.log(`      + ${record.p} (Q: ${record.q})`));
-
-    if (added.length > 10) {
-      console.log(`      ... and ${added.length - 10} more`);
-    }
-  }
-
-  if (removed.length > 0) {
-    console.log(`   ➖ Removed (${removed.length}):`);
-    removed.slice(0, 15).forEach(({ record, reason, details }) => {
-      console.log(`      - ${record.p} (Previous Q: ${record.q}) [Reason: ${reason}${details ? ` — ${details}` : ''}]`);
-    });
-
-    if (removed.length > 15) {
-      console.log(`      ... and ${removed.length - 15} more`);
-    }
-  }
-
-  if (modified.length > 0) {
-    console.log(`   🔄 Modified (${modified.length}):`);
-    modified.slice(0, 10).forEach(({ record, reasons }) => {
-      console.log(`      ~ ${record.p} [${reasons.join(', ')}]`);
-    });
-
-    if (modified.length > 10) {
-      console.log(`      ... and ${modified.length - 10} more`);
-    }
-  }
+  printDiffSummary(diff, {
+    title: 'PatternFly API Collection Diff Report',
+    formatAdded: record => `${record.p} (${record.n})`,
+    formatRemoved: ({ record, reason, details }) => `${record.p} (${record.n}) [Reason: ${reason}${details ? ` — ${details}` : ''}]`,
+    formatModified: ({ record, reasons }) => `${record.p} [${reasons.join(', ')}]`
+  });
 };
 
 /**
@@ -305,10 +240,10 @@ const run = async (
 ) => {
   // 1. Enable stderr logging so all diagnostics_channel logs (debug, info, warn, error) are printed
   const unsubscribeLogger = createLogger({
-    channelName: getSessionOptions().channelName,
+    ...getLoggerOptions(),
     stderr: true,
     level: 'debug'
-  } as LoggingSession);
+  });
 
   console.log('🚀 Generating PatternFly API embedded collection...');
   const keepAlive = setTimeout(() => {}, 86_400_000);
@@ -361,8 +296,7 @@ const run = async (
       records
     };
 
-    const outputPath = resolve(fileURLToPath(new URL('../src/collection.patternFlyApi.json', import.meta.url)));
-    const jsonContent = isPrettyPrint ? JSON.stringify(payload, null, 2) : JSON.stringify(payload);
+    const outputPath = resolve(fileURLToPath(new URL('../../src/collection.patternFlyApi.json', import.meta.url)));
     let oldRecords: ApiEmbedded[] = [];
 
     try {
@@ -374,31 +308,28 @@ const run = async (
       // File might not exist yet on initial run
     }
 
-    await writeFile(outputPath, jsonContent + '\n', 'utf-8');
-
-    const durationSec = ((Date.now() - startTime) / 1000).toFixed(1);
-    const sizeKb = (Buffer.byteLength(jsonContent, 'utf-8') / 1024).toFixed(1);
-
-    console.log(`✅ Updated src/collection.patternFlyApi.json:`);
-    console.log(`   - Total Crawled: ${entries.length} endpoints`);
-    console.log(`   - Admitted Records: ${records.length}`);
-    console.log(`   - File Size: ${sizeKb} KB`);
-    console.log(`   - Time Elapsed: ${durationSec}s`);
+    await writeJsonCollection(outputPath, payload, {
+      isPrettyPrint,
+      startTime,
+      stats: [
+        { label: 'Total Crawled', value: `${entries.length} endpoints` },
+        { label: 'Admitted Records', value: records.length }
+      ]
+    });
 
     const diff = diffCollections(oldRecords, records, crawledMap);
 
     diffReport(diff);
 
     if (outputCsv) {
-      const targetCsvPath = csvOutputPath ||
+      const targetCsvPath =
+        csvOutputPath ||
         process.env.CSV_REPORT_PATH ||
-        resolve(fileURLToPath(new URL('../reports/collection.patternFlyApi.report.csv', import.meta.url)));
+        getDefaultReportPath(DEFAULT_API_REPORT_FILENAME);
 
-      await mkdir(dirname(targetCsvPath), { recursive: true });
       const csvContent = generateReportCsv({ diff, oldRecords, newRecords: records, crawledMap });
 
-      await writeFile(targetCsvPath, csvContent, 'utf-8');
-      console.log(`📄 Exported full CSV report: ${targetCsvPath}`);
+      await saveCsvReport(targetCsvPath, csvContent);
     }
   } finally {
     clearTimeout(keepAlive);
@@ -407,22 +338,17 @@ const run = async (
 };
 
 /**
- * Configurable options for maintainers.
- * Only execute when explicitly requested via UPDATE_COLLECTIONS=true
+ * Direct execution when invoked via UPDATE_COLLECTIONS=true
  */
-if (process.env.UPDATE_COLLECTIONS === 'true') {
-  run({ isPrettyPrint: true, filterLowQualityRecords: true }).catch(error => {
-    console.error('❌ Failed to update API collection:', error);
-    process.exit(1);
-  });
-}
+runUpdateTask('API collection', run);
 
 export {
+  DEFAULT_API_REPORT_FILENAME,
   diffCollections,
-  escapeCsvField,
-  formatCsv,
+  diffReport,
   generateReportCsv,
   run,
+  type GenerateCsvReportOptions,
   type ModifiedRecordReport,
   type RemovalReason,
   type RemovedRecordReport
