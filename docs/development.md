@@ -468,11 +468,23 @@ The original curated Markdown collection. It pins remote repository URLs to spec
 
 The server packages pre-seeded API endpoints to enable instant server startup without network overhead.
 
-- **Update command**:
+- **Update commands**:
   ```bash
+  # Reseed the API collection and run collection test suites
   npm run build:collections
+
+  # Reseed the API collection
+  npm run build:collections-api
+
+  # Run collection test suites only
+  npm run test:collections
+  
+  # Run collection test suites in watch mode
+  npm run test:collections-dev
   ```
-- **Execution**: Crawls live PatternFly API endpoints, filters quality records, updates `src/collection.patternFlyApi.json`, and executes collection-specific tests.
+- **Execution**: Crawls live PatternFly API endpoints via `apiSpider`, filters low-quality records, compresses content into `src/collection.patternFlyApi.json`, and outputs structured console diffs and timestamped CSV audit reports to `reports/YYYYMMDD-collection.patternFlyApi.report.csv`.
+- **Configuration & Environment Overrides**:
+  - `UPDATE_COLLECTIONS=true`: Required environment flag to execute collection builds directly.
 - **When to run**: When PatternFly publishes new releases, when updating metadata/quality filters, or as part of a general maintenance cycle.
 
 #### 3. Component schemas (`@patternfly/patternfly-component-schemas`)
