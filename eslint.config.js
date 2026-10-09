@@ -127,7 +127,9 @@ export default [
   {
     files: [
       'scripts/**/*.ts',
-      'scripts/**/*.js'
+      'scripts/**/*.js',
+      'tooling/**/*.ts',
+      'tooling/**/*.js'
     ],
     rules: {
       'no-console': 0,

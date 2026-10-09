@@ -72,9 +72,10 @@ export default {
       ...baseConfig
     },
     {
-      displayName: 'collections',
-      roots: ['<rootDir>/tests/scripts'],
-      testMatch: ['<rootDir>/tests/scripts/**/*collection*.test.ts'],
+      displayName: 'tooling:collections',
+      roots: ['<rootDir>/tooling/collections'],
+      testMatch: ['<rootDir>/tooling/collections/**/__tests__/**/*.test.ts'],
+      setupFilesAfterEnv: ['<rootDir>/jest.setupTests.ts'],
       ...baseConfig
     },
     {
