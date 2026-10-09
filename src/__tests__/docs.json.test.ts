@@ -74,15 +74,15 @@ describe('docs.json', () => {
      *
      * | Repository | Hash / Branch | Count | Type |
      * |---|---|---|---|
-     * | ai-helpers | e8cca17430a8ccb062ed1878073165417a081b34 | 6 | One-off |
+     * | uxd-ai-helpers | e8cca17430a8ccb062ed1878073165417a081b34 | 6 | One-off |
      * | patternfly-cli | ce032cd16ddb90c540cb4f18c6830e190cd9e3e9 | 1 | One-off |
      * | patternfly-elements | 402b3b0e7ed73cb2aa21531e0eab4216c2211212 | 1 | One-off |
-     * | patternfly-mcp | 63041b33f31724427125d08a7d1af16397927cd0 | 5 | One-off |
-     * | patternfly-org | 540bb0d31cb18670dd02857f80aa8b444fed9be9 | 203 | **Primary** |
+     * | patternfly-mcp | 4e1cd7c636f6ac17c851f54a920549e5377f3809 | 5 | One-off |
+     * | patternfly-org | 957756128e8ddfc4be5db49e72312a2c43b9d220 | 203 | **Primary** |
      * | patternfly-org | ec02b437ec72b6e4cc4e28524516288f4acf9fdf | 1 | One-off |
      * | patternfly-org | v5 | 1 | One-off |
-     * | patternfly-react | 831257aa7c49c3238e0f7afbb7cf219c62cd9e23 | 100 | **Primary** |
-     * | pf-codemods | e5e80a440bb033f9535befbade035d265684456b | 3 | One-off |
+     * | patternfly-react | 6f2385bbcc03de22a7ae8be506481e1b4d653200 | 100 | **Primary** |
+     * | pf-codemods | 63df51df5cc6af2f3d83de4c0991c9e65625675f | 3 | One-off |
      * | **Total** | **9 unique refs** | **321** | |
      */
     expect(baseHashes.size).toBe(9);
