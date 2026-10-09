@@ -1,5 +1,7 @@
 import { execSync } from 'node:child_process';
 import { writeFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { memo } from '../../src/server.caching';
 import { type PatternFlyMcpDocsCatalog } from '../../src/docs.embedded';
 
@@ -209,8 +211,6 @@ const fetchRepoCommit = async (
   repo: string,
   branch?: string
 ): Promise<string | undefined> => {
-  const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
-  const authHeader = token ? { Authorization: `Bearer ${token}` } : {};
   let sha: string | undefined = undefined;
 
   try {
@@ -221,8 +221,7 @@ const fetchRepoCommit = async (
     const response = await fetch(url, {
       headers: {
         'User-Agent': 'patternfly-mcp',
-        Accept: 'application/vnd.github.v3+json',
-        ...authHeader
+        Accept: 'application/vnd.github.v3+json'
       }
     });
 
@@ -320,6 +319,26 @@ const writeJsonCollection = async <T>(
 };
 
 /**
+ * Resolve the default absolute path for a JSON collection file in the src directory.
+ *
+ * @param filename - Collection JSON filename
+ * @param [path] - Default optional path to prepend to the filename.
+ * @returns Fully resolved filesystem path in the src directory
+ */
+const getSrcPath = (filename: string, path: string = '../../src'): string =>
+  resolve(fileURLToPath(new URL(`${path}/${filename}`, import.meta.url)));
+
+/**
+ * Resolve the default absolute path for a report file in the reports directory.
+ *
+ * @param filename - Report filename
+ * @param [path] - Default optional path to prepend to the filename.
+ * @returns Fully resolved filesystem path in the reports directory
+ */
+const getReportsPath = (filename: string, path: string = '../../reports'): string =>
+  getSrcPath(filename, path);
+
+/**
  * Generic lifecycle runner for collection update tasks invoked via environment variables.
  *
  * @param taskName - Human-readable name of the task for logging
@@ -349,6 +368,8 @@ export {
   fetchCommitViaGitLsRemote,
   fetchRepoCommit,
   fetchLatestRepoHashes,
+  getReportsPath,
+  getSrcPath,
   probeUrl,
   runUpdateTask,
   verifyUrlReachability,

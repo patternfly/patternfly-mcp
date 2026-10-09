@@ -7,6 +7,8 @@ import {
   fetchCommitViaGitLsRemote,
   fetchRepoCommit,
   fetchLatestRepoHashes,
+  getReportsPath,
+  getSrcPath,
   runUpdateTask,
   verifyUrlReachability,
   writeJsonCollection
@@ -349,8 +351,7 @@ describe('fetchLatestRepoHashes', () => {
     expect(hashes.get('patternfly-elements')).toBe('mock-default-sha-456');
   });
 
-  it('should include Authorization header when GITHUB_TOKEN or GH_TOKEN is set', async () => {
-    process.env.GITHUB_TOKEN = 'ghp_secret_token';
+  it('should send standard unauthenticated headers with User-Agent and Accept without Authorization', async () => {
     let capturedHeaders: Record<string, string> = {};
 
     jest.spyOn(global, 'fetch').mockImplementation(async (_input: RequestInfo | URL, init?: RequestInit) => {
@@ -358,7 +359,7 @@ describe('fetchLatestRepoHashes', () => {
 
       return {
         ok: true,
-        json: async () => ({ sha: 'mock-auth-sha' })
+        json: async () => ({ sha: 'mock-public-sha' })
       } as Response;
     });
 
@@ -366,7 +367,9 @@ describe('fetchLatestRepoHashes', () => {
       { owner: 'patternfly', repo: 'patternfly-mcp', branch: 'main' }
     ]);
 
-    expect(capturedHeaders.Authorization).toBe('Bearer ghp_secret_token');
+    expect(capturedHeaders['User-Agent']).toBe('patternfly-mcp');
+    expect(capturedHeaders.Accept).toBe('application/vnd.github.v3+json');
+    expect(capturedHeaders.Authorization).toBeUndefined();
   });
 
   it('should fall back to git ls-remote when GitHub API fails', async () => {
@@ -452,6 +455,26 @@ describe('writeJsonCollection', () => {
     expect(logSpy).toHaveBeenCalledWith(expect.stringMatching(/Time Elapsed: \d+\.\d+s/));
     expect(typeof result.durationSec).toBe('string');
     expect(typeof result.sizeKb).toBe('string');
+  });
+});
+
+describe('getSrcPath', () => {
+  it('should resolve default path containing the filename within src directory', () => {
+    const resolved = getSrcPath('test.json');
+
+    expect(resolved.endsWith('src/test.json')).toBe(true);
+  });
+
+  it('should support custom path overrides', () => {
+    const resolved = getSrcPath('custom.json', '../../custom');
+
+    expect(resolved.endsWith('custom/custom.json')).toBe(true);
+  });
+});
+
+describe('getReportsPath', () => {
+  it('should be an aliased function', () => {
+    expect(typeof getReportsPath).toBe('function');
   });
 });
 

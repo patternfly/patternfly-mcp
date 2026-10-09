@@ -1,9 +1,14 @@
 import { readFileSync, existsSync } from 'node:fs';
-import { resolve } from 'node:path';
 import { expandApiEmbeddedCollection, type ApiEmbeddedCollection } from '../../../src/collection.patternFlyApi';
-import { generateReportCsv, diffCollections, run } from '../update.patternFlyApi';
+import {
+  DEFAULT_API_FILENAME,
+  generateReportCsv,
+  diffCollections,
+  run
+} from '../update.patternFlyApi';
+import { getSrcPath } from '../helpers';
 
-const COLLECTION_PATH = resolve(process.cwd(), 'src/collection.patternFlyApi.json');
+const COLLECTION_PATH = getSrcPath(DEFAULT_API_FILENAME);
 
 describe('collection.patternFlyApi', () => {
   it('should export the run function for programmatic invocation', () => {

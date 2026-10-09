@@ -1,6 +1,4 @@
 import { readFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import {
   apiSpider,
   contentMetadata,
@@ -17,7 +15,7 @@ import {
   getDefaultReportPath,
   saveCsvReport
 } from './csv';
-import { runUpdateTask, writeJsonCollection } from './helpers';
+import { getSrcPath, runUpdateTask, writeJsonCollection } from './helpers';
 import { printDiffSummary } from './summary';
 
 /**
@@ -58,9 +56,27 @@ interface GenerateCsvReportOptions {
 }
 
 /**
+ * Configurable default filename for the API collection.
+ */
+const DEFAULT_API_FILENAME = 'collection.patternFlyApi.json';
+
+/**
  * Configurable default filename for the API report.
  */
 const DEFAULT_API_REPORT_FILENAME = 'collection.patternFlyApi.report.csv';
+
+/**
+ * Options for running the PatternFly API embedded collection update.
+ */
+interface UpdateApiOptions {
+  filename?: string | undefined;
+  reportFilename?: string | undefined;
+  outputPath?: string | undefined;
+  csvOutputPath?: string | undefined;
+  isPrettyPrint?: boolean | undefined;
+  filterLowQualityRecords?: boolean | undefined;
+  outputCsv?: boolean | undefined;
+}
 
 /**
  * Generate a complete, non-truncated CSV report for additions, removals, modifications, and unchanged records.
@@ -225,18 +241,24 @@ const diffReport = (diff: ReturnType<typeof diffCollections>) => {
  * Run apiSpider directly and transform crawler entries into compressed embedded JSON.
  *
  * @param [options] - Optional configuration options.
+ * @param [options.filename=DEFAULT_API_FILENAME] - Target collection filename.
+ * @param [options.reportFilename=DEFAULT_API_REPORT_FILENAME] - Target CSV report filename.
+ * @param [options.outputPath] - Fully resolved path to write the JSON collection.
+ * @param [options.csvOutputPath] - Fully resolved path to write the CSV report.
  * @param [options.isPrettyPrint=true] - Whether to pretty-print the JSON output.
  * @param [options.filterLowQualityRecords=false] - Whether to filter low-quality records based on the collection's criteria.
  * @param [options.outputCsv=true] - Whether to generate and save a full CSV diff report.
- * @param [options.csvOutputPath] - Custom path to write CSV report.
  */
 const run = async (
   {
+    filename = DEFAULT_API_FILENAME,
+    reportFilename = DEFAULT_API_REPORT_FILENAME,
+    outputPath = getSrcPath(filename),
+    csvOutputPath = getDefaultReportPath(reportFilename),
     isPrettyPrint = true,
     filterLowQualityRecords = false,
-    outputCsv = true,
-    csvOutputPath
-  }: { isPrettyPrint?: boolean; filterLowQualityRecords?: boolean; outputCsv?: boolean; csvOutputPath?: string; } = {}
+    outputCsv = true
+  }: UpdateApiOptions = {}
 ) => {
   // 1. Enable stderr logging so all diagnostics_channel logs (debug, info, warn, error) are printed
   const unsubscribeLogger = createLogger({
@@ -296,7 +318,6 @@ const run = async (
       records
     };
 
-    const outputPath = resolve(fileURLToPath(new URL('../../src/collection.patternFlyApi.json', import.meta.url)));
     let oldRecords: ApiEmbedded[] = [];
 
     try {
@@ -322,14 +343,9 @@ const run = async (
     diffReport(diff);
 
     if (outputCsv) {
-      const targetCsvPath =
-        csvOutputPath ||
-        process.env.CSV_REPORT_PATH ||
-        getDefaultReportPath(DEFAULT_API_REPORT_FILENAME);
-
       const csvContent = generateReportCsv({ diff, oldRecords, newRecords: records, crawledMap });
 
-      await saveCsvReport(targetCsvPath, csvContent);
+      await saveCsvReport(csvOutputPath, csvContent);
     }
   } finally {
     clearTimeout(keepAlive);
@@ -343,6 +359,7 @@ const run = async (
 runUpdateTask('API collection', run);
 
 export {
+  DEFAULT_API_FILENAME,
   DEFAULT_API_REPORT_FILENAME,
   diffCollections,
   diffReport,
@@ -351,5 +368,6 @@ export {
   type GenerateCsvReportOptions,
   type ModifiedRecordReport,
   type RemovalReason,
-  type RemovedRecordReport
+  type RemovedRecordReport,
+  type UpdateApiOptions
 };

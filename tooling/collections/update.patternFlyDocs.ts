@@ -1,7 +1,5 @@
 import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { type PatternFlyMcpDocsCatalog } from '../../src/docs.embedded';
 import {
   getDefaultReportPath,
@@ -10,6 +8,7 @@ import {
 import {
   extractTrackedReposFromCatalog,
   fetchLatestRepoHashes,
+  getSrcPath,
   runUpdateTask,
   writeJsonCollection
 } from './helpers';
@@ -27,6 +26,9 @@ import {
  * Options for running the documentation manifest collection update.
  */
 interface UpdateDocsOptions {
+  docsFilename?: string | undefined;
+  apiFilename?: string | undefined;
+  reportFilename?: string | undefined;
   docsPath?: string | undefined;
   apiPath?: string | undefined;
   csvOutputPath?: string | undefined;
@@ -36,6 +38,16 @@ interface UpdateDocsOptions {
   isPrettyPrint?: boolean | undefined;
   outputCsv?: boolean | undefined;
 }
+
+/**
+ * Configurable default filename for the documentation collection.
+ */
+const DEFAULT_DOCS_FILENAME = 'docs.json';
+
+/**
+ * Configurable default filename for the API collection.
+ */
+const DEFAULT_API_FILENAME = 'collection.patternFlyApi.json';
 
 /**
  * Configurable default filename for the documentation report.
@@ -59,30 +71,33 @@ const logDiffReport = (diff: DocsDiffResult) => {
 /**
  * Update the PatternFly Docs manifest collection, deduplicating against the API seed and syncing repository SHAs.
  *
- * @param [options={}] - Execution options
+ * @param [options] - Optional execution options.
+ * @param [options.docsFilename=DEFAULT_DOCS_FILENAME] - Target documentation filename.
+ * @param [options.apiFilename=DEFAULT_API_FILENAME] - Target API filename for deduplication.
+ * @param [options.reportFilename=DEFAULT_DOCS_REPORT_FILENAME] - Target CSV report filename.
+ * @param [options.docsPath] - Fully resolved path to write the documentation collection.
+ * @param [options.apiPath] - Fully resolved path to read the API collection.
+ * @param [options.csvOutputPath] - Fully resolved path to write the CSV report.
+ * @param [options.pruneApiOverlap=true] - Whether to prune duplicate docs that exist in API collection.
+ * @param [options.verifyReachability=false] - Whether to probe URLs for reachability.
+ * @param [options.updateHashes=true] - Whether to sync repository commit SHAs.
+ * @param [options.isPrettyPrint=true] - Whether to pretty-print the JSON output.
+ * @param [options.outputCsv=true] - Whether to generate and save CSV report.
  * @returns Promise resolving to the diff result
  */
-const run = async (options: UpdateDocsOptions = {}): Promise<DocsDiffResult> => {
-  const docsPath =
-    options.docsPath ||
-    process.env.DOCS_COLLECTION_PATH ||
-    resolve(fileURLToPath(new URL('../../src/docs.json', import.meta.url)));
-
-  const apiPath =
-    options.apiPath ||
-    process.env.API_COLLECTION_PATH ||
-    resolve(fileURLToPath(new URL('../../src/collection.patternFlyApi.json', import.meta.url)));
-
-  const csvOutputPath =
-    options.csvOutputPath ||
-    process.env.CSV_DOCS_REPORT_PATH ||
-    getDefaultReportPath(DEFAULT_DOCS_REPORT_FILENAME);
-
-  const pruneApiOverlap = options.pruneApiOverlap !== false;
-  const updateHashes = options.updateHashes !== false;
-  const isPrettyPrint = options.isPrettyPrint !== false;
-  const outputCsv = options.outputCsv !== false;
-
+const run = async ({
+  docsFilename = DEFAULT_DOCS_FILENAME,
+  apiFilename = DEFAULT_API_FILENAME,
+  reportFilename = DEFAULT_DOCS_REPORT_FILENAME,
+  docsPath = getSrcPath(docsFilename),
+  apiPath = getSrcPath(apiFilename),
+  csvOutputPath = getDefaultReportPath(reportFilename),
+  pruneApiOverlap = true,
+  verifyReachability = false,
+  updateHashes = true,
+  isPrettyPrint = true,
+  outputCsv = true
+}: UpdateDocsOptions = {}): Promise<DocsDiffResult> => {
   console.log('🚀 Updating PatternFly Docs manifest collection...');
   const startTime = Date.now();
 
@@ -120,7 +135,7 @@ const run = async (options: UpdateDocsOptions = {}): Promise<DocsDiffResult> => 
   const updatedCatalog = recalculateManifestMetadata(oldCatalog, {
     redundantRecords,
     latestHashes: updateHashes ? latestHashes : undefined,
-    verifyReachability: options.verifyReachability
+    verifyReachability
   });
 
   // 6. Write updated documentation manifest
@@ -154,6 +169,8 @@ const run = async (options: UpdateDocsOptions = {}): Promise<DocsDiffResult> => 
 runUpdateTask('Docs collection', run);
 
 export {
+  DEFAULT_API_FILENAME,
+  DEFAULT_DOCS_FILENAME,
   DEFAULT_DOCS_REPORT_FILENAME,
   logDiffReport,
   run,

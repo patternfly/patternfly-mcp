@@ -48,6 +48,7 @@
     "test:audit-container": "npm run container:build && jest --selectProjects audit:container",
     "test:ci": "npm test -- --coverage",
     "test:collections": "jest --selectProjects tooling:collections",
+    "test:collections-dev": "npm run test:collections -- --watchAll",
     "test:dev": "npm test -- --watchAll",
     "test:integration": "npm run build && jest --selectProjects package && NODE_OPTIONS='--experimental-vm-modules' jest --selectProjects e2e",
     "test:integration-dev": "npm run test:integration -- --watchAll",

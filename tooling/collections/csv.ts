@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from 'node:fs/promises';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
+import { getReportsPath } from './helpers';
 
 /**
  * Value types stored in a CSV cell.
@@ -67,7 +67,7 @@ const getReportDatePrefix = (date = new Date()): string => {
 const getDefaultReportPath = (filename: string, date = new Date()): string => {
   const prefix = getReportDatePrefix(date);
 
-  return resolve(fileURLToPath(new URL(`../../reports/${prefix}${filename}`, import.meta.url)));
+  return getReportsPath(`${prefix}${filename}`);
 };
 
 /**
