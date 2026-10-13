@@ -246,7 +246,7 @@ const diffReport = (diff: ReturnType<typeof diffCollections>) => {
  * @param [options.outputPath] - Fully resolved path to write the JSON collection.
  * @param [options.csvOutputPath] - Fully resolved path to write the CSV report.
  * @param [options.isPrettyPrint=true] - Whether to pretty-print the JSON output.
- * @param [options.filterLowQualityRecords=false] - Whether to filter low-quality records based on the collection's criteria.
+ * @param [options.filterLowQualityRecords=true] - Whether to filter low-quality records based on the collection's criteria.
  * @param [options.outputCsv=true] - Whether to generate and save a full CSV diff report.
  */
 const run = async (
@@ -256,7 +256,7 @@ const run = async (
     outputPath = getSrcPath(filename),
     csvOutputPath = getDefaultReportPath(reportFilename),
     isPrettyPrint = true,
-    filterLowQualityRecords = false,
+    filterLowQualityRecords = true,
     outputCsv = true
   }: UpdateApiOptions = {}
 ) => {
