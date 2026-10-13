@@ -197,7 +197,7 @@ For information on project development maintenance tasks, refer to [Project deve
 
 #### Collection updates/reseeding
 
-For detailed collection reseeding steps, see [Collection reseeding](./docs/development.md#updating-collection-seeds) in the development guide.
+For detailed collection reseeding steps, see [Updating collections](./docs/development.md#updating-collections) in the development guide.
 
 #### Releases and post-release review
 

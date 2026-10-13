@@ -536,13 +536,13 @@ Negative audit findings should have a **GitHub Issue** opened. Link the release 
 
 Not every observation is a bug: link checks, upstream blips, and environment-specific behavior can be **false positives**. Use an issue for **triage** when unsure (“investigate whether X is real”) rather than silent fixes or a separate audit log.
 
-### Updating collection seeds
+### Updating collections
 
 The server maintains multiple record collections that provide documentation and schemas to a consuming LLM. Each collection source follows its own maintenance lifecycle.
 
 #### General collection reseeding
 
-When PatternFly releases new documentation or component features, reseed local catalog data:
+When PatternFly releases new documentation or component features, reseed the embedded local collection data:
 - `npm run build:collections`: Runs the complete crawler and manifest update pipeline and runs collection tests.
 - `npm run build:collections-api`: Updates `src/collection.patternFlyApi.json` and outputs CSV diffs to `reports/`.
 
