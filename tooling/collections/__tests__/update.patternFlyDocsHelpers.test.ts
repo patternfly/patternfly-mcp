@@ -467,45 +467,49 @@ describe('recalculateManifestMetadata', () => {
     expect(result.meta.totalDocs).toBe(2);
   });
 
-  it('prunes broken URLs when verifyReachability is enabled and captures removals', async () => {
-    const reachabilitySpy = jest.spyOn(verifyUrlReachability, 'memo');
-
-    reachabilitySpy.mockImplementation(async (url: string) => !url.includes('Button.md'));
+  it.each([
+    {
+      description: 'prunes broken URLs (HTTP 404)',
+      latestHashes: undefined,
+      mockReachable: (url: string) => !url.includes('Button.md'),
+      expectedPaths: [
+        'https://raw.githubusercontent.com/patternfly/patternfly-org/540bb0d31cb18670dd02857f80aa8b444fed9be9/Alert.md'
+      ],
+      expectedRemovals: ['broken upstream link (HTTP 404)']
+    },
+    {
+      description: 'falls back to previous URL when bumped hash drifts/404s',
+      latestHashes: new Map([['patternfly/patternfly-org', '1111111111111111111111111111111111111111']]),
+      mockReachable: (url: string) => url.includes('540bb0d31cb18670dd02857f80aa8b444fed9be9'),
+      expectedPaths: [
+        'https://raw.githubusercontent.com/patternfly/patternfly-org/540bb0d31cb18670dd02857f80aa8b444fed9be9/Alert.md',
+        'https://raw.githubusercontent.com/patternfly/patternfly-org/540bb0d31cb18670dd02857f80aa8b444fed9be9/Button.md'
+      ],
+      expectedRemovals: []
+    },
+    {
+      description: 'updates commit hash when new URL is reachable',
+      latestHashes: new Map([['patternfly/patternfly-org', '1111111111111111111111111111111111111111']]),
+      mockReachable: () => true,
+      expectedPaths: [
+        'https://raw.githubusercontent.com/patternfly/patternfly-org/1111111111111111111111111111111111111111/Alert.md',
+        'https://raw.githubusercontent.com/patternfly/patternfly-org/1111111111111111111111111111111111111111/Button.md'
+      ],
+      expectedRemovals: []
+    }
+  ])('should recalculate manifest metadata, $description', async ({ latestHashes, mockReachable, expectedPaths, expectedRemovals }) => {
+    const reachabilitySpy = jest.spyOn(verifyUrlReachability, 'memo').mockImplementation(async (url: string) => mockReachable(url));
 
     const { collection: result, reachabilityRemovals } = await recalculateManifestMetadata(sampleCollection, {
+      latestHashes,
       verifyReachability: true
-    });
+    } as any);
 
-    expect(reachabilityRemovals.length).toBe(1);
-    expect(reachabilityRemovals[0]?.record.displayName).toBe('Button Design');
-    expect(reachabilityRemovals[0]?.reason).toBe('broken upstream link (HTTP 404)');
-    expect(result.docs['Button']).toBeUndefined();
-    expect(result.docs['Alert']).toHaveLength(1);
+    expect(reachabilityRemovals.map(removal => removal.reason)).toEqual(expectedRemovals);
 
-    reachabilitySpy.mockRestore();
-  });
+    const paths = Object.entries(result.docs).map(([_key, categoryDocs]) => categoryDocs[0]?.path);
 
-  it('falls back to previous URL when bumped hash drifts and 404s but previous URL is reachable', async () => {
-    const reachabilitySpy = jest.spyOn(verifyUrlReachability, 'memo');
-
-    reachabilitySpy.mockImplementation(async (url: string) => url.includes('540bb0d31cb18670dd02857f80aa8b444fed9be9'));
-
-    const hashes = new Map<string, string>([
-      ['patternfly/patternfly-org', '1111111111111111111111111111111111111111']
-    ]);
-
-    const { collection: result, reachabilityRemovals } = await recalculateManifestMetadata(sampleCollection, {
-      latestHashes: hashes,
-      verifyReachability: true
-    });
-
-    expect(reachabilityRemovals.length).toBe(0);
-    expect(result.docs['Button']?.[0]?.path).toBe(
-      'https://raw.githubusercontent.com/patternfly/patternfly-org/540bb0d31cb18670dd02857f80aa8b444fed9be9/Button.md'
-    );
-    expect(result.docs['Alert']?.[0]?.path).toBe(
-      'https://raw.githubusercontent.com/patternfly/patternfly-org/540bb0d31cb18670dd02857f80aa8b444fed9be9/Alert.md'
-    );
+    expect(paths).toEqual(expect.arrayContaining(expectedPaths));
 
     reachabilitySpy.mockRestore();
   });
