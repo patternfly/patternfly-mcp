@@ -193,13 +193,19 @@ The `Node.js` engine requirements are updated on a predictable biannual schedule
 
 ### Project maintenance
 
+For information on project development maintenance tasks, refer to [Project development maintenance in docs/development.md](./docs/development.md#project-development-maintenance).
+
+#### Collection updates/reseeding
+
+For detailed collection reseeding steps, see [Updating collections](./docs/development.md#updating-collections) in the development guide.
+
 #### Releases and post-release review
 
 Full maintainer process: **[Releasing the MCP](./docs/development.md#releasing-the-mcp)** in the development guide. Day-to-day commits use [conventional commits](#pull-request-commits-messaging) to feed [CHANGELOG.md](./CHANGELOG.md).
 
 After each release, run the [post-release review](./docs/development.md#post-release-review) checklist. **CI** is the automated gate; negative findings can be filed as **GitHub Issues** for triage.
 
-For release steps, collection updates, and other maintainer tasks, see [Project development maintenance](./docs/development.md#project-development-maintenance) in the development guide.
+For detailed release steps, see [Project development maintenance](./docs/development.md#project-development-maintenance) in the development guide.
 
 ## AI agent
 
