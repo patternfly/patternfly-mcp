@@ -457,13 +457,13 @@ For information on build maintenance, refer to [Maintenance in CONTRIBUTING.md](
 Start on a **fork** of the repository, then:
 
 1. Rebase and align a Git branch to the current default branch state, currently the `main` branch.
-2. NPM install and bring local packages up-to-date.
-3. Run `npm run release`. This brings the `package.json` related lockfile, and [CHANGELOG.md](../CHANGELOG.md) up-to-date and will automatically Git commit them.
+2. NPM install then bring local packages up to date.
+3. Run `npm run release`. This brings the `package.json` related lockfile and [CHANGELOG.md](../CHANGELOG.md) up to date and will automatically Git commit them.
    - If modifications to the CHANGELOG.md need to be made (e.g., breaking changes, etc.), make them. Your commits can be pre-squashed or squashed on merge through your pull request. 
 4. Open a pull request from your fork to the default branch.
    - The body of the pull request in GitHub should be the CHANGELOG.md modification being added for the release. This helps reviewers.
    - A reviewer will review the CHANGELOG.md addition for consistent Git hashes that align to the default branch.
-   - If Git commits in the pull request CHANGELOG.md are determined to not be within the default branch you will be asked to reapply the release process or a maintainer may add a modification to your pull request.
+   - If Git commits in the pull request CHANGELOG.md are determined to not be within the default branch, you will be asked to reapply the release process or a maintainer may add a modification to your pull request.
 5. After maintainer approval, the Git commit is **squashed and merged** to maintain the pull request number for tracking.
 6. A git release is then created mirroring previous git releases.
    - Use tags that are prefixed with `v`, (e.g. `v1.0.0`, `v1.2.1`, etc.)
@@ -481,9 +481,9 @@ After each **npm release**, run a maintainer pass in addition to **CI** (integra
 
 - [ ] Version on npm matches tag and [CHANGELOG.md](../CHANGELOG.md).
 - [ ] Collections/sources: any change to `docs.json`, API seed/crawl, schema pin, or ai-handbook wiring?
-- [ ] Built-in tools still read-only; experimental surface matches [experimental.md](./experimental.md).
-- [ ] Allowlist / HTTP docs still accurate if those areas changed (`src/options.defaults.ts`, [usage.md](./usage.md)).
-- [ ] `docs/usage.md` and [architecture.md](./architecture.md) still match behavior you shipped.
+- [ ] Built-in tools are still read-only; experimental surface matches [experimental.md](./experimental.md).
+- [ ] Confirm allowlist / HTTP docs are still accurate (`src/options.defaults.ts`, [usage.md](./usage.md)).
+- [ ] `docs/usage.md` and [architecture.md](./architecture.md) still match shipped behavior.
 - [ ] Optional smoke: `npx -y @patternfly/patternfly-mcp@<version> --log-stderr` or [MCP Inspector](#testing-with-mcp-inspector).
 
 #### Your own checklist
