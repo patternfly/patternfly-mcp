@@ -457,19 +457,19 @@ For information on build maintenance, refer to [Maintenance in CONTRIBUTING.md](
 Start on a **fork** of the repository, then:
 
 1. Rebase and align a Git branch to the current default branch state, currently the `main` branch.
-2. NPM install and bring local packages up-to-date
+2. NPM install and bring local packages up-to-date.
 3. Run `npm run release`. This brings the `package.json` related lockfile, and [CHANGELOG.md](../CHANGELOG.md) up-to-date and will automatically Git commit them.
    - If modifications to the CHANGELOG.md need to be made (e.g., breaking changes, etc.), make them. Your commits can be pre-squashed or squashed on merge through your pull request. 
 4. Open a pull request from your fork to the default branch.
    - The body of the pull request in GitHub should be the CHANGELOG.md modification being added for the release. This helps reviewers.
    - A reviewer will review the CHANGELOG.md addition for consistent Git hashes that align to the default branch.
    - If Git commits in the pull request CHANGELOG.md are determined to not be within the default branch you will be asked to reapply the release process or a maintainer may add a modification to your pull request.
-5. After maintainer approval the Git commit is **SQUASHED MERGED** to maintain the pull request number for tracking.
+5. After maintainer approval, the Git commit is **squashed and merged** to maintain the pull request number for tracking.
 6. A git release is then created mirroring previous git releases.
    - Use tags that are prefixed with `v`, (e.g. `v1.0.0`, `v1.2.1`, etc.)
    - Do not "auto-generate" the release notes, prefer linking to the [CHANGELOG.md](../CHANGELOG.md), this prevents note drift.
-7. After a release is created and tagged `CI` will run and publish the related NPM package.
-8. Perform the [Post-release review](#post-release-review)
+7. After a release is created and tagged, `CI` will run and publish the related NPM package.
+8. Perform the [Post-release review](#post-release-review).
 
 ### Post-release review
 
@@ -498,7 +498,7 @@ Reuse the same **themes** with questions that fit your release (wording can chan
 | CI            | Any red scheduled runs since last release?                                            |
 | Docs          | Anything user-visible we forgot to document?                                          |
 
-> **Important**: Users, teams can retain a private copy of audit results. This application codebase does not require a filled form per release.
+> **Important**: Users or teams can retain a private copy of audit results. This application codebase does not require a filled form per release.
 
 #### Findings
 
