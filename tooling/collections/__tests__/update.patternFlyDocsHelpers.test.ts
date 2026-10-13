@@ -186,7 +186,7 @@ describe('API Deduplication Litmus Test (Regression Guard)', () => {
 
 describe('docs.helpers Manifest Recalculation & Diffing', () => {
   it('should recalculate manifest metadata totalEntries and totalDocs accurately', () => {
-    const sampleCatalog: PatternFlyMcpDocsCatalog = {
+    const sampleCollection: PatternFlyMcpDocsCatalog = {
       version: '1',
       generated: '2026-01-01T00:00:00.000Z',
       meta: {
@@ -236,7 +236,7 @@ describe('docs.helpers Manifest Recalculation & Diffing', () => {
       ['patternfly/patternfly-react', '3333333333333333333333333333333333333333']
     ]);
 
-    const updated = recalculateManifestMetadata(sampleCatalog, { latestHashes });
+    const updated = recalculateManifestMetadata(sampleCollection, { latestHashes });
 
     expect(updated.meta.totalEntries).toBe(2);
     expect(updated.meta.totalDocs).toBe(3);
@@ -245,7 +245,7 @@ describe('docs.helpers Manifest Recalculation & Diffing', () => {
   });
 
   it('should diff manifests and categorize added, removed, modified, and unchanged entries', () => {
-    const oldCatalog: PatternFlyMcpDocsCatalog = {
+    const oldCollection: PatternFlyMcpDocsCatalog = {
       meta: { totalEntries: 2, totalDocs: 2, source: 'test' },
       docs: {
         Cat1: [
@@ -275,7 +275,7 @@ describe('docs.helpers Manifest Recalculation & Diffing', () => {
       }
     };
 
-    const newCatalog: PatternFlyMcpDocsCatalog = {
+    const newCollection: PatternFlyMcpDocsCatalog = {
       meta: { totalEntries: 2, totalDocs: 2, source: 'test' },
       docs: {
         Cat1: [
@@ -305,7 +305,7 @@ describe('docs.helpers Manifest Recalculation & Diffing', () => {
       }
     };
 
-    const diff = diffDocsManifests(oldCatalog, newCatalog);
+    const diff = diffDocsManifests(oldCollection, newCollection);
 
     expect(diff.modified.length).toBe(1);
     expect(diff.modified[0]?.record.displayName).toBe('Doc A');

@@ -16,9 +16,9 @@ describe('collection.patternFlyDocs Script & Manifest Integrity', () => {
 
   it('should have a consistent JSON schema and correct metadata counts', () => {
     const raw = readFileSync(DOCS_PATH, 'utf-8');
-    const catalog: PatternFlyMcpDocsCatalog = JSON.parse(raw);
+    const collection: PatternFlyMcpDocsCatalog = JSON.parse(raw);
 
-    expect(catalog).toMatchObject({
+    expect(collection).toMatchObject({
       version: expect.any(String),
       generated: expect.any(String),
       meta: {
@@ -29,17 +29,17 @@ describe('collection.patternFlyDocs Script & Manifest Integrity', () => {
       docs: expect.any(Object)
     });
 
-    const totalEntries = Object.keys(catalog.docs).length;
-    const totalDocs = Object.values(catalog.docs).reduce((acc, arr) => acc + arr.length, 0);
+    const totalEntries = Object.keys(collection.docs).length;
+    const totalDocs = Object.values(collection.docs).reduce((acc, arr) => acc + arr.length, 0);
 
-    expect(catalog.meta.totalEntries).toBe(totalEntries);
-    expect(catalog.meta.totalDocs).toBe(totalDocs);
+    expect(collection.meta.totalEntries).toBe(totalEntries);
+    expect(collection.meta.totalDocs).toBe(totalDocs);
   });
 
   it('should have records that are properly formatted with key properties', () => {
     const raw = readFileSync(DOCS_PATH, 'utf-8');
-    const catalog: PatternFlyMcpDocsCatalog = JSON.parse(raw);
-    const sample = Object.values(catalog.docs).flatMap(docs => docs).slice(0, 50);
+    const collection: PatternFlyMcpDocsCatalog = JSON.parse(raw);
+    const sample = Object.values(collection.docs).flatMap(docs => docs).slice(0, 50);
 
     expect(sample.length).toBeGreaterThan(0);
     for (const record of sample) {

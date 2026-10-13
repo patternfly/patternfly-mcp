@@ -8,13 +8,10 @@ import { checkUrl } from './utils/checkUrl';
 describe('Documentation Link Audit', () => {
   let auditSet: string[] = [];
 
-  const catalogPath = resolve(
-    process.cwd(),
-    process.env.DOCS_COLLECTION_PATH || 'src/docs.json'
-  );
+  const collectionPath = resolve(process.cwd(), 'src/docs.json');
 
-  const docs: PatternFlyMcpDocsCatalog = existsSync(catalogPath)
-    ? JSON.parse(readFileSync(catalogPath, 'utf-8'))
+  const docs: PatternFlyMcpDocsCatalog = existsSync(collectionPath)
+    ? JSON.parse(readFileSync(collectionPath, 'utf-8'))
     : { meta: { totalEntries: 0, totalDocs: 0, source: '' }, docs: {} };
 
   /**

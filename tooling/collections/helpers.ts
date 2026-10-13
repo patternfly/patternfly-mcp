@@ -74,19 +74,19 @@ extractRepoInfo.memo = memo(extractRepoInfo, {
 });
 
 /**
- * Dynamically extract unique repositories referenced across all documents in a catalog.
+ * Dynamically extract unique repositories referenced across all documents in a collection.
  *
- * @param catalog - Documentation catalog to inspect
+ * @param collection - Documentation collection to inspect
  * @param [defaultBranch] - Optional explicit tracking branch override
  * @returns Array of unique TrackedRepository definitions
  */
-const extractTrackedReposFromCatalog = (
-  catalog: PatternFlyMcpDocsCatalog,
+const extractTrackedReposFromCollection = (
+  collection: PatternFlyMcpDocsCatalog,
   defaultBranch?: string
 ): TrackedRepository[] => {
   const uniqueRepos = new Map<string, TrackedRepository>();
 
-  for (const entries of Object.values(catalog?.docs || {})) {
+  for (const entries of Object.values(collection?.docs || {})) {
     for (const doc of entries) {
       if (!doc?.path || typeof doc.path !== 'string') {
         continue;
@@ -364,7 +364,7 @@ const runUpdateTask = async (
 export {
   extractCommitHash,
   extractRepoInfo,
-  extractTrackedReposFromCatalog,
+  extractTrackedReposFromCollection,
   fetchCommitViaGitLsRemote,
   fetchRepoCommit,
   fetchLatestRepoHashes,

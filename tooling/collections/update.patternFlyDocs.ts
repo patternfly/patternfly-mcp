@@ -6,7 +6,7 @@ import {
   saveCsvReport
 } from './csv';
 import {
-  extractTrackedReposFromCatalog,
+  extractTrackedReposFromCollection,
   fetchLatestRepoHashes,
   getSrcPath,
   runUpdateTask,
@@ -101,9 +101,9 @@ const run = async ({
   console.log('🚀 Updating PatternFly Docs manifest collection...');
   const startTime = Date.now();
 
-  // 1. Read existing documentation catalog
+  // 1. Read existing documentation collection
   const rawDocs = await readFile(docsPath, 'utf-8');
-  const oldCatalog: PatternFlyMcpDocsCatalog = JSON.parse(rawDocs);
+  const oldCollection: PatternFlyMcpDocsCatalog = JSON.parse(rawDocs);
 
   // 2. Read API collection for deduplication if enabled and present
   let apiRecords: ApiCollectionRecordRef[] = [];
@@ -111,45 +111,45 @@ const run = async ({
   if (pruneApiOverlap && existsSync(apiPath)) {
     try {
       const rawApi = await readFile(apiPath, 'utf-8');
-      const apiCatalog = JSON.parse(rawApi);
+      const apiCollection = JSON.parse(rawApi);
 
-      apiRecords = apiCatalog.records || [];
+      apiRecords = apiCollection.records || [];
     } catch {
       console.warn(`⚠️ Could not parse API collection at ${apiPath}. Skipping API deduplication.`);
     }
   }
 
   // 3. Identify redundant records superseded by API collection
-  const redundantRecords = pruneApiOverlap ? findApiRedundantDocs(oldCatalog, apiRecords) : [];
+  const redundantRecords = pruneApiOverlap ? findApiRedundantDocs(oldCollection, apiRecords) : [];
 
   // 4. Fetch latest commit SHAs for tracked upstream repositories if enabled
   let latestHashes = new Map<string, string>();
 
   if (updateHashes) {
-    const trackedRepos = extractTrackedReposFromCatalog(oldCatalog);
+    const trackedRepos = extractTrackedReposFromCollection(oldCollection);
 
     latestHashes = await fetchLatestRepoHashes(trackedRepos);
   }
 
-  // 5. Build updated catalog and recalculate manifest metadata
-  const updatedCatalog = recalculateManifestMetadata(oldCatalog, {
+  // 5. Build an updated collection and recalculate manifest metadata
+  const updatedCollection = recalculateManifestMetadata(oldCollection, {
     redundantRecords,
     latestHashes: updateHashes ? latestHashes : undefined,
     verifyReachability
   });
 
-  // 6. Write updated documentation manifest
-  await writeJsonCollection(docsPath, updatedCatalog, {
+  // 6. Write an updated documentation manifest
+  await writeJsonCollection(docsPath, updatedCollection, {
     isPrettyPrint,
     startTime,
     stats: [
-      { label: 'Total Categories', value: updatedCatalog.meta.totalEntries },
-      { label: 'Total Documents', value: updatedCatalog.meta.totalDocs }
+      { label: 'Total Categories', value: updatedCollection.meta.totalEntries },
+      { label: 'Total Documents', value: updatedCollection.meta.totalDocs }
     ]
   });
 
   // 7. Calculate diff and print console summary
-  const diff = diffDocsManifests(oldCatalog, updatedCatalog, redundantRecords);
+  const diff = diffDocsManifests(oldCollection, updatedCollection, redundantRecords);
 
   logDiffReport(diff);
 

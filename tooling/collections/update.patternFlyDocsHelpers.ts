@@ -147,18 +147,18 @@ const resolveApiEndpointForAiDoc = (
 /**
  * Identify documentation entries in `docs.json` that are redundant with and superseded by the PatternFly API collection.
  *
- * @param docsCatalog - The documentation catalog to inspect
+ * @param docsCollection - The documentation collection to inspect
  * @param [apiRecords=[]] - Records from the API collection seed
  * @returns List of redundant records with removal reasons and matched API details
  */
 const findApiRedundantDocs = (
-  docsCatalog: PatternFlyMcpDocsCatalog,
+  docsCollection: PatternFlyMcpDocsCatalog,
   apiRecords: ApiCollectionRecordRef[] = []
 ): DocsRemovedRecordReport[] => {
   const redundant: DocsRemovedRecordReport[] = [];
   const highQualityApi = (apiRecords || []).filter(apiRecord => (apiRecord.q ?? 1) >= 0.95);
 
-  for (const [category, entries] of Object.entries(docsCatalog.docs || {})) {
+  for (const [category, entries] of Object.entries(docsCollection.docs || {})) {
     for (const doc of entries) {
       // 1. Root uxd-ai-helpers guides must NEVER be pruned (negative control boundary)
       if (doc.pathSlug && doc.pathSlug.startsWith('uxd-ai-helpers-')) {
@@ -199,16 +199,16 @@ const findApiRedundantDocs = (
 };
 
 /**
- * Calculate the diff between an old documentation catalog and an updated catalog.
+ * Calculate the diff between an old documentation collection and an updated collection.
  *
- * @param oldCatalog - Original catalog
- * @param newCatalog - Updated catalog
+ * @param oldCollection - Original collection
+ * @param newCollection - Updated collection
  * @param [redundantReports=[]] - Explicitly identified removals
  * @returns Structured DocsDiffResult
  */
 const diffDocsManifests = (
-  oldCatalog: PatternFlyMcpDocsCatalog,
-  newCatalog: PatternFlyMcpDocsCatalog,
+  oldCollection: PatternFlyMcpDocsCatalog,
+  newCollection: PatternFlyMcpDocsCatalog,
   redundantReports: DocsRemovedRecordReport[] = []
 ): DocsDiffResult => {
   const added: DocsAddedRecordReport[] = [];
@@ -218,7 +218,7 @@ const diffDocsManifests = (
 
   const oldRecordsMap = new Map<string, { category: string; doc: PatternFlyMcpDocsCatalogDoc }>();
 
-  for (const [cat, docs] of Object.entries(oldCatalog.docs || {})) {
+  for (const [cat, docs] of Object.entries(oldCollection.docs || {})) {
     for (const doc of docs) {
       oldRecordsMap.set(`${cat}::${doc.pathSlug}::${doc.displayName}`, { category: cat, doc });
     }
@@ -226,7 +226,7 @@ const diffDocsManifests = (
 
   const newRecordsMap = new Map<string, { category: string; doc: PatternFlyMcpDocsCatalogDoc }>();
 
-  for (const [cat, docs] of Object.entries(newCatalog.docs || {})) {
+  for (const [cat, docs] of Object.entries(newCollection.docs || {})) {
     for (const doc of docs) {
       newRecordsMap.set(`${cat}::${doc.pathSlug}::${doc.displayName}`, { category: cat, doc });
     }
@@ -238,7 +238,7 @@ const diffDocsManifests = (
     )
   );
 
-  // Check for any additional old records missing in new catalog
+  // Check for any additional old records missing in new collection
   for (const [key, { category, doc }] of oldRecordsMap.entries()) {
     if (!newRecordsMap.has(key) && !removedKeys.has(key)) {
       removed.push({
@@ -251,7 +251,7 @@ const diffDocsManifests = (
     }
   }
 
-  // Check for added, modified, or unchanged in new catalog
+  // Check for added, modified, or unchanged in new collection
   for (const [key, { category, doc }] of newRecordsMap.entries()) {
     const oldEntry = oldRecordsMap.get(key);
 
@@ -374,14 +374,14 @@ const generateReportCsv = (options: DocsDiffResult | GenerateCsvReportOptions): 
 };
 
 /**
- * Recalculate catalog entries, prune redundant records, update hashes, and recompute manifest metadata.
+ * Recalculate collection entries, prune redundant records, update hashes, and recompute manifest metadata.
  *
- * @param catalog - Source documentation catalog
+ * @param collection - Source documentation collection
  * @param [options={}] - Options for recalculation
  * @returns Updated PatternFlyMcpDocsCatalog
  */
 const recalculateManifestMetadata = (
-  catalog: PatternFlyMcpDocsCatalog,
+  collection: PatternFlyMcpDocsCatalog,
   options: RecalculateOptions = {}
 ): PatternFlyMcpDocsCatalog => {
   const redundantSet = new Set(
@@ -392,7 +392,7 @@ const recalculateManifestMetadata = (
 
   const updatedDocs: PatternFlyMcpDocsCatalogEntry = {};
 
-  for (const [category, entries] of Object.entries(catalog.docs || {})) {
+  for (const [category, entries] of Object.entries(collection.docs || {})) {
     const filteredEntries: PatternFlyMcpDocsCatalogDoc[] = [];
 
     for (const doc of entries) {
@@ -434,12 +434,12 @@ const recalculateManifestMetadata = (
   const totalDocs = Object.values(updatedDocs).reduce((acc, arr) => acc + arr.length, 0);
 
   return {
-    version: catalog.version || '1',
+    version: collection.version || '1',
     generated: new Date().toISOString(),
     meta: {
       totalEntries,
       totalDocs,
-      source: catalog.meta?.source || 'patternfly-mcp'
+      source: collection.meta?.source || 'patternfly-mcp'
     },
     docs: updatedDocs
   };

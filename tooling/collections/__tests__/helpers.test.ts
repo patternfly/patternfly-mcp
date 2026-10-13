@@ -3,7 +3,7 @@ import { writeFile } from 'node:fs/promises';
 import {
   extractCommitHash,
   extractRepoInfo,
-  extractTrackedReposFromCatalog,
+  extractTrackedReposFromCollection,
   fetchCommitViaGitLsRemote,
   fetchRepoCommit,
   fetchLatestRepoHashes,
@@ -32,9 +32,9 @@ afterEach(() => {
   verifyUrlReachability.memo.clear();
 });
 
-describe('extractTrackedReposFromCatalog', () => {
+describe('extractTrackedReposFromCollection', () => {
   it('should extract and deduplicate repositories across multiple categories', () => {
-    const mockCatalog = {
+    const mockCollection = {
       version: '1',
       generated: '2026-01-01',
       meta: { totalEntries: 2, totalDocs: 3, source: 'test' },
@@ -50,7 +50,7 @@ describe('extractTrackedReposFromCatalog', () => {
       }
     };
 
-    const result = extractTrackedReposFromCatalog(mockCatalog as any);
+    const result = extractTrackedReposFromCollection(mockCollection as any);
 
     expect(result).toHaveLength(2);
     expect(result).toEqual([
@@ -59,14 +59,14 @@ describe('extractTrackedReposFromCatalog', () => {
     ]);
   });
 
-  it('should return an empty array when catalog contains no valid docs', () => {
-    expect(extractTrackedReposFromCatalog({} as any)).toEqual([]);
-    expect(extractTrackedReposFromCatalog({ docs: {} } as any)).toEqual([]);
+  it('should return an empty array when collection contains no valid docs', () => {
+    expect(extractTrackedReposFromCollection({} as any)).toEqual([]);
+    expect(extractTrackedReposFromCollection({ docs: {} } as any)).toEqual([]);
   });
 
   it('should apply branch override when supplied', () => {
-    const catalog = { docs: { c: [{ path: 'https://raw.githubusercontent.com/org/repo/sha/file.md' }] } };
-    const result = extractTrackedReposFromCatalog(catalog as any, 'develop');
+    const collection = { docs: { c: [{ path: 'https://raw.githubusercontent.com/org/repo/sha/file.md' }] } };
+    const result = extractTrackedReposFromCollection(collection as any, 'develop');
 
     expect(result[0]?.branch).toBe('develop');
   });
