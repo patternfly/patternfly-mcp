@@ -3,7 +3,11 @@ import {
   type PatternFlyMcpDocsCatalogDoc,
   type PatternFlyMcpDocsCatalogEntry
 } from '../../src/docs.embedded';
-import { extractCommitHash, extractRepoInfo } from './helpers';
+import {
+  extractCommitHash,
+  extractRepoInfo,
+  verifyUrlReachability
+} from './helpers';
 import { generateDiffCsv } from './csv';
 
 /**
@@ -79,6 +83,15 @@ interface RecalculateOptions {
   redundantRecords?: DocsRemovedRecordReport[] | undefined;
   latestHashes?: Map<string, string> | undefined;
   verifyReachability?: boolean | undefined;
+  probeConcurrency?: number | undefined;
+}
+
+/**
+ * Result returned by asynchronous manifest recalculation.
+ */
+interface RecalculateManifestResult {
+  collection: PatternFlyMcpDocsCatalog;
+  reachabilityRemovals: DocsRemovedRecordReport[];
 }
 
 /**
@@ -374,30 +387,44 @@ const generateReportCsv = (options: DocsDiffResult | GenerateCsvReportOptions): 
 };
 
 /**
- * Recalculate collection entries, prune redundant records, update hashes, and recompute manifest metadata.
+ * Asynchronously recalculate collection entries, prune redundant API records,
+ * probe reachability for 404 dead links, update hashes, and recompute manifest metadata.
  *
  * @param collection - Source documentation collection
  * @param [options={}] - Options for recalculation
- * @returns Updated PatternFlyMcpDocsCatalog
+ * @returns Promise resolving to a recalculation result with updated collection and any reachability removals
  */
-const recalculateManifestMetadata = (
+const recalculateManifestMetadata = async (
   collection: PatternFlyMcpDocsCatalog,
   options: RecalculateOptions = {}
-): PatternFlyMcpDocsCatalog => {
+): Promise<RecalculateManifestResult> => {
+  const {
+    redundantRecords = [],
+    latestHashes,
+    verifyReachability = false,
+    probeConcurrency = 15
+  } = options;
+
   const redundantSet = new Set(
-    (options.redundantRecords || []).map(
+    redundantRecords.map(
       report => `${report.category}::${report.record.pathSlug}::${report.record.displayName}`
     )
   );
 
   const updatedDocs: PatternFlyMcpDocsCatalogEntry = {};
+  const reachabilityRemovals: DocsRemovedRecordReport[] = [];
 
   for (const [category, entries] of Object.entries(collection.docs || {})) {
-    const filteredEntries: PatternFlyMcpDocsCatalogDoc[] = [];
+    const candidateDocs: Array<{
+      doc: PatternFlyMcpDocsCatalogDoc;
+      targetPath: string;
+      shouldProbe: boolean;
+    }> = [];
 
     for (const doc of entries) {
       const key = `${category}::${doc.pathSlug}::${doc.displayName}`;
 
+      // 1. Skip records already identified as redundant with the API collection (avoids unnecessary HTTP probes)
       if (redundantSet.has(key)) {
         continue;
       }
@@ -405,12 +432,12 @@ const recalculateManifestMetadata = (
       let updatedPath = doc.path;
 
       // Update commit hash if new hash is available and doc is not a pinned one-off / v5
-      if (options.latestHashes && doc.path && typeof doc.path === 'string') {
+      if (latestHashes && doc.path && typeof doc.path === 'string') {
         const repoInfo = extractRepoInfo(doc.path);
 
         if (repoInfo && repoInfo.ref !== 'v5') {
           const repoKey = `${repoInfo.owner}/${repoInfo.repo}`;
-          const newSha = options.latestHashes.get(repoKey) || options.latestHashes.get(repoInfo.repo);
+          const newSha = latestHashes.get(repoKey) || latestHashes.get(repoInfo.repo);
 
           // Update if repo is recognized and not a pinned historical reference
           if (newSha && !PINNED_HISTORICAL_REFS.has(repoInfo.ref)) {
@@ -419,14 +446,59 @@ const recalculateManifestMetadata = (
         }
       }
 
-      filteredEntries.push({
-        ...doc,
-        path: updatedPath
+      candidateDocs.push({
+        doc,
+        targetPath: updatedPath,
+        shouldProbe: verifyReachability && typeof updatedPath === 'string' && updatedPath.startsWith('http')
       });
     }
 
-    if (filteredEntries.length > 0) {
-      updatedDocs[category] = filteredEntries;
+    const verifiedEntries: PatternFlyMcpDocsCatalogDoc[] = [];
+
+    // 2. Perform concurrent reachability probing in batches
+    for (let i = 0; i < candidateDocs.length; i += probeConcurrency) {
+      const batch = candidateDocs.slice(i, i + probeConcurrency);
+
+      const results = await Promise.all(
+        batch.map(async item => {
+          if (!item.shouldProbe) {
+            return { ...item, isLive: true };
+          }
+
+          const isLive = await verifyUrlReachability.memo(item.targetPath);
+
+          // Fallback probe: if newly bumped URL failed, check if previous URL was reachable (path drift detection)
+          if (!isLive && item.targetPath !== item.doc.path && item.doc.path.startsWith('http')) {
+            const isPreviousLive = await verifyUrlReachability.memo(item.doc.path);
+
+            if (isPreviousLive) {
+              return { ...item, targetPath: item.doc.path, isLive: true };
+            }
+          }
+
+          return { ...item, isLive };
+        })
+      );
+
+      for (const res of results) {
+        if (res.isLive) {
+          verifiedEntries.push({
+            ...res.doc,
+            path: res.targetPath
+          });
+        } else {
+          reachabilityRemovals.push({
+            category,
+            record: res.doc,
+            reason: 'broken upstream link (HTTP 404)',
+            details: `Unreachable target: ${res.targetPath}`
+          });
+        }
+      }
+    }
+
+    if (verifiedEntries.length > 0) {
+      updatedDocs[category] = verifiedEntries;
     }
   }
 
@@ -434,14 +506,17 @@ const recalculateManifestMetadata = (
   const totalDocs = Object.values(updatedDocs).reduce((acc, arr) => acc + arr.length, 0);
 
   return {
-    version: collection.version || '1',
-    generated: new Date().toISOString(),
-    meta: {
-      totalEntries,
-      totalDocs,
-      source: collection.meta?.source || 'patternfly-mcp'
+    collection: {
+      version: collection.version || '1',
+      generated: new Date().toISOString(),
+      meta: {
+        totalEntries,
+        totalDocs,
+        source: collection.meta?.source || 'patternfly-mcp'
+      },
+      docs: updatedDocs
     },
-    docs: updatedDocs
+    reachabilityRemovals
   };
 };
 
@@ -460,5 +535,6 @@ export {
   type DocsModifiedRecordReport,
   type DocsRemovedRecordReport,
   type DocsUnchangedRecordReport,
+  type RecalculateManifestResult,
   type RecalculateOptions
 };

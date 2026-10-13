@@ -101,7 +101,7 @@ const run = async ({
   console.log('🚀 Updating PatternFly Docs manifest collection...');
   const startTime = Date.now();
 
-  // 1. Read existing documentation collection
+  // 1. Read the existing documentation collection
   const rawDocs = await readFile(docsPath, 'utf-8');
   const oldCollection: PatternFlyMcpDocsCatalog = JSON.parse(rawDocs);
 
@@ -132,7 +132,7 @@ const run = async ({
   }
 
   // 5. Build an updated collection and recalculate manifest metadata
-  const updatedCollection = recalculateManifestMetadata(oldCollection, {
+  const { collection: updatedCollection, reachabilityRemovals } = await recalculateManifestMetadata(oldCollection, {
     redundantRecords,
     latestHashes: updateHashes ? latestHashes : undefined,
     verifyReachability
@@ -149,7 +149,8 @@ const run = async ({
   });
 
   // 7. Calculate diff and print console summary
-  const diff = diffDocsManifests(oldCollection, updatedCollection, redundantRecords);
+  const allRemovals = [...redundantRecords, ...reachabilityRemovals];
+  const diff = diffDocsManifests(oldCollection, updatedCollection, allRemovals);
 
   logDiffReport(diff);
 
