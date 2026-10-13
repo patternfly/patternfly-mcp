@@ -4,10 +4,10 @@ import { expandApiEmbeddedCollection, type ApiEmbeddedCollection } from '../../s
 import { checkUrl } from './utils/checkUrl';
 
 describe('PatternFly API Link Audit', () => {
-  const catalogPath = resolve(process.cwd(), 'src/collection.patternFlyApi.json');
-  const raw = readFileSync(catalogPath, 'utf-8');
-  const catalog: ApiEmbeddedCollection = JSON.parse(raw);
-  const expanded = expandApiEmbeddedCollection(catalog);
+  const collectionPath = resolve(process.cwd(), 'src/collection.patternFlyApi.json');
+  const raw = readFileSync(collectionPath, 'utf-8');
+  const collection: ApiEmbeddedCollection = JSON.parse(raw);
+  const expanded = expandApiEmbeddedCollection(collection);
 
   // Sample a subset across records
   const maxSample = Number(process.env.API_AUDIT_MAX_TOTAL ?? 20);
