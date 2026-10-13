@@ -427,6 +427,36 @@ These terms describe **how tools and their related properties are represented** 
 - **`Zod schema`**: A Zod schema instance. Loosely detected with `isZodSchema` (Zod 4 `_zod` / public `.def`, Zod 3 `_def`).
 - **`Raw Zod shape` (`ZodRawShapeCompat`)**: A **non-empty** plain object whose **values** are Zod schemas; keys are field names. An empty `{}` is **not** a raw Zod shape. Detected with `isZodRawShape`.
 
+## MCP collections
+
+Internal and custom collections implement a `McpCollection` tuple structure:
+
+```typescript
+type McpCollection = [
+  name: string,
+  config: { title?: string },
+  handler: (arg?: unknown) => McpCollectionResult | Promise<McpCollectionResult>,
+  _config?: {
+    initial?: McpCollectionResult | (() => McpCollectionResult | Promise<McpCollectionResult>);
+    runParallel?: `#${string}`;
+    runSchedule?: { intervalMs?: number; cancelMs?: number; delayStartMs?: number; continueOnError?: boolean; repeat?: number; };
+    retainLastViable?: boolean | ((context) => boolean | Promise<boolean>);
+    isRequired?: boolean;
+  }
+];
+```
+
+#### Tuple configuration options
+
+- **`name`** (`string`): Unique identifier for the collection (e.g., `'patternfly-docs'`).
+- **`config`** (`object`): Plugin-visible metadata, such as `title`.
+- **`handler`** (`function`): Sync, or async, function returning an `McpCollectionResult` object containing `{ records: [...] }`.
+- **`_config.initial`**: Synchronous or async initial data loader executed at server startup ($t=0$) before scheduled tasks or worker threads run.
+- **`_config.runParallel`**: Subpath import specifier (`#specifier`) used to execute the collection handler in a background worker pool thread (`server.workerPool`).
+- **`_config.runSchedule`**: Configuration for recurring background refresh intervals via `deferTask`.
+- **`_config.retainLastViable`**: Retains previously loaded valid records if an update attempt fails or returns an empty payload.
+- **`_config.isRequired`**: Controls whether server startup requires this collection to be populated.
+
 ## Initial troubleshooting
 
 ### Tool plugins
@@ -450,7 +480,7 @@ These terms describe **how tools and their related properties are represented** 
 
 ## Project development maintenance
 
-For information on build maintenance, refer to [Maintenance in CONTRIBUTING.md](../CONTRIBUTING.md#nodejs-engine-bumps).
+For information on general build maintenance, refer to [Maintenance in CONTRIBUTING.md](../CONTRIBUTING.md#nodejs-engine-bumps).
 
 ### Releasing the MCP
 
@@ -506,11 +536,19 @@ Negative audit findings should have a **GitHub Issue** opened. Link the release 
 
 Not every observation is a bug: link checks, upstream blips, and environment-specific behavior can be **false positives**. Use an issue for **triage** when unsure (“investigate whether X is real”) rather than silent fixes or a separate audit log.
 
-### How collection and source data get updated
+### Updating collection seeds
 
-The server maintains multiple record collections that provide documentation and schemas to a consuming LLM. Each collection source follows its own maintenance lifecycle:
+The server maintains multiple record collections that provide documentation and schemas to a consuming LLM. Each collection source follows its own maintenance lifecycle.
 
-#### 1. Embedded documentation collection (`src/docs.json`)
+#### General collection reseeding
+
+When PatternFly releases new documentation or component features, reseed local catalog data:
+- `npm run build:collections`: Runs the complete crawler and manifest update pipeline and runs collection tests.
+- `npm run build:collections-api`: Updates `src/collection.patternFlyApi.json` and outputs CSV diffs to `reports/`.
+
+#### Unique collections
+
+##### 1. Embedded documentation collection (`src/docs.json`)
 
 > A large percentage of `docs.json` records are being moved into the PatternFly API. In the near future, `docs.json` will be renamed and incorporated into a support collection for one-off records.
 
@@ -520,7 +558,7 @@ The original curated Markdown collection. It pins remote repository URLs to spec
 - **Validation**: Ensure all raw URLs are HTTPS, match the domain whitelist in `src/options.defaults.ts`, and return 2xx responses.
 - **Testing**: Run `npm test` and update `baseHashes` and the Repository Breakdown table in `src/__tests__/docs.json.test.ts` whenever refs change.
 
-#### 2. Pre-built API collection (`src/collection.patternFlyApi.json`)
+##### 2. Pre-built API collection (`src/collection.patternFlyApi.json`)
 
 The server packages pre-seeded API endpoints to enable instant server startup without network overhead.
 
@@ -543,7 +581,7 @@ The server packages pre-seeded API endpoints to enable instant server startup wi
   - `UPDATE_COLLECTIONS=true`: Required environment flag to execute collection builds directly.
 - **When to run**: When PatternFly publishes new releases, when updating metadata/quality filters, or as part of a general maintenance cycle.
 
-#### 3. Component schemas (`@patternfly/patternfly-component-schemas`)
+##### 3. Component schemas (`@patternfly/patternfly-component-schemas`)
 
 > A large percentage of Component schemas have been moved into the PatternFly API and are also being considered for incorporation into PatternFly React architecture and may be completely superseded in the future.
 
@@ -553,7 +591,7 @@ Component JSON schemas provide runtime prop definitions, default values, and typ
 - **Validation**: Verified through `src/collection.patternFlySchemas.ts` and automated unit tests.
 - **When to run**: When [PatternFly Component Schemas repo](https://github.com/patternfly/patternfly-component-schemas) publishes a new release.
 
-#### 4. Red Hat AI Handbook (`src/collection.aiHandbook.ts`)
+##### 4. Red Hat AI Handbook (`src/collection.aiHandbook.ts`)
 
 > The AI Handbook is a support collection since its content goes beyond PatternFly towards AI-specific patterns at an organizational and enterprise level.
 
@@ -561,36 +599,6 @@ Collection of specialized guides and AI patterns that are fetched dynamically at
 
 - **Update workflow**: Synchronized on runtime from the [Red Hat AI Handbook repo](https://github.com/rh-uxd/ai-handbook).
 - **Validation**: Verified through automated unit tests.
-
-### Collection authoring and specification
-
-Internal and custom collections implement the `McpCollection` tuple structure:
-
-```typescript
-type McpCollection = [
-  name: string,
-  config: { title?: string },
-  handler: (arg?: unknown) => McpCollectionResult | Promise<McpCollectionResult>,
-  _config?: {
-    initial?: McpCollectionResult | (() => McpCollectionResult | Promise<McpCollectionResult>);
-    runParallel?: `#${string}`;
-    runSchedule?: { intervalMs?: number; cancelMs?: number; delayStartMs?: number; continueOnError?: boolean; repeat?: number; };
-    retainLastViable?: boolean | ((context) => boolean | Promise<boolean>);
-    isRequired?: boolean;
-  }
-];
-```
-
-#### Tuple configuration options
-
-- **`name`** (`string`): Unique identifier for the collection (e.g., `'patternfly-docs'`).
-- **`config`** (`object`): Plugin-visible metadata, such as `title`.
-- **`handler`** (`function`): Sync, or async, function returning an `McpCollectionResult` object containing `{ records: [...] }`.
-- **`_config.initial`**: Synchronous or async initial data loader executed at server startup ($t=0$) before scheduled tasks or worker threads run.
-- **`_config.runParallel`**: Subpath import specifier (`#specifier`) used to execute the collection handler in a background worker pool thread (`server.workerPool`).
-- **`_config.runSchedule`**: Configuration for recurring background refresh intervals via `deferTask`.
-- **`_config.retainLastViable`**: Retains previously loaded valid records if an update attempt fails or returns an empty payload.
-- **`_config.isRequired`**: Controls whether server startup requires this collection to be populated.
 
 ## In-progress and future work
 
