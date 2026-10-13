@@ -10,6 +10,7 @@ Welcome to the PatternFly MCP Server documentation. This guide is organized by u
 
 ### 🛠️ Developer reference
 - **[CLI Reference](./development.md#cli-usage)**: Reference of server options.
+- **[Project development maintenance](./development.md#project-development-maintenance)**: Releases, post-release review, and collection upkeep.
 - **[API Reference](./development.md#programmatic-usage)**: Using the server as a base library in your own Node.js MCP.
 - **[Experimental settings](./experimental.md)**: CLI and programmatic configuration for experimental flags.
 - **[Examples](./examples/README.md)**: Standalone snippets for HTTP transport, embedding, and custom tools.

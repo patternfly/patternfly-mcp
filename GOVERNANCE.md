@@ -20,6 +20,7 @@ A maintainer reviews every PR for intent-level issues that automated tools miss:
 
 - **Intent-based Filtering:** Labeling is leveraged to prioritize reviews and identify high-risk changes based on their potential impact. Maintainers use workflow log outputs from Layer-1 to prioritize reviews for these contributions.
 - **Architectural Alignment:** Every PR is verified against the [planned architecture](./docs/architecture.md) to ensure long-term stability.
+- **Post-release review:** After each npm release, maintainers run the checklist in [development.md](./docs/development.md#post-release-review); findings are filed as GitHub Issues as needed.
 - **Guideline Adherence Verification:** Maintainers verify that contributions follow established patterns and do not interfere with internal validation mechanisms designed to ensure contributors have performed a full context review.
 - **Credential & Secret Scanning:** Manual verification that no sensitive environment variables or keys are exposed in tests or documentation.
 
