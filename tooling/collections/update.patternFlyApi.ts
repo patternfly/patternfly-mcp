@@ -1,13 +1,18 @@
 import { readFile } from 'node:fs/promises';
 import {
-  apiSpider,
+  collectionCallback,
   contentMetadata,
+  expandApiEmbeddedCollection,
+  getPatternFlyApiRecords,
   type ApiContent,
   type ApiCrawler,
   type ApiEmbedded,
   type ApiEmbeddedCollection,
+  type ApiDiscardedRecord,
+  type ApiCollectionResult,
   MIN_API_QUALITY_THRESHOLD
 } from '../../src/collection.patternFlyApi';
+import { type McpCollectionResult } from '../../src/collections';
 import { getLoggerOptions, getOptions, runWithOptions } from '../../src/options.context';
 import { createLogger } from '../../src/logger';
 import {
@@ -29,11 +34,12 @@ type RemovalReason =
   'other';
 
 /**
- * Entry describing a removed record with its determined reason and details.
+ * Entry describing a removed record with its determined reason, evaluated quality score, and details.
  */
 interface RemovedRecordReport {
   record: ApiEmbedded;
   reason: RemovalReason;
+  qualityScore?: number | undefined;
   details?: string;
 }
 
@@ -52,7 +58,6 @@ interface GenerateCsvReportOptions {
   diff: ReturnType<typeof diffCollections>;
   oldRecords: ApiEmbedded[];
   newRecords: ApiEmbedded[];
-  crawledMap: Map<string, { entry: ApiCrawler; metadata: ApiContent }>;
 }
 
 /**
@@ -85,13 +90,11 @@ interface UpdateApiOptions {
  * @param options.diff - Diff calculation between old and new records
  * @param options.oldRecords - Previous collection records
  * @param options.newRecords - Current collection records
- * @param options.crawledMap - Map of crawled entries and metadata
  */
 const generateReportCsv = ({
   diff,
   oldRecords,
-  newRecords,
-  crawledMap
+  newRecords
 }: GenerateCsvReportOptions): string => {
   const oldMap = new Map(oldRecords.map(record => [record.p, record]));
   const changedPaths = new Set([
@@ -106,11 +109,11 @@ const generateReportCsv = ({
     {
       headers: ['status', 'path', 'name', 'previousQualityScore', 'newQualityScore', 'contentType', 'reason', 'details'],
       added: record => [record.p, record.n, '', record.q, record.c, '', ''],
-      removed: ({ record, reason, details }) => [
+      removed: ({ record, reason, qualityScore, details }) => [
         record.p,
         record.n,
         record.q,
-        crawledMap.get(record.p)?.entry.qualityScore ?? '',
+        qualityScore ?? '',
         record.c,
         reason,
         details || ''
@@ -134,12 +137,14 @@ const generateReportCsv = ({
  *
  * @param oldRecords - Previous collection
  * @param newRecords - Updated collection
- * @param crawledMap - Map of all crawled entries and evaluated metadata
+ * @param [discarded] - Optional map of discarded record IDs and metadata from crawler
+ * @param [crawledMap] - Optional map of all crawled entries and evaluated metadata
  */
 const diffCollections = (
   oldRecords: ApiEmbedded[],
   newRecords: ApiEmbedded[],
-  crawledMap: Map<string, { entry: ApiCrawler; metadata: ApiContent }>
+  discarded?: Map<string, ApiDiscardedRecord>,
+  crawledMap?: Map<string, { entry: ApiCrawler; metadata: ApiContent }>
 ) => {
   const oldMap = new Map(oldRecords.map(record => [record.p, record]));
   const newMap = new Map(newRecords.map(record => [record.p, record]));
@@ -153,9 +158,21 @@ const diffCollections = (
       continue;
     }
 
-    const crawled = crawledMap.get(oldRecord.p);
+    const [expanded] = expandApiEmbeddedCollection({ records: [oldRecord], base: '', version: '', generated: '' });
+    const recordId = expanded ? contentMetadata(expanded).id : '';
+    const discardInfo = discarded?.get(recordId) ?? discarded?.get(`api::${oldRecord.p.split('/').join('::')}`);
+    const crawled = crawledMap?.get(oldRecord.p);
 
-    if (!crawled) {
+    if (discardInfo) {
+      removed.push({
+        record: oldRecord,
+        reason: discardInfo.reason === 'low-quality' ? 'lacks quality' : 'deferred category',
+        qualityScore: discardInfo.qualityScore,
+        details: discardInfo.reason === 'low-quality'
+          ? `Evaluated Q: ${discardInfo.qualityScore} < ${MIN_API_QUALITY_THRESHOLD} threshold`
+          : 'Category is deferred'
+      });
+    } else if (!crawled) {
       removed.push({
         record: oldRecord,
         reason: 'upstream removed',
@@ -165,24 +182,28 @@ const diffCollections = (
       removed.push({
         record: oldRecord,
         reason: 'empty response',
+        qualityScore: crawled.entry.qualityScore,
         details: 'Empty payload returned'
       });
     } else if (crawled.metadata.isDeferred) {
       removed.push({
         record: oldRecord,
         reason: 'deferred category',
+        qualityScore: crawled.entry.qualityScore,
         details: `Category '${crawled.metadata.category}' is deferred`
       });
     } else if (crawled.metadata.isLowQuality || crawled.entry.qualityScore < MIN_API_QUALITY_THRESHOLD) {
       removed.push({
         record: oldRecord,
         reason: 'lacks quality',
+        qualityScore: crawled.entry.qualityScore,
         details: `Evaluated Q: ${crawled.entry.qualityScore} < ${MIN_API_QUALITY_THRESHOLD} threshold`
       });
     } else {
       removed.push({
         record: oldRecord,
         reason: 'other',
+        qualityScore: crawled.entry.qualityScore,
         details: `Excluded during crawl processing (Q: ${crawled.entry.qualityScore})`
       });
     }
@@ -256,7 +277,7 @@ const run = async (
     outputPath = getSrcPath(filename),
     csvOutputPath = getDefaultReportPath(reportFilename),
     isPrettyPrint = true,
-    filterLowQualityRecords = true,
+    filterLowQualityRecords: _filterLowQualityRecords = true,
     outputCsv = true
   }: UpdateApiOptions = {}
 ) => {
@@ -275,41 +296,42 @@ const run = async (
   const { base } = options.patternflyOptions.api;
 
   try {
-    const entries: ApiCrawler[] = await runWithOptions(options, async () => apiSpider(options));
+    let oldRecords: ApiEmbedded[] = [];
+    let previousContext: McpCollectionResult | undefined;
 
-    if (!entries.length) {
+    try {
+      const existingContent = await readFile(outputPath, 'utf-8');
+      const parsedExisting: ApiEmbeddedCollection = JSON.parse(existingContent);
+
+      oldRecords = parsedExisting.records || [];
+      const expanded = expandApiEmbeddedCollection(parsedExisting);
+
+      previousContext = getPatternFlyApiRecords(expanded);
+    } catch {
+      // File might not exist yet on initial run
+    }
+
+    const result = await runWithOptions(options, async () =>
+      collectionCallback({ previous: previousContext }));
+
+    if (!result.records.length) {
       console.error('❌ Crawl failed or returned 0 entries. Aborting update.');
       process.exit(1);
     }
 
-    const recordsMap = new Map<string, ApiEmbedded>();
-    const crawledMap = new Map<string, { entry: ApiCrawler; metadata: ApiContent }>();
+    const records: ApiEmbedded[] = result.records.map(record => {
+      const dataMap = record.data as Record<string, ApiContent[]> | undefined;
+      const [data] = (dataMap && Object.values(dataMap)[0]) || [];
+      const relativePath = record.sourceId.replace(base, '').replace(/^\//, '');
 
-    for (const entry of entries) {
-      // Generate full metadata using the shared contentMetadata function
-      const metadata = contentMetadata(entry, options);
-      const relativePath = metadata.path.replace(base, '').replace(/^\//, '');
-
-      crawledMap.set(relativePath, { entry, metadata });
-
-      if (filterLowQualityRecords && (metadata.isDeferred || metadata.isLowQuality)) {
-        continue;
-      }
-
-      if (recordsMap.has(relativePath)) {
-        continue;
-      }
-
-      recordsMap.set(relativePath, {
+      return {
         p: relativePath,
-        n: metadata.displayName,
-        d: metadata.description,
-        c: metadata.contentType,
-        q: entry.qualityScore
-      });
-    }
-
-    const records = [...recordsMap.values()].sort((a, b) => a.p.localeCompare(b.p));
+        n: data?.displayName || '',
+        d: data?.description || '',
+        c: data?.contentType || 'json',
+        q: 1
+      };
+    }).sort((a, b) => a.p.localeCompare(b.p));
 
     const payload: ApiEmbeddedCollection = {
       version: '1',
@@ -318,32 +340,22 @@ const run = async (
       records
     };
 
-    let oldRecords: ApiEmbedded[] = [];
-
-    try {
-      const existingContent = await readFile(outputPath, 'utf-8');
-      const parsedExisting: ApiEmbeddedCollection = JSON.parse(existingContent);
-
-      oldRecords = parsedExisting.records || [];
-    } catch {
-      // File might not exist yet on initial run
-    }
-
     await writeJsonCollection(outputPath, payload, {
       isPrettyPrint,
       startTime,
       stats: [
-        { label: 'Total Crawled', value: `${entries.length} endpoints` },
-        { label: 'Admitted Records', value: records.length }
+        { label: 'Total Records', value: records.length },
+        { label: 'Baseline Records', value: oldRecords.length }
       ]
     });
 
-    const diff = diffCollections(oldRecords, records, crawledMap);
+    const discarded = (result as ApiCollectionResult)?.discarded;
+    const diff = diffCollections(oldRecords, records, discarded);
 
     diffReport(diff);
 
     if (outputCsv) {
-      const csvContent = generateReportCsv({ diff, oldRecords, newRecords: records, crawledMap });
+      const csvContent = generateReportCsv({ diff, oldRecords, newRecords: records });
 
       await saveCsvReport(csvOutputPath, csvContent);
     }
