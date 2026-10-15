@@ -1,4 +1,4 @@
-import { isAsync, isPromise, timeoutFunction } from './server.helpers';
+import { cancelFunction, isAsync, isPromise, timeoutFunction } from './server.helpers';
 import { formatUnknownError, log } from './logger';
 
 /**
@@ -243,12 +243,18 @@ const deferTask = <TArgs extends unknown[], TReturn>(
     const resolveDynamic = async (): Promise<{ resolved: boolean; value?: unknown }> => {
       if (typeof dynamicContext === 'function') {
         try {
-          const dynamicResult = await dynamicContext({ prev: prevValue, args });
+          const dynamicResult = await cancelFunction(
+            () => dynamicContext({ prev: prevValue, args }),
+            { signal: state.controller?.signal }
+          );
 
           prevValue = dynamicResult;
 
           return { resolved: true, value: dynamicResult };
         } catch (error) {
+          if (error instanceof DOMException && error.name === 'AbortError') {
+            return { resolved: false };
+          }
           log.warn(`Defer task dynamicContext resolution failed: ${formatUnknownError(error)}`);
         }
       }
@@ -287,9 +293,19 @@ const deferTask = <TArgs extends unknown[], TReturn>(
 
       const startFunc = timeoutFunction(async () => {
         if (state.isRunning) {
-          state.count += 1;
           if (typeof dynamicContext === 'function') {
             const { resolved, value } = await resolveDynamic();
+
+            if (!state.isRunning) {
+              debug({
+                type: 'run:stopped',
+                value: () => ({ ...state })
+              });
+
+              return undefined;
+            }
+
+            state.count += 1;
 
             if (resolved) {
               if (updatedDynamicContextInvoke === 'apply') {
@@ -301,6 +317,8 @@ const deferTask = <TArgs extends unknown[], TReturn>(
               return (updatedFunc as unknown as (arg: unknown) => TReturn | Promise<TReturn>)(value);
             }
           }
+
+          state.count += 1;
 
           return updatedFunc(...args);
         }

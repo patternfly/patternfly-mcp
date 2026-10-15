@@ -278,6 +278,27 @@ describe('deferTask', () => {
     expect(mockFunc).toHaveBeenCalledWith('async-context-value');
   });
 
+  it('should halt execution if stop is called while dynamicContext is resolving', async () => {
+    let resolveContext: (val: string) => void = () => {};
+    const dynamicContext = jest.fn(
+      () => new Promise<string>(resolve => { resolveContext = resolve; })
+    );
+    const mockFunc = jest.fn((val: string) => `result-${val}`);
+
+    const handle = deferTask(mockFunc, { repeat: 1, intervalMs: 50, dynamicContext })('initial');
+    const runPromise = handle.start();
+    const stopPromise = handle.stop();
+
+    resolveContext('delayed-context');
+
+    const [runResult] = await Promise.all([runPromise, stopPromise]);
+
+    expect(dynamicContext).toHaveBeenCalledTimes(1);
+    expect(mockFunc).not.toHaveBeenCalled();
+    expect(runResult).toBeUndefined();
+    expect(handle.isRunning()).toBe(false);
+  });
+
   it.each([
     {
       mode: 'call' as const,

@@ -1,5 +1,6 @@
 import {
   buildSearchString,
+  cancelFunction,
   createError,
   freezeObject,
   generateHash,
@@ -1430,6 +1431,101 @@ describe('stringJoin', () => {
     }
   ])('should join values, $description', ({ args, settings }) => {
     expect(stringJoin(args, settings)).toMatchSnapshot();
+  });
+});
+
+describe('cancelFunction', () => {
+  it('should resolve normally when signal is not aborted', async () => {
+    const controller = new AbortController();
+    const result = await cancelFunction(() => 'success', { signal: controller.signal });
+
+    expect(result).toBe('success');
+  });
+
+  it('should reject immediately if signal is already aborted', async () => {
+    const controller = new AbortController();
+
+    controller.abort();
+
+    await expect(cancelFunction(() => 'success', { signal: controller.signal })).rejects.toThrow(
+      'Call canceled'
+    );
+  });
+
+  it('should abort in-flight promise when abort() is invoked', async () => {
+    const controller = new AbortController();
+    const pendingPromise = new Promise(resolve => setTimeout(resolve, 500));
+    const cancelPromise = cancelFunction(pendingPromise, { signal: controller.signal });
+
+    controller.abort();
+
+    await expect(cancelPromise).rejects.toThrow('Call canceled');
+  });
+
+  it('should resolve or reject without signal', async () => {
+    await expect(cancelFunction(() => 'sync-success')).resolves.toBe('sync-success');
+    await expect(cancelFunction(async () => 'async-success')).resolves.toBe('async-success');
+    await expect(cancelFunction(Promise.resolve('promise-success'))).resolves.toBe('promise-success');
+    await expect(cancelFunction(Promise.reject(new Error('fail')))).rejects.toThrow('fail');
+  });
+
+  it('should use custom errorMessage or custom error', async () => {
+    const controller1 = new AbortController();
+
+    controller1.abort();
+
+    await expect(
+      cancelFunction(() => 'success', { signal: controller1.signal, errorMessage: 'Custom cancel message' })
+    ).rejects.toThrow('Custom cancel message');
+
+    const customError = new Error('Custom abort error');
+    const controller2 = new AbortController();
+
+    controller2.abort();
+
+    await expect(
+      cancelFunction(() => 'success', { signal: controller2.signal, error: customError })
+    ).rejects.toBe(customError);
+  });
+
+  it('should use signal reason if reason is an Error', async () => {
+    const controller = new AbortController();
+    const reasonError = new Error('Abort reason');
+
+    controller.abort(reasonError);
+
+    await expect(cancelFunction(() => 'success', { signal: controller.signal })).rejects.toBe(reasonError);
+  });
+
+  it('should support standalone cancel() method on returned promise without passing signal', async () => {
+    const pendingPromise = new Promise(resolve => setTimeout(resolve, 500));
+    const cancelable = cancelFunction(pendingPromise);
+
+    expect(typeof cancelable.cancel).toBe('function');
+
+    cancelable.cancel();
+
+    await expect(cancelable).rejects.toThrow('Call canceled');
+  });
+
+  it('should support standalone cancel() with custom reason on returned promise', async () => {
+    const pendingPromise = new Promise(resolve => setTimeout(resolve, 500));
+    const cancelable = cancelFunction(pendingPromise);
+    const customError = new Error('Custom standalone abort');
+
+    cancelable.cancel(customError);
+
+    await expect(cancelable).rejects.toBe(customError);
+  });
+
+  it('should allow cancel() when an external signal was also provided', async () => {
+    const controller = new AbortController();
+    const pendingPromise = new Promise(resolve => setTimeout(resolve, 500));
+    const cancelable = cancelFunction(pendingPromise, { signal: controller.signal });
+
+    cancelable.cancel();
+
+    await expect(cancelable).rejects.toThrow('Call canceled');
   });
 });
 
