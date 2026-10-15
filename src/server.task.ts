@@ -1,5 +1,5 @@
 import { isAsync, isPromise, timeoutFunction } from './server.helpers';
-import { log } from './logger';
+import { formatUnknownError, log } from './logger';
 
 /**
  * Debug handler callback invoked for deferTask lifecycle events.
@@ -50,8 +50,9 @@ interface DeferTaskHandle<TReturn> {
  * @property [repeat] - Number of loops.  Pass `Infinity` explicitly to loop
  *     indefinitely. (default `1`)
  * @property [errorMessage] - Custom error for timeouts. (default `'Task timed out'`)
+ * @property [dynamicContext] - Dynamic context supplier evaluated on each execution cycle.
  */
-interface DeferTaskOptions {
+interface DeferTaskOptions<TArgs extends unknown[] = unknown[]> {
   cancelMs?: number;
   continueOnError?: boolean;
   debug?: DeferTaskDebugHandler;
@@ -59,6 +60,7 @@ interface DeferTaskOptions {
   intervalMs?: number;
   repeat?: number | undefined;
   errorMessage?: string;
+  dynamicContext?: ((...args: TArgs) => TArgs | TArgs[0] | Promise<TArgs | TArgs[0]>) | undefined;
 }
 
 /**
@@ -161,7 +163,7 @@ const delay = ({ ms, signal }: { ms: number; signal?: AbortSignal | undefined })
  */
 const deferTask = <TArgs extends unknown[], TReturn>(
   func: ((...args: TArgs) => TReturn | Promise<TReturn>) | Promise<TReturn>,
-  options: DeferTaskOptions = {}
+  options: DeferTaskOptions<TArgs> = {}
 ) => {
   const {
     cancelMs,
@@ -170,7 +172,8 @@ const deferTask = <TArgs extends unknown[], TReturn>(
     delayStartMs,
     repeat,
     intervalMs,
-    errorMessage = 'Task timed out'
+    errorMessage = 'Task timed out',
+    dynamicContext
   } = options || {};
 
   const validRepeat = typeof repeat === 'number' && repeat > 0 ? repeat : 1;
@@ -199,6 +202,22 @@ const deferTask = <TArgs extends unknown[], TReturn>(
       count: 0,
       promise: undefined,
       controller: undefined
+    };
+
+    const resolveArgs = async (): Promise<TArgs> => {
+      if (typeof dynamicContext === 'function') {
+        try {
+          const dynamicResult = await dynamicContext(...args);
+
+          return (Array.isArray(dynamicResult) ? dynamicResult : [dynamicResult]) as TArgs;
+        } catch (error) {
+          log.warn(`Defer task dynamicContext resolution failed: ${formatUnknownError(error)}`);
+
+          return args;
+        }
+      }
+
+      return args;
     };
 
     const task = async (): Promise<TReturn | undefined> => {
@@ -230,11 +249,12 @@ const deferTask = <TArgs extends unknown[], TReturn>(
         }
       }
 
-      const startFunc = timeoutFunction(() => {
+      const startFunc = timeoutFunction(async () => {
         if (state.isRunning) {
           state.count += 1;
+          const currentArgs = typeof dynamicContext === 'function' ? await resolveArgs() : args;
 
-          return updatedFunc(...args);
+          return updatedFunc(...currentArgs);
         }
 
         debug({

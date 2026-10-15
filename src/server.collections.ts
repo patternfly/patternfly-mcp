@@ -1,4 +1,11 @@
-import { type McpCollection, type McpCollectionCreator, type McpCollectionResult } from './collections';
+import {
+  type CollectionCallbackContext,
+  type McpCollection,
+  type McpCollectionCreator,
+  type McpCollectionRegistryEntry,
+  type McpCollectionResult,
+  getServerCollectionsRegistry
+} from './collections';
 import { type AppSession, type GlobalOptions } from './options';
 import { getOptions, getSessionOptions } from './options.context';
 import { getHeavyPool } from './server.workerPool';
@@ -22,7 +29,7 @@ const makeParallelProxyCreator = ({
 options: GlobalOptions = getOptions()): McpCollectionCreator => () => {
   const [name, config, _callback, _config] = creator(options);
 
-  const handler = async (args?: unknown): Promise<McpCollectionResult> => {
+  const handler = async (args?: CollectionCallbackContext): Promise<McpCollectionResult> => {
     const currentOptions = getOptions();
     const currentSession = getSessionOptions();
 
@@ -58,10 +65,18 @@ options: GlobalOptions = getOptions()): McpCollectionCreator => () => {
     ...(typeof runSchedule?.intervalMs === 'number' ? { intervalMs: runSchedule.intervalMs } : {}),
     ...(typeof runSchedule?.delayStartMs === 'number' ? { delayStartMs: runSchedule.delayStartMs } : {}),
     ...(typeof runSchedule?.continueOnError === 'boolean' ? { continueOnError: runSchedule.continueOnError } : {}),
-    ...(typeof runSchedule?.repeat === 'number' ? { repeat: runSchedule.repeat } : {})
+    ...(typeof runSchedule?.repeat === 'number' ? { repeat: runSchedule.repeat } : {}),
+    dynamicContext: (args?: CollectionCallbackContext): CollectionCallbackContext => {
+      const previous = (getServerCollectionsRegistry({ collectionName: name }) as McpCollectionRegistryEntry | undefined)?.response || args?.previous;
+
+      return {
+        ...args,
+        ...(previous !== undefined ? { previous } : {})
+      };
+    }
   };
 
-  const handler = async (args?: unknown): Promise<McpCollectionResult> => {
+  const handler = async (args?: CollectionCallbackContext): Promise<McpCollectionResult> => {
     const task = deferTask(callback, deferOptions)(args);
     let response;
 
