@@ -2,6 +2,7 @@
 
 exports[`collectionCallback should match snapshot for collection result 1`] = `
 {
+  "discarded": Map {},
   "records": [
     {
       "data": {
