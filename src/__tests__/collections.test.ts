@@ -251,6 +251,24 @@ describe('registerCollections', () => {
     jest.useRealTimers();
   });
 
+  it('should pass previous hydrated collection result to callback', async () => {
+    const initialRecords = [{ id: 'init-1', sourceId: 'local', sourceType: 'api' }] as any;
+    const handler = jest.fn().mockResolvedValue({ records: [] });
+    const collections: any[] = [
+      ['context-collection', {}, handler, { initial: { records: initialRecords } }]
+    ];
+
+    await registerCollections(collections);
+
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        previous: expect.objectContaining({
+          records: initialRecords
+        })
+      })
+    );
+  });
+
   it('should handle isRequired and throw if it fails', async () => {
     const handler = jest.fn().mockRejectedValue(new Error('Failed'));
     const collections: any[] = [

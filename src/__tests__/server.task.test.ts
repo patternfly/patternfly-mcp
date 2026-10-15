@@ -177,6 +177,57 @@ describe('deferTask', () => {
     expect(mockFunc).toHaveBeenCalledTimes(1);
     expect(mockDebug.mock.calls).toMatchSnapshot();
   });
+
+  it('should evaluate dynamicContext on each repeating execution', async () => {
+    let counter = 0;
+    const dynamicContext = jest.fn((ctx?: { run: number; initialRun?: number | undefined }) => ({
+      run: counter += 1,
+      initialRun: ctx?.run
+    }));
+    const mockFunc = jest.fn((ctx: { run: number; initialRun?: number | undefined }) => `result-${ctx.run}`);
+
+    const handle = deferTask(mockFunc, { repeat: 3, intervalMs: 100, dynamicContext })({ run: 0 });
+    const runPromise = handle.start();
+
+    await jest.advanceTimersByTimeAsync(100);
+    await jest.advanceTimersByTimeAsync(100);
+    const result = await runPromise;
+
+    expect(result).toBe('result-3');
+    expect(dynamicContext).toHaveBeenCalledTimes(3);
+    expect(mockFunc).toHaveBeenCalledTimes(3);
+    expect(mockFunc).toHaveBeenNthCalledWith(1, { run: 1, initialRun: 0 });
+    expect(mockFunc).toHaveBeenNthCalledWith(2, { run: 2, initialRun: 0 });
+    expect(mockFunc).toHaveBeenNthCalledWith(3, { run: 3, initialRun: 0 });
+  });
+
+  it('should catch dynamicContext errors, log a warning, and fall back to initial arguments', async () => {
+    const warnSpy = jest.spyOn(log, 'warn').mockImplementation(() => {});
+    const dynamicContext = jest.fn().mockRejectedValue(new Error('dynamic context lookup failure'));
+    const mockFunc = jest.fn((val: string) => `handled-${val}`);
+
+    const handle = deferTask(mockFunc, { repeat: 1, intervalMs: 50, dynamicContext })('fallback-arg');
+    const result = await handle.start();
+
+    expect(result).toBe('handled-fallback-arg');
+    expect(dynamicContext).toHaveBeenCalledWith('fallback-arg');
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Defer task dynamicContext resolution failed: Error: dynamic context lookup failure')
+    );
+    expect(mockFunc).toHaveBeenCalledWith('fallback-arg');
+  });
+
+  it('should support async dynamicContext suppliers', async () => {
+    const dynamicContext = jest.fn(async () => 'async-context-value');
+    const mockFunc = jest.fn((val: string) => val);
+
+    const handle = deferTask(mockFunc, { repeat: 1, intervalMs: 50, dynamicContext })('initial');
+    const result = await handle.start();
+
+    expect(result).toBe('async-context-value');
+    expect(dynamicContext).toHaveBeenCalledWith('initial');
+    expect(mockFunc).toHaveBeenCalledWith('async-context-value');
+  });
 });
 
 describe('delay', () => {
