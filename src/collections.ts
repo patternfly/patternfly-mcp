@@ -38,6 +38,15 @@ interface McpCollectionResult {
 }
 
 /**
+ * Execution context passed to collection callback operations.
+ *
+ * @property [previous] - Previous collection result stored in the registry or passed by caller.
+ */
+interface CollectionCallbackContext {
+  previous?: McpCollectionResult | undefined;
+}
+
+/**
  * Plugin-visible collection metadata (tuple index 1).
  *
  * @property title - Optional title for the collection.
@@ -96,7 +105,7 @@ type McpCollectionRegistryEntry = {
 type McpCollection = [
   name: string,
   config: McpCollectionConfig,
-  handler: (arg?: unknown) => McpCollectionResult | Promise<McpCollectionResult>,
+  handler: (context?: CollectionCallbackContext) => McpCollectionResult | Promise<McpCollectionResult>,
   _config?: {
     initial?: McpCollectionResult | (() => McpCollectionResult | Promise<McpCollectionResult>);
     runParallel?: `#${string}`;
@@ -514,9 +523,11 @@ const registerCollections = async (
     let error: unknown | undefined;
     let response: McpCollectionResult | undefined;
     let isSuccess = false;
+    const previousCollection = getServerCollectionsRegistry({ collectionName: name }) as McpCollectionRegistryEntry | undefined;
+    const previous = previousCollection?.response;
 
     try {
-      const initialResponse = await callback();
+      const initialResponse = await callback({ previous });
 
       if (isMcpCollectionResult(initialResponse)) {
         isSuccess = true;
@@ -529,8 +540,6 @@ const registerCollections = async (
       log.error(`Error loading collection ${name}: ${formatUnknownError(err)}`);
     }
 
-    const previousCollection = getServerCollectionsRegistry({ collectionName: name }) as McpCollectionRegistryEntry | undefined;
-    const previous = previousCollection?.response;
     let shouldRetain = false;
 
     if (_config?.retainLastViable) {
@@ -645,6 +654,7 @@ export {
   type RetainLastViableContext,
   type RetainLastViableOption,
   type RetainLastViableCollection,
+  type CollectionCallbackContext,
   type McpCollection,
   type McpCollectionConfig,
   type McpCollectionCreator,
