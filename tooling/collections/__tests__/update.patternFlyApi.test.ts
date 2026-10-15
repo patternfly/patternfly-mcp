@@ -95,14 +95,63 @@ describe('collection.patternFlyApi CSV Report Generator', () => {
       metadata: { isDeferred: false, isLowQuality: false, category: 'components' }
     });
 
-    const diff = diffCollections(oldRecords, newRecords, crawledMap);
-    const csv = generateReportCsv({ diff, oldRecords, newRecords, crawledMap });
+    const diff = diffCollections(oldRecords, newRecords, undefined, crawledMap);
+    const csv = generateReportCsv({ diff, oldRecords, newRecords });
     const lines = csv.trim().split('\n');
 
     expect(lines[0]).toBe('status,path,name,previousQualityScore,newQualityScore,contentType,reason,details');
     expect(lines.some(line => line.startsWith('ADDED,endpoint/added,New Doc,,0.97'))).toBe(true);
     expect(lines.some(line => line.startsWith('REMOVED,endpoint/removed,Old Doc,0.96,0.8') && line.includes('lacks quality'))).toBe(true);
     expect(lines.some(line => line.startsWith('MODIFIED,endpoint/modified,Mod Doc,0.95,0.99') && line.includes('quality score'))).toBe(true);
+    expect(lines.some(line => line.startsWith('UNCHANGED,endpoint/unchanged,Unchanged Doc,0.98,0.98'))).toBe(true);
+  });
+
+  it('should support diffing and removal classification using discarded map', () => {
+    const oldRecords = [
+      { p: 'components/button/html', n: 'Button HTML', d: 'Desc', c: 'text/html', q: 1 },
+      { p: 'components/button/react', n: 'Button React', d: 'Desc', c: 'text/markdown', q: 1 }
+    ];
+
+    const newRecords = [
+      { p: 'components/button/react', n: 'Button React', d: 'Desc', c: 'text/markdown', q: 1 }
+    ];
+
+    const discarded = new Map([
+      ['api::components::button::html', { reason: 'low-quality' as const, qualityScore: 0.85 }]
+    ]);
+
+    const diff = diffCollections(oldRecords, newRecords, discarded);
+    const csv = generateReportCsv({ diff, oldRecords, newRecords });
+    const lines = csv.trim().split('\n');
+
+    expect(diff.removed).toHaveLength(1);
+    expect(diff.removed[0]?.reason).toBe('lacks quality');
+    expect(diff.removed[0]?.details).toContain('0.85');
+    expect(lines.some(line => line.startsWith('REMOVED,components/button/html,Button HTML,1,0.85') && line.includes('lacks quality'))).toBe(true);
+  });
+
+  it('should support diffing and CSV generation when crawledMap is omitted', () => {
+    const oldRecords = [
+      { p: 'endpoint/removed', n: 'Old Doc', d: 'Desc', c: 'text/html', q: 0.96 },
+      { p: 'endpoint/unchanged', n: 'Unchanged Doc', d: 'Desc', c: 'text/html', q: 0.98 }
+    ];
+
+    const newRecords = [
+      { p: 'endpoint/added', n: 'New Doc', d: 'Desc', c: 'text/html', q: 0.97 },
+      { p: 'endpoint/unchanged', n: 'Unchanged Doc', d: 'Desc', c: 'text/html', q: 0.98 }
+    ];
+
+    const diff = diffCollections(oldRecords, newRecords);
+    const csv = generateReportCsv({ diff, oldRecords, newRecords });
+    const lines = csv.trim().split('\n');
+
+    expect(diff.removed).toHaveLength(1);
+    expect(diff.removed[0]?.reason).toBe('upstream removed');
+    expect(diff.added).toHaveLength(1);
+    expect(diff.modified).toHaveLength(0);
+    expect(lines[0]).toBe('status,path,name,previousQualityScore,newQualityScore,contentType,reason,details');
+    expect(lines.some(line => line.startsWith('ADDED,endpoint/added,New Doc,,0.97'))).toBe(true);
+    expect(lines.some(line => line.startsWith('REMOVED,endpoint/removed,Old Doc,0.96,,text/html,upstream removed'))).toBe(true);
     expect(lines.some(line => line.startsWith('UNCHANGED,endpoint/unchanged,Unchanged Doc,0.98,0.98'))).toBe(true);
   });
 
@@ -119,12 +168,11 @@ describe('collection.patternFlyApi CSV Report Generator', () => {
       });
     }
 
-    const diff = diffCollections(sampleRecords, sampleRecords, crawledMap);
+    const diff = diffCollections(sampleRecords, sampleRecords, undefined, crawledMap);
     const csv = generateReportCsv({
       diff,
       oldRecords: sampleRecords,
-      newRecords: sampleRecords,
-      crawledMap
+      newRecords: sampleRecords
     });
     const lines = csv.trim().split('\n');
 

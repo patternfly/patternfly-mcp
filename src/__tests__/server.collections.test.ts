@@ -1,5 +1,6 @@
 import { getOptions, getSessionOptions } from '../options.context';
 import { composeCollections } from '../server.collections';
+import { getServerCollectionsRegistry } from '../collections';
 import { getHeavyPool } from '../server.workerPool';
 
 jest.mock('../options.context', () => ({
@@ -9,6 +10,11 @@ jest.mock('../options.context', () => ({
 
 jest.mock('../server.workerPool', () => ({
   getHeavyPool: jest.fn()
+}));
+
+jest.mock('../collections', () => ({
+  ...jest.requireActual('../collections'),
+  getServerCollectionsRegistry: jest.fn()
 }));
 
 describe('composeCollections', () => {
@@ -104,6 +110,34 @@ describe('composeCollections', () => {
 
     expect(mockHandler).toHaveBeenCalledWith({ inputArg: 'test' });
     expect(executionResult).toEqual({ records: [{ id: 'row-1' }] });
+  });
+
+  it('should dynamically resolve previous collection state from registry via dynamicContext', async () => {
+    const mockHandler = jest.fn().mockResolvedValue({ records: [{ id: 'row-2' }] });
+    const mockCreator: any = jest.fn(() => [
+      'dynamic-collection',
+      {},
+      mockHandler,
+      { runSchedule: { cancelMs: 100, intervalMs: 50 } }
+    ]);
+
+    const registryMap = new Map();
+
+    registryMap.set('dynamic-collection', {
+      response: { records: [{ id: 'hydrated-row' }] }
+    });
+    (getServerCollectionsRegistry as jest.Mock).mockImplementation(
+      ({ collectionName }: { collectionName?: string } = {}) => (collectionName ? registryMap.get(collectionName) : registryMap)
+    );
+
+    const result: any = await composeCollections([mockCreator]);
+    const [, , handler] = result[0]();
+
+    await handler();
+
+    expect(mockHandler).toHaveBeenCalledWith({
+      previous: { records: [{ id: 'hydrated-row' }] }
+    });
   });
 
   it('should fall back to an empty records result when the deferred task yields undefined', async () => {
