@@ -836,6 +836,64 @@ const createError = <TMetadata extends Record<string, unknown>>(
 };
 
 /**
+ * Wrap a function, or another Promise in an abort signal, returning a
+ * Promise that either resolves, rejects, or rejects when the signal aborts.
+ *
+ * @param func - Function or Promise to wrap
+ * @param settings - Cancellation settings
+ * @param settings.signal - AbortSignal used to trigger cancellation
+ * @param [settings.errorMessage] - Error message to use if canceled (default: `'Call canceled'`)
+ * @param [settings.error] - Optional custom Error or DOMException to reject with
+ * @returns Promise decorated with a cancel method resolving with result or rejecting if canceled/failed
+ */
+const cancelFunction = <TReturn>(
+  func: Promise<TReturn> | (() => TReturn | Promise<TReturn>),
+  {
+    signal: externalSignal,
+    errorMessage = 'Call canceled',
+    error
+  }: {
+    signal?: AbortSignal | undefined;
+    errorMessage?: string | undefined;
+    error?: unknown;
+  } = {}
+): Promise<TReturn> & { cancel: (reason?: unknown) => void } => {
+  const internalController = new AbortController();
+  const signal = externalSignal ? AbortSignal.any([externalSignal, internalController.signal]) : internalController.signal;
+
+  const getAbortError = () =>
+    error || (signal?.reason instanceof Error ? signal.reason : new DOMException(errorMessage, 'AbortError'));
+
+  let onAbort: (() => void) | undefined;
+
+  const promise = new Promise<TReturn>((resolve, reject) => {
+    if (signal?.aborted) {
+      reject(getAbortError());
+
+      return;
+    }
+
+    onAbort = () => reject(getAbortError());
+    signal.addEventListener('abort', onAbort, { once: true });
+
+    const updatedFunc = async () =>
+      (!isAsync(func) && isPromise(func) ? (func as Promise<TReturn>) : (func as () => TReturn | Promise<TReturn>)());
+
+    updatedFunc().then(resolve, reject);
+  }).finally(() => {
+    if (onAbort) {
+      signal.removeEventListener('abort', onAbort);
+    }
+  });
+
+  return Object.assign(promise, {
+    cancel: (reason?: unknown) => {
+      internalController.abort(reason);
+    }
+  });
+};
+
+/**
  * Wrap a function, or another Promise in a timeout, returning a
  * Promise that either resolves, rejects, or rejects after the timeout.
  *
@@ -868,6 +926,7 @@ const timeoutFunction = async <TReturn>(
 
 export {
   buildSearchString,
+  cancelFunction,
   createError,
   freezeObject,
   generateHash,
