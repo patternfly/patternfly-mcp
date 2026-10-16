@@ -24,7 +24,7 @@ type DeferTaskDynamicContextInvoke = 'call' | 'apply';
 /**
  * Parameter object passed to {@link DeferTaskOptions.dynamicContext}.
  *
- * @property pre - Result from the previous successful dynamicContext resolution, or undefined on the first run.
+ * @property [prev] - Result from the previous successful dynamicContext resolution, or undefined on the first run.
  * @property args - Factory arguments passed to the task handle.
  */
 type DeferTaskDynamicContextParams<TArgs extends unknown[] = unknown[]> = {
@@ -305,9 +305,8 @@ const deferTask = <TArgs extends unknown[], TReturn>(
               return undefined;
             }
 
-            state.count += 1;
-
             if (resolved) {
+              state.count += 1;
               if (updatedDynamicContextInvoke === 'apply') {
                 const updatedValue = (value ?? []) as TArgs;
 

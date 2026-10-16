@@ -40,10 +40,8 @@ describe('deferTask', () => {
     const handle = deferTask(mockFunc, { debug, intervalMs: 10, ...options })();
     const resultPromise = handle.start();
 
-    if (options?.repeat) {
-      for (let i = 1; i < options.repeat; i++) {
-        await jest.advanceTimersByTimeAsync(10);
-      }
+    if (typeof options?.repeat === 'number') {
+      await jest.advanceTimersByTimeAsync(10 * options.repeat);
     }
 
     const result = await resultPromise;
@@ -229,6 +227,23 @@ describe('deferTask', () => {
       expect.stringContaining('Defer task dynamicContext resolution failed: Error: dynamic context lookup failure')
     );
     expect(mockFunc).toHaveBeenCalledWith('fallback-arg');
+  });
+
+  it('should increment state count accurately and repeat correct number of times on dynamicContext fallback', async () => {
+    jest.spyOn(log, 'warn').mockImplementation(() => {});
+    const dynamicContext = jest.fn().mockRejectedValue(new Error('dynamic context error'));
+    const mockFunc = jest.fn((val: string) => `handled-${val}`);
+
+    const handle = deferTask(mockFunc, { repeat: 3, intervalMs: 50, dynamicContext })('fallback-arg');
+    const resultPromise = handle.start();
+
+    await jest.advanceTimersByTimeAsync(150);
+
+    const result = await resultPromise;
+
+    expect(result).toBe('handled-fallback-arg');
+    expect(dynamicContext).toHaveBeenCalledTimes(3);
+    expect(mockFunc).toHaveBeenCalledTimes(3);
   });
 
   it.each([
