@@ -40,6 +40,7 @@ import { contentType as extractContentType } from './resource.helpers';
  * @property name - Name of the content.
  * @property path - Path of the content.
  * @property pathSlug - Slug path of the content.
+ * @property qualityScore - Content quality score.
  * @property section - Section of the content.
  * @property source - Source of the content.
  * @property version - Version of the content.
@@ -55,6 +56,7 @@ interface ApiContent {
   name: string;
   path: string;
   pathSlug: string;
+  qualityScore?: number;
   section: string;
   source: string;
   version: string;
@@ -603,6 +605,7 @@ const contentMetadata = (record: ApiCrawler | ApiEmbeddedExpanded, options = get
     name,
     path: resolvedPath,
     pathSlug,
+    qualityScore,
     section: normalizedSection,
     source: 'api' as const,
     version: normalizedVersion
