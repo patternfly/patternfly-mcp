@@ -40,6 +40,8 @@ interface McpCollectionResult {
 /**
  * Execution context passed to collection callback operations.
  *
+ * @interface McpCollectionCallbackContext
+ *
  * @property [previous] - Previous collection result stored in the registry or passed by caller.
  */
 interface McpCollectionCallbackContext {
