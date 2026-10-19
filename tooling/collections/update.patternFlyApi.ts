@@ -258,7 +258,7 @@ const diffReport = (diff: ReturnType<typeof diffCollections>) => {
 };
 
 /**
- * Run apiSpider directly and transform crawler entries into compressed embedded JSON.
+ * Run the collection callback and write compressed embedded JSON.
  *
  * @param [options] - Optional configuration options.
  * @param [options.filename=DEFAULT_API_FILENAME] - Target collection filename.
