@@ -40,10 +40,8 @@ describe('deferTask', () => {
     const handle = deferTask(mockFunc, { debug, intervalMs: 10, ...options })();
     const resultPromise = handle.start();
 
-    if (options?.repeat) {
-      for (let i = 1; i < options.repeat; i++) {
-        await jest.advanceTimersByTimeAsync(10);
-      }
+    if (typeof options?.repeat === 'number') {
+      await jest.advanceTimersByTimeAsync(10 * options.repeat);
     }
 
     const result = await resultPromise;
@@ -177,6 +175,178 @@ describe('deferTask', () => {
     expect(mockFunc).toHaveBeenCalledTimes(1);
     expect(mockDebug.mock.calls).toMatchSnapshot();
   });
+
+  it('should evaluate dynamicContext on each repeating execution with prior resolved context', async () => {
+    type RunContext = {
+      run: number;
+      previousRun?: number;
+      initialRun?: number;
+    };
+
+    const dynamicContext = jest.fn(({ prev, args }: { prev?: unknown; args: [RunContext] }): RunContext => {
+      const prevCtx = prev as RunContext | undefined;
+      const initialCtx = args[0];
+
+      return {
+        run: prevCtx ? prevCtx.run + 1 : initialCtx.run + 1,
+        previousRun: prevCtx ? prevCtx.run : initialCtx.run,
+        initialRun: initialCtx.run
+      };
+    });
+    const mockFunc = jest.fn((ctx: RunContext) => `result-${ctx.run}`);
+
+    const handle = deferTask(mockFunc, { repeat: 3, intervalMs: 100, dynamicContext })({ run: 0 });
+    const runPromise = handle.start();
+
+    await jest.advanceTimersByTimeAsync(100);
+    await jest.advanceTimersByTimeAsync(100);
+    const result = await runPromise;
+
+    expect(result).toBe('result-3');
+    expect(dynamicContext).toHaveBeenCalledTimes(3);
+    expect(dynamicContext).toHaveBeenNthCalledWith(1, { prev: undefined, args: [{ run: 0 }] });
+    expect(dynamicContext).toHaveBeenNthCalledWith(2, { prev: { run: 1, previousRun: 0, initialRun: 0 }, args: [{ run: 0 }] });
+    expect(dynamicContext).toHaveBeenNthCalledWith(3, { prev: { run: 2, previousRun: 1, initialRun: 0 }, args: [{ run: 0 }] });
+    expect(mockFunc).toHaveBeenCalledTimes(3);
+    expect(mockFunc).toHaveBeenNthCalledWith(1, { run: 1, previousRun: 0, initialRun: 0 });
+    expect(mockFunc).toHaveBeenNthCalledWith(2, { run: 2, previousRun: 1, initialRun: 0 });
+    expect(mockFunc).toHaveBeenNthCalledWith(3, { run: 3, previousRun: 2, initialRun: 0 });
+  });
+
+  it.each([
+    {
+      description: 'single run on async rejection',
+      repeat: 1,
+      advanceMs: 0,
+      supplier: () => Promise.reject(new Error('dynamic context lookup failure')),
+      expectedWarn: 'Defer task dynamicContext resolution failed: Error: dynamic context lookup failure'
+    },
+    {
+      description: 'multiple runs on sync throw',
+      repeat: 3,
+      advanceMs: 150,
+      supplier: () => { throw new Error('dynamic context error'); },
+      expectedWarn: 'Defer task dynamicContext resolution failed: Error: dynamic context error'
+    }
+  ])(
+    'should handle dynamicContext errors, log warning, and fall back to factory args, $description',
+    async ({ repeat, advanceMs, supplier, expectedWarn }) => {
+      const warnSpy = jest.spyOn(log, 'warn').mockImplementation(() => {});
+      const dynamicContext = jest.fn(supplier);
+      const mockFunc = jest.fn((val: string) => `handled-${val}`);
+
+      const handle = deferTask(mockFunc, { repeat, intervalMs: 50, dynamicContext })('fallback-arg');
+      const resultPromise = handle.start();
+
+      if (advanceMs > 0) {
+        await jest.advanceTimersByTimeAsync(advanceMs);
+      }
+
+      const result = await resultPromise;
+
+      expect(result).toBe('handled-fallback-arg');
+      expect(dynamicContext).toHaveBeenCalledTimes(repeat);
+      expect(dynamicContext).toHaveBeenCalledWith({ prev: undefined, args: ['fallback-arg'] });
+      expect(mockFunc).toHaveBeenCalledTimes(repeat);
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining(expectedWarn));
+    }
+  );
+
+  it.each([
+    {
+      mode: 'apply' as const,
+      result: ['left', 'right'],
+      factoryArgs: ['seed-a', 'seed-b'],
+      expectedResult: 'left/right',
+      expectedCalls: ['left', 'right'],
+      mockFunc: jest.fn((first: string, second: string) => `${first}/${second}`)
+    },
+    {
+      mode: 'call' as const,
+      result: ['a', 'b'],
+      factoryArgs: [['seed']],
+      expectedResult: 'a+b',
+      expectedCalls: [['a', 'b']],
+      mockFunc: jest.fn((items: string[]) => items.join('+'))
+    },
+    {
+      mode: 'call' as const,
+      result: async () => 'async-context-value',
+      factoryArgs: ['initial'],
+      expectedResult: 'async-context-value',
+      expectedCalls: ['async-context-value'],
+      mockFunc: jest.fn((val: string) => val)
+    }
+  ])(
+    'should pass dynamicContext results to func when dynamicContextInvoke is $mode',
+    async ({ mode, result, factoryArgs, expectedResult, expectedCalls, mockFunc }) => {
+      const dynamicContext = jest.fn((typeof result === 'function' ? result : () => result) as () => unknown);
+
+      const handle = deferTask<unknown[], string>(mockFunc as (...args: unknown[]) => string, {
+        repeat: 1,
+        intervalMs: 50,
+        dynamicContext,
+        dynamicContextInvoke: mode
+      })(...(factoryArgs as [unknown, unknown]));
+      const output = await handle.start();
+
+      expect(output).toBe(expectedResult);
+      expect(mockFunc).toHaveBeenCalledWith(...expectedCalls);
+    }
+  );
+
+  it('should halt execution if stop is called while dynamicContext is resolving', async () => {
+    let resolveContext: (val: string) => void = () => {};
+    const dynamicContext = jest.fn(
+      () => new Promise<string>(resolve => { resolveContext = resolve; })
+    );
+    const mockFunc = jest.fn((val: string) => `result-${val}`);
+
+    const handle = deferTask(mockFunc, { repeat: 1, intervalMs: 50, dynamicContext })('initial');
+    const runPromise = handle.start();
+    const stopPromise = handle.stop();
+
+    resolveContext('delayed-context');
+
+    const [runResult] = await Promise.all([runPromise, stopPromise]);
+
+    expect(dynamicContext).toHaveBeenCalledTimes(1);
+    expect(mockFunc).not.toHaveBeenCalled();
+    expect(runResult).toBeUndefined();
+    expect(handle.isRunning()).toBe(false);
+  });
+
+  it.each([
+    {
+      mode: 'call' as const,
+      expectedResult: 'received-undefined',
+      expectedArgs: [undefined]
+    },
+    {
+      mode: 'apply' as const,
+      expectedResult: 'args-count-0',
+      expectedArgs: []
+    }
+  ])(
+    'should handle undefined dynamicContext in $mode mode without falling back to factory args',
+    async ({ mode, expectedResult, expectedArgs }) => {
+      const mockFunc = jest.fn((...args: unknown[]) =>
+        (mode === 'call' ? `received-${args[0]}` : `args-count-${args.length}`));
+      const dynamicContext = jest.fn(() => undefined);
+
+      const handle = deferTask(mockFunc, {
+        repeat: 1,
+        intervalMs: 50,
+        dynamicContext,
+        dynamicContextInvoke: mode
+      })('initial-factory-arg');
+      const result = await handle.start();
+
+      expect(result).toBe(expectedResult);
+      expect(dynamicContext).toHaveBeenCalledWith({ prev: undefined, args: ['initial-factory-arg'] });
+      expect(mockFunc).toHaveBeenCalledWith(...expectedArgs);
+    }
+  );
 });
 
 describe('delay', () => {
@@ -198,26 +368,26 @@ describe('delay', () => {
     ]);
   });
 
-  it('should reject if signal is aborted beforehand', async () => {
+  it.each([
+    {
+      timing: 'beforehand',
+      triggerAbort: (controller: AbortController) => controller.abort()
+    },
+    {
+      timing: 'during delay',
+      triggerAbort: async (controller: AbortController) => {
+        await jest.advanceTimersByTimeAsync(50);
+        controller.abort();
+      }
+    }
+  ])('should reject if signal is aborted $timing', async ({ triggerAbort }) => {
     const controller = new AbortController();
-
-    controller.abort();
-
-    const promise = delay({ ms: 100, signal: controller.signal });
-
-    await expect(promise).rejects.toThrow('Delay aborted');
-  });
-
-  it('should reject if signal is aborted during delay', async () => {
-    const controller = new AbortController();
+    const abortAction = triggerAbort(controller);
     const promise = delay({ ms: 100, signal: controller.signal });
 
     await Promise.all([
       expect(promise).rejects.toThrow('Delay aborted'),
-      (async () => {
-        await jest.advanceTimersByTimeAsync(50);
-        controller.abort();
-      })()
+      abortAction
     ]);
   });
 });

@@ -1,5 +1,5 @@
-import { isAsync, isPromise, timeoutFunction } from './server.helpers';
-import { log } from './logger';
+import { cancelFunction, isAsync, isPromise, timeoutFunction } from './server.helpers';
+import { formatUnknownError, log } from './logger';
 
 /**
  * Debug handler callback invoked for deferTask lifecycle events.
@@ -15,6 +15,22 @@ import { log } from './logger';
  * @param {MemoCache<TReturn>} info.cache - MemoCache array
  */
 type DeferTaskDebugHandler = (info: { type: string; value: unknown; [key: string]: unknown; }) => void;
+
+/**
+ * How {@link DeferTaskOptions.dynamicContext} return values are passed to `func`.
+ */
+type DeferTaskDynamicContextInvoke = 'call' | 'apply';
+
+/**
+ * Parameter object passed to {@link DeferTaskOptions.dynamicContext}.
+ *
+ * @property [prev] - Result from the previous successful dynamicContext resolution, or undefined on the first run.
+ * @property args - Factory arguments passed to the task handle.
+ */
+type DeferTaskDynamicContextParams<TArgs extends unknown[] = unknown[]> = {
+  prev?: unknown;
+  args: TArgs;
+};
 
 /**
  * Handle for managing the deferred task's lifecycle.
@@ -50,8 +66,17 @@ interface DeferTaskHandle<TReturn> {
  * @property [repeat] - Number of loops.  Pass `Infinity` explicitly to loop
  *     indefinitely. (default `1`)
  * @property [errorMessage] - Custom error for timeouts. (default `'Task timed out'`)
+ * @property [dynamicContext] - Optional hook that supplies the next value for `func`.
+ *     Receives `{ prev, args }` where `prev` is the last successful return value
+ *     (undefined on the first run) and `args` are the original factory arguments.
+ *     May be sync or async. If it throws or rejects, a warning is logged and that
+ *     run falls back to `func(...factoryArgs)` without updating `prev`. Cancellation
+ *     is managed via {@link cancelFunction}. If the task is stopped while this hook
+ *     is resolving, it skips and aborts silently.
+ * @property [dynamicContextInvoke] - `call` (default): `func(returnValue)`. `apply`:
+ *     `func(...argList)` spreading the returned argument tuple.
  */
-interface DeferTaskOptions {
+interface DeferTaskOptions<TArgs extends unknown[] = unknown[]> {
   cancelMs?: number;
   continueOnError?: boolean;
   debug?: DeferTaskDebugHandler;
@@ -59,6 +84,8 @@ interface DeferTaskOptions {
   intervalMs?: number;
   repeat?: number | undefined;
   errorMessage?: string;
+  dynamicContext?: ((params: DeferTaskDynamicContextParams<TArgs>) => unknown | Promise<unknown>) | undefined;
+  dynamicContextInvoke?: DeferTaskDynamicContextInvoke;
 }
 
 /**
@@ -107,6 +134,8 @@ const delay = ({ ms, signal }: { ms: number; signal?: AbortSignal | undefined })
  * - `intervalMs`: randomized base delay between repetitions. Defaults to `1000` ms.
  *   The per-execution timeout is derived as `intervalMs * 1.5`; exceeding it rejects
  *   `start()` with `errorMessage` and emits a `run:error` debug event.
+ * - `delayStartMs`: extra wait before the **first** run only. Defaults to `0`. Like
+ *   `intervalMs`, the actual delay is randomized slightly around this value.
  * - `continueOnError`: when `true`, a run error (including a per-run timeout) is
  *   logged and the repeat loop continues instead of rejecting out of `start()`.
  *   Defaults to `false`. `stop()` and `cancelMs` still terminate the loop.
@@ -119,6 +148,12 @@ const delay = ({ ms, signal }: { ms: number; signal?: AbortSignal | undefined })
  * - `debug`: callback invoked for lifecycle events. Emitted `type` values:
  *   `start`, `run`, `run:stopped`, `run:error`, `run:cancel`, `stop`, `stop:error`,
  *   `isRunning`. `info.value` is a thunk returning a snapshot of internal state.
+ * - `dynamicContext`: optional per-run value resolver receiving `{ prev, args }`.
+ *   May be async. On failure, logs a warning and that run falls back to `func(...factoryArgs)`
+ *   without updating `prev`.
+ * - `dynamicContextInvoke`: `call` (default) or `apply` — how the hook return is passed to
+ *   `func`. See {@link DeferTaskOptions.dynamicContextInvoke}. Cancellation is managed
+ *   via {@link cancelFunction}.
  *
  * @note Repeating loops yield between iterations (this implementation uses
  * `await delay(intervalMs)`). This interval is part of a randomized base delay
@@ -134,8 +169,8 @@ const delay = ({ ms, signal }: { ms: number; signal?: AbortSignal | undefined })
  * @param func Function (sync or async) or a Promise to execute. When a Promise is
  *     provided, it is awaited on each repetition (i.e. the same settled value is
  *     reused).
- * @param {DeferTaskOptions} options Optional {@link DeferTaskOptions} controlling
- *     repeat, timeout, cancel, debug, and error message behavior.
+ * @param {DeferTaskOptions} options Optional {@link DeferTaskOptions} (see Options
+ *     above and interface `@property` entries for full detail).
  * @returns A factory `(...args: TArgs) => DeferTaskHandle<TReturn>`. Each
  *     invocation produces an independent handle with its own running state.
  *
@@ -161,7 +196,7 @@ const delay = ({ ms, signal }: { ms: number; signal?: AbortSignal | undefined })
  */
 const deferTask = <TArgs extends unknown[], TReturn>(
   func: ((...args: TArgs) => TReturn | Promise<TReturn>) | Promise<TReturn>,
-  options: DeferTaskOptions = {}
+  options: DeferTaskOptions<TArgs> = {}
 ) => {
   const {
     cancelMs,
@@ -170,8 +205,13 @@ const deferTask = <TArgs extends unknown[], TReturn>(
     delayStartMs,
     repeat,
     intervalMs,
-    errorMessage = 'Task timed out'
+    errorMessage = 'Task timed out',
+    dynamicContext,
+    dynamicContextInvoke = 'call'
   } = options || {};
+
+  const updatedDynamicContextInvoke: DeferTaskDynamicContextInvoke =
+    dynamicContextInvoke === 'apply' ? 'apply' : 'call';
 
   const validRepeat = typeof repeat === 'number' && repeat > 0 ? repeat : 1;
   const updatedRepeat = Number.isFinite(validRepeat) ? validRepeat : undefined;
@@ -199,6 +239,30 @@ const deferTask = <TArgs extends unknown[], TReturn>(
       count: 0,
       promise: undefined,
       controller: undefined
+    };
+
+    let prevValue: unknown | undefined;
+
+    const resolveDynamic = async (): Promise<{ resolved: boolean; value?: unknown }> => {
+      if (typeof dynamicContext === 'function') {
+        try {
+          const dynamicResult = await cancelFunction(
+            () => dynamicContext({ prev: prevValue, args }),
+            { signal: state.controller?.signal }
+          );
+
+          prevValue = dynamicResult;
+
+          return { resolved: true, value: dynamicResult };
+        } catch (error) {
+          if (error instanceof DOMException && error.name === 'AbortError') {
+            return { resolved: false };
+          }
+          log.warn(`Defer task dynamicContext resolution failed: ${formatUnknownError(error)}`);
+        }
+      }
+
+      return { resolved: false };
     };
 
     const task = async (): Promise<TReturn | undefined> => {
@@ -230,8 +294,32 @@ const deferTask = <TArgs extends unknown[], TReturn>(
         }
       }
 
-      const startFunc = timeoutFunction(() => {
+      const startFunc = timeoutFunction(async () => {
         if (state.isRunning) {
+          if (typeof dynamicContext === 'function') {
+            const { resolved, value } = await resolveDynamic();
+
+            if (!state.isRunning) {
+              debug({
+                type: 'run:stopped',
+                value: () => ({ ...state })
+              });
+
+              return undefined;
+            }
+
+            if (resolved) {
+              state.count += 1;
+              if (updatedDynamicContextInvoke === 'apply') {
+                const updatedValue = (value ?? []) as TArgs;
+
+                return updatedFunc(...updatedValue);
+              }
+
+              return (updatedFunc as unknown as (arg: unknown) => TReturn | Promise<TReturn>)(value);
+            }
+          }
+
           state.count += 1;
 
           return updatedFunc(...args);
@@ -367,5 +455,7 @@ export {
   delay,
   type DeferTaskOptions,
   type DeferTaskHandle,
-  type DeferTaskDebugHandler
+  type DeferTaskDebugHandler,
+  type DeferTaskDynamicContextInvoke,
+  type DeferTaskDynamicContextParams
 };
