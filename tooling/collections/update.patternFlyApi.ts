@@ -326,7 +326,7 @@ const run = async (
         n: data?.displayName || '',
         d: data?.description || '',
         c: data?.contentType || 'json',
-        q: 1
+        q: data?.qualityScore ?? 1
       };
     }).sort((a, b) => a.p.localeCompare(b.p));
 
