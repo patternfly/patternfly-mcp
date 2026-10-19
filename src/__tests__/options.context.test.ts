@@ -9,6 +9,7 @@ import { DEFAULT_OPTIONS } from '../options.defaults';
 // Mock dependencies
 jest.mock('@modelcontextprotocol/sdk/server/mcp.js');
 jest.mock('@modelcontextprotocol/sdk/server/stdio.js');
+jest.mock('../collections');
 
 const MockMcpServer = McpServer as jest.MockedClass<typeof McpServer>;
 const MockStdioServerTransport = StdioServerTransport as jest.MockedClass<typeof StdioServerTransport>;
