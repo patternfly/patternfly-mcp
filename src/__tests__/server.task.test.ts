@@ -213,38 +213,44 @@ describe('deferTask', () => {
     expect(mockFunc).toHaveBeenNthCalledWith(3, { run: 3, previousRun: 2, initialRun: 0 });
   });
 
-  it('should catch dynamicContext errors, log a warning, and fall back to initial arguments', async () => {
-    const warnSpy = jest.spyOn(log, 'warn').mockImplementation(() => {});
-    const dynamicContext = jest.fn().mockRejectedValue(new Error('dynamic context lookup failure'));
-    const mockFunc = jest.fn((val: string) => `handled-${val}`);
+  it.each([
+    {
+      description: 'single run on async rejection',
+      repeat: 1,
+      advanceMs: 0,
+      supplier: () => Promise.reject(new Error('dynamic context lookup failure')),
+      expectedWarn: 'Defer task dynamicContext resolution failed: Error: dynamic context lookup failure'
+    },
+    {
+      description: 'multiple runs on sync throw',
+      repeat: 3,
+      advanceMs: 150,
+      supplier: () => { throw new Error('dynamic context error'); },
+      expectedWarn: 'Defer task dynamicContext resolution failed: Error: dynamic context error'
+    }
+  ])(
+    'should handle dynamicContext errors, log warning, and fall back to factory args, $description',
+    async ({ repeat, advanceMs, supplier, expectedWarn }) => {
+      const warnSpy = jest.spyOn(log, 'warn').mockImplementation(() => {});
+      const dynamicContext = jest.fn(supplier);
+      const mockFunc = jest.fn((val: string) => `handled-${val}`);
 
-    const handle = deferTask(mockFunc, { repeat: 1, intervalMs: 50, dynamicContext })('fallback-arg');
-    const result = await handle.start();
+      const handle = deferTask(mockFunc, { repeat, intervalMs: 50, dynamicContext })('fallback-arg');
+      const resultPromise = handle.start();
 
-    expect(result).toBe('handled-fallback-arg');
-    expect(dynamicContext).toHaveBeenCalledWith({ prev: undefined, args: ['fallback-arg'] });
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining('Defer task dynamicContext resolution failed: Error: dynamic context lookup failure')
-    );
-    expect(mockFunc).toHaveBeenCalledWith('fallback-arg');
-  });
+      if (advanceMs > 0) {
+        await jest.advanceTimersByTimeAsync(advanceMs);
+      }
 
-  it('should increment state count accurately and repeat correct number of times on dynamicContext fallback', async () => {
-    jest.spyOn(log, 'warn').mockImplementation(() => {});
-    const dynamicContext = jest.fn().mockRejectedValue(new Error('dynamic context error'));
-    const mockFunc = jest.fn((val: string) => `handled-${val}`);
+      const result = await resultPromise;
 
-    const handle = deferTask(mockFunc, { repeat: 3, intervalMs: 50, dynamicContext })('fallback-arg');
-    const resultPromise = handle.start();
-
-    await jest.advanceTimersByTimeAsync(150);
-
-    const result = await resultPromise;
-
-    expect(result).toBe('handled-fallback-arg');
-    expect(dynamicContext).toHaveBeenCalledTimes(3);
-    expect(mockFunc).toHaveBeenCalledTimes(3);
-  });
+      expect(result).toBe('handled-fallback-arg');
+      expect(dynamicContext).toHaveBeenCalledTimes(repeat);
+      expect(dynamicContext).toHaveBeenCalledWith({ prev: undefined, args: ['fallback-arg'] });
+      expect(mockFunc).toHaveBeenCalledTimes(repeat);
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining(expectedWarn));
+    }
+  );
 
   it.each([
     {
@@ -262,11 +268,19 @@ describe('deferTask', () => {
       expectedResult: 'a+b',
       expectedCalls: [['a', 'b']],
       mockFunc: jest.fn((items: string[]) => items.join('+'))
+    },
+    {
+      mode: 'call' as const,
+      result: async () => 'async-context-value',
+      factoryArgs: ['initial'],
+      expectedResult: 'async-context-value',
+      expectedCalls: ['async-context-value'],
+      mockFunc: jest.fn((val: string) => val)
     }
   ])(
     'should pass dynamicContext results to func when dynamicContextInvoke is $mode',
     async ({ mode, result, factoryArgs, expectedResult, expectedCalls, mockFunc }) => {
-      const dynamicContext = jest.fn(() => result);
+      const dynamicContext = jest.fn((typeof result === 'function' ? result : () => result) as () => unknown);
 
       const handle = deferTask<unknown[], string>(mockFunc as (...args: unknown[]) => string, {
         repeat: 1,
@@ -280,18 +294,6 @@ describe('deferTask', () => {
       expect(mockFunc).toHaveBeenCalledWith(...expectedCalls);
     }
   );
-
-  it('should support async dynamicContext suppliers', async () => {
-    const dynamicContext = jest.fn(async () => 'async-context-value');
-    const mockFunc = jest.fn((val: string) => val);
-
-    const handle = deferTask(mockFunc, { repeat: 1, intervalMs: 50, dynamicContext })('initial');
-    const result = await handle.start();
-
-    expect(result).toBe('async-context-value');
-    expect(dynamicContext).toHaveBeenCalledWith({ prev: undefined, args: ['initial'] });
-    expect(mockFunc).toHaveBeenCalledWith('async-context-value');
-  });
 
   it('should halt execution if stop is called while dynamicContext is resolving', async () => {
     let resolveContext: (val: string) => void = () => {};
