@@ -725,7 +725,11 @@ const collectionCallback = async ({ previous }: McpCollectionCallbackContext = {
     const probeUrls = missingCandidates.map(record => record.sourceId);
     const probeResults = await processDocsFunction(
       probeUrls,
-      { loadLimit: 100, parallelLoadLimit: 10, parallelLoadThrottleMs: 50 }
+      {
+        loadLimit: probeUrls.length,
+        parallelLoadLimit: 10,
+        parallelLoadThrottleMs: 50
+      }
     ) || [];
 
     const probeMap = new Map(probeResults.map(probe => [probe.path, probe]));
