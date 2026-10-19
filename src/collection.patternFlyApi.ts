@@ -1,5 +1,5 @@
 import {
-  type CollectionCallbackContext,
+  type McpCollectionCallbackContext,
   type McpCollection,
   type McpCollectionRecord,
   type McpCollectionResult
@@ -687,7 +687,7 @@ const collectionInitialCallback = async (): Promise<McpCollectionResult> => {
  * @param [context.previous] - Previous collection result stored in the registry or passed by caller.
  * @returns {Promise<ApiCollectionResult>} The processed collection of API records with discard ledger.
  */
-const collectionCallback = async ({ previous }: CollectionCallbackContext = {}): Promise<ApiCollectionResult> => {
+const collectionCallback = async ({ previous }: McpCollectionCallbackContext = {}): Promise<ApiCollectionResult> => {
   const isHealthy = await probeHealth();
 
   if (!isHealthy) {
