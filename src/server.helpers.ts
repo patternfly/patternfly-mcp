@@ -839,12 +839,45 @@ const createError = <TMetadata extends Record<string, unknown>>(
  * Wrap a function, or another Promise in an abort signal, returning a
  * Promise that either resolves, rejects, or rejects when the signal aborts.
  *
- * @param func - Function or Promise to wrap
- * @param settings - Cancellation settings
- * @param settings.signal - AbortSignal used to trigger cancellation
- * @param [settings.errorMessage] - Error message to use if canceled (default: `'Call canceled'`)
- * @param [settings.error] - Optional custom Error or DOMException to reject with
- * @returns Promise decorated with a cancel method resolving with result or rejecting if canceled/failed
+ * @note **Promise Cancellation vs. Background Execution**:
+ * - When passed a pending `Promise`, aborting immediately rejects the returned
+ *   wrapper promise with an `AbortError`, unblocking the caller. However, native
+ *   JavaScript Promises cannot be canceled from the outside; any underlying
+ *   asynchronous operation (e.g. `fetch`, file I/O) will continue running in the
+ *   background unless it was passed the `AbortSignal`.
+ * - To stop underlying operations upon abort, pass an external `AbortController.signal`
+ *   to both `cancelFunction` and the underlying operation (see example below).
+ *
+ * @template TReturn Resolved value type.
+ *
+ * @param func - Function or Promise to wrap.
+ * @param settings - Cancellation settings.
+ * @param [settings.signal] - AbortSignal used to trigger cancellation from outside.
+ * @param [settings.errorMessage] - Error message to use if canceled (default: `'Call canceled'`).
+ * @param [settings.error] - Optional custom Error or DOMException to reject with.
+ * @returns Promise decorated with a `.cancel(reason?: unknown)` method that resolves with the result
+ *          or rejects if canceled/failed.
+ *
+ * @example Basic standalone cancellation handle
+ * const task = cancelFunction(async () => loadData());
+ * // Cancel at any time:
+ * task.cancel();
+ * await task.catch(err => console.error(err.name)); // 'AbortError'
+ *
+ * @example Aborting underlying I/O with a shared AbortSignal
+ * const controller = new AbortController();
+ * const task = cancelFunction(
+ *   () => fetch('https://example.com/stream', { signal: controller.signal }),
+ *   { signal: controller.signal }
+ * );
+ *
+ * // Aborts both cancelFunction's returned promise and the active network socket:
+ * controller.abort();
+ *
+ * @example Direct Promise wrapping (unblocks caller immediately on abort)
+ * const pending = someLongRunningTask();
+ * const cancelable = cancelFunction(pending);
+ * cancelable.cancel(); // Rejects immediately without waiting for `pending` to settle
  */
 const cancelFunction = <TReturn>(
   func: Promise<TReturn> | (() => TReturn | Promise<TReturn>),

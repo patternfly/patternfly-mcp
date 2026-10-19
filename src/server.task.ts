@@ -70,7 +70,9 @@ interface DeferTaskHandle<TReturn> {
  *     Receives `{ prev, args }` where `prev` is the last successful return value
  *     (undefined on the first run) and `args` are the original factory arguments.
  *     May be sync or async. If it throws or rejects, a warning is logged and that
- *     run falls back to `func(...factoryArgs)` without updating `prev`.
+ *     run falls back to `func(...factoryArgs)` without updating `prev`. Cancellation
+ *     is managed via {@link cancelFunction}. If the task is stopped while this hook
+ *     is resolving, it skips and aborts silently.
  * @property [dynamicContextInvoke] - `call` (default): `func(returnValue)`. `apply`:
  *     `func(...argList)` spreading the returned argument tuple.
  */
@@ -150,7 +152,8 @@ const delay = ({ ms, signal }: { ms: number; signal?: AbortSignal | undefined })
  *   May be async. On failure, logs a warning and that run falls back to `func(...factoryArgs)`
  *   without updating `prev`.
  * - `dynamicContextInvoke`: `call` (default) or `apply` — how the hook return is passed to
- *   `func`. See {@link DeferTaskOptions.dynamicContextInvoke}.
+ *   `func`. See {@link DeferTaskOptions.dynamicContextInvoke}. Cancellation is managed
+ *   via {@link cancelFunction}.
  *
  * @note Repeating loops yield between iterations (this implementation uses
  * `await delay(intervalMs)`). This interval is part of a randomized base delay
