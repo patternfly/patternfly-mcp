@@ -42,7 +42,7 @@ interface McpCollectionResult {
  *
  * @property [previous] - Previous collection result stored in the registry or passed by caller.
  */
-interface CollectionCallbackContext {
+interface McpCollectionCallbackContext {
   previous?: McpCollectionResult | undefined;
 }
 
@@ -105,7 +105,7 @@ type McpCollectionRegistryEntry = {
 type McpCollection = [
   name: string,
   config: McpCollectionConfig,
-  handler: (context?: CollectionCallbackContext) => McpCollectionResult | Promise<McpCollectionResult>,
+  handler: (context?: McpCollectionCallbackContext) => McpCollectionResult | Promise<McpCollectionResult>,
   _config?: {
     initial?: McpCollectionResult | (() => McpCollectionResult | Promise<McpCollectionResult>);
     runParallel?: `#${string}`;
@@ -654,8 +654,8 @@ export {
   type RetainLastViableContext,
   type RetainLastViableOption,
   type RetainLastViableCollection,
-  type CollectionCallbackContext,
   type McpCollection,
+  type McpCollectionCallbackContext,
   type McpCollectionConfig,
   type McpCollectionCreator,
   type McpCollectionRegistryEntry,

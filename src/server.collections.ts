@@ -1,5 +1,5 @@
 import {
-  type CollectionCallbackContext,
+  type McpCollectionCallbackContext,
   type McpCollection,
   type McpCollectionCreator,
   type McpCollectionRegistryEntry,
@@ -29,7 +29,7 @@ const makeParallelProxyCreator = ({
 options: GlobalOptions = getOptions()): McpCollectionCreator => () => {
   const [name, config, _callback, _config] = creator(options);
 
-  const handler = async (args?: CollectionCallbackContext): Promise<McpCollectionResult> => {
+  const handler = async (args?: McpCollectionCallbackContext): Promise<McpCollectionResult> => {
     const currentOptions = getOptions();
     const currentSession = getSessionOptions();
 
@@ -66,7 +66,7 @@ options: GlobalOptions = getOptions()): McpCollectionCreator => () => {
     ...(typeof runSchedule?.delayStartMs === 'number' ? { delayStartMs: runSchedule.delayStartMs } : {}),
     ...(typeof runSchedule?.continueOnError === 'boolean' ? { continueOnError: runSchedule.continueOnError } : {}),
     ...(typeof runSchedule?.repeat === 'number' ? { repeat: runSchedule.repeat } : {}),
-    dynamicContext: ({ args }: { args?: [(CollectionCallbackContext | undefined)?] }): CollectionCallbackContext => {
+    dynamicContext: ({ args }: { args?: [(McpCollectionCallbackContext | undefined)?] }): McpCollectionCallbackContext => {
       const [context] = args ?? [];
       const registryEntry = getServerCollectionsRegistry({ collectionName: name }) as McpCollectionRegistryEntry | undefined;
       const previous = registryEntry?.response ?? context?.previous;
@@ -78,7 +78,7 @@ options: GlobalOptions = getOptions()): McpCollectionCreator => () => {
     }
   };
 
-  const handler = async (args?: CollectionCallbackContext): Promise<McpCollectionResult> => {
+  const handler = async (args?: McpCollectionCallbackContext): Promise<McpCollectionResult> => {
     const task = deferTask(callback, deferOptions)(args);
     let response;
 
