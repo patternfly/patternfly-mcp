@@ -66,9 +66,10 @@ options: GlobalOptions = getOptions()): McpCollectionCreator => () => {
     ...(typeof runSchedule?.delayStartMs === 'number' ? { delayStartMs: runSchedule.delayStartMs } : {}),
     ...(typeof runSchedule?.continueOnError === 'boolean' ? { continueOnError: runSchedule.continueOnError } : {}),
     ...(typeof runSchedule?.repeat === 'number' ? { repeat: runSchedule.repeat } : {}),
-    dynamicContext: ({ args }: { args?: [CollectionCallbackContext | undefined] }): CollectionCallbackContext => {
-      const [context] = args || [];
-      const previous = (getServerCollectionsRegistry({ collectionName: name }) as McpCollectionRegistryEntry | undefined)?.response || context?.previous;
+    dynamicContext: ({ args }: { args?: [(CollectionCallbackContext | undefined)?] }): CollectionCallbackContext => {
+      const [context] = args ?? [];
+      const registryEntry = getServerCollectionsRegistry({ collectionName: name }) as McpCollectionRegistryEntry | undefined;
+      const previous = registryEntry?.response ?? context?.previous;
 
       return {
         ...context,
