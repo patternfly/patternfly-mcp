@@ -38,7 +38,7 @@ Complete guide to using the PatternFly MCP Server for development including CLI 
 - **Logging** - The server uses a `diagnostics_channel`-based logger that keeps stdout pure by default.
 - **Programmatic API** - The server can also be used programmatically with options. See [Programmatic usage](#programmatic-usage) for more details.
 - **Tool plugins** - The server can load external tool plugins at startup. See [MCP tool plugins](#mcp-tool-plugins) for more details.
-- **Test Mode** - When `--mode test` is used, the server redirects resource requests to the URL provided by `--mode-test-url`, enabling E2E testing without local filesystem access.
+- **Test Mode** - When `--mode test` is used, the server redirects resource requests to the URL provided by `--mode-test-url`, enabling E2E testing without local filesystem access. A missing `--mode-test-url` will result in a logger warning and a non-fatal error on resource requests.
 - **Experimental options** - Opt-in flags use `--experimental-<name>` on the CLI and `experimental<Name>` programmatically. See [Experimental settings](./experimental.md) for the current list, examples, and lifecycle notes.
 
 ### Basic use scenarios
@@ -125,6 +125,7 @@ The `start()` function accepts an optional `PfMcpOptions` object for programmati
 | `docsPaths`                | `string[]`                               | Whitelist of local documentation directories resolved by `documentation:` slug. When empty (default), the slug is dormant. | `[]`             |
 
 #### Notes
+- **Test Mode** - When `mode = 'test'` is used, the server redirects resource requests to the URL provided by `modeOptions.test.baseUrl`, enabling E2E testing without local filesystem access. A missing `modeOptions.test.baseUrl` will result in a logger warning and a non-fatal error on resource requests.
 - **Experimental options** - Opt-in flags use `experimental<Name>` programmatically and `--experimental-<name>` on the CLI. See [Experimental settings](./experimental.md) for the current list and configuration examples.
 
 #### Example usage

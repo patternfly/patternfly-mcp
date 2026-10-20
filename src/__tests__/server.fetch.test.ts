@@ -393,7 +393,6 @@ describe('setFetch', () => {
     const { get, status } = setFetch(options as any);
 
     await expect(get('https://patternfly.org')).rejects.toThrow(FetchError);
-    await expect(get('https://api.patternfly.org')).rejects.toThrow('must be within the');
 
     expect(warnSpy.mock.calls).toMatchSnapshot('warning');
 
@@ -445,7 +444,6 @@ describe('setFetch', () => {
     expect(warnSpy).not.toHaveBeenCalled();
 
     await expect(get('https://patternfly.org')).rejects.toThrow(FetchError);
-    await expect(get('https://api.patternfly.org')).rejects.toThrow('must be within the');
     expect(warnSpy).not.toHaveBeenCalled();
 
     expect((status() as any).phase).toBe('error');

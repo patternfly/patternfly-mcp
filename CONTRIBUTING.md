@@ -168,7 +168,7 @@ Contributors can run the MCP server in a specialized `test` mode against mock re
 npm run test:integration
 ```
 
-This mode leverages the `--mode test` and `--mode-test-url` flags to redirect resource lookups to a fixture server instead of live or local resources.
+This mode leverages server `test` mode options to redirect resource lookups to a fixture server instead of live or local resources. See [CLI usage options](./docs/development.md#available-options) and [programmatic usage options](./docs/development.md#server-configuration-options) for related `test` mode options.
 
 ## Maintenance
 
