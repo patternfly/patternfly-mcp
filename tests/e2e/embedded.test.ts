@@ -20,7 +20,7 @@ describe('Embedded Server', () => {
     }
   });
 
-  it('should allow the host application to continue execution after server.stop() under default programmatic mode', async () => {
+  it('should allow the host application to continue execution after server.stop()', async () => {
     // Simulate an external app with an embedded MCP and attempt a post-stop operation
     const hostAppScript = `
       import { start } from '${distIndexPath}';
