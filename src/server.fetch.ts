@@ -452,9 +452,16 @@ const setFetch = (options = getOptions()): SetFetch => {
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
   let inflight: { key: string; promise: Promise<FetchResponse> } | undefined;
   let updatedWhitelist = whitelist.urls;
+  let isTestModeFetchBlocked = false;
 
-  if (mode === 'test' && isUrl(fixtureUrl)) {
-    updatedWhitelist = updatedWhitelist.concat([fixtureUrl as WhitelistUrl]);
+  if (mode === 'test') {
+    updatedWhitelist = [];
+
+    if (isUrl(fixtureUrl)) {
+      updatedWhitelist = [fixtureUrl as WhitelistUrl];
+    } else {
+      isTestModeFetchBlocked = true;
+    }
   }
 
   /**
@@ -510,6 +517,13 @@ const setFetch = (options = getOptions()): SetFetch => {
    * @returns A Promise that resolves to the fetch response.
    */
   const executeFetch = async (url: string, settings: RequestInit = {}): Promise<FetchResponse> => {
+    if (isTestModeFetchBlocked) {
+      log.warn(
+        `Network access blocked for ${url}: server is in 'test' mode and 'modeOptions.test.baseUrl' is not configured.`,
+        `Configure 'modeOptions.test.baseUrl' to allow outbound fetches.`
+      );
+    }
+
     controller = new AbortController();
     timeoutId = setTimeout(
       () => controller?.abort(new Error(`Timeout: exceeded ${xhrFetch.timeoutMs}ms.`)),
