@@ -12,6 +12,7 @@ import {
   FetchError
 } from '../server.fetch';
 import { getOptions } from '../options.context';
+import { log } from '../logger';
 
 describe('MIME helpers', () => {
   it('normalizeMime should normalize and strip parameters', () => {
@@ -378,5 +379,75 @@ describe('setFetch', () => {
     expect((status() as any).phase).toBe('error');
 
     jest.useRealTimers();
+  });
+
+  it('should block outbound fetch and log warning in test mode when baseUrl is not configured', async () => {
+    const warnSpy = jest.spyOn(log, 'warn').mockImplementation(() => {});
+
+    const options = {
+      ...getOptions(),
+      mode: 'test',
+      modeOptions: {}
+    };
+
+    const { get, status } = setFetch(options as any);
+
+    await expect(get('https://patternfly.org')).rejects.toThrow(FetchError);
+
+    expect(warnSpy.mock.calls).toMatchSnapshot('warning');
+
+    expect((status() as any).phase).toBe('error');
+
+    warnSpy.mockRestore();
+  });
+
+  it('should allow matching fixture URL and reject external URLs in test mode with baseUrl configured', async () => {
+    const warnSpy = jest.spyOn(log, 'warn').mockImplementation(() => {});
+
+    const mockResponse = {
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      headers: {
+        get: (name: string) => (name === 'content-type' ? 'application/json' : null)
+      },
+      body: new ReadableStream({
+        start(controller) {
+          controller.enqueue(new TextEncoder().encode('{"mocked": true}'));
+          controller.close();
+        }
+      })
+    };
+
+    (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
+
+    const options = {
+      ...getOptions(),
+      mode: 'test',
+      modeOptions: {
+        test: {
+          baseUrl: 'http://localhost:1234'
+        }
+      }
+    };
+
+    const { get, status } = setFetch(options as any);
+
+    const result = await get('http://localhost:1234/data.json');
+
+    expect(result).toEqual(expect.objectContaining({
+      type: 'json',
+      status: 200,
+      data: { mocked: true }
+    }));
+    expect((status() as any).phase).toBe('success');
+    expect(warnSpy).not.toHaveBeenCalled();
+
+    await expect(get('https://patternfly.org')).rejects.toThrow(FetchError);
+    expect(warnSpy).not.toHaveBeenCalled();
+
+    expect((status() as any).phase).toBe('error');
+
+    warnSpy.mockRestore();
   });
 });

@@ -428,10 +428,21 @@ const preflight = async (
  *     ("Fetch already in progress. Create a new setFetch.").
  * Callers that need parallelism should instantiate a new `setFetch()` per request.
  *
- * **IMPORTANT! Do not call `setFetch` directly from feature code.** All outbound fetches
- * must be routed through `processDocs` (see `server.getResources.ts`) so that URL
- * whitelisting, e2e test hooks, and caching are consistently applied. Direct use
- * bypasses those guarantees and subjects us to potential security vulnerabilities.
+ * @note **IMPORTANT! For most use cases it's preferred to not call `setFetch` directly.**
+ * It's recommended you use {@link processDocsFunction} for optimized loading, caching, and
+ * automatic routing between file loading and remote fetching.
+ *
+ * @note **Test mode behavior**
+ * When running with `mode: 'test'`, outbound network access is intentionally restricted!
+ *   - If `modeOptions.test.baseUrl` is a valid absolute URL, only that configured value is
+ *     allowed to connect; anything outside is blocked.
+ *   - If `modeOptions.test.baseUrl` is missing or invalid, all outbound fetches are blocked.
+ *     Each attempt emits a `log.warn`.
+ *   - Post-redirect URLs are re-validated; a redirect to a non-whitelisted URL is cancelled
+ *     and rejected to preserve the test sandbox.
+ *
+ * This policy keeps tests deterministic and prevents accidental calls to external networks during
+ * testing.
  *
  * @param {GlobalOptions} [options=getOptions()] - Configuration options for the fetch operation.
  * @returns {SetFetch} Fetch operations:
@@ -452,9 +463,16 @@ const setFetch = (options = getOptions()): SetFetch => {
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
   let inflight: { key: string; promise: Promise<FetchResponse> } | undefined;
   let updatedWhitelist = whitelist.urls;
+  let isTestModeFetchBlocked = false;
 
-  if (mode === 'test' && isUrl(fixtureUrl)) {
-    updatedWhitelist = updatedWhitelist.concat([fixtureUrl as WhitelistUrl]);
+  if (mode === 'test') {
+    updatedWhitelist = [];
+
+    if (isUrl(fixtureUrl)) {
+      updatedWhitelist = [fixtureUrl as WhitelistUrl];
+    } else {
+      isTestModeFetchBlocked = true;
+    }
   }
 
   /**
@@ -510,6 +528,13 @@ const setFetch = (options = getOptions()): SetFetch => {
    * @returns A Promise that resolves to the fetch response.
    */
   const executeFetch = async (url: string, settings: RequestInit = {}): Promise<FetchResponse> => {
+    if (isTestModeFetchBlocked) {
+      log.warn(
+        `Network access blocked for ${url}: server is in 'test' mode and 'modeOptions.test.baseUrl' is not configured.`,
+        `Configure 'modeOptions.test.baseUrl' to allow outbound fetches.`
+      );
+    }
+
     controller = new AbortController();
     timeoutId = setTimeout(
       () => controller?.abort(new Error(`Timeout: exceeded ${xhrFetch.timeoutMs}ms.`)),
