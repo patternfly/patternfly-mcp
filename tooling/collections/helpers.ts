@@ -1,4 +1,4 @@
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -117,7 +117,7 @@ const extractTrackedReposFromCollection = (
 const fetchCommitViaGitLsRemote = (owner: string, repo: string): string | undefined => {
   try {
     const remoteUrl = `https://github.com/${owner}/${repo}.git`;
-    const output = execSync(`git ls-remote --symref ${remoteUrl} HEAD`, {
+    const output = execFileSync('git', ['ls-remote', '--symref', remoteUrl, 'HEAD'], {
       encoding: 'utf-8',
       timeout: 10_000,
       stdio: ['ignore', 'pipe', 'ignore']

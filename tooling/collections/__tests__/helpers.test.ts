@@ -21,7 +21,7 @@ jest.mock('node:fs/promises', () => ({
 
 jest.mock('node:child_process', () => ({
   ...jest.requireActual('node:child_process'),
-  execSync: jest.fn()
+  execFileSync: jest.fn()
 }));
 
 const mockWriteFile = writeFile as jest.MockedFunction<typeof writeFile>;
@@ -224,7 +224,7 @@ describe('fetchCommitViaGitLsRemote', () => {
   });
 
   it('should return commit SHA when git ls-remote output contains SHA with HEAD', () => {
-    jest.spyOn(childProcess, 'execSync').mockReturnValue(
+    jest.spyOn(childProcess, 'execFileSync').mockReturnValue(
       'ref: refs/heads/main\tHEAD\n8f4a382e783457a4128509789234857234895723\tHEAD\n'
     );
 
@@ -234,7 +234,7 @@ describe('fetchCommitViaGitLsRemote', () => {
   });
 
   it('should fallback to 40-character SHA if symref line is missing', () => {
-    jest.spyOn(childProcess, 'execSync').mockReturnValue(
+    jest.spyOn(childProcess, 'execFileSync').mockReturnValue(
       '8f4a382e783457a4128509789234857234895723\trefs/heads/main\n'
     );
 
@@ -244,7 +244,7 @@ describe('fetchCommitViaGitLsRemote', () => {
   });
 
   it('should return undefined if command fails or throws', () => {
-    jest.spyOn(childProcess, 'execSync').mockImplementation(() => {
+    jest.spyOn(childProcess, 'execFileSync').mockImplementation(() => {
       throw new Error('Command failed');
     });
 
@@ -291,7 +291,7 @@ describe('fetchRepoCommit', () => {
 
   it('should fallback to git ls-remote when GitHub API fails', async () => {
     jest.spyOn(global, 'fetch').mockRejectedValue(new Error('Network error'));
-    jest.spyOn(childProcess, 'execSync').mockReturnValue(
+    jest.spyOn(childProcess, 'execFileSync').mockReturnValue(
       '0123456789abcdef0123456789abcdef01234567\tHEAD\n'
     );
 
@@ -302,7 +302,7 @@ describe('fetchRepoCommit', () => {
 
   it('should return undefined when API fails and git ls-remote fails', async () => {
     jest.spyOn(global, 'fetch').mockRejectedValue(new Error('Network error'));
-    jest.spyOn(childProcess, 'execSync').mockImplementation(() => {
+    jest.spyOn(childProcess, 'execFileSync').mockImplementation(() => {
       throw new Error('git error');
     });
 
@@ -410,7 +410,7 @@ describe('fetchLatestRepoHashes', () => {
 
   it('should fall back to git ls-remote when GitHub API fails', async () => {
     jest.spyOn(global, 'fetch').mockRejectedValue(new Error('Rate limit exceeded'));
-    jest.spyOn(childProcess, 'execSync').mockReturnValue(
+    jest.spyOn(childProcess, 'execFileSync').mockReturnValue(
       '0123456789abcdef0123456789abcdef01234567\tHEAD\n'
     );
 
@@ -423,7 +423,7 @@ describe('fetchLatestRepoHashes', () => {
 
   it('should handle fetch failures gracefully without throwing', async () => {
     jest.spyOn(global, 'fetch').mockRejectedValue(new Error('Rate limit exceeded'));
-    jest.spyOn(childProcess, 'execSync').mockImplementation(() => {
+    jest.spyOn(childProcess, 'execFileSync').mockImplementation(() => {
       throw new Error('git command failed');
     });
 
