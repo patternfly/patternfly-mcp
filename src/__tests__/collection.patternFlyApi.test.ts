@@ -191,8 +191,8 @@ describe('getPatternFlyApiRecords', () => {
   it('populates discarded map with reasons and quality scores for deferred and low-quality entries', () => {
     const entries = [
       {
-        path: 'https://main.patternfly-org.pages.dev/api/v1/components/Button/props',
-        resolvedPath: 'https://main.patternfly-org.pages.dev/api/v1/components/Button/props',
+        path: `${BASE}/v1/components/Button/props`,
+        resolvedPath: `${BASE}/v1/components/Button/props`,
         displayName: 'Button',
         description: 'Button props',
         content: '{"props": {}}',
@@ -200,8 +200,8 @@ describe('getPatternFlyApiRecords', () => {
         qualityScore: 1
       },
       {
-        path: 'https://main.patternfly-org.pages.dev/api/v1/components/Lorem/react',
-        resolvedPath: 'https://main.patternfly-org.pages.dev/api/v1/components/Lorem/react',
+        path: `${BASE}/v1/components/Lorem/react`,
+        resolvedPath: `${BASE}/v1/components/Lorem/react`,
         displayName: 'Lorem',
         description: 'Lorem component',
         content: '',
@@ -656,6 +656,9 @@ describe('crawler', () => {
 });
 
 describe('apiSpider', () => {
+  const BASE = DEFAULT_OPTIONS.patternflyOptions.api.base;
+  const VERSIONS = `${BASE}/versions`;
+
   beforeEach(() => {
     jest.resetAllMocks();
   });
@@ -664,8 +667,8 @@ describe('apiSpider', () => {
     mockedProcessDocsFunction.mockResolvedValueOnce([
       {
         content: 'Failed to load',
-        path: 'https://main.patternfly-org.pages.dev/api/versions',
-        resolvedPath: 'https://main.patternfly-org.pages.dev/api/versions',
+        path: VERSIONS,
+        resolvedPath: VERSIONS,
         isSuccess: false
       }
     ]);
@@ -680,16 +683,16 @@ describe('apiSpider', () => {
       .mockResolvedValueOnce([
         {
           content: JSON.stringify(['v1']),
-          path: 'https://main.patternfly-org.pages.dev/api/versions',
-          resolvedPath: 'https://main.patternfly-org.pages.dev/api/versions',
+          path: VERSIONS,
+          resolvedPath: VERSIONS,
           isSuccess: true
         }
       ])
       .mockResolvedValueOnce([
         {
           content: 'leaf content',
-          path: 'https://main.patternfly-org.pages.dev/api/v1',
-          resolvedPath: 'https://main.patternfly-org.pages.dev/api/v1/section/item/facet',
+          path: `${BASE}/v1`,
+          resolvedPath: `${BASE}/v1/section/item/facet`,
           isSuccess: true
         }
       ]);
@@ -698,8 +701,8 @@ describe('apiSpider', () => {
 
     expect(res.length).toBeGreaterThan(0);
     expect(res[0]).toMatchObject({
-      path: 'https://main.patternfly-org.pages.dev/api/v1',
-      resolvedPath: 'https://main.patternfly-org.pages.dev/api/v1/section/item/facet',
+      path: `${BASE}/v1`,
+      resolvedPath: `${BASE}/v1/section/item/facet`,
       content: 'leaf content'
     });
   });
@@ -711,8 +714,8 @@ describe('apiSpider', () => {
       .mockResolvedValueOnce([
         {
           content: JSON.stringify(['v1']),
-          path: 'https://main.patternfly-org.pages.dev/api/versions',
-          resolvedPath: 'https://main.patternfly-org.pages.dev/api/versions',
+          path: VERSIONS,
+          resolvedPath: VERSIONS,
           isSuccess: true
         }
       ])
