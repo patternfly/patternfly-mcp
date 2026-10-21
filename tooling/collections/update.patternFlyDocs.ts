@@ -71,6 +71,11 @@ const logDiffReport = (diff: DocsDiffResult) => {
 /**
  * Update the PatternFly Docs manifest collection, deduplicating against the API seed and syncing repository SHAs.
  *
+ * @note `verifyReachability` is currently defaulted to `false` because reachability checks are destructive.
+ * Records failing reachability probes are actively dropped from `docs.json` when the older path may still be valid.
+ * This setting was meant to compliment the deduplication of records found within the PF API collection.
+ * Once stability issues have been addressed within the PF API service, we'll review defaulting this to `true`.
+ *
  * @param [options] - Optional execution options.
  * @param [options.docsFilename=DEFAULT_DOCS_FILENAME] - Target documentation filename.
  * @param [options.apiFilename=DEFAULT_API_FILENAME] - Target API filename for deduplication.
