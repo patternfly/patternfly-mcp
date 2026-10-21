@@ -15,6 +15,7 @@ jobs:
   documentation-audit:
     name: Documentation Audit
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: read
     steps:
@@ -31,12 +32,14 @@ jobs:
         env:
           # Higher limit for scheduled runs (0 = no limit), lower for PRs
           DOCS_AUDIT_MAX_TOTAL: ${{ github.event_name == 'schedule' && '0' || '50' }}
+          API_AUDIT_MAX_TOTAL: '20'
         # Advisories are non-blocking for PRs
         continue-on-error: ${{ github.event_name == 'pull_request' }}
 
   dependency-audit:
     name: Dependency Audit
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions:
       contents: read
     steps:
