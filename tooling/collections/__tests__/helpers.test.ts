@@ -25,11 +25,13 @@ jest.mock('node:child_process', () => ({
 }));
 
 const mockWriteFile = writeFile as jest.MockedFunction<typeof writeFile>;
+const mockExecFileSync = childProcess.execFileSync as jest.MockedFunction<typeof childProcess.execFileSync>;
 
 afterEach(() => {
   extractRepoInfo.memo.clear();
   fetchRepoCommit.memo.clear();
   verifyUrlReachability.memo.clear();
+  mockExecFileSync.mockReset();
 });
 
 describe('extractTrackedReposFromCollection', () => {
@@ -223,24 +225,23 @@ describe('fetchCommitViaGitLsRemote', () => {
     jest.restoreAllMocks();
   });
 
-  it('should return commit SHA when git ls-remote output contains SHA with HEAD', () => {
-    jest.spyOn(childProcess, 'execFileSync').mockReturnValue(
-      'ref: refs/heads/main\tHEAD\n8f4a382e783457a4128509789234857234895723\tHEAD\n'
-    );
+  it.each([
+    {
+      description: 'git ls-remote output contains SHA with HEAD',
+      value: 'ref: refs/heads/main\tHEAD\n8f4a382e783457a4128509789234857234895723\tHEAD\n',
+      expected: '8f4a382e783457a4128509789234857234895723'
+    },
+    {
+      description: 'fallback to 40-character SHA if symref line is missing',
+      value: '8f4a382e783457a4128509789234857234895723\trefs/heads/main\n',
+      expected: '8f4a382e783457a4128509789234857234895723'
+    }
+  ])('should return commit SHA, $description', ({ value, expected }) => {
+    jest.spyOn(childProcess, 'execFileSync').mockReturnValue(value);
 
     const sha = fetchCommitViaGitLsRemote('patternfly', 'patternfly-react');
 
-    expect(sha).toBe('8f4a382e783457a4128509789234857234895723');
-  });
-
-  it('should fallback to 40-character SHA if symref line is missing', () => {
-    jest.spyOn(childProcess, 'execFileSync').mockReturnValue(
-      '8f4a382e783457a4128509789234857234895723\trefs/heads/main\n'
-    );
-
-    const sha = fetchCommitViaGitLsRemote('patternfly', 'patternfly-react');
-
-    expect(sha).toBe('8f4a382e783457a4128509789234857234895723');
+    expect(sha).toBe(expected);
   });
 
   it('should return undefined if command fails or throws', () => {
@@ -251,6 +252,16 @@ describe('fetchCommitViaGitLsRemote', () => {
     const sha = fetchCommitViaGitLsRemote('patternfly', 'patternfly-react');
 
     expect(sha).toBeUndefined();
+  });
+
+  it('should query specific ref when provided', () => {
+    const spy = jest.spyOn(childProcess, 'execFileSync').mockReturnValue(
+      '8f4a382e783457a4128509789234857234895723\trefs/heads/v5\n'
+    );
+    const sha = fetchCommitViaGitLsRemote('patternfly', 'patternfly-react', 'v5');
+
+    expect(sha).toBe('8f4a382e783457a4128509789234857234895723');
+    expect(spy).toHaveBeenCalledWith('git', ['ls-remote', '--symref', 'https://github.com/patternfly/patternfly-react.git', 'v5'], expect.any(Object));
   });
 });
 
@@ -325,6 +336,17 @@ describe('fetchRepoCommit', () => {
     expect(first).toBe('mock-memo-sha');
     expect(second).toBe('mock-memo-sha');
     expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should fallback to git ls-remote with the requested branch when API fails', async () => {
+    jest.spyOn(global, 'fetch').mockRejectedValue(new Error('Rate limit exceeded'));
+    const spy = jest.spyOn(childProcess, 'execFileSync').mockReturnValue(
+      'fedcba9876543210fedcba9876543210fedcba98\trefs/heads/v5\n'
+    );
+    const sha = await fetchRepoCommit('patternfly', 'patternfly-react', 'v5');
+
+    expect(sha).toBe('fedcba9876543210fedcba9876543210fedcba98');
+    expect(spy).toHaveBeenCalledWith('git', ['ls-remote', '--symref', 'https://github.com/patternfly/patternfly-react.git', 'v5'], expect.any(Object));
   });
 });
 

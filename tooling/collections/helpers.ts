@@ -112,12 +112,13 @@ const extractTrackedReposFromCollection = (
  *
  * @param owner - Repository owner/organization
  * @param repo - Repository name
+ * @param [ref='HEAD'] - Branch, tag, or commit ref to resolve
  * @returns Commit SHA or undefined if git is unavailable or command fails
  */
-const fetchCommitViaGitLsRemote = (owner: string, repo: string): string | undefined => {
+const fetchCommitViaGitLsRemote = (owner: string, repo: string, ref = 'HEAD'): string | undefined => {
   try {
     const remoteUrl = `https://github.com/${owner}/${repo}.git`;
-    const output = execFileSync('git', ['ls-remote', '--symref', remoteUrl, 'HEAD'], {
+    const output = execFileSync('git', ['ls-remote', '--symref', remoteUrl, ref], {
       encoding: 'utf-8',
       timeout: 10_000,
       stdio: ['ignore', 'pipe', 'ignore']
@@ -238,7 +239,7 @@ const fetchRepoCommit = async (
     // Fallback on network/API failure
   }
 
-  return sha || fetchCommitViaGitLsRemote(owner, repo);
+  return sha || fetchCommitViaGitLsRemote(owner, repo, branch);
 };
 
 /**
