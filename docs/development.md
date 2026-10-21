@@ -546,7 +546,7 @@ The server maintains multiple record collections that provide documentation and 
 When PatternFly releases new documentation or component features, reseed the embedded local collection data:
 - `npm run build:collections`: Runs reseeding for all collections and collection tests.
 - `npm run build:collections-api`: Updates `src/collection.patternFlyApi.json` and outputs CSV diffs to `reports/`.
-- `npm run build:collections-docs`: Updates `src/docs.json` with latest repository hashes and prunes API duplicates.
+- `npm run build:collections-docs`: Updates `src/docs.json` with latest repository hashes.
 
 #### Unique collections
 
@@ -567,7 +567,7 @@ The original curated Markdown collection. It pins remote repository URLs to spec
   # Run collection test suites in watch mode
   npm run test:collections-dev
   ```
-- **Automated synchronization**: The Docs reseeding pipeline (`tooling/collections/update.patternFlyDocs.ts`) automatically resolves the latest commit SHAs across referenced GitHub repositories, prunes redundant AI guideline entries superseded by high-quality API endpoints, recalculates `meta.totalEntries` and `meta.totalDocs`, and generates an audit diff report at `reports/YYYYMMDD-collection.patternFlyDocs.report.csv`.
+- **Automated synchronization**: The Docs reseeding pipeline (`tooling/collections/update.patternFlyDocs.ts`) automatically resolves the latest commit SHAs across referenced GitHub repositories, recalculates `meta.totalEntries` and `meta.totalDocs`, and generates an audit diff report at `reports/YYYYMMDD-collection.patternFlyDocs.report.csv`.
 - **Validation**: Ensure all raw URLs are HTTPS, match the domain whitelist in `src/options.defaults.ts`, and return 2xx responses.
 - **Testing**: Run `npm run test:collections` or `npm test`, updating `baseHashes` and the Repository Breakdown table in `src/__tests__/docs.json.test.ts` when refs change.
 
