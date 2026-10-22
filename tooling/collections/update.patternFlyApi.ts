@@ -289,7 +289,17 @@ const run = async (
   const keepAlive = setTimeout(() => {}, 86_400_000);
 
   const startTime = Date.now();
-  const options = getOptions();
+  const baseOptions = getOptions();
+  const options = {
+    ...baseOptions,
+    patternflyOptions: {
+      ...baseOptions.patternflyOptions,
+      api: {
+        ...baseOptions.patternflyOptions.api,
+        crawlEnabled: true
+      }
+    }
+  };
   const { base } = options.patternflyOptions.api;
 
   try {
@@ -309,7 +319,7 @@ const run = async (
     }
 
     const result = await runWithOptions(options, async () =>
-      collectionCallback({ previous: previousContext }));
+      collectionCallback({ previous: previousContext }, options));
 
     if (!result.records.length) {
       console.error('❌ Crawl failed or returned 0 entries. Aborting update.');
