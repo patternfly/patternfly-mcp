@@ -194,13 +194,13 @@ exports[`Logging should allow setting logging options, stderr 1`] = `
 ",
   "[INFO]: Registered collection: ai-handbook
 ",
-  "[INFO]: Update collection: patternfly-api
-",
   "[WARN]: Network access blocked for https://raw.githubusercontent.com/rh-uxd/ai-handbook/refs/heads/main/docs.json: server is in 'test' mode and 'modeOptions.test.baseUrl' is not configured.	:Configure 'modeOptions.test.baseUrl' to allow outbound fetches.
 ",
   "[INFO]: Update collection: patternfly-component-schemas
 ",
   "[INFO]: Update collection: patternfly-docs
+",
+  "[INFO]: Update collection: patternfly-api
 ",
   "[INFO]: Update collection: ai-handbook
 ",

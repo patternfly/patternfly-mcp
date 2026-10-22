@@ -27,16 +27,35 @@ describe('patternFlyApiCollection', () => {
     jest.resetAllMocks();
   });
 
-  it('should return the correct collection name and configuration', async () => {
+  it('should return the correct collection configuration when crawl is disabled', async () => {
     const [name, config, callback, _config] = patternFlyApiCollection();
 
     expect(name).toBe('patternfly-api');
     expect(config).toBeDefined();
     expect(callback).toBeDefined();
-    expect(typeof _config?.initial).toBe('function');
+    expect(typeof _config?.initial).toBe('undefined');
+    expect(_config?.runParallel).toBeUndefined();
+    expect(_config?.runSchedule).toBeUndefined();
     expect(_config?.retainLastViable).toBe(true);
+  });
+
+  it('should configure parallel execution and schedule when crawl is enabled', async () => {
+    const enabledOptions = {
+      ...DEFAULT_OPTIONS,
+      patternflyOptions: {
+        ...DEFAULT_OPTIONS.patternflyOptions,
+        api: {
+          ...DEFAULT_OPTIONS.patternflyOptions.api,
+          crawlEnabled: true
+        }
+      }
+    };
+    const [, , , _config] = patternFlyApiCollection(enabledOptions);
+
+    expect(typeof _config?.initial).toBe('function');
     expect(_config?.runParallel).toContain('#collection');
     expect(_config?.runSchedule).toBeDefined();
+    expect(_config?.retainLastViable).toBe(true);
   });
 });
 
@@ -239,6 +258,17 @@ describe('collectionInitialCallback', () => {
 describe('collectionCallback', () => {
   const BASE = DEFAULT_OPTIONS.patternflyOptions.api.base;
   const VERSIONS = `${BASE}/versions`;
+  const ENABLED_OPTIONS = {
+    ...DEFAULT_OPTIONS,
+    patternflyOptions: {
+      ...DEFAULT_OPTIONS.patternflyOptions,
+      api: {
+        ...DEFAULT_OPTIONS.patternflyOptions.api,
+        crawlEnabled: true
+      }
+    }
+  } as any;
+
   let mockGet: jest.Mock;
 
   beforeEach(() => {
@@ -252,7 +282,77 @@ describe('collectionCallback', () => {
     jest.useRealTimers();
   });
 
-  it('should generate API records and match McpCollectionResult structure', async () => {
+  it('should return baseline records and bypass crawl when crawl is disabled', async () => {
+    const options = {
+      patternflyOptions: {
+        ...DEFAULT_OPTIONS.patternflyOptions,
+        api: {
+          ...DEFAULT_OPTIONS.patternflyOptions.api,
+          crawlEnabled: false
+        }
+      }
+    } as any;
+
+    const result = await collectionCallback({}, options);
+
+    expect(result).toHaveProperty('records');
+    expect(result.records.length).toBeGreaterThan(0);
+    expect(mockGet).not.toHaveBeenCalled();
+    expect(mockedProcessDocsFunction).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    {
+      description: 'generate API records and match McpCollectionResult structure',
+      mockLeaf: {
+        content: 'Button react component content with length enough to pass quality scoring...',
+        path: `${BASE}/v1/components/Button`,
+        resolvedPath: `${BASE}/v1/components/Button/react`,
+        isSuccess: true
+      },
+      componentName: 'Button',
+      expectedId: /^api::/,
+      expectedItem: {
+        displayName: 'Button',
+        pathSlug: 'components-button-react',
+        source: 'api',
+        version: 'v1',
+        section: 'components',
+        category: 'react',
+        path: `${BASE}/v1/components/Button/react`
+      }
+    },
+    {
+      description: 'use an extrapolated category',
+      mockLeaf: {
+        content: 'Overview content',
+        path: `${BASE}/v1/components/Card`,
+        resolvedPath: `${BASE}/v1/components/Card/overview`,
+        isSuccess: true
+      },
+      componentName: 'Card',
+      expectedId: /^api::v1::components::card::overview$/,
+      expectedItem: {
+        displayName: 'Card',
+        category: 'overview'
+      }
+    },
+    {
+      description: 'generate API records for CSS facets',
+      mockLeaf: {
+        content: 'Card css content',
+        path: `${BASE}/v1/components/Card`,
+        resolvedPath: `${BASE}/v1/components/Card/css`,
+        isSuccess: true
+      },
+      componentName: 'Card',
+      expectedId: /^api::v1::components::card::css$/,
+      expectedItem: {
+        displayName: 'Card CSS',
+        category: 'css'
+      }
+    }
+  ])('should $description', async ({ mockLeaf, componentName, expectedId, expectedItem }) => {
     // getVersions to ["v1"]
     mockedProcessDocsFunction
       .mockResolvedValueOnce([
@@ -263,19 +363,11 @@ describe('collectionCallback', () => {
           isSuccess: true
         }
       ])
-      .mockResolvedValueOnce([
-        {
-          content: 'Button react component content with length enough to pass quality scoring...',
-          path: `${BASE}/v1/components/Button`,
-          resolvedPath: `${BASE}/v1/components/Button/react`,
-          isSuccess: true
-        }
-      ]);
+      .mockResolvedValueOnce([mockLeaf]);
 
-    const promise = collectionCallback();
+    const promise = collectionCallback({}, ENABLED_OPTIONS);
 
     await jest.runAllTimersAsync();
-
     const result = await promise;
 
     expect(result).toHaveProperty('records');
@@ -284,210 +376,86 @@ describe('collectionCallback', () => {
 
     const first: any = result.records[0];
 
-    // Basic record shape
-    expect(first).toMatchObject({
-      id: expect.stringMatching(/^api::/),
-      sourceType: 'api'
-    });
-
-    // Data entry shape
-    const keys = Object.keys(first.data as any);
-
-    expect(keys.length).toBe(1);
-    const key: any = keys[0];
-
-    expect(key).toBe('Button');
-
-    expect(first).toMatchObject({
-      sourceId: `${BASE}/v1/components/Button/react`
-    });
-
-    expect(Array.isArray(first.data[key])).toBe(true);
-
-    expect(first.data[key][0]).toMatchObject({
-      displayName: 'Button',
-      pathSlug: 'components-button-react',
-      source: 'api',
-      version: 'v1',
-      section: 'components',
-      category: 'react',
-      path: `${BASE}/v1/components/Button/react`
-    });
+    expect(first.sourceType).toBe('api');
+    expect(first.sourceId).toBe(mockLeaf.resolvedPath);
+    expect(first.id).toMatch(expectedId);
+    expect(first.data).toHaveProperty(componentName);
+    expect(first.data[componentName]).toContainEqual(expect.objectContaining(expectedItem));
   });
 
-  it('should use an extrapolated category', async () => {
-    // getVersions to ["v1"]
-    mockedProcessDocsFunction
-      .mockResolvedValueOnce([
+  it.each([
+    {
+      description: 'heal missing records from previous state when direct probe succeeds',
+      previous: [
         {
-          content: JSON.stringify(['v1']),
-          path: VERSIONS,
-          resolvedPath: VERSIONS,
-          isSuccess: true
+          id: 'api::v1::components::button::props',
+          sourceId: `${BASE}/v1/components/Button/props`,
+          sourceType: 'api' as const,
+          data: {
+            Button: [{
+              displayName: 'Button',
+              pathSlug: 'components-button-props',
+              source: 'api',
+              version: 'v1',
+              section: 'components',
+              category: 'props',
+              path: `${BASE}/v1/components/Button/props`
+            }]
+          }
         }
-      ])
-      // crawler to leaf with non-component facet ("overview")
-      .mockResolvedValueOnce([
-        {
-          content: 'Overview content',
-          path: `${BASE}/v1/components/Card`,
-          resolvedPath: `${BASE}/v1/components/Card/overview`,
-          isSuccess: true
-        }
-      ]);
-
-    const promise = collectionCallback();
-
-    await jest.runAllTimersAsync();
-
-    const result = await promise;
-
-    expect(result.records.length).toBe(1);
-    const rec: any = result.records[0];
-
-    // id encodes version, section, item, kind, and index
-    expect(rec?.id).toMatch(/^api::v1::components::card::overview$/);
-
-    const key: any = rec?.data ? Object.keys(rec.data)[0] : '';
-
-    expect(key).toBe('Card');
-    expect(rec?.data?.[key]).toContainEqual(expect.objectContaining({
-      displayName: 'Card',
-      category: 'overview'
-    }));
-  });
-
-  it('should match snapshot for collection result', async () => {
-    // getVersions to ["v1"]
-    mockedProcessDocsFunction
-      .mockResolvedValueOnce([
-        {
-          content: JSON.stringify(['v1']),
-          path: VERSIONS,
-          resolvedPath: VERSIONS,
-          isSuccess: true
-        }
-      ])
-      // crawler returns a single leaf entry (enough to snapshot deterministically here)
-      .mockResolvedValueOnce([
-        {
-          content: 'Card css content',
-          path: `${BASE}/v1/components/Card`,
-          resolvedPath: `${BASE}/v1/components/Card/css`,
-          isSuccess: true
-        }
-      ]);
-
-    const promise = collectionCallback();
-
-    await jest.runAllTimersAsync();
-
-    const result = await promise;
-
-    const snapshotSubset = {
-      ...result,
-      records: result.records.slice(0, 3)
-    };
-
-    expect(snapshotSubset).toMatchSnapshot();
-  });
-
-  it('heals missing records from previous state when direct probe succeeds', async () => {
-    mockedProcessDocsFunction
-      .mockResolvedValueOnce([
-        {
-          content: JSON.stringify(['v1']),
-          path: VERSIONS,
-          resolvedPath: VERSIONS,
-          isSuccess: true
-        }
-      ])
-      .mockResolvedValueOnce([]) // crawler returns zero leaf entries
-      .mockResolvedValueOnce([
+      ],
+      crawlEntries: [],
+      probeResponse: [
         {
           content: JSON.stringify({ name: 'ButtonProps' }),
           path: `${BASE}/v1/components/Button/props`,
           resolvedPath: `${BASE}/v1/components/Button/props`,
           isSuccess: true
         }
-      ]); // direct probe succeeds
-
-    const previousRecord = {
-      id: 'api::v1::components::button::props',
-      sourceId: `${BASE}/v1/components/Button/props`,
-      sourceType: 'api' as const,
-      data: {
-        Button: [
-          {
-            displayName: 'Button',
-            pathSlug: 'components-button-props',
-            source: 'api',
-            version: 'v1',
-            section: 'components',
-            category: 'props',
-            path: `${BASE}/v1/components/Button/props`
+      ],
+      expectedRecordId: 'api::v1::components::button::props',
+      expectedLength: 1
+    },
+    {
+      description: 'not re-probe entries that were visited during crawl pass but discarded for low quality',
+      previous: [
+        {
+          id: 'api::v1::components::button::html',
+          sourceId: `${BASE}/v1/components/Button/html`,
+          sourceType: 'api' as const,
+          data: {
+            Button: [{ displayName: 'Button', pathSlug: 'components-button-html', source: 'api', version: 'v1', section: 'components', category: 'html', path: `${BASE}/v1/components/Button/html` }]
           }
-        ]
-      }
-    };
-
-    const promise = collectionCallback({
-      previous: { records: [previousRecord] }
-    });
-
-    await jest.runAllTimersAsync();
-
-    const result = await promise;
-
-    expect(result.records).toHaveLength(1);
-    expect(result.records[0]?.id).toBe('api::v1::components::button::props');
-  });
-
-  it('does not re-probe entries that were visited during crawl pass but discarded for low quality', async () => {
-    mockedProcessDocsFunction
-      .mockResolvedValueOnce([
-        {
-          content: JSON.stringify(['v1']),
-          path: VERSIONS,
-          resolvedPath: VERSIONS,
-          isSuccess: true
         }
-      ])
-      .mockResolvedValueOnce([
+      ],
+      crawlEntries: [
         {
-          content: '<LiveExample src="1" />', // low quality HTML stub (qualityScore < 0.95)
+          content: '<LiveExample src="1" />',
           path: `${BASE}/v1/components/Button/html`,
           resolvedPath: `${BASE}/v1/components/Button/html`,
           isSuccess: true
         }
-      ]);
-
-    const previousRecord = {
-      id: 'api::v1::components::button::html',
-      sourceId: `${BASE}/v1/components/Button/html`,
-      sourceType: 'api' as const,
-      data: {
-        Button: [{ displayName: 'Button', pathSlug: 'components-button-html', source: 'api', version: 'v1', section: 'components', category: 'html', path: `${BASE}/v1/components/Button/html` }]
-      }
-    };
-
-    const promise = collectionCallback({
-      previous: { records: [previousRecord] }
-    });
-
-    await jest.runAllTimersAsync();
-
-    const result = await promise;
-
-    // Should NOT have made a processDocsFunction call to re-probe Button/html
-    expect(mockedProcessDocsFunction).toHaveBeenCalledTimes(3);
-    expect(result.records).toHaveLength(0);
-  });
-
-  it('falls back to seed catalog baseline when previous records are empty', async () => {
-    const seedRecords = (await collectionInitialCallback()).records;
-    const firstSeed = seedRecords[0];
-
+      ],
+      probeResponse: undefined,
+      expectedRecordId: undefined,
+      expectedLength: 0
+    },
+    {
+      description: 'fall back to seed catalog baseline when previous records are empty',
+      previous: [],
+      crawlEntries: [],
+      probeResponse: [
+        {
+          content: JSON.stringify({ name: 'AccessibilityDesign' }),
+          path: `${BASE}/v6/accessibility/design/text`,
+          resolvedPath: `${BASE}/v6/accessibility/design/text`,
+          isSuccess: true
+        }
+      ],
+      expectedRecordId: 'api::v6::accessibility::design::text',
+      expectedLength: 1
+    }
+  ])('should $description', async ({ previous, crawlEntries, probeResponse, expectedRecordId, expectedLength }) => {
     mockedProcessDocsFunction
       .mockResolvedValueOnce([
         {
@@ -497,25 +465,22 @@ describe('collectionCallback', () => {
           isSuccess: true
         }
       ])
-      .mockResolvedValueOnce([]) // crawler returns zero leaf entries
-      .mockResolvedValueOnce([
-        {
-          content: JSON.stringify({ name: 'AccessibilityDesign' }),
-          path: firstSeed?.sourceId,
-          resolvedPath: firstSeed?.sourceId,
-          isSuccess: true
-        }
-      ]); // direct probe succeeds
+      .mockResolvedValueOnce(crawlEntries);
 
-    const promise = collectionCallback({
-      previous: { records: [] }
-    });
+    if (probeResponse) {
+      mockedProcessDocsFunction.mockResolvedValueOnce(probeResponse);
+    }
+
+    const promise = collectionCallback({ previous: { records: previous } }, ENABLED_OPTIONS);
 
     await jest.runAllTimersAsync();
-
     const result = await promise;
 
-    expect(result.records.length).toBeGreaterThan(0);
+    expect(result.records).toHaveLength(expectedLength);
+    if (expectedRecordId) {
+      expect(result.records[0]?.id).toBe(expectedRecordId);
+    }
+    expect(mockedProcessDocsFunction).toHaveBeenCalledTimes(3);
   });
 });
 

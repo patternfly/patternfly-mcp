@@ -1,35 +1,5 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`collectionCallback should match snapshot for collection result 1`] = `
-{
-  "discarded": Map {},
-  "records": [
-    {
-      "data": {
-        "Card": [
-          {
-            "category": "css",
-            "contentType": "",
-            "description": "PatternFly variables and tokens for Card CSS.",
-            "displayName": "Card CSS",
-            "id": "api::v1::components::card::css",
-            "path": "https://api.patternfly.org/api/v1/components/Card/css",
-            "pathSlug": "components-card-css",
-            "qualityScore": 0.97,
-            "section": "components",
-            "source": "api",
-            "version": "v1",
-          },
-        ],
-      },
-      "id": "api::v1::components::card::css",
-      "sourceId": "https://api.patternfly.org/api/v1/components/Card/css",
-      "sourceType": "api",
-    },
-  ],
-}
-`;
-
 exports[`expandApiEmbeddedCollection should expand compressed records: expanded 1`] = `
 [
   {

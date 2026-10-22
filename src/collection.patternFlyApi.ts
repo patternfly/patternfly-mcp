@@ -688,10 +688,24 @@ const collectionInitialCallback = async (): Promise<McpCollectionResult> => {
  *
  * @param [context={}] - Execution context containing previous collection state.
  * @param [context.previous] - Previous collection result stored in the registry or passed by caller.
+ * @param [options=getOptions()] - Global options.
  * @returns {Promise<ApiCollectionResult>} The processed collection of API records with discard ledger.
  */
-const collectionCallback = async ({ previous }: McpCollectionCallbackContext = {}): Promise<ApiCollectionResult> => {
-  const isHealthy = await probeHealth();
+const collectionCallback = async (
+  { previous }: McpCollectionCallbackContext = {},
+  options = getOptions()
+): Promise<ApiCollectionResult> => {
+  if (!options.patternflyOptions.api.crawlEnabled) {
+    log.debug('PatternFly API crawler is disabled, using baseline records.');
+
+    const baseline = previous?.records?.length
+      ? previous.records
+      : (await collectionInitialCallback()).records;
+
+    return { records: baseline, discarded: new Map() };
+  }
+
+  const isHealthy = await probeHealth(options);
 
   if (!isHealthy) {
     log.debug('PatternFly API health probe failed, skipping background updates.');
@@ -767,7 +781,7 @@ const collectionCallback = async ({ previous }: McpCollectionCallbackContext = {
 const patternFlyApiCollection = (options = getOptions(), session = getSessionOptions()): McpCollection => {
   const callback: McpCollection[2] = async context =>
     runWithSession(session, async () =>
-      runWithOptions(options, async () => collectionCallback(context)));
+      runWithOptions(options, async () => collectionCallback(context, options)));
 
   const initial = async () =>
     runWithSession(session, async () =>
@@ -780,12 +794,18 @@ const patternFlyApiCollection = (options = getOptions(), session = getSessionOpt
     },
     callback,
     {
-      initial,
-      runParallel: '#collectionPatternFlyApi',
-      retainLastViable: true,
-      runSchedule: {
-        ...options.patternflyOptions.api.schedule
-      }
+      ...(options.patternflyOptions.api.crawlEnabled
+        ? {
+          initial,
+          runParallel: '#collectionPatternFlyApi',
+          runSchedule: {
+            ...options.patternflyOptions.api.schedule
+          }
+        }
+        : {
+          isRequired: true
+        }),
+      retainLastViable: true
     }
   ];
 };
