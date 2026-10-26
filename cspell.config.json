@@ -16,6 +16,7 @@
     "nosniff",
     "onsessioninitialized",
     "onsessionclosed",
+    "pfmcp",
     "patternfly",
     "prefault",
     "pypy",
