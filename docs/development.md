@@ -499,18 +499,19 @@ Start on a **fork** of the repository, then:
 6. A git release is then created mirroring previous git releases.
    - Use tags that are prefixed with `v`, (e.g. `v1.0.0`, `v1.2.1`, etc.)
    - Do not "auto-generate" the release notes, prefer linking to the [CHANGELOG.md](../CHANGELOG.md), this prevents note drift.
-7. After a release is created and tagged, `CI` will run and publish the related NPM package and the container image to the GitHub Container Registry (GHCR) for Patternfly.
+7. Once the GitHub Release is published, CI will automatically publish the npm package to the npm registry and the multi-arch container image to GitHub Container Registry (`ghcr.io/patternfly/patternfly-mcp`).
 8. Perform the [Post-release review](#post-release-review).
 
 ### Post-release review
 
-After each release, run a maintainer pass in addition to **CI** (integration, scheduled jobs in `audit.yml` / `container.yml`, publish workflow). CI is the automated gate; this is a smoke test to confirm everything is in working order.
+After each release, run a maintainer pass in addition to **CI** (integration checks in `integration.yml`, release publishing in `publishing.yml` and `container.yml`). CI is the automated gate; this is a smoke test to confirm everything is in working order.
 
 **When:** Each GitHub Release. Ad hoc when major features are introduced, collections, allowlists, or experimental flags change materially.
 
 #### Default checklist
 
-- [ ] Version on npm and GitHub Container Registry (GHCR) for PatternFly matches both tag and [CHANGELOG.md](../CHANGELOG.md); Confirm the `:latest` GHCR image is also available.
+- [ ] Version on npm and GHCR matches [CHANGELOG.md](../CHANGELOG.md) and corresponds to the Git tag (omitting the `v` prefix).
+- [ ] Confirm the `:latest` GHCR image tag is updated and resolves to the new release.
 - [ ] Collections/sources: any change to `docs.json`, API seed/crawl, schema pin, or ai-handbook wiring?
 - [ ] Built-in tools are still read-only; experimental surface matches [experimental.md](./experimental.md).
 - [ ] Confirm allowlist / HTTP docs are still accurate (`src/options.defaults.ts`, [usage.md](./usage.md)).
