@@ -215,7 +215,7 @@ Depending on your environment, you may have to delay updating to the minimum Nod
 
 ### Running via container (podman)
 
-The server can also be launched from a container image instead of `npx`. This is useful when you want a pinned, sandboxed runtime that doesn't depend on the host's Node.js installation. Running with an MCP client spawns `podman` (or `docker`) instead of `npx`.
+The server can also be launched from a container image instead of `npx`. This is useful when you want a containerized, sandboxed runtime that doesn't depend on the host's Node.js installation. Running with an MCP client spawns `podman` (or `docker`) instead of `npx`.
 
 > **Prerequisites:**
 > `podman` is the supported container runtime for PatternFly MCP. We recommend [podman desktop](https://podman-desktop.io/downloads) or [podman](https://podman.io/).
