@@ -215,12 +215,42 @@ Depending on your environment, you may have to delay updating to the minimum Nod
 
 ### Running via container (podman)
 
-The server can also be launched from a container image instead of `npx`. This is useful when you want a pinned, sandboxed runtime that doesn't depend on the host's Node.js installation. Running with an MCP client spawns `podman` (or `docker`) instead of `npx`.
+The server can also be launched from a container image instead of `npx`. This is useful when you want a containerized, sandboxed runtime that doesn't depend on the host's Node.js installation. Running with an MCP client spawns `podman` (or `docker`) instead of `npx`.
 
 > **Prerequisites:**
 > `podman` is the supported container runtime for PatternFly MCP. We recommend [podman desktop](https://podman-desktop.io/downloads) or [podman](https://podman.io/).
 >
 > We make a minimal effort to support Docker, and additional configuration may be required.
+
+#### Use the hosted image
+
+Update your MCP configuration to use the hosted container image, that's it!
+
+> We make allowances for `amd64` and `arm64` architectures which should cover most use cases across Linux and macOS. In the event you need access to a different architecture, you can either build your own image from source (see below) or open an issue requesting the new architecture.
+
+```json
+{
+  "mcpServers": {
+    "patternfly-mcp": {
+      "command": "podman",
+      "env": {
+        "PODMAN_USERNS": "keep-id"
+      },
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "--security-opt=no-new-privileges",
+        "--cap-drop=ALL",
+        "ghcr.io/patternfly/patternfly-mcp:latest",
+        "--log-stderr"
+      ],
+      "description": "PatternFly rules and documentation"
+    }
+  }
+}
+```
+
 
 #### Build the image locally
 
@@ -277,8 +307,16 @@ You can confirm by running `$ podman images` from the terminal. View the [Contai
 
 #### Smoke test
 
+Confirm the container image is available
+
 ```bash
-podman run --rm --entrypoint node localhost/patternfly-mcp:latest -e "console.log(process.versions.node)"  # -> 24.x
+podman run --rm --entrypoint node ghcr.io/patternfly/patternfly-mcp:latest -e "console.log(process.versions.node)"
+```
+
+Or confirm a locally built container image is available
+
+```bash
+podman run --rm --entrypoint node localhost/patternfly-mcp:latest -e "console.log(process.versions.node)"
 ```
 
 #### Running in HTTP transport mode
@@ -293,7 +331,7 @@ podman run --rm \
   --read-only \
   --tmpfs /tmp:rw,size=64m \
   -p 3030:8080 \
-  localhost/patternfly-mcp:latest \
+  ghcr.io/patternfly/patternfly-mcp:latest \
   --http \
   --port 8080 \
   --allowed-origins "http://127.0.0.1:3030" \
@@ -324,7 +362,7 @@ HTTP MCP clients connect via URL rather than spawning a process. Start the conta
 }
 ```
 
-> Stdio-only MCP clients should keep using the [stdio container configuration above](#running-your-local-image-mcp-client-configuration); the HTTP form requires a client that supports HTTP/SSE MCP transports.
+> Stdio-only MCP clients should keep using the [stdio container configuration above](#use-the-hosted-image); the HTTP form requires a client that supports HTTP/SSE MCP transports.
 
 ##### Verify it's listening
 

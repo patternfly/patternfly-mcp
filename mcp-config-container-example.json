@@ -11,10 +11,10 @@
         "-i",
         "--security-opt=no-new-privileges",
         "--cap-drop=ALL",
-        "localhost/patternfly-mcp:latest",
+        "ghcr.io/patternfly/patternfly-mcp:latest",
         "--log-stderr"
       ],
-      "description": "PatternFly rules and documentation (local container)"
+      "description": "PatternFly rules and documentation"
     }
   }
 }

@@ -36,7 +36,11 @@ const buildImage = async (engine: 'podman' | 'docker', image: string) => {
   try {
     execSync(`${engine} image inspect ${image}`, { stdio: 'ignore' });
   } catch {
-    console.warn(`Image ${image} not found. Building...`);
+    if (process.env.CI) {
+      throw new Error(`[CI] Pre-built container image "${image}" not found.`);
+    }
+
+    console.warn(`Image ${image} not found. Building locally...`);
     execSync('npm run container:build', { stdio: 'inherit' });
   }
 };

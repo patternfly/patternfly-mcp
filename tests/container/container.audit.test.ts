@@ -9,13 +9,13 @@ describeSkip(engine !== undefined)('Container Audit', () => {
     CLIENT = await startContainer({
       engine
     });
-  });
+  }, 60_000);
 
   afterAll(async () => {
     if (CLIENT) {
       await CLIENT.stop();
     }
-  });
+  }, 30_000);
 
   it('should start and have basic tools and resources', async () => {
     const tools = await CLIENT.send({ method: 'tools/list' });
