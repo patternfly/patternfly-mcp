@@ -589,4 +589,20 @@ describe('setFetch', () => {
       message: expect.stringContaining('lorem ipsum private_token=[REDACTED]')
     });
   });
+
+  it('should retain unknown error messages when sanitization is disabled', async () => {
+    (global.fetch as jest.Mock).mockRejectedValue(new Error('lorem ipsum private_token=abc123'));
+    const options = getOptions();
+    const { get } = setFetch({
+      ...options,
+      xhrFetch: {
+        ...options.xhrFetch,
+        sanitizeMessages: false
+      }
+    });
+
+    await expect(get('https://patternfly.org/data')).rejects.toMatchObject({
+      message: expect.stringContaining('lorem ipsum private_token=abc123')
+    });
+  });
 });

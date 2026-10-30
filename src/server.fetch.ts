@@ -668,7 +668,12 @@ const setFetch = (options = getOptions()): SetFetch => {
 
       const fetchError = error instanceof FetchError
         ? error
-        : new FetchError({ message: formatUnknownError(error), cause: error, cancelled, sanitize: xhrFetch.sanitizeMessages });
+        : new FetchError({
+          message: formatUnknownError(error, { sanitize: xhrFetch.sanitizeMessages }),
+          cause: error,
+          cancelled,
+          sanitize: xhrFetch.sanitizeMessages
+        });
 
       updateState({ phase: cancelled ? 'cancelled' : 'error', error: fetchError, message: fetchError.message });
       throw fetchError;
