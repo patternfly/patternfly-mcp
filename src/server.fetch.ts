@@ -2,6 +2,7 @@ import { Readable } from 'node:stream';
 import { type ReadableStream } from 'node:stream/web';
 import { getOptions } from './options.context';
 import { formatUnknownError, log } from './logger';
+import { sanitizeMessage } from './logger.helpers';
 import { memo } from './server.caching';
 import { assertInputUrlWhiteListed } from './server.assertions';
 import { isUrl } from './server.helpers';
@@ -202,6 +203,7 @@ class FetchError extends Error {
    * @param options.statusText - HTTP status text.
    * @param options.cause - Cause of the error.
    * @param options.cancelled - Indicates if the fetch operation was canceled.
+   * @param options.sanitize - Activates message sanitizing.
    */
   constructor(options: {
     message: string;
@@ -209,11 +211,14 @@ class FetchError extends Error {
     statusText?: string | undefined;
     cause?: unknown | undefined;
     cancelled?: boolean | undefined;
+    sanitize?: boolean | undefined;
   }) {
-    super(options.message);
+    const updatedMessage = options.sanitize ? sanitizeMessage(options.message) : options.message;
+
+    super(updatedMessage);
 
     this.status = options.status;
-    this.statusText = options.statusText;
+    this.statusText = options.sanitize && options.statusText ? sanitizeMessage(options.statusText) : options.statusText;
     this.cause = options.cause;
     this.cancelled = options.cancelled ?? false;
   }
@@ -266,7 +271,11 @@ const parsePayload = async (
           data: JSON.parse(decoded.text)
         };
       } catch (err) {
-        throw new FetchError({ message: 'Invalid JSON payload.', cause: err });
+        throw new FetchError({
+          message: 'Invalid JSON payload.',
+          cause: err,
+          sanitize: xhrFetch.sanitizeMessages
+        });
       }
     }
 
@@ -280,7 +289,10 @@ const parsePayload = async (
     };
   }
 
-  throw new FetchError({ message: `Binary data is not allowed (${mime}).` });
+  throw new FetchError({
+    message: `Binary data is not allowed (${mime}).`,
+    sanitize: xhrFetch.sanitizeMessages
+  });
 };
 
 /**
@@ -310,6 +322,7 @@ const parsePayload = async (
  *    - `bytes` {number} - The number of bytes processed so far.
  *    - `progress` {number | undefined} - The percentage progress of the stream (optional, depends on having
  *    `totalSize`).
+ * @param [params.sanitizeMessages] - Activates message sanitizing.
  * @returns A promise resolving to an object containing either:
  *    - `{ kind: 'text', text: string }` if the stream is decoded as text.
  *    - `{ kind: 'bytes', chunks: Uint8Array[] }` if the stream is decoded as binary data.
@@ -317,13 +330,14 @@ const parsePayload = async (
  * @throws {FetchError} If accumulated size exceeds `maxSizeBytes`.
  */
 const decodeStream = async ({
-  stream, mimeType, totalSize, maxSizeBytes, onProgress
+  stream, mimeType, totalSize, maxSizeBytes, onProgress, sanitizeMessages
 }: {
   stream: Readable;
   mimeType: string;
   totalSize?: number | undefined;
   maxSizeBytes: number;
   onProgress: (bytes: number, progress?: number | undefined) => void;
+  sanitizeMessages?: boolean | undefined;
 }): Promise<DecodedStreamResult> => {
   const asText = isTextMime(mimeType);
   const decoder = asText ? new TextDecoder('utf-8') : undefined;
@@ -338,7 +352,10 @@ const decodeStream = async ({
 
       if (maxSizeBytes && totalBytes > maxSizeBytes) {
         stream.destroy();
-        throw new FetchError({ message: 'File download aborted: Size exceeded maximum limit.' });
+        throw new FetchError({
+          message: 'File download aborted: Size exceeded maximum limit.',
+          sanitize: sanitizeMessages
+        });
       }
 
       if (decoder) {
@@ -508,7 +525,10 @@ const setFetch = (options = getOptions()): SetFetch => {
         return inflight.promise;
       }
 
-      return Promise.reject(new FetchError({ message: 'Fetch already in progress. Create a new setFetch.' }));
+      return Promise.reject(new FetchError({
+        message: 'Fetch already in progress. Create a new setFetch.',
+        sanitize: xhrFetch.sanitizeMessages
+      }));
     }
 
     const promise = startFetch().finally(() => {
@@ -530,7 +550,7 @@ const setFetch = (options = getOptions()): SetFetch => {
   const executeFetch = async (url: string, settings: RequestInit = {}): Promise<FetchResponse> => {
     if (isTestModeFetchBlocked) {
       log.warn(
-        `Network access blocked for ${url}: server is in 'test' mode and 'modeOptions.test.baseUrl' is not configured.`,
+        `Network access blocked for ${sanitizeMessage(url)}: server is in 'test' mode and 'modeOptions.test.baseUrl' is not configured.`,
         `Configure 'modeOptions.test.baseUrl' to allow outbound fetches.`
       );
     }
@@ -549,7 +569,7 @@ const setFetch = (options = getOptions()): SetFetch => {
       assertInputUrlWhiteListed(url, updatedWhitelist, {
         allowedProtocols: whitelist.protocols,
         inputDisplayName: 'setFetch URL',
-        codeOrError: (message, cause) => new FetchError({ message, cause })
+        codeOrError: (message, cause) => new FetchError({ message, cause, sanitize: xhrFetch.sanitizeMessages })
       });
 
       if (xhrFetch.preflightHead) {
@@ -558,13 +578,15 @@ const setFetch = (options = getOptions()): SetFetch => {
         if (hint) {
           if (hint.contentLength && xhrFetch.maxSizeBytes && hint.contentLength > xhrFetch.maxSizeBytes) {
             throw new FetchError({
-              message: `File blocked (preflight): content-length ${hint.contentLength} exceeds ${xhrFetch.maxSizeBytes}.`
+              message: `File blocked (preflight): content-length ${hint.contentLength} exceeds ${xhrFetch.maxSizeBytes}.`,
+              sanitize: xhrFetch.sanitizeMessages
             });
           }
 
           if (hint.contentType && isBinaryMime(hint.contentType) && !xhrFetch.allowBinary) {
             throw new FetchError({
-              message: `Binary data is not allowed (preflight: ${normalizeMime(hint.contentType)}).`
+              message: `Binary data is not allowed (preflight: ${normalizeMime(hint.contentType)}).`,
+              sanitize: xhrFetch.sanitizeMessages
             });
           }
         }
@@ -578,7 +600,7 @@ const setFetch = (options = getOptions()): SetFetch => {
         await Promise.resolve().then(() => assertInputUrlWhiteListed(response.url, updatedWhitelist, {
           allowedProtocols: whitelist.protocols,
           inputDisplayName: 'setFetch URL',
-          codeOrError: (message, cause) => new FetchError({ message, cause })
+          codeOrError: (message, cause) => new FetchError({ message, cause, sanitize: xhrFetch.sanitizeMessages })
         })).catch(error => {
           response.body?.cancel?.().catch(() => {});
           throw error;
@@ -586,10 +608,15 @@ const setFetch = (options = getOptions()): SetFetch => {
       }
 
       if (!response.ok) {
+        const displayUrl = xhrFetch.sanitizeMessages ? sanitizeMessage(url) : url;
+        const displayStatusText = xhrFetch.sanitizeMessages ? sanitizeMessage(response.statusText) : response.statusText;
+
         throw new FetchError({
-          message: `Failed to fetch ${url}: ${response.status} ${response.statusText}`,
+          message: `Failed to fetch ${displayUrl}: ${response.status} ${displayStatusText}`,
           status: response.status,
-          statusText: response.statusText
+          statusText: displayStatusText,
+          // When enabled, sanitize values before the status delimiter is added
+          sanitize: false
         });
       }
 
@@ -603,7 +630,8 @@ const setFetch = (options = getOptions()): SetFetch => {
         throw new FetchError({
           message,
           status: response.status,
-          statusText: response.statusText
+          statusText: response.statusText,
+          sanitize: xhrFetch.sanitizeMessages
         });
       };
 
@@ -623,6 +651,7 @@ const setFetch = (options = getOptions()): SetFetch => {
           mimeType,
           totalSize,
           maxSizeBytes: xhrFetch.maxSizeBytes,
+          sanitizeMessages: xhrFetch.sanitizeMessages,
           onProgress: (bytesReceived, progress) => updateState({ bytesReceived, progress })
         })
         : ({ kind: 'text', text: '' } as const);
@@ -643,7 +672,12 @@ const setFetch = (options = getOptions()): SetFetch => {
 
       const fetchError = error instanceof FetchError
         ? error
-        : new FetchError({ message: formatUnknownError(error), cause: error, cancelled });
+        : new FetchError({
+          message: formatUnknownError(error, { sanitize: xhrFetch.sanitizeMessages }),
+          cause: error,
+          cancelled,
+          sanitize: xhrFetch.sanitizeMessages
+        });
 
       updateState({ phase: cancelled ? 'cancelled' : 'error', error: fetchError, message: fetchError.message });
       throw fetchError;

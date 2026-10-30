@@ -3,7 +3,7 @@
 exports[`setFetch should block outbound fetch and log warning in test mode when baseUrl is not configured: warning 1`] = `
 [
   [
-    "Network access blocked for https://patternfly.org: server is in 'test' mode and 'modeOptions.test.baseUrl' is not configured.",
+    "Network access blocked for https://patternfly.org/: server is in 'test' mode and 'modeOptions.test.baseUrl' is not configured.",
     "Configure 'modeOptions.test.baseUrl' to allow outbound fetches.",
   ],
 ]
