@@ -608,11 +608,15 @@ const setFetch = (options = getOptions()): SetFetch => {
       }
 
       if (!response.ok) {
+        const displayUrl = xhrFetch.sanitizeMessages ? sanitizeMessage(url) : url;
+        const displayStatusText = xhrFetch.sanitizeMessages ? sanitizeMessage(response.statusText) : response.statusText;
+
         throw new FetchError({
-          message: `Failed to fetch ${url}: ${response.status} ${response.statusText}`,
+          message: `Failed to fetch ${displayUrl}: ${response.status} ${displayStatusText}`,
           status: response.status,
-          statusText: response.statusText,
-          sanitize: xhrFetch.sanitizeMessages
+          statusText: displayStatusText,
+          // When enabled, sanitize values before the status delimiter is added
+          sanitize: false
         });
       }
 

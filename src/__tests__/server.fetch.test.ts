@@ -334,6 +334,27 @@ describe('setFetch', () => {
     });
   });
 
+  it('should preserve the status delimiter after sanitizing a final URL', async () => {
+    const mockResponse = {
+      ok: false,
+      status: 401,
+      statusText: 'Unauthorized',
+      headers: {
+        get: () => null
+      }
+    };
+
+    (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
+
+    const { get } = setFetch();
+    const urlWithSecret = 'https://patternfly.org/secure?access_token=abc123&view=full';
+
+    await expect(get(urlWithSecret)).rejects.toMatchObject({
+      message: expect.stringContaining('https://patternfly.org/secure?access_token=%5BREDACTED%5D&view=full: 401 Unauthorized'),
+      statusText: expect.stringContaining('Unauthorized')
+    });
+  });
+
   it('should check content-length against maxSizeBytes', async () => {
     const mockResponse = {
       ok: true,
