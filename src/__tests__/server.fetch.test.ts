@@ -106,6 +106,26 @@ describe('FetchError', () => {
     expect(err.message).toContain(expected);
   });
 
+  it('should sanitize statusText when sanitize is true', () => {
+    const err = new FetchError({
+      message: 'Failed to fetch',
+      statusText: 'Unauthorized: private_token=abc123',
+      sanitize: true
+    });
+
+    expect(err.statusText).toContain('private_token=[REDACTED]');
+  });
+
+  it('should not sanitize statusText when sanitize is false', () => {
+    const err = new FetchError({
+      message: 'Failed to fetch',
+      statusText: 'Unauthorized: private_token=abc123',
+      sanitize: false
+    });
+
+    expect(err.statusText).toBe('Unauthorized: private_token=abc123');
+  });
+
   it('should preserve raw cause object identity', () => {
     const cause = new Error('upstream fail private_token=abc123');
     const err = new FetchError({
@@ -288,11 +308,11 @@ describe('setFetch', () => {
     expect(postPhase).toBe('error');
   });
 
-  it('should sanitize URL secrets in FetchError message for non-ok response', async () => {
+  it('should sanitize URL secrets in FetchError message and statusText for non-ok response', async () => {
     const mockResponse = {
       ok: false,
       status: 401,
-      statusText: 'Unauthorized',
+      statusText: 'Unauthorized: access_token=secret123',
       headers: {
         get: () => null
       }
@@ -304,11 +324,13 @@ describe('setFetch', () => {
     const urlWithSecret = 'https://patternfly.org/secure?private_token=abc123&view=full';
 
     await expect(get(urlWithSecret)).rejects.toMatchObject({
-      message: expect.stringContaining('private_token=%5BREDACTED%5D')
+      message: expect.stringContaining('private_token=%5BREDACTED%5D'),
+      statusText: expect.stringContaining('access_token=[REDACTED]')
     });
 
     await expect(get(urlWithSecret)).rejects.toMatchObject({
-      message: expect.not.stringContaining('private_token=abc123')
+      message: expect.not.stringContaining('private_token=abc123'),
+      statusText: expect.not.stringContaining('access_token=secret123')
     });
   });
 

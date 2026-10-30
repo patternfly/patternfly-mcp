@@ -218,7 +218,7 @@ class FetchError extends Error {
     super(updatedMessage);
 
     this.status = options.status;
-    this.statusText = options.statusText;
+    this.statusText = options.sanitize && options.statusText ? sanitizeMessage(options.statusText) : options.statusText;
     this.cause = options.cause;
     this.cancelled = options.cancelled ?? false;
   }

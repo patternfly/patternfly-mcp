@@ -16,9 +16,9 @@ const SECRET_PARAM_REGEXP = /(access[_-]?token|private[_-]?token|token|auth|auth
 const BEARER_HEADER_REGEXP = /(authorization\s*:\s*)(bearer\s+)([^\s"'}]+)(\s*)/gi;
 
 /**
- * Match for private token assignments.
+ * Match for private and access token assignments.
  */
-const PRIVATE_TOKEN_REGEXP = /(private[_-]?token\s*[:=]\s*)([^\s&]+)/gi;
+const PRIVATE_TOKEN_REGEXP = /((?:private|access)[_-]?token\s*[:=]\s*)([^\s&]+)/gi;
 
 /**
  * Sanitize header-like content.
