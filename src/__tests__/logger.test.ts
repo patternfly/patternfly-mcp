@@ -115,7 +115,7 @@ describe('formatUnknownError', () => {
   it('should support sanitizing messages', () => {
     const input = 'Authorization: Bearer abc123';
 
-    expect(formatUnknownError(input)).toBe('Authorization: Bearer [REDACTED]');
+    expect(formatUnknownError(input)).toBe('Authorization: [REDACTED]');
   });
 });
 

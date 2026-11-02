@@ -15,25 +15,39 @@ const SECRET_PARAM_REGEXP = /(access[_-]?token|private[_-]?token|token|auth|auth
  */
 const BEARER_HEADER_REGEXP = /(authorization\s*:\s*)(bearer\s+)([^\s"'}]+)(\s*)/gi;
 
-/**
- * Match for private token assignments.
- */
-const PRIVATE_TOKEN_REGEXP = /(private[_-]?token\s*[:=]\s*)([^\s&]+)/gi;
+const matchesSecretParam = (value: string, secretParamRegExp: RegExp) => {
+  const matcher = secretParamRegExp;
+
+  matcher.lastIndex = 0;
+
+  return matcher.test(value);
+};
 
 /**
- * Sanitize header-like content.
+ * Sanitize header-like content and key-value assignments.
+ *
+ * @note **Security Scope**:
+ * We evaluate sanitization across three tiers of complexity:
+ * 1. None: Raw logs with no redaction.
+ * 2. Pragmatic / Best-Effort: Simple, deterministic heuristics designed to prevent accidental leaks.
+ * 3. Deep / In-Depth: Exhaustive AST or micro-tokenized grammatical parsing.
+ *
+ * This server deliberately operates at the **Pragmatic / Best-Effort** tier because that satisfies
+ * all current server logging and error-reporting requirements. Once a recognized secret header
+ * (such as `Authorization:` or `Private-Token:`) is encountered, the remainder of the value is
+ * aggressively redacted in its entirety (`[REDACTED]`).
  *
  * @param input - String to sanitize.
  * @param [options] - Configurable options.
  * @param [options.redacted] - Redact default value.
  * @param [options.bearerHeaderRegExp] - Bearer header regex.
- * @param [options.privateTokenRegExp] - Private token regex.
+ * @param [options.secretParamRegExp] - Secret param regex.
  */
 const sanitizeHeaderContent = (input?: unknown, {
   redacted = REDACTED,
   bearerHeaderRegExp = BEARER_HEADER_REGEXP,
-  privateTokenRegExp = PRIVATE_TOKEN_REGEXP
-}: { redacted?: string; bearerHeaderRegExp?: RegExp; privateTokenRegExp?: RegExp } = {}) => {
+  secretParamRegExp = SECRET_PARAM_REGEXP
+}: { redacted?: string; bearerHeaderRegExp?: RegExp; secretParamRegExp?: RegExp } = {}) => {
   if (typeof input !== 'string') {
     return undefined;
   }
@@ -43,11 +57,71 @@ const sanitizeHeaderContent = (input?: unknown, {
     (_m, g1, g2, _g3, suffix) => `${g1}${g2}${redacted}${suffix}`
   );
 
-  return withBearerRedaction.replace(privateTokenRegExp, (_m, g1) => `${g1}${redacted}`);
+  const tokens = withBearerRedaction.split(/(\s+|&)/);
+
+  for (let i = 0; i < tokens.length; i += 1) {
+    const token = tokens[i];
+
+    if (!token) {
+      continue;
+    }
+
+    const eqIdx = token.indexOf('=');
+
+    if (eqIdx > 0) {
+      const key = token.substring(0, eqIdx);
+      const val = token.substring(eqIdx + 1);
+
+      if (matchesSecretParam(key, secretParamRegExp) && val.length > 0 && val !== redacted) {
+        tokens[i] = `${key}=${redacted}`;
+      }
+
+      continue;
+    }
+
+    const colonIdx = token.indexOf(':');
+
+    if (colonIdx > 0) {
+      const key = token.substring(0, colonIdx);
+
+      if (
+        /^[a-zA-Z0-9_-]+$/.test(key) &&
+        key.toLowerCase() !== 'unauthorized' &&
+        matchesSecretParam(key, secretParamRegExp)
+      ) {
+        const spacing = tokens[i + 1]?.trim() === '' ? tokens[i + 1] : '';
+
+        return `${tokens.slice(0, i).join('')}${token.substring(0, colonIdx + 1)}${spacing}${redacted}`;
+      }
+    }
+
+    if (
+      tokens[i + 1]?.trim() === '' &&
+      tokens[i + 2] === ':' &&
+      /^[a-zA-Z0-9_-]+$/.test(token) &&
+      token.toLowerCase() !== 'unauthorized' &&
+      matchesSecretParam(token, secretParamRegExp)
+    ) {
+      const spacing = tokens[i + 3]?.trim() === '' ? tokens[i + 3] : '';
+
+      return `${tokens.slice(0, i + 3).join('')}${spacing}${redacted}`;
+    }
+  }
+
+  return tokens.join('');
 };
 
 /**
  * Sanitize a URL string.
+ *
+ * @note **IMPORTANT! Keep matched URL candidates intact.** Do not filter, trim, or strip trailing
+ *   delimiter characters (such as `)`, `]`, or `>`) based on surrounding prose. It is ambiguous
+ *   and unreliable to determine whether trailing punctuation belongs to the URL or surrounding
+ *   text in arbitrary prose; attempting to filter them introduces fragile heuristics and false
+ *   positives. Candidates are kept intact and delegated directly to `parseUrl`.
+ *
+ * @note URL query and basic-auth redaction applies only to candidates accepted by `parseUrl`. Malformed URL-like
+ *   text is returned unchanged; this helper is not a general-purpose `key=value` secret scanner.
  *
  * @param input - String to sanitize.
  * @param [options] - Configurable options.
@@ -77,7 +151,7 @@ const sanitizeUrlContent = (
     }
 
     for (const [paramName] of parsed.searchParams) {
-      const isSecretParam = secretParamRegExp.test(paramName);
+      const isSecretParam = matchesSecretParam(paramName, secretParamRegExp);
 
       if (isSecretParam) {
         parsed.searchParams.set(paramName, redacted);
@@ -87,7 +161,9 @@ const sanitizeUrlContent = (
     return parsed.toString();
   };
 
-  return input.replace(/https?:\/\/[^\s)]+/gi, (urlCandidate: string) =>
+  // IMPORTANT: Keep matched URL candidates intact. Do not filter or strip trailing delimiters (e.g., ')', ']', '>')
+  // based on surrounding prose. Delimiter classification in unstructured text is unreliable.
+  return input.replace(/https?:\/\/[^\s]+/gi, (urlCandidate: string) =>
     sanitize(urlCandidate) || urlCandidate);
 };
 
@@ -128,10 +204,13 @@ const sanitizeTokenContent = (
 };
 
 /**
- * Sanitize arbitrary text for logs by redacting:
- * - Authorization/Private-Token header patterns
- * - Secrets embedded in URLs (query params, basic auth) via sanitizeUrl
+ * Best-effort sanitization of log text by redacting:
+ * - Authorization header patterns and secret key/token assignments
+ * - Secrets in parseable URL candidates (query params, basic auth) via sanitizeUrlContent
  * - Long token-like substrings (hex/base64-like)
+ *
+ * @note This helper does not guarantee redaction of malformed URL-like text or unrecognized
+ * short key/value patterns, it is a best-effort attempt. See {@link sanitizeHeaderContent}
  *
  * @param input
  */

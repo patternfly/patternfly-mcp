@@ -337,12 +337,14 @@ interface WhitelistOptions {
  * @property maxSizeBytes Maximum size of a single request (bytes).
  * @property timeoutMs Timeout for XHR and Fetch requests (ms).
  * @property preflightHead Perform a preflight HEAD request before the actual request.
+ * @property sanitizeMessages Sanitize messages before logging.
  */
 interface XhrFetchOptions {
   allowBinary: boolean;
   maxSizeBytes: number;
   timeoutMs: number;
   preflightHead: boolean;
+  sanitizeMessages: boolean;
 }
 
 /**
@@ -513,7 +515,8 @@ const XHR_FETCH_OPTIONS: XhrFetchOptions = {
   allowBinary: false,
   maxSizeBytes: 1024 * 1024 * 5,
   timeoutMs: 15_000,
-  preflightHead: false
+  preflightHead: false,
+  sanitizeMessages: true
 };
 
 /**
