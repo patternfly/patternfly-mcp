@@ -664,7 +664,7 @@ const setFetch = (options = getOptions()): SetFetch => {
         ? { kind: 'text', text: decoded.text, mimeType }
         : { kind: 'bytes', chunks: decoded.chunks, mimeType };
 
-      const { type, data } = await parsePayload(payload);
+      const { type, data } = await parsePayload(payload, options);
 
       const result: FetchResponse = { type, status: response.status, statusText: response.statusText, data };
 

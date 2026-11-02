@@ -301,6 +301,37 @@ describe('setFetch', () => {
     expect(result.data).toEqual({ foo: 'bar' });
   });
 
+  it('should use per-instance xhrFetch options while parsing binary data', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      headers: {
+        get: (name: string) => (name === 'content-type' ? 'image/png' : null)
+      },
+      body: new ReadableStream({
+        start(controller) {
+          controller.enqueue(new Uint8Array([0, 1]));
+          controller.close();
+        }
+      })
+    });
+
+    const options = getOptions();
+    const { get } = setFetch({
+      ...options,
+      xhrFetch: {
+        ...options.xhrFetch,
+        allowBinary: true,
+        sanitizeMessages: false
+      }
+    });
+    const result = await get('https://patternfly.org/image.png');
+
+    expect(result.type).toBe('binary');
+    expect(result.data).toBeInstanceOf(Blob);
+  });
+
   it('should reject with FetchError on non-ok response', async () => {
     const mockResponse = {
       ok: false,

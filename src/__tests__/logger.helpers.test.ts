@@ -10,12 +10,22 @@ describe('sanitizeHeaderContent', () => {
     {
       description: 'authorization bearer token',
       input: 'Authorization: Bearer abc123',
-      expected: 'Authorization: Bearer [REDACTED]'
+      expected: 'Authorization: [REDACTED]'
+    },
+    {
+      description: 'authorization header redacts its complete value',
+      input: 'Authorization: Basic dXNlcjpwYXNz additional context',
+      expected: 'Authorization: [REDACTED]'
     },
     {
       description: 'private token header',
       input: 'Private-Token: abc123',
       expected: 'Private-Token: [REDACTED]'
+    },
+    {
+      description: 'private token header with whitespace before delimiter',
+      input: 'Private-Token : abc123 additional context',
+      expected: 'Private-Token : [REDACTED]'
     },
     {
       description: 'non-string input',
@@ -26,7 +36,7 @@ describe('sanitizeHeaderContent', () => {
       description: 'custom redacted marker',
       input: 'Authorization: Bearer abc123',
       options: { redacted: '<MASKED>' },
-      expected: 'Authorization: Bearer <MASKED>'
+      expected: 'Authorization: <MASKED>'
     },
     {
       description: 'api_key assignment',
@@ -70,10 +80,10 @@ describe('sanitizeHeaderContent', () => {
       expected: 'custom_identifier=[REDACTED]'
     },
     {
-      description: 'custom secretParamRegExp option with multiple search params',
-      input: 'custom_identifier=xyz123!&lorem=ipsum',
-      options: { secretParamRegExp: /custom_identifier/i },
-      expected: 'custom_identifier=[REDACTED]&lorem=ipsum'
+      description: 'global custom secretParamRegExp with multiple assignments',
+      input: 'custom_one=xyz123&custom_two=abc456',
+      options: { secretParamRegExp: /custom_/gi },
+      expected: 'custom_one=[REDACTED]&custom_two=[REDACTED]'
     }
   ])('should sanitize header content, $description', ({ input, options, expected }) => {
     expect(sanitizeHeaderContent(input, options as any)).toBe(expected);
@@ -101,6 +111,12 @@ describe('sanitizeUrlContent', () => {
       description: 'sanitize url embedded in text',
       input: 'Fetch https://example.com/api?access_token=xyz now',
       expected: 'Fetch https://example.com/api?access_token=%5BREDACTED%5D now'
+    },
+    {
+      description: 'global custom secretParamRegExp with multiple URL params',
+      input: 'https://example.com/docs?custom_one=xyz123&custom_two=abc456',
+      options: { secretParamRegExp: /custom_/gi },
+      expected: 'https://example.com/docs?custom_one=%5BREDACTED%5D&custom_two=%5BREDACTED%5D'
     },
     {
       description: 'sanitize a URL with a parenthesis in its path',
@@ -196,9 +212,9 @@ describe('sanitizeTokenContent', () => {
 describe('sanitizeMessage', () => {
   it.each([
     {
-      description: 'sanitize bearer token and url query token in one message',
+      description: 'replace everything after a recognized header',
       input: 'Authorization: Bearer abc123 https://example.com/api?access_token=xyz',
-      expected: 'Authorization: Bearer [REDACTED] https://example.com/api?access_token=%5BREDACTED%5D'
+      expected: 'Authorization: [REDACTED]'
     },
     {
       description: 'sanitize secret in Error message',

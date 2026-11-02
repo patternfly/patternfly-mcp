@@ -15,8 +15,27 @@ const SECRET_PARAM_REGEXP = /(access[_-]?token|private[_-]?token|token|auth|auth
  */
 const BEARER_HEADER_REGEXP = /(authorization\s*:\s*)(bearer\s+)([^\s"'}]+)(\s*)/gi;
 
+const matchesSecretParam = (value: string, secretParamRegExp: RegExp) => {
+  const matcher = secretParamRegExp;
+
+  matcher.lastIndex = 0;
+
+  return matcher.test(value);
+};
+
 /**
  * Sanitize header-like content and key-value assignments.
+ *
+ * @note **Security Scope**:
+ * We evaluate sanitization across three tiers of complexity:
+ * 1. None: Raw logs with no redaction.
+ * 2. Pragmatic / Best-Effort: Simple, deterministic heuristics designed to prevent accidental leaks.
+ * 3. Deep / In-Depth: Exhaustive AST or micro-tokenized grammatical parsing.
+ *
+ * This server deliberately operates at the **Pragmatic / Best-Effort** tier because that satisfies
+ * all current server logging and error-reporting requirements. Once a recognized secret header
+ * (such as `Authorization:` or `Private-Token:`) is encountered, the remainder of the value is
+ * aggressively redacted in its entirety (`[REDACTED]`).
  *
  * @param input - String to sanitize.
  * @param [options] - Configurable options.
@@ -53,7 +72,7 @@ const sanitizeHeaderContent = (input?: unknown, {
       const key = token.substring(0, eqIdx);
       const val = token.substring(eqIdx + 1);
 
-      if (secretParamRegExp.test(key) && val.length > 0 && val !== redacted) {
+      if (matchesSecretParam(key, secretParamRegExp) && val.length > 0 && val !== redacted) {
         tokens[i] = `${key}=${redacted}`;
       }
 
@@ -64,19 +83,28 @@ const sanitizeHeaderContent = (input?: unknown, {
 
     if (colonIdx > 0) {
       const key = token.substring(0, colonIdx);
-      const rest = token.substring(colonIdx + 1);
 
-      if (/^[a-zA-Z0-9_-]+$/.test(key) && key.toLowerCase() !== 'unauthorized' && secretParamRegExp.test(key)) {
-        if (rest.length > 0 && rest !== redacted && rest.toLowerCase() !== 'bearer') {
-          tokens[i] = `${key}:${redacted}`;
-        } else if (rest.length === 0 && i + 2 < tokens.length) {
-          const nextVal = tokens[i + 2];
+      if (
+        /^[a-zA-Z0-9_-]+$/.test(key) &&
+        key.toLowerCase() !== 'unauthorized' &&
+        matchesSecretParam(key, secretParamRegExp)
+      ) {
+        const spacing = tokens[i + 1]?.trim() === '' ? tokens[i + 1] : '';
 
-          if (nextVal && nextVal !== redacted && nextVal.toLowerCase() !== 'bearer') {
-            tokens[i + 2] = redacted;
-          }
-        }
+        return `${tokens.slice(0, i).join('')}${token.substring(0, colonIdx + 1)}${spacing}${redacted}`;
       }
+    }
+
+    if (
+      tokens[i + 1]?.trim() === '' &&
+      tokens[i + 2] === ':' &&
+      /^[a-zA-Z0-9_-]+$/.test(token) &&
+      token.toLowerCase() !== 'unauthorized' &&
+      matchesSecretParam(token, secretParamRegExp)
+    ) {
+      const spacing = tokens[i + 3]?.trim() === '' ? tokens[i + 3] : '';
+
+      return `${tokens.slice(0, i + 3).join('')}${spacing}${redacted}`;
     }
   }
 
@@ -123,7 +151,7 @@ const sanitizeUrlContent = (
     }
 
     for (const [paramName] of parsed.searchParams) {
-      const isSecretParam = secretParamRegExp.test(paramName);
+      const isSecretParam = matchesSecretParam(paramName, secretParamRegExp);
 
       if (isSecretParam) {
         parsed.searchParams.set(paramName, redacted);
@@ -182,7 +210,7 @@ const sanitizeTokenContent = (
  * - Long token-like substrings (hex/base64-like)
  *
  * @note This helper does not guarantee redaction of malformed URL-like text or unrecognized
- * short key/value patterns, it is a best-effort attempt.
+ * short key/value patterns, it is a best-effort attempt. See {@link sanitizeHeaderContent}
  *
  * @param input
  */
