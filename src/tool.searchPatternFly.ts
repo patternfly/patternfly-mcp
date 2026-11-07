@@ -112,7 +112,12 @@ const searchPatternFlyTool = (options = getOptions()): McpTool => {
             description: record.description,
             mimeType: 'text/markdown',
             groupId: result.groupId,
-            primaryCollection: record.collection
+            primaryCollection: record.collection,
+            _meta: {
+              primaryCollection: record.collection,
+              groupId: result.groupId,
+              recordId: record.id
+            }
           });
         }
 
@@ -126,7 +131,17 @@ const searchPatternFlyTool = (options = getOptions()): McpTool => {
             name: `${record.displayName} - JSON Schema (${record.version})`,
             description: `Component JSON schema with property definitions for ${record.displayName}.`,
             mimeType: 'text/markdown',
-            groupId: result.groupId
+            groupId: result.groupId,
+            _meta: {
+              // This may need to be hardcoded `'patternfly-component-schemas'`
+              primaryCollection: record.collection,
+              groupId: result.groupId,
+
+              /**
+               * Schemas currently retain the groupId as their recordId, see {@link getPatternFlyMcpResources}
+               */
+              recordId: result.groupId
+            }
           });
         }
       });
@@ -156,7 +171,10 @@ const searchPatternFlyTool = (options = getOptions()): McpTool => {
         name: `${collectionName} (Collection)`,
         description: `A resource collection series for ${collectionNames}`,
         mimeType: 'text/markdown',
-        groupId: result.groupId
+        groupId: result.groupId,
+        _meta: {
+          groupId: result.groupId
+        }
       });
     });
 
