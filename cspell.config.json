@@ -9,6 +9,8 @@
     "gatekeep",
     "ized",
     "jaccard",
+    "kubepods",
+    "libpod",
     "llms",
     "localappdata",
     "midrun",
@@ -34,6 +36,7 @@
     "unrepresentable",
     "unsub",
     "untampered",
-    "userns"
+    "userns",
+    "xclip"
   ]
 }
