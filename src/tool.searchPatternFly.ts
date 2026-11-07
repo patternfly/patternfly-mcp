@@ -292,7 +292,7 @@ const searchPatternFlyTool = (options = getOptions()): McpTool => {
     },
     callback,
     {
-      shouldRegister: opts => opts.contextManagement === true
+      shouldRegister: opts => opts.contextManagement === true || opts.client === true
     }
   ];
 };

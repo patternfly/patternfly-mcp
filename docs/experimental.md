@@ -24,7 +24,49 @@ Using an experimental flag without the `experimental` prefix (CLI or programmati
 
 | Internal name       | CLI flag                            | Programmatic option             | Value type  |
 |---------------------|-------------------------------------|---------------------------------|-------------|
+| `client`            | `--experimental-client`             | `experimentalClient`            | `boolean`   |
 | `contextManagement` | `--experimental-context-management` | `experimentalContextManagement` | `boolean`   |
+
+---
+
+## client
+
+The interactive client launches an embedded terminal UI directly connected to the PatternFly MCP server over an in-process memory transport channel (`createMcpChannel`). It allows developers and contributors to interactively search, browse collections, inspect component schemas, view documentation, copy contents via system clipboard or OSC-52, and export local markdown files.
+
+> **Requirement**: The interactive client requires an interactive terminal (TTY) with standard input and output attached (`stdin.isTTY` and `stdout.isTTY`). Running non-interactively or in automated headless pipelines will exit with an error.
+
+### Controls
+
+| Keystroke | Context | Action |
+|-----------|---------|--------|
+| `/` | Search Screen | Prompt for new search query |
+| `<Tab>` | Search Screen | Cycle through registered collections filter |
+| `<↑/↓>` | Search & Reader | Navigate tree items or scroll reader document |
+| `<Enter>` | Search Screen | Select record to read or toggle collection expand/collapse |
+| `<Enter>` / `b` / `<Esc>` | Reader Screen | Return to search results view |
+| `c` | Reader Screen | Copy full document text to clipboard (`pbcopy`, `wl-copy`, `xclip`, or OSC-52) |
+| `r` | Reader Screen | Save document to local disk as a `.md` file |
+| `q` / `Ctrl+C` | Any Screen | Exit interactive client |
+
+### CLI
+
+Launch the interactive terminal client:
+
+```bash
+npx -y @patternfly/patternfly-mcp@latest --experimental-client
+```
+
+> **Note**: The interactive client communicates over an in-process/memory transport channel and cannot be combined with network transports like `--http`.
+
+### Programmatic
+
+```typescript
+import { start } from '@patternfly/patternfly-mcp';
+
+const server = await start({
+  experimentalClient: true
+});
+```
 
 ---
 

@@ -289,6 +289,35 @@ describe('runServer', () => {
 
     await expect(runServer(undefined, { tools: [] })).rejects.toThrowErrorMatchingSnapshot('Connection failed');
   });
+
+  it('auto-starts in-process client when options.client is enabled', async () => {
+    const mockClient = {
+      connect: jest.fn().mockResolvedValue(undefined),
+      close: jest.fn().mockResolvedValue(undefined),
+      isConnected: jest.fn().mockReturnValue(true)
+    };
+
+    const clientModule = await import('../client');
+
+    jest.spyOn(clientModule.runClient, 'memo').mockResolvedValue(mockClient as never);
+
+    const instance = await runServer({
+      ...DEFAULT_OPTIONS,
+      name: 'test-auto-client',
+      version: '1.0.0',
+      client: true
+    });
+
+    expect(instance.isRunning()).toBe(true);
+    expect(mockServer.connect).not.toHaveBeenCalled();
+    expect(clientModule.runClient.memo).toHaveBeenCalledWith(
+      expect.objectContaining({ name: 'test-auto-client', client: true }),
+      expect.objectContaining({ server: mockServer })
+    );
+
+    await instance.stop();
+    expect(mockClient.close).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('registerServerTools', () => {

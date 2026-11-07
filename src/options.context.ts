@@ -131,10 +131,12 @@ const setOptions = (
       base[option as ExperimentalOptionKey] !== (DEFAULT_OPTIONS as unknown as Record<string, unknown>)[option]
   );
 
+  const baseMode = MODE_LEVELS.includes(base.mode) ? base.mode : DEFAULT_OPTIONS.mode;
+
   const merged: GlobalOptions = {
     ...base,
     experimental: baseExperimental,
-    mode: MODE_LEVELS.includes(base.mode) ? base.mode : DEFAULT_OPTIONS.mode,
+    mode: baseMode,
     logging: {
       level: ['debug', 'info', 'warn', 'error'].includes(baseLogging.level) ? baseLogging.level : DEFAULT_OPTIONS.logging.level,
       logger: baseLogging.logger,
@@ -144,7 +146,8 @@ const setOptions = (
     },
     pluginIsolation: basePluginIsolation,
     resourceMemoOptions: DEFAULT_OPTIONS.resourceMemoOptions,
-    toolMemoOptions: DEFAULT_OPTIONS.toolMemoOptions
+    toolMemoOptions: DEFAULT_OPTIONS.toolMemoOptions,
+    client: baseMode === 'cli' ? base.client : false
   };
 
   // Avoid cloning toolModules

@@ -2,6 +2,7 @@
 
 exports[`options defaults should return specific properties: defaults 1`] = `
 {
+  "client": false,
   "contextManagement": false,
   "contextPath": "/",
   "contextUrl": "file:///",

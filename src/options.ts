@@ -87,6 +87,7 @@ const SET_OPTIONS = {
   name: defineOption({ cli: false })<string>(),
   toolModules: defineOption({ cli: true })<DefaultOptions['toolModules']>(),
   version: defineOption({ cli: false })<string>(),
+  client: defineOption({ cli: true, experimental: true })<DefaultOptions['client']>(),
   contextManagement: defineOption({ cli: true, experimental: true })<DefaultOptions['contextManagement']>()
 } as const;
 

@@ -10,6 +10,7 @@ import { getNodeMajorVersion } from './options.helpers';
  * @interface DefaultOptions
  *
  * @template TLogOptions The logging options type, defaulting to LoggingOptions.
+ * @property client - Streamlined single-tool mode for the agentless terminal client. Uses the optimized MCP tooling activated by `contextManagement`.
  * @property contextManagement - Strategy for managing agent context and response sizes, primarily within MCP tools.
  *    - 'false': Default standard text-heavy responses.
  *    - 'true': High-efficiency mode for MCP tools, using McpResource links.
@@ -53,6 +54,7 @@ import { getNodeMajorVersion } from './options.helpers';
  * @property xhrFetch - XHR and Fetch options.
  */
 interface DefaultOptions<TLogOptions = LoggingOptions> {
+  client: boolean;
   contextManagement: boolean;
   contextPath: string;
   contextUrl: string;
@@ -597,6 +599,7 @@ const PLUGIN_ISOLATION: DefaultOptions['pluginIsolation'][] = ['none', 'strict']
  * @type {DefaultOptions} Default options object.
  */
 const DEFAULT_OPTIONS: DefaultOptions = {
+  client: false,
   contextManagement: false,
   contextPath: (process.env.NODE_ENV === 'local' && '/') || resolve(process.cwd()),
   contextUrl: pathToFileURL((process.env.NODE_ENV === 'local' && '/') || resolve(process.cwd())).href,
