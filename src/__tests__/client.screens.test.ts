@@ -899,6 +899,43 @@ describe('runReaderScreen', () => {
 });
 
 describe('runInteractiveClient', () => {
+  it('cleans up alternate screen and key reader if initial search fails', async () => {
+    const originalInputTTY = input.isTTY;
+    const originalOutputTTY = process.stdout.isTTY;
+
+    Object.defineProperty(input, 'isTTY', { value: true, configurable: true });
+    Object.defineProperty(process.stdout, 'isTTY', { value: true, configurable: true });
+
+    const leaveScreenSpy = jest.spyOn(clientHelpers, 'leaveAlternateScreen');
+    const mockDispose = jest.fn();
+    const mockEnable = jest.fn();
+
+    jest.spyOn(clientInput, 'createKeyReader').mockReturnValue({
+      enable: mockEnable,
+      disable: jest.fn(),
+      dispose: mockDispose,
+      readKey: jest.fn()
+    });
+
+    const failingSession = {
+      search: jest.fn().mockRejectedValue(new Error('Transport connection closed')),
+      readResource: jest.fn(),
+      close: jest.fn(),
+      isConnected: jest.fn()
+    };
+
+    await expect(
+      runInteractiveClient(failingSession as any, 'button')
+    ).rejects.toThrow('Transport connection closed');
+
+    expect(mockEnable).toHaveBeenCalledTimes(1);
+    expect(mockDispose).toHaveBeenCalledTimes(1);
+    expect(leaveScreenSpy).toHaveBeenCalledTimes(1);
+
+    Object.defineProperty(input, 'isTTY', { value: originalInputTTY, configurable: true });
+    Object.defineProperty(process.stdout, 'isTTY', { value: originalOutputTTY, configurable: true });
+  });
+
   it('throws error when stdin or stdout is not a TTY', async () => {
     const originalInputTTY = input.isTTY;
 
