@@ -723,20 +723,20 @@ const runInteractiveClient = async (
   enterAlternateScreen();
   keys.enable();
 
-  const results = await session.search(query, initialCollection);
-  const collectionGroups = buildCollectionTree(results);
-  const flatVisibleTree = flattenTree(collectionGroups);
-
-  let searchState: SearchScreenState = {
-    query,
-    activeCollectionFilter: initialCollection,
-    results,
-    collectionGroups,
-    flatVisibleTree,
-    selectedIndex: 0
-  };
-
   try {
+    const results = await session.search(query, initialCollection);
+    const collectionGroups = buildCollectionTree(results);
+    const flatVisibleTree = flattenTree(collectionGroups);
+
+    let searchState: SearchScreenState = {
+      query,
+      activeCollectionFilter: initialCollection,
+      results,
+      collectionGroups,
+      flatVisibleTree,
+      selectedIndex: 0
+    };
+
     while (true) {
       const searchOutcome = await runSearchScreen(session, searchState, keys);
 
