@@ -72,6 +72,7 @@ const parseCliOptions = (
   const result: CliOptions = {
     modeOptions: { ...DEFAULT_OPTIONS.modeOptions },
     logging: { ...DEFAULT_OPTIONS.logging },
+    client: false,
     isHttp: false,
     toolModules: [],
     pluginIsolation: undefined
@@ -226,6 +227,9 @@ const parseCliOptions = (
         break;
       case '--context-management':
         result.contextManagement = true;
+        break;
+      case '--client':
+        result.client = true;
         break;
     }
   };

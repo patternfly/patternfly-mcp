@@ -5,7 +5,8 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import {
   registerResource,
   type McpToolCreator,
-  type McpResourceCreator
+  type McpResourceCreator,
+  type McpTransport
 } from './mcpSdk';
 import { setMetaResources } from './server.resourceMeta';
 import { startHttpTransport, type HttpServerHandle } from './server.http';
@@ -26,6 +27,7 @@ import { DEFAULT_OPTIONS } from './options.defaults';
 import { isZodRawShape, isZodSchema } from './server.schema';
 import { isPlainObject, timeoutFunction } from './server.helpers';
 import { createServerStats, type Stats } from './server.stats';
+import type { ClientInstance } from './client';
 import { stat, type StatReport } from './stats';
 import {
   builtinTools,
@@ -54,6 +56,7 @@ type ServerOptions = GlobalOptions;
  * @property {McpCollectionCreator[]} [collections] - An optional array of collection (of records') creators used by the server.
  * @property [enableSigint] - Indicates whether SIGINT signal handling is enabled.
  * @property [allowProcessExit] - Determines if the process is allowed to exit explicitly.
+ * @property [mcpChannel] - Optional transport channel instance (for tests or custom transport injection).
  */
 interface ServerSettings {
   tools?: McpToolCreator[];
@@ -61,6 +64,7 @@ interface ServerSettings {
   collections?: McpCollectionCreator[];
   enableSigint?: boolean;
   allowProcessExit?: boolean;
+  mcpChannel?: McpTransport;
 }
 
 /**
@@ -109,6 +113,7 @@ type ServerOnLog = (handler: ServerOnLogHandler) => () => void;
  * @property isRunning - Indicates whether the server is running.
  * @property {ServerGetStats} getStats - Resolves server stats.
  * @property {ServerOnLog} onLog - Subscribes to server logs. Automatically unsubscribed on server shutdown.
+ * @property createClient - Creates and attaches an in-process MCP client connected to this server.
  */
 interface ServerInstance {
   stop(): Promise<void>;
@@ -296,6 +301,27 @@ const registerServerTools = async (tools: McpToolCreator[], server: McpServer, o
   }
 };
 
+const createClient = async ({
+  running,
+  server,
+  allowProcessExit
+}: { running: boolean, server: McpServer, allowProcessExit: boolean }, options = getOptions()): Promise<ClientInstance | null> => {
+  if (!running || !server) {
+    throw new Error('Cannot create interactive client on a stopped or uninitialized MCP server instance.');
+  }
+
+  if (options.client) {
+    const { runClient } = await import('./client');
+
+    return await runClient.memo(options, {
+      server,
+      allowProcessExit
+    });
+  }
+
+  return null;
+};
+
 /**
  * Create and run the MCP server, register tools, and return a handle.
  *
@@ -311,21 +337,24 @@ const registerServerTools = async (tools: McpToolCreator[], server: McpServer, o
  * @param [settings.collections] - Built-in collections to register.
  * @param [settings.enableSigint] - Indicates whether SIGINT signal handling is enabled.
  * @param [settings.allowProcessExit] - Determines if the process is allowed to exit explicitly, useful for testing.
- * @param settings.resources
+ * @param [settings.resources] - Built-in resources to register.
+ * @param [settings.mcpChannel] - Optional transport channel instance for in-process or custom communication.
  * @returns Server instance with `stop()`, `getStats()` `isRunning()`, and `onLog()` subscription.
  */
-const runServer = async (options: ServerOptions = getOptions(), {
-  tools = builtinTools,
-  resources = builtinResources,
-  collections = builtinCollections,
-  enableSigint = true,
-  allowProcessExit = true
-}: ServerSettings = {}): Promise<ServerInstance> => {
+const runServer = async (options: ServerOptions = getOptions(), settings: ServerSettings = {}): Promise<ServerInstance> => {
+  const {
+    tools = builtinTools,
+    resources = builtinResources,
+    collections = builtinCollections,
+    enableSigint = true,
+    allowProcessExit = true
+  } = settings;
   const session = getSessionOptions();
 
   let server: McpServer | null = null;
-  let transport: StdioServerTransport | null = null;
+  let transport: StdioServerTransport | McpTransport | null = null;
   let httpHandle: HttpServerHandle | null = null;
+  let mcpClient: ClientInstance | null = null;
   let unsubscribeServerLogger: (() => void) | null = null;
   let unsubscribeServerStats: (() => void) | null = null;
   let sigintHandler: (() => void) | null = null;
@@ -350,6 +379,12 @@ const runServer = async (options: ServerOptions = getOptions(), {
         sigintHandler = null;
       }
 
+      if (mcpClient) {
+        log.debug('...closing in-process client');
+        await mcpClient.close().catch(() => {});
+        mcpClient = null;
+      }
+
       log.debug('...closing Server');
       await server?.close();
       running = false;
@@ -366,6 +401,13 @@ const runServer = async (options: ServerOptions = getOptions(), {
   try {
     const enableProtocolLogging = options?.logging?.protocol;
     const serverInstructions = options?.serverInstanceOptions?.instructions;
+    let serverProcess: 'in-process' | 'HTTP' | 'stdio' = 'in-process';
+
+    if (options?.isHttp) {
+      serverProcess = 'HTTP';
+    } else if (!options?.client) {
+      serverProcess = 'stdio';
+    }
 
     server = new McpServer(
       {
@@ -456,9 +498,17 @@ const runServer = async (options: ServerOptions = getOptions(), {
       process.on('SIGINT', sigintHandler);
     }
 
-    if (options.isHttp) {
+    if (settings.mcpChannel) {
+      transport = settings.mcpChannel;
+      await timeoutFunction(
+        server.connect(transport),
+        {
+          errorMessage: 'MCP channel connection timed out.'
+        }
+      );
+    } else if (serverProcess === 'HTTP') {
       httpHandle = await startHttpTransport(server, options);
-    } else {
+    } else if (serverProcess === 'stdio') {
       transport = new StdioServerTransport();
 
       await timeoutFunction(
@@ -469,17 +519,19 @@ const runServer = async (options: ServerOptions = getOptions(), {
       );
     }
 
-    if (!httpHandle && !transport) {
+    if (!httpHandle && !transport && !options.client) {
       throw new Error('No transport available');
     }
 
     running = true;
-    log.info(`${options.name} server running on ${options.isHttp ? 'HTTP' : 'stdio'} transport`);
+    log.info(`${options.name} server running on ${serverProcess} transport`);
     statsTracker.startStats(httpHandle);
   } catch (error) {
     log.error(`Error creating ${options.name} server:`, error);
     throw error;
   }
+
+  mcpClient = await createClient({ running, server, allowProcessExit }, options);
 
   return {
     async stop(): Promise<void> {
