@@ -337,8 +337,8 @@ const createMcpChannel = (): McpChannel => {
     serverChannel,
     close: async (): Promise<void> => {
       await Promise.allSettled([
-        clientChannel.close().catch(() => {}),
-        serverChannel.close().catch(() => {})
+        clientChannel.close(),
+        serverChannel.close()
       ]);
     }
   };
