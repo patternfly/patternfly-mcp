@@ -1,12 +1,30 @@
+import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
+import { type Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import {
   ResourceTemplate,
   type McpServer,
   type ResourceMetadata,
   type CompleteResourceTemplateCallback
 } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { type Tool } from '@modelcontextprotocol/sdk/types.js';
+import { type Tool, type ReadResourceResult } from '@modelcontextprotocol/sdk/types.js';
+import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { type CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { type GlobalOptions } from './options';
 import { listAllCombinations, listIncrementalCombinations, splitUri } from './server.helpers';
+
+/**
+ * Transport layer for MCP communication.
+ *
+ * @alias Transport
+ */
+type McpTransport = Transport;
+
+/**
+ * Result returned by an MCP client after calling a tool.
+ *
+ * @alias CallToolResult
+ */
+type McpClientCallToolResult = CallToolResult;
 
 /**
  * A tool registered with the MCP server.
@@ -167,6 +185,41 @@ type McpResource = [
 type McpResourceCreator = ((options?: GlobalOptions) => McpResource) & { resourceName?: string };
 
 /**
+ * In-memory bidirectional communication channel for in-process MCP client-server communication.
+ *
+ * @interface McpChannel
+ * @property clientChannel - Transport channel for the client end.
+ * @property serverChannel - Transport channel for the server end.
+ * @property close - Teardown callback that safely closes both ends of the channel.
+ */
+interface McpChannel {
+  clientChannel: McpTransport;
+  serverChannel: McpTransport;
+  close: () => Promise<void>;
+}
+
+/**
+ * Resolved result of an MCP client resource read operation.
+ *
+ * @alias ReadResourceResult
+ */
+type McpClientCallResourceResult = ReadResourceResult;
+
+/**
+ * Content item from an MCP client resource read operation.
+ *
+ * @alias ReadResourceResult['contents']
+ */
+type McpClientCallResourceResultContent = McpClientCallResourceResult['contents'];
+
+/**
+ * An MCP client on top of a pluggable transport
+ *
+ * @alias Client
+ */
+const McpClient = Client;
+
+/**
  * Register an MCP resource.
  *
  * Capable of registering specific resource variations indicated when a URI template is used,
@@ -262,15 +315,52 @@ const registerResource = (
   server.registerResource(name, uriOrTemplate as any, config, callback);
 };
 
+/**
+ * Creates a linked in-memory communication channel for in-process MCP client-server communication.
+ * Encapsulates SDK transport wiring and lifecycle teardown.
+ *
+ * @returns {McpChannel} Linked channel with client, server, and unified close handles
+ */
+const createMcpChannel = (): McpChannel => {
+  let channels: [InMemoryTransport, InMemoryTransport];
+
+  try {
+    channels = InMemoryTransport.createLinkedPair();
+  } catch (error) {
+    throw new Error(`Failed to create MCP channel: ${error}`);
+  }
+
+  const [clientChannel, serverChannel] = channels;
+
+  return {
+    clientChannel,
+    serverChannel,
+    close: async (): Promise<void> => {
+      await Promise.allSettled([
+        clientChannel.close(),
+        serverChannel.close()
+      ]);
+    }
+  };
+};
+
 export {
+  createMcpChannel,
+  type McpChannel,
   registerResource,
+  McpClient,
+  type McpClientCallToolResult,
+  type McpClientCallResourceResult,
+  type McpClientCallResourceResultContent,
   type McpTool,
   type McpToolCreator,
+  type McpTransport,
   type McpResourceListResult,
   type McpResourceMetadataMetaConfig,
   type McpResourceMetadata,
   type McpResourceMetadataComplete,
   type McpResourceMetadataCompleteMemo,
   type McpResource,
-  type McpResourceCreator
+  type McpResourceCreator,
+  type McpServer
 };

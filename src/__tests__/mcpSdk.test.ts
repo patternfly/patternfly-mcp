@@ -1,6 +1,7 @@
+import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { UriTemplate } from '@modelcontextprotocol/sdk/shared/uriTemplate.js';
-import { registerResource } from '../mcpSdk';
+import { createMcpChannel, registerResource } from '../mcpSdk';
 
 describe('registerResource', () => {
   // If this test starts to fail, indicating it is matching partial queries, then the next step is to
@@ -147,5 +148,23 @@ describe('registerResource', () => {
     expect(calls).toContain('patternfly://test{?b}');
     expect(calls).toContain('patternfly://test{?a}');
     expect(calls).toContain('patternfly://test');
+  });
+});
+
+describe('createMcpChannel', () => {
+  it('creates linked channels and closes cleanly', async () => {
+    const channel = createMcpChannel();
+
+    expect(channel.clientChannel).toBeDefined();
+    expect(channel.serverChannel).toBeDefined();
+    await expect(channel.close()).resolves.toBeUndefined();
+  });
+
+  it('handles error when creating linked pair fails', () => {
+    jest.spyOn(InMemoryTransport, 'createLinkedPair').mockImplementationOnce(() => {
+      throw new Error('Connection failed');
+    });
+
+    expect(() => createMcpChannel()).toThrow('Failed to create MCP channel: Error: Connection failed');
   });
 });
