@@ -16,6 +16,9 @@ Found 2 collections with 5 related resources. Use the attached resources to acce
     "type": "text",
   },
   {
+    "_meta": {
+      "groupId": "654321",
+    },
     "description": "A resource collection series for Lorem Button",
     "groupId": "654321",
     "mimeType": "text/markdown",
@@ -24,6 +27,11 @@ Found 2 collections with 5 related resources. Use the attached resources to acce
     "uri": "patternfly://docs/654321",
   },
   {
+    "_meta": {
+      "groupId": "654321",
+      "primaryCollection": "patternfly-docs",
+      "recordId": undefined,
+    },
     "description": "Design Guidelines",
     "groupId": "654321",
     "mimeType": "text/markdown",
@@ -33,6 +41,11 @@ Found 2 collections with 5 related resources. Use the attached resources to acce
     "uri": "patternfly://docs/e34567",
   },
   {
+    "_meta": {
+      "groupId": "654321",
+      "primaryCollection": "patternfly-docs",
+      "recordId": undefined,
+    },
     "description": "Design Guidelines",
     "groupId": "654321",
     "mimeType": "text/markdown",
@@ -42,6 +55,11 @@ Found 2 collections with 5 related resources. Use the attached resources to acce
     "uri": "patternfly://docs/34567",
   },
   {
+    "_meta": {
+      "groupId": "654321",
+      "primaryCollection": "patternfly-docs",
+      "recordId": "654321",
+    },
     "description": "Component JSON schema with property definitions for Lorem Button.",
     "groupId": "654321",
     "mimeType": "text/markdown",
@@ -50,6 +68,9 @@ Found 2 collections with 5 related resources. Use the attached resources to acce
     "uri": "patternfly://schemas/678e90",
   },
   {
+    "_meta": {
+      "groupId": "123456",
+    },
     "description": "A resource collection series for Button",
     "groupId": "123456",
     "mimeType": "text/markdown",
@@ -58,6 +79,11 @@ Found 2 collections with 5 related resources. Use the attached resources to acce
     "uri": "patternfly://docs/123456",
   },
   {
+    "_meta": {
+      "groupId": "123456",
+      "primaryCollection": "patternfly-docs",
+      "recordId": undefined,
+    },
     "description": "Design Guidelines",
     "groupId": "123456",
     "mimeType": "text/markdown",
@@ -67,6 +93,11 @@ Found 2 collections with 5 related resources. Use the attached resources to acce
     "uri": "patternfly://docs/34567b",
   },
   {
+    "_meta": {
+      "groupId": "123456",
+      "primaryCollection": "patternfly-docs",
+      "recordId": "123456",
+    },
     "description": "Component JSON schema with property definitions for Button.",
     "groupId": "123456",
     "mimeType": "text/markdown",
