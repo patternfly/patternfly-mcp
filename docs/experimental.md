@@ -64,6 +64,7 @@ npx -y @patternfly/patternfly-mcp@latest --experimental-client
 import { start } from '@patternfly/patternfly-mcp';
 
 const server = await start({
+  mode: 'cli',
   experimentalClient: true
 });
 ```
