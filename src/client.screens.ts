@@ -701,7 +701,7 @@ const runInteractiveClient = async (
   initialCollection?: string
 ): Promise<void> => {
   if (!input.isTTY || !output.isTTY) {
-    throw new Error('Interactive pf-client requires a TTY. Use `pf-client search <query> --json` for scripts.');
+    throw new Error('Interactive client requires a TTY.');
   }
 
   let query = initialQuery.trim();

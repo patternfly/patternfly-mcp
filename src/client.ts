@@ -176,7 +176,7 @@ const renderClientResourceText = (contents: McpClientCallResourceResultContent):
       try {
         parts.push(Buffer.from(content.blob, 'base64').toString('utf8'));
       } catch {
-        parts.push('[Binary resource blob — use `pf-client read <uri>` in a shell to redirect output to a file.]');
+        parts.push('[Binary resource blob; unable to render as text.]');
       }
     }
   }

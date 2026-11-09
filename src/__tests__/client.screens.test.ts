@@ -904,7 +904,7 @@ describe('runInteractiveClient', () => {
 
     Object.defineProperty(input, 'isTTY', { value: false, configurable: true });
 
-    await expect(runInteractiveClient({} as any)).rejects.toThrow('Interactive pf-client requires a TTY');
+    await expect(runInteractiveClient({} as any)).rejects.toThrow('Interactive client requires a TTY');
 
     Object.defineProperty(input, 'isTTY', { value: originalInputTTY, configurable: true });
   });
