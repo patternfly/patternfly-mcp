@@ -569,7 +569,7 @@ runServer.memo = memo(
       log.debug(`Server memo: ${JSON.stringify(info, null, 2)}`);
     },
     onCacheRollout: async ({ removed }) => {
-      const results: PromiseSettledResult<ServerInstance>[] = await Promise.allSettled(removed);
+      const results: PromiseSettledResult<ServerInstance>[] = await Promise.allSettled(removed.values());
 
       for (const result of results) {
         if (result.status === 'fulfilled') {
