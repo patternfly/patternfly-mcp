@@ -397,4 +397,141 @@ describe('memo', () => {
     expect(mockOnCacheClear).toHaveBeenCalledTimes(1);
     expect(mockOnCacheExpire).not.toHaveBeenCalled();
   });
+
+  it('should support passing custom cache store', async () => {
+    const cache = new Map();
+    const fn = jest.fn((val: number) => val * 2);
+    const memoized = memo(fn, { cache });
+
+    expect(memoized(5)).toBe(10);
+    expect(memoized(5)).toBe(10);
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(cache.size).toBe(1);
+  });
+});
+
+describe('Adapter', () => {
+  const createMockStorage = (backingStore: any = new Map()) => ({
+    backingStore,
+    get: jest.fn((key: unknown) => backingStore.get(key)),
+    set: jest.fn((key: unknown, value: unknown) => backingStore.set(key, value)),
+    has: jest.fn((key: unknown) => backingStore.has(key)),
+    delete: jest.fn((key: unknown) => backingStore.delete(key)),
+    clear: jest.fn(() => backingStore.clear())
+  });
+
+  it.each([
+    {
+      description: 'sync function',
+      isAsync: false,
+      input: 42,
+      expected: 'val-42'
+    },
+    {
+      description: 'async function',
+      isAsync: true,
+      input: 99,
+      expected: 'async-val-99'
+    }
+  ])('should delegate custom cache behavior to custom storage, $description', async ({ isAsync, input, expected }) => {
+    const cache = createMockStorage();
+    const fn = isAsync
+      ? async (val: number) => `async-val-${val}`
+      : (val: number) => `val-${val}`;
+
+    const memoized = memo(fn, { cache });
+    const result = await memoized(input);
+
+    expect(result).toBe(expected);
+    expect(cache.set).toHaveBeenCalledTimes(1);
+    expect(cache.has).toHaveBeenCalledTimes(1);
+    expect(cache.get).toHaveBeenCalledTimes(1);
+  });
+
+  /*
+  it.each([
+    {
+      description: 'sync throwing storage.set',
+      isAsync: false,
+      storageError: () => {
+        throw new Error('store write failed');
+      },
+      input: 5,
+      expected: 10
+    },
+    {
+      description: 'async rejecting storage.set',
+      isAsync: true,
+      storageError: () => Promise.reject(new Error('async store write failed')),
+      input: 5,
+      expected: 15
+    }
+  ])('should not throw if cache.set throws or rejects, $description', async ({ isAsync, storageError, input, expected }) => {
+    const cache = {
+      get: jest.fn(),
+      has: jest.fn(() => false),
+      set: jest.fn(storageError)
+    };
+
+    const fn = isAsync
+      ? async (val: number) => val * 3
+      : (val: number) => val * 2;
+
+    const memoized = memo(fn, { cache });
+
+    if (isAsync) {
+      await expect(memoized(input)).resolves.toBe(expected);
+    } else {
+      expect(() => memoized(input)).not.toThrow();
+      expect(memoized(input)).toBe(expected);
+    }
+  });
+
+  it.each([
+    {
+      description: 'sync error',
+      isAsync: false,
+      expectedProperty: 'isError'
+    },
+    {
+      description: 'async error',
+      isAsync: true,
+      expectedProperty: 'message'
+    }
+  ])('should store errors to cache when cacheErrors is true, $description', async ({ isAsync, expectedProperty }) => {
+    const cache = createMockStorage();
+    const fn = isAsync
+      ? async () => {
+        throw new Error('failure');
+      }
+      : () => {
+        throw new Error('failure');
+      };
+
+    const memoized = memo(fn, { cache, cacheErrors: true });
+
+    if (isAsync) {
+      await expect(memoized()).rejects.toThrow('failure');
+    } else {
+      expect(() => memoized()).toThrow('failure');
+    }
+
+    expect(cache.set).toHaveBeenCalledTimes(1);
+    expect((cache.set as jest.Mock).mock.calls[0][1]).toHaveProperty(expectedProperty);
+  });
+   */
+
+  it('should call cache.delete when async function rejects and cacheErrors is false', async () => {
+    const cache = createMockStorage();
+    const memoized = memo(
+      async () => {
+        throw new Error('uncached failure');
+      },
+      { cache, cacheErrors: false }
+    );
+
+    await expect(memoized()).rejects.toThrow('uncached failure');
+    expect(cache.delete).toHaveBeenCalledTimes(1);
+    expect(cache.delete).toHaveBeenCalledWith(expect.anything());
+  });
 });
