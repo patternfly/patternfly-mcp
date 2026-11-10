@@ -1,4 +1,4 @@
-import { memo, normalizeMemoCache } from '../server.caching';
+import { memo, memoUnwrapAdapter, normalizeMemoCache } from '../server.caching';
 
 describe('memo', () => {
   beforeEach(() => {
@@ -540,5 +540,310 @@ describe('normalizeMemoCache', () => {
 
     expect(mockDebug).toHaveBeenCalledTimes(3);
     expect(mockDebug).toHaveBeenCalledWith(expect.objectContaining({ type: 'memo cache error' }));
+  });
+});
+
+describe('memoUnwrapAdapter', () => {
+  const createMockStorage = (backingStore: any = new Map()) => ({
+    backingStore,
+    get: jest.fn((key: unknown) => backingStore.get(key)),
+    set: jest.fn((key: unknown, value: unknown) => backingStore.set(key, value)),
+    has: jest.fn((key: unknown) => backingStore.has(key)),
+    delete: jest.fn((key: unknown) => backingStore.delete(key)),
+    clear: jest.fn(() => backingStore.clear()),
+    keys: jest.fn(() => backingStore.keys()),
+    entries: jest.fn(() => backingStore.entries()),
+    get size() {
+      return backingStore.size;
+    }
+  });
+
+  it.each([
+    {
+      description: 'sync function',
+      isAsync: false,
+      input: 42,
+      expected: 'val-42'
+    },
+    {
+      description: 'async function',
+      isAsync: true,
+      input: 99,
+      expected: 'async-val-99'
+    }
+  ])('should delegate custom cache behavior to custom storage, $description', async ({ isAsync, input, expected }) => {
+    const cache = createMockStorage();
+    const fn = isAsync
+      ? async (val: number) => `async-val-${val}`
+      : (val: number) => `val-${val}`;
+
+    const memoized = memo(fn, { cache });
+    const result = await memoized(input);
+
+    expect(result).toBe(expected);
+    expect(cache.set).toHaveBeenCalledTimes(1);
+    expect(cache.has).toHaveBeenCalledTimes(1);
+    expect(cache.get).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
+    {
+      description: 'sync throwing storage.set',
+      isAsync: false,
+      storageError: () => {
+        throw new Error('store write failed');
+      },
+      input: 5,
+      expected: 10
+    },
+    {
+      description: 'async rejecting storage.set',
+      isAsync: true,
+      storageError: () => Promise.reject(new Error('async store write failed')),
+      input: 5,
+      expected: 15
+    }
+  ])('should not throw if targetStore.set throws or rejects, $description', async ({ isAsync, storageError, input, expected }) => {
+    const targetStore = {
+      get: jest.fn(),
+      has: jest.fn(() => false),
+      set: jest.fn(storageError)
+    };
+    const cache = memoUnwrapAdapter(targetStore);
+
+    const fn = isAsync
+      ? async (val: number) => val * 3
+      : (val: number) => val * 2;
+
+    const memoized = memo(fn, { cache });
+
+    if (isAsync) {
+      await expect(memoized(input)).resolves.toBe(expected);
+    } else {
+      expect(() => memoized(input)).not.toThrow();
+      expect(memoized(input)).toBe(expected);
+    }
+  });
+
+  it.each([
+    {
+      description: 'sync error',
+      isAsync: false,
+      expectedProperty: 'isError'
+    },
+    {
+      description: 'async error',
+      isAsync: true,
+      expectedProperty: 'message'
+    }
+  ])('should store errors to targetStore when cacheErrors is true, $description', async ({ isAsync, expectedProperty }) => {
+    const targetStore = createMockStorage();
+    const cache = memoUnwrapAdapter(targetStore, { cacheErrors: true });
+    const fn = isAsync
+      ? async () => {
+        throw new Error('failure');
+      }
+      : () => {
+        throw new Error('failure');
+      };
+
+    const memoized = memo(fn, { cache, cacheErrors: true });
+
+    if (isAsync) {
+      await expect(memoized()).rejects.toThrow('failure');
+    } else {
+      expect(() => memoized()).toThrow('failure');
+    }
+
+    expect(targetStore.set).toHaveBeenCalledTimes(1);
+    expect((targetStore.set as jest.Mock).mock.calls[0][1]).toHaveProperty(expectedProperty);
+  });
+
+  it.each([
+    {
+      description: 'sync function',
+      isAsync: false,
+      input: 42,
+      expected: 'val-42'
+    },
+    {
+      description: 'async function',
+      isAsync: true,
+      input: 99,
+      expected: 'async-val-99'
+    }
+  ])('should unwrap and persist resolved concrete values to targetStore, $description', async ({ isAsync, input, expected }) => {
+    const targetStore = createMockStorage();
+    const cache = memoUnwrapAdapter(targetStore);
+    const fn = isAsync
+      ? async (val: number) => `async-val-${val}`
+      : (val: number) => `val-${val}`;
+
+    const memoized = memo(fn, { cache });
+    const result = await memoized(input);
+
+    expect(result).toBe(expected);
+    expect(targetStore.set).toHaveBeenCalledTimes(1);
+    expect(targetStore.set).toHaveBeenCalledWith(expect.anything(), expected);
+  });
+
+  it('should hydrate from pre-populated targetStore on cache miss without calling func', async () => {
+    const targetStore = createMockStorage();
+
+    targetStore.backingStore.set('custom-key', 'pre-stored-value');
+
+    const fnSpy = jest.fn();
+    const fn = async (_val: string) => {
+      fnSpy(_val);
+
+      return 'new-value';
+    };
+
+    const cache = memoUnwrapAdapter(targetStore);
+    const memoized = memo(fn, {
+      cache,
+      keyHash: args => args[0]
+    });
+
+    const result = await memoized('custom-key');
+
+    expect(result).toBe('pre-stored-value');
+    expect(fnSpy).not.toHaveBeenCalled();
+    expect(targetStore.get).toHaveBeenCalledWith('custom-key');
+  });
+
+  it('should coalesce concurrent asynchronous calls to the same key into a single execution', async () => {
+    let resolveCall: ((val: string) => void) | undefined;
+    const fnSpy = jest.fn();
+    const fn = async (_val: string) => new Promise<string>(resolve => {
+      fnSpy(_val);
+      resolveCall = resolve;
+    });
+
+    const targetStore = createMockStorage();
+    const cache = memoUnwrapAdapter(targetStore);
+    const memoized = memo(fn, { cache });
+
+    const p1 = memoized('concurrent-key');
+    const p2 = memoized('concurrent-key');
+    const p3 = memoized('concurrent-key');
+
+    resolveCall?.('concurrent-result');
+
+    const [first, second, third] = await Promise.all([p1, p2, p3]);
+
+    expect(first).toBe('concurrent-result');
+    expect(second).toBe('concurrent-result');
+    expect(third).toBe('concurrent-result');
+    expect(fnSpy).toHaveBeenCalledTimes(1);
+    expect(targetStore.set).toHaveBeenCalledTimes(1);
+    expect(targetStore.set).toHaveBeenCalledWith(expect.anything(), 'concurrent-result');
+  });
+
+  it('should call targetStore.delete when async function rejects and cacheErrors is false', async () => {
+    const targetStore = createMockStorage();
+    const cache = memoUnwrapAdapter(targetStore, { cacheErrors: false });
+    const memoized = memo(
+      async () => {
+        throw new Error('uncached failure');
+      },
+      { cache, cacheErrors: false }
+    );
+
+    await expect(memoized()).rejects.toThrow('uncached failure');
+    expect(targetStore.delete).toHaveBeenCalledTimes(1);
+    expect(targetStore.delete).toHaveBeenCalledWith(expect.anything());
+    expect(targetStore.set).not.toHaveBeenCalled();
+  });
+
+  it('should support Promise-based targetStore', async () => {
+    const targetStore = createMockStorage();
+    const targetStorePromise = Promise.resolve(targetStore);
+    const cache = memoUnwrapAdapter(targetStorePromise);
+
+    const fn = async (val: number) => `promise-store-${val}`;
+    const memoized = memo(fn, { cache });
+
+    const result = await memoized(100);
+
+    expect(result).toBe('promise-store-100');
+    expect(targetStore.set).toHaveBeenCalledTimes(1);
+    expect(targetStore.set).toHaveBeenCalledWith(expect.anything(), 'promise-store-100');
+  });
+
+  it('should delegate delete and clear to targetStore', () => {
+    const targetStore = createMockStorage();
+
+    targetStore.backingStore.set('del-key', 'del-val');
+    const cache = memoUnwrapAdapter(targetStore);
+
+    expect(cache.has('del-key')).toBe(true);
+    cache.delete?.('del-key');
+    expect(targetStore.delete).toHaveBeenCalledWith('del-key');
+    expect(cache.has('del-key')).toBe(false);
+
+    targetStore.backingStore.set('clr-key', 'clr-val');
+    cache.clear?.();
+    expect(targetStore.clear).toHaveBeenCalled();
+    expect(cache.has('clr-key')).toBe(false);
+  });
+
+  it('should expose Map-like size, keys, and entries', () => {
+    const targetStore = createMockStorage();
+
+    targetStore.backingStore.set('k1', 'v1');
+    const cache = memoUnwrapAdapter(targetStore);
+
+    cache.set('k2', 'v2');
+
+    expect(cache.size).toBe(1);
+    expect(Array.from(cache.keys?.() || [])).toEqual(['k2']);
+
+    // Hydrating k1 from targetStore pulls it into the active in-memory cache window
+    expect(cache.get('k1')).toBe('v1');
+    expect(cache.size).toBe(2);
+    expect(Array.from(cache.keys?.() || [])).toEqual(expect.arrayContaining(['k1', 'k2']));
+    expect(Array.from(cache.entries?.() || [])).toEqual(expect.arrayContaining([
+      ['k1', 'v1'],
+      ['k2', 'v2']
+    ]));
+  });
+
+  it('should preserve falsy values and undefined in targetStore and inMemory', async () => {
+    const targetStore = createMockStorage();
+    const cache = memoUnwrapAdapter(targetStore);
+
+    const fnUndefined = jest.fn(async () => undefined);
+    const memoUndefined = memo(fnUndefined, { cache });
+
+    expect(await memoUndefined()).toBeUndefined();
+    expect(await memoUndefined()).toBeUndefined();
+    expect(fnUndefined).toHaveBeenCalledTimes(1);
+    expect(targetStore.set).toHaveBeenCalledWith(expect.anything(), undefined);
+
+    const fnEmpty = jest.fn(async () => '');
+    const memoEmpty = memo(fnEmpty, {
+      cache,
+      keyHash: () => 'empty-key'
+    });
+
+    expect(await memoEmpty()).toBe('');
+    expect(await memoEmpty()).toBe('');
+    expect(fnEmpty).toHaveBeenCalledTimes(1);
+    expect(targetStore.set).toHaveBeenCalledWith(expect.anything(), '');
+  });
+
+  it('should call cache.delete when async function rejects and cacheErrors is false', async () => {
+    const cache = createMockStorage();
+    const memoized = memo(
+      async () => {
+        throw new Error('uncached failure');
+      },
+      { cache, cacheErrors: false }
+    );
+
+    await expect(memoized()).rejects.toThrow('uncached failure');
+    expect(cache.delete).toHaveBeenCalledTimes(1);
+    expect(cache.delete).toHaveBeenCalledWith(expect.anything());
   });
 });
