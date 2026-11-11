@@ -21,6 +21,9 @@ on:
       - 'package.json'
       - 'package-lock.json'
 
+permissions:
+  contents: read
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -87,7 +90,6 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=semver,pattern={{major}}.{{minor}}.{{patch}}
-            type=raw,value=latest
 
       - name: Setup QEMU for multi-arch
         uses: docker/setup-qemu-action@v4
