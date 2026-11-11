@@ -244,7 +244,7 @@ describe('Builtin tools, STDIO', () => {
     },
     {
       description: 'hash search query',
-      searchQuery: '3ca3928cad9f1dba8587c6080d2c213283f09260',
+      searchQuery: '7cce81cfe170d31e350059128f17a752fa9de93c',
       contains: [
         'Showing 1 exact match',
         '**button**'
@@ -260,7 +260,7 @@ describe('Builtin tools, STDIO', () => {
     },
     {
       description: 'uri search query',
-      searchQuery: 'patternfly://docs/3ca3928cad9f1dba8587c6080d2c213283f09260',
+      searchQuery: 'patternfly://docs/7cce81cfe170d31e350059128f17a752fa9de93c',
       contains: [
         'Showing 1 exact match',
         '**button**'
@@ -268,9 +268,9 @@ describe('Builtin tools, STDIO', () => {
     },
     {
       description: 'partial uri search query',
-      searchQuery: 'patternfly://docs/3ca3928',
+      searchQuery: 'patternfly://docs/7cce81c',
       contains: [
-        'No collection resources found matching "patternfly://docs/3ca3928"',
+        'No collection resources found matching "patternfly://docs/7cce81c"',
         'Use a search all'
       ]
     }
@@ -290,7 +290,7 @@ describe('Builtin tools, STDIO', () => {
   });
 
   it('should stay stable across repeated and concurrent sha1 searches', async () => {
-    const entryHash = '3ca3928cad9f1dba8587c6080d2c213283f09260';
+    const entryHash = '7cce81cfe170d31e350059128f17a752fa9de93c';
     const queries = [
       entryHash,
       `patternfly://docs/${entryHash}`,
@@ -474,7 +474,7 @@ describe('Builtin resources, STDIO', () => {
     });
     const content = response?.result.contents[0];
 
-    expect(content.uri).toBe('patternfly://docs/3ca3928cad9f1dba8587c6080d2c213283f09260');
+    expect(content.uri).toBe('patternfly://docs/7cce81cfe170d31e350059128f17a752fa9de93c');
     expect(content.text).toContain('This is a test document for mocking remote HTTP requests');
   });
 
