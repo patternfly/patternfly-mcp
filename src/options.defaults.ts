@@ -538,8 +538,8 @@ const CHANNEL_BASENAME = 'pf-mcp';
  */
 const PATTERNFLY_OPTIONS: PatternFlyOptions = {
   api: {
-    base: 'https://api.patternfly.org/api',
-    versions: 'https://api.patternfly.org/api/versions',
+    base: 'https://main.patternfly-org.pages.dev/api',
+    versions: 'https://main.patternfly-org.pages.dev/api/versions',
     componentPaths: [
       'props',
       'css'

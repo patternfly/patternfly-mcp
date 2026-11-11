@@ -25,7 +25,7 @@ exports[`getPatternFlyApiRecords should attempt to convert expanded embedded rec
           "description": "Dolor sit component description",
           "displayName": "Dolor",
           "id": "api::v1::components::dolor::react",
-          "path": "https://api.patternfly.org/api/v1/components/Dolor/react",
+          "path": "https://main.patternfly-org.pages.dev/api/v1/components/Dolor/react",
           "pathSlug": "components-dolor-react",
           "qualityScore": 1,
           "section": "components",
@@ -35,7 +35,7 @@ exports[`getPatternFlyApiRecords should attempt to convert expanded embedded rec
       ],
     },
     "id": "api::v1::components::dolor::react",
-    "sourceId": "https://api.patternfly.org/api/v1/components/Dolor/react",
+    "sourceId": "https://main.patternfly-org.pages.dev/api/v1/components/Dolor/react",
     "sourceType": "api",
   },
 ]

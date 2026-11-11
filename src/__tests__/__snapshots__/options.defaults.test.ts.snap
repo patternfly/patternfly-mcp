@@ -53,7 +53,7 @@ exports[`options defaults should return specific properties: defaults 1`] = `
   "nodeVersionPreferred": 22,
   "patternflyOptions": {
     "api": {
-      "base": "https://api.patternfly.org/api",
+      "base": "https://main.patternfly-org.pages.dev/api",
       "componentPaths": [
         "props",
         "css",
@@ -69,7 +69,7 @@ exports[`options defaults should return specific properties: defaults 1`] = `
       "traversalPaths": [
         "examples",
       ],
-      "versions": "https://api.patternfly.org/api/versions",
+      "versions": "https://main.patternfly-org.pages.dev/api/versions",
     },
     "availableResourceVersions": [
       "6.0.0",
