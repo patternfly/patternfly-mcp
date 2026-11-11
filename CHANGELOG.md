@@ -1,6 +1,73 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.6.0](https://github.com/patternfly/patternfly-mcp/compare/7de9d8c9bcacd7a18e5d91f0e610458367d03446...8aec07ef3d60d03164169559b55b2f9c162bec03) (2026-11-11)
+
+
+### Tests
+*  felt-3609 suppress raw terminal stdout ([#378](https://github.com/patternfly/patternfly-mcp/pull/378)) ([2eaba9e](https://github.com/patternfly/patternfly-mcp/commit/2eaba9e649bfaee784113476d780a696ead7290d))
+
+### Reverts
+* **collections** pf-4720 restore pf api subdomain ([#385](https://github.com/patternfly/patternfly-mcp/pull/385)) ([944f78b](https://github.com/patternfly/patternfly-mcp/commit/944f78ba3983af8724e312a5ac119060d58b2ca9))
+
+### Features
+* **client** felt-3609 activate terminal mcp client ([#377](https://github.com/patternfly/patternfly-mcp/pull/377)) ([8af886a](https://github.com/patternfly/patternfly-mcp/commit/8af886a368a295f46824b6313a13afa1e346d351))
+* **tools** felt-3609 searchPatternFly, expand metadata ([#381](https://github.com/patternfly/patternfly-mcp/pull/381)) ([1ff5f06](https://github.com/patternfly/patternfly-mcp/commit/1ff5f065bb2143d76df298426f311535f2a19a71))
+* **client** felt-3609 interactive terminal mcp client ([#380](https://github.com/patternfly/patternfly-mcp/pull/380)) ([3e1c587](https://github.com/patternfly/patternfly-mcp/commit/3e1c5875cb926aaad33fbc0a7578bae6c774f3a4))
+* **mcpSdk** felt-3609 in-memory transport channel ([#379](https://github.com/patternfly/patternfly-mcp/pull/379)) ([03638b4](https://github.com/patternfly/patternfly-mcp/commit/03638b4da93ba151b631ec9e7841100ee2d9acad))
+* **tooling** pf-4720 pf-docs collections ([#352](https://github.com/patternfly/patternfly-mcp/pull/352)) ([e281814](https://github.com/patternfly/patternfly-mcp/commit/e281814be554ccb5ccb4ff4e8ec4a783bf695e4d))
+* **collections** pf-4720 pass previous collection state to callbacks ([#358](https://github.com/patternfly/patternfly-mcp/pull/358)) ([f93439b](https://github.com/patternfly/patternfly-mcp/commit/f93439b5935bc22c61d09e1104b0cd25edf32174))
+* **deferTask** pf-4720 allow dynamic context ([#357](https://github.com/patternfly/patternfly-mcp/pull/357)) ([27582ee](https://github.com/patternfly/patternfly-mcp/commit/27582eed3f51bf4640123037b8e5c40f8919869a))
+* **tooling** pf-4720 pf-api collections ([#351](https://github.com/patternfly/patternfly-mcp/pull/351)) ([3cd8a66](https://github.com/patternfly/patternfly-mcp/commit/3cd8a66fb62275e49ecd7cbe9ff273ad560ad999))
+* **logger** pf-4589 support sanitized logs ([#315](https://github.com/patternfly/patternfly-mcp/pull/315)) ([09f0d3b](https://github.com/patternfly/patternfly-mcp/commit/09f0d3ba28499f2d69edad6f5d5a09aa212b39d3))
+
+### Documentation
+*  felt-3609 apply mode to client example ([#382](https://github.com/patternfly/patternfly-mcp/pull/382)) ([5ab883a](https://github.com/patternfly/patternfly-mcp/commit/5ab883aa7d8fbcb60ce7cad36dd3ca59f287662c))
+*  pf-4725 release maintenance and post-release checklist ([#354](https://github.com/patternfly/patternfly-mcp/pull/354)) ([a82aef9](https://github.com/patternfly/patternfly-mcp/commit/a82aef9f211c67cc125c8b379e01e4417ae53eec))
+* **architecture** pf-4710 update AIX standards guidance and links ([#335](https://github.com/patternfly/patternfly-mcp/pull/335)) ([9c223c0](https://github.com/patternfly/patternfly-mcp/commit/9c223c0cda7fc5135c0b9df04933655a5a187c96))
+*  pf-4710 sync mcp functionality ([#342](https://github.com/patternfly/patternfly-mcp/pull/342)) ([56660de](https://github.com/patternfly/patternfly-mcp/commit/56660de4f27722ad664ce3e09b59753de52f903b))
+
+### Continuous Integrations
+*  pf-4355 container publish workflow ([#374](https://github.com/patternfly/patternfly-mcp/pull/374)) ([3052438](https://github.com/patternfly/patternfly-mcp/commit/305243840b8f0bb83d6c85320027223d6a8104ec))
+*  apply workflow timeouts ([#366](https://github.com/patternfly/patternfly-mcp/pull/366)) ([b859a3d](https://github.com/patternfly/patternfly-mcp/commit/b859a3d164372002786cfe64f242004e2152804d))
+
+### Code Refactoring
+* **collections** pf-4720 reseed pf api, pf docs ([#350](https://github.com/patternfly/patternfly-mcp/pull/350)) ([8aec07e](https://github.com/patternfly/patternfly-mcp/commit/8aec07ef3d60d03164169559b55b2f9c162bec03))
+* **fetch** pf-4589 sanitize error messages, logs ([#317](https://github.com/patternfly/patternfly-mcp/pull/317)) ([428617d](https://github.com/patternfly/patternfly-mcp/commit/428617d3721d66e4d87185a75d8f8637cc163ef5))
+* **collections** pf-4720 deactivate pf-api crawler ([#368](https://github.com/patternfly/patternfly-mcp/pull/368)) ([091f552](https://github.com/patternfly/patternfly-mcp/commit/091f5527f24ff6868199503610802d19fc8362b8))
+* **collections** pf-4708 remove ai-helpers from patternfly-docs ([#337](https://github.com/patternfly/patternfly-mcp/pull/337)) ([63041b3](https://github.com/patternfly/patternfly-mcp/commit/63041b33f31724427125d08a7d1af16397927cd0))
+
+### Chores
+* **collections** refresh rh-uxd ai-helpers repo hashes, references ([#340](https://github.com/patternfly/patternfly-mcp/pull/340)) ([3b917e5](https://github.com/patternfly/patternfly-mcp/commit/3b917e503376df0b5e90e6def2e62cb334c5943c))
+
+### Builds
+* **deps** bump @modelcontextprotocol/sdk from 1.32.1 to 1.32.2 ([#384](https://github.com/patternfly/patternfly-mcp/pull/384)) ([320d4e0](https://github.com/patternfly/patternfly-mcp/commit/320d4e0c47cc2f52781c49615d67002a838fc3ec))
+* **deps** lock update ([#383](https://github.com/patternfly/patternfly-mcp/pull/383)) ([cc5d480](https://github.com/patternfly/patternfly-mcp/commit/cc5d4808ac04805f6e517dfaa537b82f2ebee27b))
+* **deps-dev** bump the dev group with 4 updates ([#376](https://github.com/patternfly/patternfly-mcp/pull/376)) ([27c06cb](https://github.com/patternfly/patternfly-mcp/commit/27c06cbe895fb32f5787bb13463e73c158cbd198))
+* **deps** bump actions/setup-node from 7.0.0 to 7.1.0 ([#375](https://github.com/patternfly/patternfly-mcp/pull/375)) ([33634f0](https://github.com/patternfly/patternfly-mcp/commit/33634f02ded693bc24f9992bf2d859dcdeae4a01))
+* **deps** bump zod ([#373](https://github.com/patternfly/patternfly-mcp/pull/373)) ([c9b10c6](https://github.com/patternfly/patternfly-mcp/commit/c9b10c687541f5d3fac29c41f376800931b67edf))
+* **deps-dev** bump the dev group with 4 updates ([#372](https://github.com/patternfly/patternfly-mcp/pull/372)) ([dc01aa5](https://github.com/patternfly/patternfly-mcp/commit/dc01aa51302b1ea802d75dcae3477f4804a5ae7a))
+* **deps** lock update ([#371](https://github.com/patternfly/patternfly-mcp/pull/371)) ([b54dd18](https://github.com/patternfly/patternfly-mcp/commit/b54dd18adc736314da799648edfaad9e731a0156))
+* **deps** bump zod from 4.6.5 to 4.6.6 ([#370](https://github.com/patternfly/patternfly-mcp/pull/370)) ([406923c](https://github.com/patternfly/patternfly-mcp/commit/406923ce78c6c099a2664e6b8c8c88e86e6bf86b))
+* **deps-dev** bump @types/node from 26.6.4 to 26.6.5 ([#369](https://github.com/patternfly/patternfly-mcp/pull/369)) ([d2fa8f3](https://github.com/patternfly/patternfly-mcp/commit/d2fa8f3245fa753372009c87d2fbba23885de038))
+* **deps** lock update ([#367](https://github.com/patternfly/patternfly-mcp/pull/367)) ([59f07b4](https://github.com/patternfly/patternfly-mcp/commit/59f07b42cfae333557796ba5a26144572e07a6b0))
+* **deps** bump pid-port from 2.1.2 to 2.2.0 ([#364](https://github.com/patternfly/patternfly-mcp/pull/364)) ([a15cae6](https://github.com/patternfly/patternfly-mcp/commit/a15cae62b1b82c5b7b0f39c67f5b6735447230ae))
+* **deps** bump @modelcontextprotocol/sdk from 1.31.0 to 1.32.1 ([#365](https://github.com/patternfly/patternfly-mcp/pull/365)) ([4639e62](https://github.com/patternfly/patternfly-mcp/commit/4639e62cc3284d4d0308dbdcf795bd9231a5a338))
+* **deps** lock update ([#363](https://github.com/patternfly/patternfly-mcp/pull/363)) ([d530064](https://github.com/patternfly/patternfly-mcp/commit/d530064df7ac8bcb33ea3fd5d22d4e175043073f))
+* **deps-dev** bump the dev group with 6 updates ([#361](https://github.com/patternfly/patternfly-mcp/pull/361)) ([696088d](https://github.com/patternfly/patternfly-mcp/commit/696088dcec8d48027b107c156ad410e36c227dcd))
+* **deps** bump @modelcontextprotocol/sdk from 1.30.0 to 1.31.0 ([#347](https://github.com/patternfly/patternfly-mcp/pull/347)) ([8b88bd4](https://github.com/patternfly/patternfly-mcp/commit/8b88bd4ae69c033807819547a0639153c9be99b7))
+* **deps** lock update ([#346](https://github.com/patternfly/patternfly-mcp/pull/346)) ([edb91fd](https://github.com/patternfly/patternfly-mcp/commit/edb91fd5d162a55ef9119ec6624fa4b1ac40fa98))
+* **deps-dev** bump the dev group with 8 updates ([#345](https://github.com/patternfly/patternfly-mcp/pull/345)) ([23f9e64](https://github.com/patternfly/patternfly-mcp/commit/23f9e64afa4546e481751d685e19d574653e2aa1))
+*  add nodejs 26 for integration checks ([#334](https://github.com/patternfly/patternfly-mcp/pull/334)) ([2004b85](https://github.com/patternfly/patternfly-mcp/commit/2004b859e54e4f1f5309088166e987ac8130cbfe))
+* **deps** bump zod from 4.5.4 to 4.6.5 ([#327](https://github.com/patternfly/patternfly-mcp/pull/327)) ([c5b3a14](https://github.com/patternfly/patternfly-mcp/commit/c5b3a14c2baf4e6fe0ef024cb4e0d3753250f6fd))
+* **deps-dev** bump the dev group with 2 updates ([#326](https://github.com/patternfly/patternfly-mcp/pull/326)) ([516c103](https://github.com/patternfly/patternfly-mcp/commit/516c103cd173ce94a45cdb9e6d43bc8e903bc88d))
+
+### Bug Fixes
+* **collections** pf-4722 update pf api subdomain ([#349](https://github.com/patternfly/patternfly-mcp/pull/349)) ([dbf6279](https://github.com/patternfly/patternfly-mcp/commit/dbf6279251db877adc5e326695b67aeffb5a523d))
+* **server** pf-4720 test mode block for external urls ([#362](https://github.com/patternfly/patternfly-mcp/pull/362)) ([acb8118](https://github.com/patternfly/patternfly-mcp/commit/acb8118120bd1317a78e167ee28463f14ab4581f))
+* **tooling** pf-4720 update pf-api script ([#360](https://github.com/patternfly/patternfly-mcp/pull/360)) ([795c835](https://github.com/patternfly/patternfly-mcp/commit/795c835a52d9db7d7f26f2e496f37e1e01f85f51))
+* **collections** pf-4720 pf api restore discarded records ([#359](https://github.com/patternfly/patternfly-mcp/pull/359)) ([c0e0d3e](https://github.com/patternfly/patternfly-mcp/commit/c0e0d3ee4005137f493308f6657f139891b2aa61))
+
 ## [2.5.0](https://github.com/patternfly/patternfly-mcp/compare/e5fee54e9eb0c015504af0af899437139398c9f6...570eb8c5e719d1428a44d9bfb4e2b5341c42a904) (2026-09-30)
 
 
