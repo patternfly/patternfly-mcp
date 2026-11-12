@@ -69,7 +69,7 @@ describe('memo', () => {
           type,
           successValue,
           errorValue,
-          cacheKeys: [...cache.keys()].reverse(),
+          cacheKeys: [...cache.keys()],
           cacheLength: cache.size
         });
       }
@@ -181,38 +181,14 @@ describe('memo', () => {
     const mockOnCacheExpireAsync = async (response: unknown) => {
       logAsync.push(response);
     };
-    const updateLog = async (aLog: any) => {
-      const sanitizedLog = [];
-
-      for (const { all, removed, remaining } of aLog) {
-        const sanitized = {
-          all: [] as any[],
-          removed: [] as any[],
-          remaining: [] as any[]
-        };
-        let updatedAll: any[] = [];
-        let updatedRemaining: any[] = [];
-        let updatedRemoved: any[] = [];
-
-        updatedAll = await Promise.allSettled(all.values());
-        updatedRemoved = await Promise.allSettled(removed.values());
-        updatedRemaining = await Promise.allSettled(remaining.values());
-
-        if (updatedAll) {
-          sanitized.all.push(...updatedAll.reverse());
-        }
-
-        if (updatedRemoved) {
-          sanitized.removed.push(...updatedRemoved.reverse());
-        }
-        if (updatedRemaining) {
-          sanitized.remaining.push(...updatedRemaining.reverse());
-        }
-        sanitizedLog.push(sanitized);
-      }
-
-      return sanitizedLog;
-    };
+    const updateLog = async (aLog: any) =>
+      Promise.all(
+        aLog.map(async ({ all, removed, remaining }: any) => ({
+          all: await Promise.allSettled(all.values()),
+          removed: await Promise.allSettled(removed.values()),
+          remaining: await Promise.allSettled(remaining.values())
+        }))
+      );
 
     const memoized = memo(
       (str: any, isError = false) => {
@@ -295,31 +271,13 @@ describe('memo', () => {
     const mockOnCacheRolloutAsync = async (response: unknown) => {
       logAsync.push(response);
     };
-    const updateLog = async (aLog: any) => {
-      const sanitizedLog = [];
-
-      for (const { removed, remaining } of aLog) {
-        const sanitized = {
-          removed: [] as any[],
-          remaining: [] as any[]
-        };
-        let updatedRemaining: any[] = [];
-        let updatedRemoved: any[] = [];
-
-        updatedRemoved = await Promise.allSettled(removed.values());
-        updatedRemaining = await Promise.allSettled(remaining.values());
-
-        if (updatedRemoved) {
-          sanitized.removed.push(...updatedRemoved.reverse());
-        }
-        if (updatedRemaining) {
-          sanitized.remaining.push(...updatedRemaining.reverse());
-        }
-        sanitizedLog.push(sanitized);
-      }
-
-      return sanitizedLog;
-    };
+    const updateLog = async (aLog: any) =>
+      Promise.all(
+        aLog.map(async ({ removed, remaining }: any) => ({
+          removed: await Promise.allSettled(removed.values()),
+          remaining: await Promise.allSettled(remaining.values())
+        }))
+      );
 
     const memoized = memo(
       (str: any, isError = false) => {

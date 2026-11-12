@@ -6,22 +6,22 @@ exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLi
     "all": [
       {
         "status": "fulfilled",
-        "value": "2",
+        "value": "1",
       },
       {
         "status": "fulfilled",
-        "value": "1",
+        "value": "2",
       },
     ],
     "remaining": [],
     "removed": [
       {
         "status": "fulfilled",
-        "value": "2",
+        "value": "1",
       },
       {
         "status": "fulfilled",
-        "value": "1",
+        "value": "2",
       },
     ],
   },
@@ -34,22 +34,22 @@ exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLi
     "all": [
       {
         "status": "fulfilled",
-        "value": "2",
+        "value": "1",
       },
       {
         "status": "fulfilled",
-        "value": "1",
+        "value": "2",
       },
     ],
     "remaining": [],
     "removed": [
       {
         "status": "fulfilled",
-        "value": "2",
+        "value": "1",
       },
       {
         "status": "fulfilled",
-        "value": "1",
+        "value": "2",
       },
     ],
   },
@@ -62,7 +62,7 @@ exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLi
     "all": [
       {
         "status": "fulfilled",
-        "value": "4",
+        "value": "1",
       },
       {
         "status": "fulfilled",
@@ -70,14 +70,14 @@ exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLi
       },
       {
         "status": "fulfilled",
-        "value": "1",
+        "value": "4",
       },
     ],
     "remaining": [],
     "removed": [
       {
         "status": "fulfilled",
-        "value": "4",
+        "value": "1",
       },
       {
         "status": "fulfilled",
@@ -85,7 +85,7 @@ exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLi
       },
       {
         "status": "fulfilled",
-        "value": "1",
+        "value": "4",
       },
     ],
   },
@@ -98,7 +98,7 @@ exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLi
     "all": [
       {
         "status": "fulfilled",
-        "value": "4",
+        "value": "1",
       },
       {
         "status": "fulfilled",
@@ -106,14 +106,14 @@ exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLi
       },
       {
         "status": "fulfilled",
-        "value": "1",
+        "value": "4",
       },
     ],
     "remaining": [],
     "removed": [
       {
         "status": "fulfilled",
-        "value": "4",
+        "value": "1",
       },
       {
         "status": "fulfilled",
@@ -121,7 +121,7 @@ exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLi
       },
       {
         "status": "fulfilled",
-        "value": "1",
+        "value": "4",
       },
     ],
   },
@@ -133,31 +133,31 @@ exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLi
   {
     "all": [
       {
-        "reason": [Error: onCacheRollout-3],
-        "status": "rejected",
+        "status": "fulfilled",
+        "value": "1",
       },
       {
         "status": "fulfilled",
         "value": "2",
       },
       {
-        "status": "fulfilled",
-        "value": "1",
+        "reason": [Error: onCacheRollout-3],
+        "status": "rejected",
       },
     ],
     "remaining": [],
     "removed": [
       {
-        "reason": [Error: onCacheRollout-3],
-        "status": "rejected",
+        "status": "fulfilled",
+        "value": "1",
       },
       {
         "status": "fulfilled",
         "value": "2",
       },
       {
-        "status": "fulfilled",
-        "value": "1",
+        "reason": [Error: onCacheRollout-3],
+        "status": "rejected",
       },
     ],
   },
@@ -170,7 +170,7 @@ exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLi
     "all": [
       {
         "status": "fulfilled",
-        "value": [Function],
+        "value": "1",
       },
       {
         "status": "fulfilled",
@@ -178,14 +178,14 @@ exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLi
       },
       {
         "status": "fulfilled",
-        "value": "1",
+        "value": [Function],
       },
     ],
     "remaining": [],
     "removed": [
       {
         "status": "fulfilled",
-        "value": [Function],
+        "value": "1",
       },
       {
         "status": "fulfilled",
@@ -193,7 +193,7 @@ exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLi
       },
       {
         "status": "fulfilled",
-        "value": "1",
+        "value": [Function],
       },
     ],
   },
@@ -206,7 +206,7 @@ exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLi
     "all": [
       {
         "status": "fulfilled",
-        "value": "4",
+        "value": "2",
       },
       {
         "reason": [Error: onCacheRollout-3],
@@ -214,14 +214,14 @@ exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLi
       },
       {
         "status": "fulfilled",
-        "value": "2",
+        "value": "4",
       },
     ],
     "remaining": [],
     "removed": [
       {
         "status": "fulfilled",
-        "value": "4",
+        "value": "2",
       },
       {
         "reason": [Error: onCacheRollout-3],
@@ -229,7 +229,7 @@ exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLi
       },
       {
         "status": "fulfilled",
-        "value": "2",
+        "value": "4",
       },
     ],
   },
@@ -242,7 +242,7 @@ exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLi
     "all": [
       {
         "status": "fulfilled",
-        "value": "4",
+        "value": "2",
       },
       {
         "status": "fulfilled",
@@ -250,14 +250,14 @@ exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLi
       },
       {
         "status": "fulfilled",
-        "value": "2",
+        "value": "4",
       },
     ],
     "remaining": [],
     "removed": [
       {
         "status": "fulfilled",
-        "value": "4",
+        "value": "2",
       },
       {
         "status": "fulfilled",
@@ -265,7 +265,7 @@ exports[`memo should clear cache on inactivity and fire "onCacheExpire", cacheLi
       },
       {
         "status": "fulfilled",
-        "value": "2",
+        "value": "4",
       },
     ],
   },
@@ -417,16 +417,16 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple e
   {
     "remaining": [
       {
-        "status": "fulfilled",
-        "value": "3",
+        "reason": [Error: onCacheRollout-1],
+        "status": "rejected",
       },
       {
         "status": "fulfilled",
         "value": "2",
       },
       {
-        "reason": [Error: onCacheRollout-1],
-        "status": "rejected",
+        "status": "fulfilled",
+        "value": "3",
       },
     ],
     "removed": [
@@ -440,7 +440,7 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple e
     "remaining": [
       {
         "status": "fulfilled",
-        "value": "4",
+        "value": "2",
       },
       {
         "status": "fulfilled",
@@ -448,7 +448,7 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple e
       },
       {
         "status": "fulfilled",
-        "value": "2",
+        "value": "4",
       },
     ],
     "removed": [
@@ -467,7 +467,7 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple e
     "remaining": [
       {
         "status": "fulfilled",
-        "value": "3",
+        "value": [Function],
       },
       {
         "status": "fulfilled",
@@ -475,7 +475,7 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple e
       },
       {
         "status": "fulfilled",
-        "value": [Function],
+        "value": "3",
       },
     ],
     "removed": [
@@ -489,7 +489,7 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple e
     "remaining": [
       {
         "status": "fulfilled",
-        "value": "4",
+        "value": "2",
       },
       {
         "status": "fulfilled",
@@ -497,7 +497,7 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple e
       },
       {
         "status": "fulfilled",
-        "value": "2",
+        "value": "4",
       },
     ],
     "removed": [
@@ -516,7 +516,7 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple e
     "remaining": [
       {
         "status": "fulfilled",
-        "value": "4",
+        "value": "2",
       },
       {
         "status": "fulfilled",
@@ -524,7 +524,7 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple e
       },
       {
         "status": "fulfilled",
-        "value": "2",
+        "value": "4",
       },
     ],
     "removed": [
@@ -543,7 +543,7 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple e
     "remaining": [
       {
         "status": "fulfilled",
-        "value": "4",
+        "value": "2",
       },
       {
         "status": "fulfilled",
@@ -551,7 +551,7 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple e
       },
       {
         "status": "fulfilled",
-        "value": "2",
+        "value": "4",
       },
     ],
     "removed": [
@@ -570,7 +570,7 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple e
     "remaining": [
       {
         "status": "fulfilled",
-        "value": "3",
+        "value": "1",
       },
       {
         "status": "fulfilled",
@@ -578,7 +578,7 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple e
       },
       {
         "status": "fulfilled",
-        "value": "1",
+        "value": "3",
       },
     ],
     "removed": [
@@ -592,7 +592,7 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple e
     "remaining": [
       {
         "status": "fulfilled",
-        "value": "4",
+        "value": "2",
       },
       {
         "status": "fulfilled",
@@ -600,7 +600,7 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple e
       },
       {
         "status": "fulfilled",
-        "value": "2",
+        "value": "4",
       },
     ],
     "removed": [
@@ -619,7 +619,7 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple e
     "remaining": [
       {
         "status": "fulfilled",
-        "value": "3",
+        "value": "1",
       },
       {
         "status": "fulfilled",
@@ -627,7 +627,7 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple e
       },
       {
         "status": "fulfilled",
-        "value": "1",
+        "value": "3",
       },
     ],
     "removed": [
@@ -641,7 +641,7 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple e
     "remaining": [
       {
         "status": "fulfilled",
-        "value": "4",
+        "value": "2",
       },
       {
         "status": "fulfilled",
@@ -649,7 +649,7 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, multiple e
       },
       {
         "status": "fulfilled",
-        "value": "2",
+        "value": "4",
       },
     ],
     "removed": [
@@ -672,7 +672,7 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, one entry 
     "remaining": [
       {
         "status": "fulfilled",
-        "value": "3",
+        "value": "1",
       },
       {
         "status": "fulfilled",
@@ -680,7 +680,7 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, one entry 
       },
       {
         "status": "fulfilled",
-        "value": "1",
+        "value": "3",
       },
     ],
     "removed": [
@@ -699,7 +699,7 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, one entry 
     "remaining": [
       {
         "status": "fulfilled",
-        "value": "3",
+        "value": "1",
       },
       {
         "status": "fulfilled",
@@ -707,7 +707,7 @@ exports[`memo should fire "onCacheRollout" callback on cache rollout, one entry 
       },
       {
         "status": "fulfilled",
-        "value": "1",
+        "value": "3",
       },
     ],
     "removed": [
@@ -860,8 +860,18 @@ exports[`memo should memoize a function, cacheLimit: async 1`] = `
   },
   {
     "cacheKeys": [
-      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
       "97d170e1550eee4afc0af065b78cda302a97674c",
+      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "1",
+    "type": "memo promise",
+  },
+  {
+    "cacheKeys": [
+      "97d170e1550eee4afc0af065b78cda302a97674c",
+      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
     ],
     "cacheLength": 2,
     "errorValue": undefined,
@@ -871,17 +881,17 @@ exports[`memo should memoize a function, cacheLimit: async 1`] = `
   {
     "cacheKeys": [
       "f629ae44b7b3dcfed444d363e626edf411ec69a8",
-      "97d170e1550eee4afc0af065b78cda302a97674c",
+      "2499831338ca5dc8c44f3d063e076799bea9bdff",
     ],
     "cacheLength": 2,
     "errorValue": undefined,
-    "successValue": "1",
+    "successValue": "2",
     "type": "memo promise",
   },
   {
     "cacheKeys": [
-      "2499831338ca5dc8c44f3d063e076799bea9bdff",
       "f629ae44b7b3dcfed444d363e626edf411ec69a8",
+      "2499831338ca5dc8c44f3d063e076799bea9bdff",
     ],
     "cacheLength": 2,
     "errorValue": undefined,
@@ -891,17 +901,17 @@ exports[`memo should memoize a function, cacheLimit: async 1`] = `
   {
     "cacheKeys": [
       "2499831338ca5dc8c44f3d063e076799bea9bdff",
-      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
+      "f1e31df9806ce94c5bdbbfff9608324930f4d3f1",
     ],
     "cacheLength": 2,
     "errorValue": undefined,
-    "successValue": "2",
+    "successValue": "3",
     "type": "memo promise",
   },
   {
     "cacheKeys": [
-      "f1e31df9806ce94c5bdbbfff9608324930f4d3f1",
       "2499831338ca5dc8c44f3d063e076799bea9bdff",
+      "f1e31df9806ce94c5bdbbfff9608324930f4d3f1",
     ],
     "cacheLength": 2,
     "errorValue": undefined,
@@ -911,17 +921,7 @@ exports[`memo should memoize a function, cacheLimit: async 1`] = `
   {
     "cacheKeys": [
       "f1e31df9806ce94c5bdbbfff9608324930f4d3f1",
-      "2499831338ca5dc8c44f3d063e076799bea9bdff",
-    ],
-    "cacheLength": 2,
-    "errorValue": undefined,
-    "successValue": "3",
-    "type": "memo promise",
-  },
-  {
-    "cacheKeys": [
       "f629ae44b7b3dcfed444d363e626edf411ec69a8",
-      "f1e31df9806ce94c5bdbbfff9608324930f4d3f1",
     ],
     "cacheLength": 2,
     "errorValue": undefined,
@@ -953,8 +953,18 @@ exports[`memo should memoize a function, cacheLimit: sync 1`] = `
   },
   {
     "cacheKeys": [
-      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
       "97d170e1550eee4afc0af065b78cda302a97674c",
+      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
+    ],
+    "cacheLength": 2,
+    "errorValue": undefined,
+    "successValue": "1",
+    "type": "memo",
+  },
+  {
+    "cacheKeys": [
+      "97d170e1550eee4afc0af065b78cda302a97674c",
+      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
     ],
     "cacheLength": 2,
     "errorValue": undefined,
@@ -964,17 +974,17 @@ exports[`memo should memoize a function, cacheLimit: sync 1`] = `
   {
     "cacheKeys": [
       "f629ae44b7b3dcfed444d363e626edf411ec69a8",
-      "97d170e1550eee4afc0af065b78cda302a97674c",
+      "2499831338ca5dc8c44f3d063e076799bea9bdff",
     ],
     "cacheLength": 2,
     "errorValue": undefined,
-    "successValue": "1",
+    "successValue": "2",
     "type": "memo",
   },
   {
     "cacheKeys": [
-      "2499831338ca5dc8c44f3d063e076799bea9bdff",
       "f629ae44b7b3dcfed444d363e626edf411ec69a8",
+      "2499831338ca5dc8c44f3d063e076799bea9bdff",
     ],
     "cacheLength": 2,
     "errorValue": undefined,
@@ -984,17 +994,17 @@ exports[`memo should memoize a function, cacheLimit: sync 1`] = `
   {
     "cacheKeys": [
       "2499831338ca5dc8c44f3d063e076799bea9bdff",
-      "f629ae44b7b3dcfed444d363e626edf411ec69a8",
+      "f1e31df9806ce94c5bdbbfff9608324930f4d3f1",
     ],
     "cacheLength": 2,
     "errorValue": undefined,
-    "successValue": "2",
+    "successValue": "3",
     "type": "memo",
   },
   {
     "cacheKeys": [
-      "f1e31df9806ce94c5bdbbfff9608324930f4d3f1",
       "2499831338ca5dc8c44f3d063e076799bea9bdff",
+      "f1e31df9806ce94c5bdbbfff9608324930f4d3f1",
     ],
     "cacheLength": 2,
     "errorValue": undefined,
@@ -1004,17 +1014,7 @@ exports[`memo should memoize a function, cacheLimit: sync 1`] = `
   {
     "cacheKeys": [
       "f1e31df9806ce94c5bdbbfff9608324930f4d3f1",
-      "2499831338ca5dc8c44f3d063e076799bea9bdff",
-    ],
-    "cacheLength": 2,
-    "errorValue": undefined,
-    "successValue": "3",
-    "type": "memo",
-  },
-  {
-    "cacheKeys": [
       "f629ae44b7b3dcfed444d363e626edf411ec69a8",
-      "f1e31df9806ce94c5bdbbfff9608324930f4d3f1",
     ],
     "cacheLength": 2,
     "errorValue": undefined,
@@ -1316,8 +1316,8 @@ exports[`memo should memoize a function, errors NOT cached: async 1`] = `
   },
   {
     "cacheKeys": [
-      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
       "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
     ],
     "cacheLength": 2,
     "errorValue": "9",
@@ -1326,8 +1326,8 @@ exports[`memo should memoize a function, errors NOT cached: async 1`] = `
   },
   {
     "cacheKeys": [
-      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
       "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
     ],
     "cacheLength": 2,
     "errorValue": "9",
@@ -1336,8 +1336,8 @@ exports[`memo should memoize a function, errors NOT cached: async 1`] = `
   },
   {
     "cacheKeys": [
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
       "7f0204faf934498c81fdd57f586030926ad7184c",
-      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
     ],
     "cacheLength": 2,
     "errorValue": "7",
@@ -1346,8 +1346,8 @@ exports[`memo should memoize a function, errors NOT cached: async 1`] = `
   },
   {
     "cacheKeys": [
-      "e9310b0c165be166c43d717718981dd6c9379fbe",
       "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+      "e9310b0c165be166c43d717718981dd6c9379fbe",
     ],
     "cacheLength": 2,
     "errorValue": undefined,
@@ -1420,8 +1420,8 @@ exports[`memo should memoize a function, errors NOT cached: sync 1`] = `
   },
   {
     "cacheKeys": [
-      "e9310b0c165be166c43d717718981dd6c9379fbe",
       "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+      "e9310b0c165be166c43d717718981dd6c9379fbe",
     ],
     "cacheLength": 2,
     "errorValue": undefined,
@@ -1453,8 +1453,8 @@ exports[`memo should memoize a function, errors cached: async 1`] = `
   },
   {
     "cacheKeys": [
-      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
       "7f0204faf934498c81fdd57f586030926ad7184c",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
     ],
     "cacheLength": 2,
     "errorValue": undefined,
@@ -1463,8 +1463,8 @@ exports[`memo should memoize a function, errors cached: async 1`] = `
   },
   {
     "cacheKeys": [
-      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
       "7f0204faf934498c81fdd57f586030926ad7184c",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
     ],
     "cacheLength": 2,
     "errorValue": undefined,
@@ -1473,9 +1473,9 @@ exports[`memo should memoize a function, errors cached: async 1`] = `
   },
   {
     "cacheKeys": [
-      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
-      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
       "7f0204faf934498c81fdd57f586030926ad7184c",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
     ],
     "cacheLength": 3,
     "errorValue": "9",
@@ -1484,9 +1484,9 @@ exports[`memo should memoize a function, errors cached: async 1`] = `
   },
   {
     "cacheKeys": [
-      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
-      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
       "7f0204faf934498c81fdd57f586030926ad7184c",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
     ],
     "cacheLength": 3,
     "errorValue": "9",
@@ -1495,9 +1495,9 @@ exports[`memo should memoize a function, errors cached: async 1`] = `
   },
   {
     "cacheKeys": [
-      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
-      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
       "7f0204faf934498c81fdd57f586030926ad7184c",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
     ],
     "cacheLength": 3,
     "errorValue": "7",
@@ -1506,9 +1506,9 @@ exports[`memo should memoize a function, errors cached: async 1`] = `
   },
   {
     "cacheKeys": [
-      "e9310b0c165be166c43d717718981dd6c9379fbe",
-      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
       "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
+      "e9310b0c165be166c43d717718981dd6c9379fbe",
     ],
     "cacheLength": 3,
     "errorValue": undefined,
@@ -1540,8 +1540,8 @@ exports[`memo should memoize a function, errors cached: sync 1`] = `
   },
   {
     "cacheKeys": [
-      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
       "7f0204faf934498c81fdd57f586030926ad7184c",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
     ],
     "cacheLength": 2,
     "errorValue": undefined,
@@ -1550,8 +1550,8 @@ exports[`memo should memoize a function, errors cached: sync 1`] = `
   },
   {
     "cacheKeys": [
-      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
       "7f0204faf934498c81fdd57f586030926ad7184c",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
     ],
     "cacheLength": 2,
     "errorValue": undefined,
@@ -1560,9 +1560,9 @@ exports[`memo should memoize a function, errors cached: sync 1`] = `
   },
   {
     "cacheKeys": [
-      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
-      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
       "7f0204faf934498c81fdd57f586030926ad7184c",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
     ],
     "cacheLength": 3,
     "errorValue": "9",
@@ -1571,9 +1571,9 @@ exports[`memo should memoize a function, errors cached: sync 1`] = `
   },
   {
     "cacheKeys": [
-      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
-      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
       "7f0204faf934498c81fdd57f586030926ad7184c",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
     ],
     "cacheLength": 3,
     "errorValue": "9",
@@ -1582,9 +1582,9 @@ exports[`memo should memoize a function, errors cached: sync 1`] = `
   },
   {
     "cacheKeys": [
-      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
-      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
       "7f0204faf934498c81fdd57f586030926ad7184c",
+      "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
     ],
     "cacheLength": 3,
     "errorValue": "7",
@@ -1593,9 +1593,9 @@ exports[`memo should memoize a function, errors cached: sync 1`] = `
   },
   {
     "cacheKeys": [
-      "e9310b0c165be166c43d717718981dd6c9379fbe",
-      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
       "1fb0856518ee0490ff78e43d1b6dae12ad6ec686",
+      "fd8e473f708ab8fa24350d1ac63e0c31fd5c0bad",
+      "e9310b0c165be166c43d717718981dd6c9379fbe",
     ],
     "cacheLength": 3,
     "errorValue": undefined,
