@@ -175,6 +175,69 @@ exports[`Builtin tools, STDIO should return expected markdown structure for sear
   - Use a search all ("*") to find all available resources."
 `;
 
+exports[`Logging should allow server debug logs: debug log 1`] = `
+[
+  "[DEBUG]: Server memo: {
+",
+  "  "type": "memo promise",
+",
+  "  "cache": [
+",
+  "    [
+",
+  "      "[REDACTED]",
+",
+  "      {}
+",
+  "    ]
+",
+  "  ]
+",
+  "}
+",
+  "[DEBUG]: Reviewing registration for 4 collections.
+",
+  "[DEBUG]: Running collection "patternfly-docs"
+",
+  "[DEBUG]: Running collection "patternfly-component-schemas"
+",
+  "[DEBUG]: Running collection "patternfly-api"
+",
+  "[DEBUG]: PatternFly API crawler is disabled, using baseline records.
+",
+  "[DEBUG]: Running collection "ai-handbook"
+",
+  "[DEBUG]: Merging collection patternfly-component-schemas records. (XXX)
+",
+  "[DEBUG]: Failed to load https://raw.githubusercontent.com/rh-uxd/ai-handbook/refs/heads/main/docs.json from processing: Access denied: "setFetch URL" must be within the whitelisted URLs.
+",
+  "[DEBUG]: Storing server collection patternfly-component-schemas records. (XXX)
+",
+  "[DEBUG]: Merging collection patternfly-docs records. (XXX)
+",
+  "[DEBUG]: Merging collection patternfly-api records. (XXX)
+",
+  "[DEBUG]: Storing server collection patternfly-docs records. (XXX)
+",
+  "[DEBUG]: Storing server collection patternfly-api records. (XXX)
+",
+  "[DEBUG]: Merging collection ai-handbook records. (XXX)
+",
+  "[DEBUG]: Storing server collection ai-handbook records. (XXX)
+",
+  "[DEBUG]: Settled collection: patternfly-docs
+",
+  "[DEBUG]: Settled collection: patternfly-component-schemas
+",
+  "[DEBUG]: Settled collection: patternfly-api
+",
+  "[DEBUG]: Settled collection: ai-handbook
+",
+  "[DEBUG]: Skipping tool registration: searchPatternFly
+",
+]
+`;
+
 exports[`Logging should allow setting logging options, default 1`] = `[]`;
 
 exports[`Logging should allow setting logging options, stderr 1`] = `

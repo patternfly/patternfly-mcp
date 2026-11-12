@@ -521,6 +521,21 @@ describe('Logging', () => {
 
     await CLIENT.stop();
   });
+
+  it('should allow server debug logs', async () => {
+    const CLIENT = await startServer({
+      args: ['--log-stderr', '--log-level', 'debug']
+    });
+
+    const logs = CLIENT.logs();
+    const memoLog = logs
+      .filter(line => line.startsWith('[DEBUG]:') || line.startsWith(' ') || line.trim() === '}')
+      .map(line => (line.includes('collection') ? line.replace(/\(([\d]*)\)/g, '(XXX)') : line));
+
+    expect(memoLog).toMatchSnapshot('debug log');
+
+    await CLIENT.stop();
+  });
 });
 
 describe('Tools', () => {
