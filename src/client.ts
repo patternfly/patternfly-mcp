@@ -375,7 +375,7 @@ runClient.memo = memo(
   {
     cacheLimit: 1,
     onCacheRollout: async ({ removed }) => {
-      const results = await Promise.allSettled(removed);
+      const results = await Promise.allSettled(removed.values());
 
       for (const result of results) {
         if (result.status === 'fulfilled') {

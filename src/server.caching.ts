@@ -1,26 +1,42 @@
-import { generateHash, isPromise } from './server.helpers';
+import {
+  generateHash,
+  isPromise,
+  isReferenceLike
+} from './server.helpers';
 import { log } from './logger';
 
 /**
- * Memo cache store.
- *
- * @template TReturn Array of cache entries.
+ * Error wrapper for memoized synchronous errors.
  */
-type MemoCache<TReturn> = Array<TReturn | Promise<TReturn> | { (): never; isError: boolean } | any>;
+type MemoErrorFunction = (() => never) & { isError: boolean };
+
+/**
+ * Union of possible cache entry values stored in a memo cache.
+ *
+ * @template TReturn Return type of the memoized function.
+ */
+type MemoCacheEntry<TReturn = unknown> = TReturn | Promise<TReturn> | MemoErrorFunction;
+
+/**
+ * Memo cache store map.
+ *
+ * @template TReturn Return type of the memoized function.
+ */
+type MemoCache<TReturn = unknown> = Map<unknown, MemoCacheEntry<TReturn>>;
 
 /**
  * Memo cache handler response parameters.
  *
  * @template TReturn Return type of the memoized function.
  *
- * @property {MemoCache<TReturn>} remaining Array of values that were NOT removed from the cache due to cache limit.
- * @property {MemoCache<TReturn>} removed Array of values that were removed from the cache due to cache limit.
- * @property {MemoCache<TReturn>} all Array of all values in the cache, including removed values.
+ * @property {Map<unknown, TReturn>} remaining Map of cache entries that were NOT removed from the cache due to cache limit.
+ * @property {Map<unknown, TReturn>} removed Map of cache entries that were removed from the cache due to cache limit.
+ * @property {Map<unknown, TReturn>} all Map of all cache entries, including removed entries.
  */
 type MemoCacheHandlerResponse<TReturn = unknown> = {
-  remaining: MemoCache<TReturn>;
-  removed: MemoCache<TReturn>;
-  all: MemoCache<TReturn>
+  remaining: Map<unknown, TReturn>;
+  removed: Map<unknown, TReturn>;
+  all: Map<unknown, TReturn>;
 };
 
 /**
@@ -42,7 +58,7 @@ type OnMemoCacheHandler<TReturn = unknown> = (cache: MemoCacheHandlerResponse<TR
  * @param info - Object containing debugging information.
  * @param info.type - Information debugging category.
  * @param info.value - Value associated with the debug operation.
- * @param {MemoCache<TReturn>} info.cache - MemoCache array
+ * @param {MemoCache<TReturn>} info.cache - MemoCache Map
  */
 type MemoDebugHandler<TReturn = unknown> = (info: { type: string; value: unknown; cache: MemoCache<TReturn> }) => void;
 
@@ -111,7 +127,7 @@ type MemoReturn<TArgs extends unknown[] = unknown[], TReturn = unknown> = ((...a
  * @template TReturn Return type of the provided/memoized function.
  *
  * @param {(...args: TArgs) => TReturn} func The function or promise/promise-like function to memoize
- * @param {MemoOptions<TReturn>} [options={}] Configuration options.
+ * @param {MemoOptions<TArgs, TReturn>} [options={}] Configuration options.
  * @returns Memoized function
  *
  * @throws {Error} If an error occurs during function execution and `cacheErrors` is set to `false`,
@@ -162,9 +178,9 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
 
     const errorDesc = handlerDescription ? `: ${handlerDescription}` : '';
     const payload: MemoCacheHandlerResponse<TReturn> = {
-      all,
-      remaining,
-      removed
+      all: all as Map<unknown, TReturn>,
+      remaining: remaining as Map<unknown, TReturn>,
+      removed: removed as Map<unknown, TReturn>
     };
 
     if (isPromise(handler)) {
@@ -179,10 +195,22 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
   };
 
   /**
+   * Confirm the value has a memo error marker.
+   *
+   * @param value - The value to inspect.
+   * @returns `true` when the value is a memo error marker; otherwise, `false`.
+   */
+  const isMemoError = (value: unknown): value is { isError: true } & (MemoErrorFunction | Record<string, unknown>) => (
+    (typeof value === 'function' || isReferenceLike(value)) &&
+    'isError' in value &&
+    (value as { isError: unknown }).isError === true
+  );
+
+  /**
    * Memoized function.
    */
   const ized = function () {
-    const cache: MemoCache<TReturn> = [];
+    const cache: MemoCache<TReturn> = new Map();
     let timeout: NodeJS.Timeout | undefined;
 
     const memoized = (...args: TArgs): TReturn => {
@@ -193,24 +221,18 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
 
         timeout = setTimeout(() => {
           if (isOnCacheExpire) {
-            const allCacheEntries: Array<TReturn> = [];
-
-            cache.forEach((entry, index) => {
-              if (index % 2 === 0) {
-                allCacheEntries.push(cache[index + 1] as TReturn);
-              }
-            });
+            const allCacheEntries: MemoCache<TReturn> = new Map(cache);
 
             notifyCacheChange({
               all: allCacheEntries,
-              remaining: [],
+              remaining: new Map(),
               removed: allCacheEntries,
               handler: onCacheExpire,
               handlerDescription: 'onCacheExpire callback'
             });
           }
 
-          cache.length = 0;
+          cache.clear();
         }, updatedExpire);
 
         // Allow the process to exit
@@ -219,13 +241,13 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
 
       // Zero cacheLimit, reset and bypass memoization
       if (isMemo === false) {
-        cache.length = 0;
+        cache.clear();
         const bypassValue = func.call(null, ...args);
 
         debug({
           type: 'memo bypass',
           value: () => bypassValue,
-          cache: []
+          cache: new Map()
         });
 
         return bypassValue;
@@ -234,26 +256,24 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
       const key = setKey(args);
 
       // Parse, memoize and return the original value
-      if (cache.indexOf(key) < 0) {
+      if (!cache.has(key)) {
         if (isFuncPromise) {
           const promiseResolve = Promise
             .resolve(func.call(null, ...args))
             .catch((error: unknown) => {
-              const promiseKeyIndex = cache.indexOf(key);
-
               // Remove the promise
-              if (isCacheErrors === false && promiseKeyIndex >= 0) {
-                cache.splice(promiseKeyIndex, 2);
+              if (isCacheErrors === false) {
+                cache.delete(key);
               }
 
               return Promise.reject(error);
             });
 
           // Cache the promise
-          cache.unshift(key, promiseResolve);
+          cache.set(key, promiseResolve);
         } else {
           try {
-            cache.unshift(key, func.call(null, ...args));
+            cache.set(key, func.call(null, ...args));
           } catch (error) {
             // Wrap a sync error in a function then cache it
             const errorFunc = () => {
@@ -261,53 +281,54 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
             };
 
             errorFunc.isError = true;
-            cache.unshift(key, errorFunc);
+            cache.set(key, errorFunc);
           }
         }
 
         // Run callback and cache trim after cache update.
         if (isMemo) {
-          if (isOnCacheRollout && cache.length > cacheLimit * 2) {
-            const allCacheEntries: Array<TReturn> = [];
+          if (isOnCacheRollout && cache.size > cacheLimit) {
+            const allCacheEntries: MemoCache<TReturn> = new Map(cache);
 
-            cache.forEach((entry, index) => {
-              if (index % 2 === 0) {
-                allCacheEntries.push(cache[index + 1] as TReturn);
-              }
-            });
-
-            const removedCacheEntries = allCacheEntries.slice(cacheLimit);
+            const temp = Array.from(allCacheEntries.entries());
+            const remaining = allCacheEntries.size - cacheLimit;
+            // Oldest cache entries
+            const removedCacheEntries = temp.slice(0, remaining);
 
             if (removedCacheEntries.length > 0) {
-              const remainingCacheEntries = allCacheEntries.slice(0, cacheLimit);
+              // Newest cache entries
+              const remainingCacheEntries = temp.slice(remaining);
 
               notifyCacheChange({
                 all: allCacheEntries,
-                remaining: remainingCacheEntries,
-                removed: removedCacheEntries,
+                remaining: new Map(remainingCacheEntries),
+                removed: new Map(removedCacheEntries),
                 handler: onCacheRollout,
                 handlerDescription: 'onCacheRollout callback'
               });
             }
           }
 
-          cache.length = cacheLimit * 2;
+          while (cache.size > cacheLimit) {
+            const oldestKey = cache.keys().next().value;
+
+            cache.delete(oldestKey);
+          }
         }
       }
 
       // Return memoized value
-      const updatedKeyIndex = cache.indexOf(key);
-      const cachedValue = cache[updatedKeyIndex + 1];
+      const cachedValue = cache.get(key);
 
-      if (cachedValue?.isError === true) {
+      if (isMemoError(cachedValue)) {
         if (isCacheErrors === false) {
-          cache.splice(updatedKeyIndex, 2);
+          cache.delete(key);
         }
 
         debug({
           type: 'memo error',
           value: cachedValue,
-          cache: [...cache]
+          cache: new Map(cache)
         });
 
         return typeof cachedValue === 'function' ? cachedValue() : cachedValue;
@@ -316,10 +337,10 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
       debug({
         type: `memo${(isFuncPromise && ' promise') || ''}`,
         value: () => cachedValue,
-        cache: [...cache]
+        cache: new Map(cache)
       });
 
-      return cachedValue;
+      return cachedValue as TReturn;
     };
 
     /**
@@ -328,39 +349,33 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
      * @returns A `boolean` indicating if the cache was cleared.
      */
     memoized.clear = () => {
-      const allBefore = [...cache];
+      const allBefore = new Map(cache);
 
-      if (allBefore.length === 0) {
+      if (allBefore.size === 0) {
         return false;
       }
 
-      const allCacheEntries: Array<TReturn> = [];
-
-      cache.forEach((entry, index) => {
-        if (index % 2 === 0) {
-          allCacheEntries.push(cache[index + 1] as TReturn);
-        }
-      });
+      const allCacheEntries: MemoCache<TReturn> = new Map(cache);
 
       clearTimeout(timeout);
       timeout = undefined;
-      cache.length = 0;
+      cache.clear();
 
       debug({
         type: 'memo clear',
         value: undefined,
-        cache: [...cache]
+        cache: new Map(cache)
       });
 
       notifyCacheChange({
         all: allCacheEntries,
-        remaining: [],
+        remaining: new Map(),
         removed: allCacheEntries,
         handler: onCacheClear,
         handlerDescription: 'onCacheClear callback'
       });
 
-      return allCacheEntries.length > 0;
+      return allCacheEntries.size > 0;
     };
 
     return memoized;
@@ -374,6 +389,7 @@ export {
   type MemoCacheHandlerResponse,
   type MemoDebugHandler,
   type MemoCache,
+  type MemoCacheEntry,
   type MemoNotifyCacheChangeOptions,
   type MemoOptions,
   type MemoReturn,

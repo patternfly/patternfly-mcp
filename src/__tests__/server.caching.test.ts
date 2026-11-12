@@ -69,8 +69,8 @@ describe('memo', () => {
           type,
           successValue,
           errorValue,
-          cacheKeys: cache.filter((_value: any, index: number) => index % 2 === 0).filter(Boolean),
-          cacheLength: cache.length
+          cacheKeys: [...cache.keys()].reverse(),
+          cacheLength: cache.size
         });
       }
 
@@ -194,19 +194,19 @@ describe('memo', () => {
         let updatedRemaining: any[] = [];
         let updatedRemoved: any[] = [];
 
-        updatedAll = await Promise.allSettled(all);
-        updatedRemoved = await Promise.allSettled(removed);
-        updatedRemaining = await Promise.allSettled(remaining);
+        updatedAll = await Promise.allSettled(all.values());
+        updatedRemoved = await Promise.allSettled(removed.values());
+        updatedRemaining = await Promise.allSettled(remaining.values());
 
         if (updatedAll) {
-          sanitized.all.push(...updatedAll);
+          sanitized.all.push(...updatedAll.reverse());
         }
 
         if (updatedRemoved) {
-          sanitized.removed.push(...updatedRemoved);
+          sanitized.removed.push(...updatedRemoved.reverse());
         }
         if (updatedRemaining) {
-          sanitized.remaining.push(...updatedRemaining);
+          sanitized.remaining.push(...updatedRemaining.reverse());
         }
         sanitizedLog.push(sanitized);
       }
@@ -306,14 +306,14 @@ describe('memo', () => {
         let updatedRemaining: any[] = [];
         let updatedRemoved: any[] = [];
 
-        updatedRemoved = await Promise.allSettled(removed);
-        updatedRemaining = await Promise.allSettled(remaining);
+        updatedRemoved = await Promise.allSettled(removed.values());
+        updatedRemaining = await Promise.allSettled(remaining.values());
 
         if (updatedRemoved) {
-          sanitized.removed.push(...updatedRemoved);
+          sanitized.removed.push(...updatedRemoved.reverse());
         }
         if (updatedRemaining) {
-          sanitized.remaining.push(...updatedRemaining);
+          sanitized.remaining.push(...updatedRemaining.reverse());
         }
         sanitizedLog.push(sanitized);
       }
@@ -400,7 +400,7 @@ describe('memo', () => {
     expect(mockDebug).toHaveBeenCalledWith({
       type: 'memo clear',
       value: undefined,
-      cache: []
+      cache: new Map()
     });
   });
 
@@ -416,14 +416,14 @@ describe('memo', () => {
     expect(mockDebug).toHaveBeenCalledWith({
       type: 'memo clear',
       value: undefined,
-      cache: []
+      cache: new Map()
     });
 
     const payload = mockCallback.mock.calls[0][0];
 
-    expect(payload.all).toHaveLength(1);
-    expect(payload.removed).toHaveLength(1);
-    expect(payload.remaining).toHaveLength(0);
+    expect([...payload.all.values()]).toHaveLength(1);
+    expect([...payload.removed.values()]).toHaveLength(1);
+    expect([...payload.remaining.values()]).toHaveLength(0);
   });
 
   it('should cancel pending expire timeout on clear()', () => {
