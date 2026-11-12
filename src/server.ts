@@ -565,8 +565,8 @@ runServer.memo = memo(
   runServer,
   {
     ...DEFAULT_OPTIONS.resourceMemoOptions.default,
-    debug: info => {
-      log.debug(`Server memo: ${JSON.stringify(info, null, 2)}`);
+    debug: ({ cache, ...info }) => {
+      log.debug(`Server memo: ${JSON.stringify({ ...info, cache: [...cache] }, null, 2)}`);
     },
     onCacheRollout: async ({ removed }) => {
       const results: PromiseSettledResult<ServerInstance>[] = await Promise.allSettled(removed.values());
