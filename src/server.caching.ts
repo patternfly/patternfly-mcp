@@ -75,7 +75,7 @@ interface MemoMapLike<K, V> {
   has(key: K): boolean;
   keys?(): IterableIterator<K>;
   set(key: K, value: V): unknown;
-  readonly size?: number;
+  readonly size?: number | undefined;
 }
 
 /**
@@ -205,6 +205,41 @@ const isMapLike = <TReturn>(value: unknown): value is MemoMapLike<unknown, MemoC
   typeof (value as MemoMapLike<unknown, unknown>).set === 'function';
 
 /**
+ * Wraps a map-like memo cache target in a normalized interface.
+ *
+ * Native Maps are returned as-is. Map-like objects are wrapped with
+ * methods to normalize their behavior when used with {@link memo}.
+ *
+ * @template TReturn The memoized return value type stored in cache entries.
+ *
+ * @param target Map-like cache to normalize methods.
+ * @returns A normalized methods map-like cache interface for memo cache entries.
+ */
+const normalizeMapLike = <TReturn>(
+  target: MemoMapLike<unknown, MemoCacheEntry<TReturn>>
+) => {
+  if (target instanceof Map) {
+    return target;
+  }
+
+  return {
+    has: (key: unknown) => Boolean(target.has(key)),
+    get: (key: unknown) => target.get(key),
+    set: (key: unknown, value: MemoCacheEntry<TReturn>) => target.set(key, value),
+    clear: () => target.clear?.(),
+    delete: (key: unknown) => target.delete?.(key),
+    entries: () => target.entries?.() ?? new Map<unknown, MemoCacheEntry<TReturn>>().entries(),
+    keys: () => target.keys?.() ?? new Map<unknown, MemoCacheEntry<TReturn>>().keys(),
+    get size() {
+      // Size, keys, and delete are required together for cacheLimit eviction.
+      return typeof target.size === 'number' && typeof target.keys === 'function' && typeof target.delete === 'function'
+        ? target.size
+        : undefined;
+    }
+  };
+};
+
+/**
  * Helper for normalizing a memo cache into a usable map-like cache.
  *
  * @template TReturn Memoized function return type stored in cache entries.
@@ -218,7 +253,7 @@ const isMapLike = <TReturn>(value: unknown): value is MemoMapLike<unknown, MemoC
 const normalizeMemoCache = <TReturn>(
   cache: unknown,
   { cacheContext = {}, debug }: { cacheContext?: MemoCacheContext | undefined; debug?: MemoDebugHandler<TReturn> | undefined } = {}
-): MemoMapLike<unknown, MemoCacheEntry<TReturn>> => {
+): Required<MemoMapLike<unknown, MemoCacheEntry<TReturn>>> => {
   const updatedDebug = typeof debug === 'function' ? debug : () => {};
 
   const logErrors = (error: unknown) => {
@@ -237,10 +272,10 @@ const normalizeMemoCache = <TReturn>(
         const created: unknown = cache(cacheContext);
 
         if (isMapLike<TReturn>(created)) {
-          return created;
+          return normalizeMapLike<TReturn>(created);
         }
       } else if (isMapLike<TReturn>(cache)) {
-        return cache;
+        return normalizeMapLike<TReturn>(cache);
       }
 
       throw new TypeError('Cache must be a map-like object with has/get/set, or a callback that returns one.');
@@ -359,17 +394,8 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
     let timeout: NodeJS.Timeout | undefined;
 
     // Take into account map-like objects with partial props
-    const getCacheSnapshot = (passed = cache): MemoCache<TReturn> => {
-      if (passed instanceof Map) {
-        return new Map(passed);
-      }
-
-      if (passed && typeof (passed as { entries?: () => Iterable<[unknown, MemoCacheEntry<TReturn>]> }).entries === 'function') {
-        return new Map((passed as { entries: () => Iterable<[unknown, MemoCacheEntry<TReturn>]> }).entries());
-      }
-
-      return new Map();
-    };
+    const getCacheSnapshot = (passed = cache): MemoCache<TReturn> =>
+      (passed instanceof Map ? new Map(passed) : new Map(passed.entries()));
 
     const memoized = (...args: TArgs): TReturn => {
       const isMemo = cacheLimit > 0;
@@ -390,7 +416,7 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
             });
           }
 
-          cache.clear?.();
+          cache.clear();
         }, updatedExpire);
 
         // Allow the process to exit
@@ -399,7 +425,7 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
 
       // Zero cacheLimit, reset and bypass memoization
       if (isMemo === false) {
-        cache.clear?.();
+        cache.clear();
         const bypassValue = func.call(null, ...args);
 
         debug({
@@ -421,7 +447,7 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
             .catch((error: unknown) => {
               // Remove the promise
               if (isCacheErrors === false) {
-                cache.delete?.(key);
+                cache.delete(key);
               }
 
               return Promise.reject(error);
@@ -467,15 +493,15 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
             }
           }
 
-          if (typeof cache.size === 'number' && cache.keys && cache.delete) {
+          if (typeof cache.size === 'number') {
             while (cache.size > cacheLimit) {
-              const oldestKey = cache.keys().next().value;
+              const oldestKey = cache.keys().next();
 
-              if (oldestKey === undefined) {
+              if (oldestKey === undefined || oldestKey.done) {
                 break;
               }
 
-              cache.delete(oldestKey);
+              cache.delete(oldestKey.value);
             }
           }
         }
@@ -486,7 +512,7 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
 
       if (isMemoError(cachedValue)) {
         if (isCacheErrors === false) {
-          cache.delete?.(key);
+          cache.delete(key);
         }
 
         debug({
@@ -517,7 +543,7 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
 
       clearTimeout(timeout);
       timeout = undefined;
-      cache.clear?.();
+      cache.clear();
 
       debug({
         type: 'memo clear',
@@ -546,6 +572,7 @@ export {
   isMapLike,
   memo,
   normalizeMemoCache,
+  normalizeMapLike,
   type MemoCacheCallback,
   type MemoCacheContext,
   type MemoMapLike,

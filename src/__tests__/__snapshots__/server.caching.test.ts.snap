@@ -1604,3 +1604,16 @@ exports[`memo should memoize a function, errors cached: sync 1`] = `
   },
 ]
 `;
+
+exports[`normalizeMemoCache should normalize a map-like object: normalized 1`] = `
+{
+  "clear": [Function],
+  "delete": [Function],
+  "entries": [Function],
+  "get": [Function],
+  "has": [Function],
+  "keys": [Function],
+  "set": [Function],
+  "size": undefined,
+}
+`;

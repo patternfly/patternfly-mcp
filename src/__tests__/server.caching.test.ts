@@ -499,11 +499,22 @@ describe('normalizeMemoCache', () => {
     expect(mockDebug).not.toHaveBeenCalled();
   });
 
-  it('should pass through a map-like object', () => {
+  it('should normalize a map-like object', () => {
     const ctx = { isFuncPromise: false, cacheErrors: true, cacheLimit: 1, expire: undefined };
     const cache = { has: jest.fn(), get: jest.fn(), set: jest.fn() };
 
-    expect(normalizeMemoCache(cache, { cacheContext: ctx })).toBe(cache);
+    const result = normalizeMemoCache(cache, { cacheContext: ctx });
+
+    result.has('lorem');
+    expect(cache.has).toHaveBeenCalledWith('lorem');
+
+    result.get('ipsum');
+    expect(cache.get).toHaveBeenCalledWith('ipsum');
+
+    result.set('dolor', 'sit');
+    expect(cache.set).toHaveBeenCalledWith('dolor', 'sit');
+
+    expect(result).toMatchSnapshot('normalized');
   });
 
   it('should call a factory once with context and use its result', () => {
