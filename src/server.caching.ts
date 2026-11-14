@@ -39,6 +39,8 @@ type MemoCacheCallback<TReturn> =
  * @note
  * Optional members enable optional features:
  * - `size` + `keys` + `delete`: `cacheLimit` eviction and `onCacheRollout`. Omit any one to disable both.
+ *     Eviction trims excess entries on cache misses using `size` read once. Custom adapters should keep
+ *     `size`, `keys()`, and `delete()` synchronously coordinated to prevent lingering excess entries.
  * - `entries`: callback payloads and `debug` snapshots. When omitted, snapshots are empty and
  *     `onCacheRollout` is skipped.
  * - `clear`: `expire`, `cacheLimit <= 0`, and `memoized.clear()`. When omitted, those paths skip the cache.
@@ -54,7 +56,7 @@ type MemoCacheCallback<TReturn> =
  * @property [clear] - Remove all entries.
  * @property [delete] - Remove an entry by key.
  * @property [entries] - Iterate `[key, value]` pairs in insertion order.
- * @property get - **Required**. Return the stored value, handed to the caller as-is.
+ * @property get - **Required**. Return the stored value, handed to the caller as is.
  * @property has - **Required**. Return `true` when the key exists.
  * @property [keys] - Iterate keys in insertion order, oldest first.
  * @property set - **Required**. Store a value by key.
@@ -201,7 +203,7 @@ const isMapLike = <TReturn>(value: unknown): value is MemoMapLike<unknown, MemoC
 /**
  * Wraps a map-like memo cache target in a normalized interface.
  *
- * Native Maps are returned as-is. Map-like objects are wrapped with
+ * Native Maps are returned as is. Map-like objects are wrapped with
  * methods to normalize their behavior when used with {@link memo}.
  *
  * @template TReturn The memoized return value type stored in cache entries.
@@ -289,6 +291,13 @@ const normalizeMemoCache = <TReturn>(
  * - `Zero-arg caching`: Zero-argument calls are memoized. To disable caching and perform a manual reset on every
  *     call, set cacheLimit <= 0.
  * - `Expiration`: Expiration expands until a pause in use happens. All results, regardless of type, will be expired.
+ * - `Eviction and custom caches`: On a cache miss, `memo` adds the new entry, then trims using `size` read once
+ *     and a fixed number of oldest-key deletions. With a native `Map` this works as intended. But with a custom
+ *     cache, if `size`, `keys()`, and `delete` are not kept in sync, this eviction trim may stop early and leave
+ *     additional cache entries over the specified cap. The cache will self-heal on later cache misses. If you are
+ *     using a custom adapter AND you want to leverage the eviction behavior, ensure that `size`, `keys()`, and `delete`
+ *     are kept in sync. If strict single-entry cache memoization, or exact limit enforcement, is required, we highly
+ *     recommend using a native Map.
  *
  * @note **Future work**: Review adding in a minor `typeof func === 'function'` mod to the `Promise.resolve`. It would
  *     allow actual promise handling.
