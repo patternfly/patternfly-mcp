@@ -492,7 +492,9 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
           }
 
           if (typeof cache.size === 'number') {
-            while (cache.size > cacheLimit) {
+            const excess = cache.size - cacheLimit;
+
+            for (let i = 0; i < excess; i++) {
               const oldestKey = cache.keys().next();
 
               if (oldestKey === undefined || oldestKey.done) {
