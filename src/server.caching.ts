@@ -34,38 +34,31 @@ type MemoCacheCallback<TReturn> =
 /**
  * Map-like interface consumed by `memo`.
  *
- * - Write methods (`set`, `delete`, `clear`) may be asynchronous; their return values are ignored.
- * - Optional members control optional features:
- *   - `size`, `keys`, `delete`: required together for `cacheLimit` eviction. Omit `size` to disable
- *       eviction and the `onCacheRollout` callback.
- *   - `entries`: used to build `onCacheExpire`/`onCacheRollout`/`onCacheClear` payloads and `debug`
- *       snapshots. When omitted, payload maps are empty.
- *   - `clear`: used by `expire`, `cacheLimit <= 0`, and `memoized.clear()`. When omitted, those paths
- *       are no-ops for the cache.
+ * All properties are applied synchronously, never awaited; write return values are ignored.
  *
  * @note
- * **Map-like cache adapters**
- * Creating an adapter should follow basic rules around `memo`'s architecture:
- * - `memo` directly returns `get` without "await"
- * - `memo` can cache and return Promises
+ * Optional members enable optional features:
+ * - `size` + `keys` + `delete`: `cacheLimit` eviction and `onCacheRollout`. Omit any one to disable both.
+ * - `entries`: callback payloads and `debug` snapshots. When omitted, snapshots are empty and
+ *     `onCacheRollout` is skipped.
+ * - `clear`: `expire`, `cacheLimit <= 0`, and `memoized.clear()`. When omitted, those paths skip the cache.
+ *     `memoized.clear()` always invokes it, even when `entries` is omitted or the snapshot is empty.
  *
- * If the adapter is bridging a persistent, or async cache, values would normally be resolved
- * before reaching the caller. But an adapter could also return a JS Promise if it was known
- * that the memo implementation was async.
+ * Adapters bridging a persistent or async cache should resolve values before `memo` reads them.
+ * To handle returning Promises with the map-like methods requires `memo` being provided with an async function,
+ * see {@link MemoCacheContext.isFuncPromise}.
  *
  * @template K Key type.
  * @template V Value type.
  *
- * @property [clear] - Can be async, the return value is ignored. Used by `expire`, `cacheLimit <= 0`, and `memoized.clear()`.
- *     When omitted, those paths are no-ops for the cache.
- * @property [delete] - Can be async, the return value is ignored.
- * @property [entries] - Used to build `onCacheExpire`/`onCacheRollout`/`onCacheClear` payloads and `debug` snapshots.
- *     When omitted, payload maps are empty.
- * @property get - **Required**. Synchronous, the return value is handed to the caller/consumer as-is, including any Promise.
- * @property has - **Required**. Must return a `boolean` synchronously; `memo` branches on it inline.
- * @property [keys] - Used with `size` and `delete` for `cacheLimit` eviction. Oldest is first, based on Map insertion order.
- * @property set - **Required**. Can be async, the return value is ignored.
- * @property [size] - Set size to `<= 0` to disable `cacheLimit` and the `onCacheRollout` callback.
+ * @property [clear] - Remove all entries.
+ * @property [delete] - Remove an entry by key.
+ * @property [entries] - Iterate `[key, value]` pairs in insertion order.
+ * @property get - **Required**. Return the stored value, handed to the caller as-is.
+ * @property has - **Required**. Return `true` when the key exists.
+ * @property [keys] - Iterate keys in insertion order, oldest first.
+ * @property set - **Required**. Store a value by key.
+ * @property [size] - Current entry count.
  */
 interface MemoMapLike<K, V> {
   clear?(): unknown;
@@ -165,7 +158,8 @@ type MemoNotifyCacheChangeOptions<TReturn = unknown> = {
  * @property {MemoDebugHandler<TReturn>} [debug] Debug callback function
  * @property [expire] Expandable milliseconds until cache expires
  * @property [keyHash] Function to generate a predictable hash key from the provided arguments. Defaults to internal `generateHash`.
- * @property {OnMemoCacheHandler<TReturn>} [onCacheClear] Callback when cache entries are cleared.
+ * @property {OnMemoCacheHandler<TReturn>} [onCacheClear] Callback when `memoized.clear()` is invoked. Payload maps
+ *     reflect observable entries and may be empty.
  * @property {OnMemoCacheHandler<TReturn>} [onCacheExpire] Callback when cache expires. Only fires when the `expire` option is set.
  * @property {OnMemoCacheHandler<TReturn>} [onCacheRollout] Callback when cache entries are rolled off due to cache limit.
  * @property {Map<unknown, MemoCacheEntry<TReturn>> |
@@ -292,13 +286,17 @@ const normalizeMemoCache = <TReturn>(
  * apidoc-mock: https://github.com/cdcabrera/apidoc-mock.git
  *
  * - A synchronous wrapper that expects consumers to correctly handle returned values.
- * - `Zero-arg caching`: Zero-argument calls are memoized. To disable caching and perform a manual reset on every call, set cacheLimit <= 0.
+ * - `Zero-arg caching`: Zero-argument calls are memoized. To disable caching and perform a manual reset on every
+ *     call, set cacheLimit <= 0.
  * - `Expiration`: Expiration expands until a pause in use happens. All results, regardless of type, will be expired.
+ *
+ * @note **Future work**: Review adding in a minor `typeof func === 'function'` mod to the `Promise.resolve`. It would
+ *     allow actual promise handling.
  *
  * @template TArgs Arguments passed to the provided function represented as an array.
  * @template TReturn Return type of the provided/memoized function.
  *
- * @param {(...args: TArgs) => TReturn} func The function or promise/promise-like function to memoize
+ * @param {(...args: TArgs) => TReturn} func The function, or async function, to memoize
  * @param {MemoOptions<TArgs, TReturn>} [options={}] Configuration options.
  * @returns Memoized function
  *
@@ -536,7 +534,11 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
     /**
      * Clear all memoized cache entries.
      *
-     * @returns A `boolean` indicating if the cache was cleared.
+     * @note `clear` and `onCacheClear` are always called regardless of whether entries are observable.
+     *     Map-like adapters (e.g. a persistent store) may expose `clear` without `entries`, so an empty snapshot
+     *     does not mean an empty cache. The return value only reports what was observable via `entries`.
+     *
+     * @returns A `boolean` indicating if observable cache entries were cleared.
      */
     memoized.clear = () => {
       const allCacheEntries: MemoCache<TReturn> = getCacheSnapshot();
