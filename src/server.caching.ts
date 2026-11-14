@@ -6,6 +6,74 @@ import {
 import { log } from './logger';
 
 /**
+ * Read-only facts about the memo instance, handed to a cache factory.
+ *
+ * @property isFuncPromise - `true` when the memoized function is async / returns a Promise-like.
+ * @property cacheErrors - Mirrors the `cacheErrors` option.
+ * @property cacheLimit - Mirrors the `cacheLimit` option.
+ * @property expire - Mirrors the (parsed) `expire` option, `undefined` when not set.
+ */
+interface MemoCacheContext {
+  readonly isFuncPromise?: boolean | undefined;
+  readonly cacheErrors?: boolean | undefined;
+  readonly cacheLimit?: number | undefined;
+  readonly expire?: number | undefined;
+}
+
+/**
+ * Alternative callback used to return a map-like cache for memo entries.
+ *
+ * @template TReturn Return type stored in each memo cache entry.
+ *
+ * @param {MemoCacheContext} context - Memo context associated with the current operation.
+ * @returns {MemoMapLike<unknown, MemoCacheEntry<TReturn>>} A map-like cache containing memo entries for the return type.
+ */
+type MemoCacheCallback<TReturn> =
+  (context: MemoCacheContext) => MemoMapLike<unknown, MemoCacheEntry<TReturn>>;
+
+/**
+ * Map-like interface consumed by `memo`.
+ *
+ * All properties are applied synchronously, never awaited; write return values are ignored.
+ *
+ * @note
+ * Optional members enable optional features:
+ * - `size` + `keys` + `delete`: `cacheLimit` eviction and `onCacheRollout`. Omit any one to disable both.
+ *     Eviction trims excess entries on cache misses using `size` read once. Custom adapters should keep
+ *     `size`, `keys()`, and `delete()` synchronously coordinated to prevent lingering excess entries.
+ * - `entries`: callback payloads and `debug` snapshots. When omitted, snapshots are empty and
+ *     `onCacheRollout` is skipped.
+ * - `clear`: `expire`, `cacheLimit <= 0`, and `memoized.clear()`. When omitted, those paths skip the cache.
+ *     `memoized.clear()` always invokes it, even when `entries` is omitted or the snapshot is empty.
+ *
+ * Adapters bridging a persistent or async cache should resolve values before `memo` reads them.
+ * To handle returning Promises with the map-like methods requires `memo` being provided with an async function,
+ * see {@link MemoCacheContext.isFuncPromise}.
+ *
+ * @template K Key type.
+ * @template V Value type.
+ *
+ * @property [clear] - Remove all entries.
+ * @property [delete] - Remove an entry by key.
+ * @property [entries] - Iterate `[key, value]` pairs in insertion order.
+ * @property get - **Required**. Return the stored value, handed to the caller as is.
+ * @property has - **Required**. Return `true` when the key exists.
+ * @property [keys] - Iterate keys in insertion order, oldest first.
+ * @property set - **Required**. Store a value by key.
+ * @property [size] - Current entry count.
+ */
+interface MemoMapLike<K, V> {
+  clear?(): unknown;
+  delete?(key: K): unknown;
+  entries?(): IterableIterator<[K, V]>;
+  get(key: K): V | undefined | Promise<V | undefined>;
+  has(key: K): boolean;
+  keys?(): IterableIterator<K>;
+  set(key: K, value: V): unknown;
+  readonly size?: number | undefined;
+}
+
+/**
  * Error wrapper for memoized synchronous errors.
  */
 type MemoErrorFunction = (() => never) & { isError: boolean };
@@ -18,7 +86,7 @@ type MemoErrorFunction = (() => never) & { isError: boolean };
 type MemoCacheEntry<TReturn = unknown> = TReturn | Promise<TReturn> | MemoErrorFunction;
 
 /**
- * Memo cache store map.
+ * Memo cache map.
  *
  * @template TReturn Return type of the memoized function.
  */
@@ -92,9 +160,13 @@ type MemoNotifyCacheChangeOptions<TReturn = unknown> = {
  * @property {MemoDebugHandler<TReturn>} [debug] Debug callback function
  * @property [expire] Expandable milliseconds until cache expires
  * @property [keyHash] Function to generate a predictable hash key from the provided arguments. Defaults to internal `generateHash`.
- * @property {OnMemoCacheHandler<TReturn>} [onCacheClear] Callback when cache entries are cleared.
+ * @property {OnMemoCacheHandler<TReturn>} [onCacheClear] Callback when `memoized.clear()` is invoked. Payload maps
+ *     reflect observable entries and may be empty.
  * @property {OnMemoCacheHandler<TReturn>} [onCacheExpire] Callback when cache expires. Only fires when the `expire` option is set.
  * @property {OnMemoCacheHandler<TReturn>} [onCacheRollout] Callback when cache entries are rolled off due to cache limit.
+ * @property {Map<unknown, MemoCacheEntry<TReturn>> |
+ *     MemoMapLike<unknown, MemoCacheEntry<TReturn>> |
+ *     MemoCacheCallback<TReturn>} [cache] Custom Map or MapLike cache. Defaults to an internal Map.
  */
 interface MemoOptions<TArgs extends unknown[] = unknown[], TReturn = unknown> {
   cacheErrors?: boolean;
@@ -105,6 +177,7 @@ interface MemoOptions<TArgs extends unknown[] = unknown[], TReturn = unknown> {
   onCacheClear?: OnMemoCacheHandler<TReturn>;
   onCacheExpire?: OnMemoCacheHandler<TReturn>;
   onCacheRollout?: OnMemoCacheHandler<TReturn>;
+  cache?: Map<unknown, MemoCacheEntry<TReturn>> | MemoMapLike<unknown, MemoCacheEntry<TReturn>> | MemoCacheCallback<TReturn>;
 }
 
 /**
@@ -117,16 +190,122 @@ type MemoReturn<TArgs extends unknown[] = unknown[], TReturn = unknown> = ((...a
 };
 
 /**
+ * Helper for checking if a value is a map-like cache.
+ *
+ * @param value - Value to check.
+ */
+const isMapLike = <TReturn>(value: unknown): value is MemoMapLike<unknown, MemoCacheEntry<TReturn>> =>
+  isReferenceLike(value) &&
+  typeof (value as MemoMapLike<unknown, unknown>).has === 'function' &&
+  typeof (value as MemoMapLike<unknown, unknown>).get === 'function' &&
+  typeof (value as MemoMapLike<unknown, unknown>).set === 'function';
+
+/**
+ * Wraps a map-like memo cache target in a normalized interface.
+ *
+ * Native Maps are returned as is. Map-like objects are wrapped with
+ * methods to normalize their behavior when used with {@link memo}.
+ *
+ * @template TReturn The memoized return value type stored in cache entries.
+ *
+ * @param target Map-like cache to normalize methods.
+ * @returns A normalized methods map-like cache interface for memo cache entries.
+ */
+const normalizeMapLike = <TReturn>(
+  target: MemoMapLike<unknown, MemoCacheEntry<TReturn>>
+) => {
+  if (target instanceof Map) {
+    return target;
+  }
+
+  return {
+    has: (key: unknown) => Boolean(target.has(key)),
+    get: (key: unknown) => target.get(key),
+    set: (key: unknown, value: MemoCacheEntry<TReturn>) => target.set(key, value),
+    clear: () => target.clear?.(),
+    delete: (key: unknown) => target.delete?.(key),
+    entries: () => target.entries?.() ?? new Map<unknown, MemoCacheEntry<TReturn>>().entries(),
+    keys: () => target.keys?.() ?? new Map<unknown, MemoCacheEntry<TReturn>>().keys(),
+    get size() {
+      // Size, keys, and delete are required together for cacheLimit eviction.
+      return typeof target.size === 'number' && typeof target.keys === 'function' && typeof target.delete === 'function'
+        ? target.size
+        : undefined;
+    }
+  };
+};
+
+/**
+ * Helper for normalizing a memo cache into a usable map-like cache.
+ *
+ * @template TReturn Memoized function return type stored in cache entries.
+ *
+ * @param cache - Cache to normalize. Falsy values return the default map.
+ * @param [options] - Optional normalization settings.
+ * @param [options.cacheContext] - Context passed to a cache factory when `cache` is a function.
+ * @param [options.debug] - Debug handler. Notified when cache normalization falls back because of an error.
+ * @returns A map-like cache suitable for storing memoization entries.
+ */
+const normalizeMemoCache = <TReturn>(
+  cache: unknown,
+  { cacheContext = {}, debug }: { cacheContext?: MemoCacheContext | undefined; debug?: MemoDebugHandler<TReturn> | undefined } = {}
+): Required<MemoMapLike<unknown, MemoCacheEntry<TReturn>>> => {
+  const updatedDebug = typeof debug === 'function' ? debug : () => {};
+
+  const logErrors = (error: unknown) => {
+    log.error('Memoized cache error. Using internal fallback Map.', error);
+
+    updatedDebug({
+      type: 'memo cache error',
+      value: error,
+      cache: new Map()
+    });
+  };
+
+  if (cache) {
+    try {
+      if (typeof cache === 'function') {
+        const created: unknown = cache(cacheContext);
+
+        if (isMapLike<TReturn>(created)) {
+          return normalizeMapLike<TReturn>(created);
+        }
+      } else if (isMapLike<TReturn>(cache)) {
+        return normalizeMapLike<TReturn>(cache);
+      }
+
+      throw new TypeError('Cache must be a map-like object with has/get/set, or a callback that returns one.');
+    } catch (error) {
+      logErrors(error);
+    }
+  }
+
+  return new Map();
+};
+
+/**
  * Simple argument-based memoize with adjustable cache limit, and extendable cache expire.
  * apidoc-mock: https://github.com/cdcabrera/apidoc-mock.git
  *
- * - `Zero-arg caching`: Zero-argument calls are memoized. To disable caching and perform a manual reset on every call, set cacheLimit <= 0.
+ * - A synchronous wrapper that expects consumers to correctly handle returned values.
+ * - `Zero-arg caching`: Zero-argument calls are memoized. To disable caching and perform a manual reset on every
+ *     call, set cacheLimit <= 0.
  * - `Expiration`: Expiration expands until a pause in use happens. All results, regardless of type, will be expired.
+ * - `Eviction and custom caches`: On a cache miss, `memo` adds the new entry, then trims using `size` read once
+ *     and a fixed number of oldest-key deletions. With a native `Map` this works as intended. But with a custom
+ *     cache, if `size`, `keys()`, and `delete` are not kept in sync, this eviction trim may stop early and leave
+ *     additional cache entries over the specified cap. The cache will self-heal on later cache misses. If you are
+ *     using a custom adapter AND you want to leverage the eviction behavior, ensure that `size`, `keys()`, and `delete`
+ *     are kept in sync. If strict single-entry cache memoization, or exact limit enforcement, is required, we highly
+ *     recommend using a native Map.
+ *
+ * @note **Future work**: Review adding in a minor `typeof func === 'function'` mod to the `Promise.resolve`. It would
+ *     allow actual promise handling.
  *
  * @template TArgs Arguments passed to the provided function represented as an array.
  * @template TReturn Return type of the provided/memoized function.
  *
- * @param {(...args: TArgs) => TReturn} func The function or promise/promise-like function to memoize
+ * @param {(...args: TArgs) => TReturn} func The function, or async function, to memoize
  * @param {MemoOptions<TArgs, TReturn>} [options={}] Configuration options.
  * @returns Memoized function
  *
@@ -144,7 +323,8 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
     keyHash = generateHash,
     onCacheClear,
     onCacheExpire,
-    onCacheRollout
+    onCacheRollout,
+    cache: customCache
   }: MemoOptions<TArgs, TReturn> = {}
 ): MemoReturn<TArgs, TReturn> => {
   const isCacheErrors = Boolean(cacheErrors);
@@ -210,8 +390,19 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
    * Memoized function.
    */
   const ized = function () {
-    const cache: MemoCache<TReturn> = new Map();
+    const cacheContext: MemoCacheContext = Object.freeze({
+      isFuncPromise,
+      cacheErrors: isCacheErrors,
+      cacheLimit,
+      expire: updatedExpire
+    });
+
+    const cache = normalizeMemoCache<TReturn>(customCache, { cacheContext, debug });
     let timeout: NodeJS.Timeout | undefined;
+
+    // Take into account map-like objects with partial props
+    const getCacheSnapshot = (passed = cache): MemoCache<TReturn> =>
+      (passed instanceof Map ? new Map(passed) : new Map(passed.entries()));
 
     const memoized = (...args: TArgs): TReturn => {
       const isMemo = cacheLimit > 0;
@@ -221,7 +412,7 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
 
         timeout = setTimeout(() => {
           if (isOnCacheExpire) {
-            const allCacheEntries: MemoCache<TReturn> = new Map(cache);
+            const allCacheEntries: MemoCache<TReturn> = getCacheSnapshot();
 
             notifyCacheChange({
               all: allCacheEntries,
@@ -287,8 +478,8 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
 
         // Run callback and cache trim after cache update.
         if (isMemo) {
-          if (isOnCacheRollout && cache.size > cacheLimit) {
-            const allCacheEntries: MemoCache<TReturn> = new Map(cache);
+          if (isOnCacheRollout && typeof cache.size === 'number' && cache.size > cacheLimit) {
+            const allCacheEntries: MemoCache<TReturn> = getCacheSnapshot();
 
             const temp = Array.from(allCacheEntries.entries());
             const remaining = allCacheEntries.size - cacheLimit;
@@ -309,10 +500,18 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
             }
           }
 
-          while (cache.size > cacheLimit) {
-            const oldestKey = cache.keys().next().value;
+          if (typeof cache.size === 'number') {
+            const excess = cache.size - cacheLimit;
 
-            cache.delete(oldestKey);
+            for (let i = 0; i < excess; i++) {
+              const oldestKey = cache.keys().next();
+
+              if (oldestKey === undefined || oldestKey.done) {
+                break;
+              }
+
+              cache.delete(oldestKey.value);
+            }
           }
         }
       }
@@ -328,7 +527,7 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
         debug({
           type: 'memo error',
           value: cachedValue,
-          cache: new Map(cache)
+          cache: getCacheSnapshot()
         });
 
         return typeof cachedValue === 'function' ? cachedValue() : cachedValue;
@@ -337,7 +536,7 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
       debug({
         type: `memo${(isFuncPromise && ' promise') || ''}`,
         value: () => cachedValue,
-        cache: new Map(cache)
+        cache: getCacheSnapshot()
       });
 
       return cachedValue as TReturn;
@@ -346,16 +545,14 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
     /**
      * Clear all memoized cache entries.
      *
-     * @returns A `boolean` indicating if the cache was cleared.
+     * @note `clear` and `onCacheClear` are always called regardless of whether entries are observable.
+     *     Map-like adapters (e.g. a persistent store) may expose `clear` without `entries`, so an empty snapshot
+     *     does not mean an empty cache. The return value only reports what was observable via `entries`.
+     *
+     * @returns A `boolean` indicating if observable cache entries were cleared.
      */
     memoized.clear = () => {
-      const allBefore = new Map(cache);
-
-      if (allBefore.size === 0) {
-        return false;
-      }
-
-      const allCacheEntries: MemoCache<TReturn> = new Map(cache);
+      const allCacheEntries: MemoCache<TReturn> = getCacheSnapshot();
 
       clearTimeout(timeout);
       timeout = undefined;
@@ -364,7 +561,7 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
       debug({
         type: 'memo clear',
         value: undefined,
-        cache: new Map(cache)
+        cache: getCacheSnapshot()
       });
 
       notifyCacheChange({
@@ -385,7 +582,13 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
 };
 
 export {
+  isMapLike,
   memo,
+  normalizeMemoCache,
+  normalizeMapLike,
+  type MemoCacheCallback,
+  type MemoCacheContext,
+  type MemoMapLike,
   type MemoCacheHandlerResponse,
   type MemoDebugHandler,
   type MemoCache,
