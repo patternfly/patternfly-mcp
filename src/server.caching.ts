@@ -25,11 +25,11 @@ interface MemoCacheContext {
  *
  * @template TReturn Return type stored in each memo cache entry.
  *
- * @param {MemoCacheContext} context - Memo context associated with the current operation.
+ * @param {MemoCacheContext} [context] - Memo context associated with the current operation.
  * @returns {MemoMapLike<unknown, MemoCacheEntry<TReturn>>} A map-like cache containing memo entries for the return type.
  */
 type MemoCacheCallback<TReturn> =
-  (context: MemoCacheContext) => MemoMapLike<unknown, MemoCacheEntry<TReturn>>;
+  (context?: MemoCacheContext) => MemoMapLike<unknown, MemoCacheEntry<TReturn>>;
 
 /**
  * Map-like interface consumed by `memo`.
@@ -62,7 +62,7 @@ type MemoCacheCallback<TReturn> =
  * @property set - **Required**. Store a value by key.
  * @property [size] - Current entry count.
  */
-interface MemoMapLike<K, V> {
+interface MemoMapLike<K = unknown, V = unknown> {
   clear?(): unknown;
   delete?(key: K): unknown;
   entries?(): IterableIterator<[K, V]>;
@@ -284,6 +284,18 @@ const normalizeMemoCache = <TReturn>(
 };
 
 /**
+ * Confirm the value has a memo error marker.
+ *
+ * @param value - The value to inspect.
+ * @returns `true` when the value has a memo error marker.
+ */
+const isMemoError = (value: unknown): value is { isError: true } & (MemoErrorFunction | Record<string, unknown>) => (
+  (typeof value === 'function' || isReferenceLike(value)) &&
+  'isError' in value &&
+  (value as { isError: unknown }).isError === true
+);
+
+/**
  * Simple argument-based memoize with adjustable cache limit, and extendable cache expire.
  * apidoc-mock: https://github.com/cdcabrera/apidoc-mock.git
  *
@@ -306,7 +318,7 @@ const normalizeMemoCache = <TReturn>(
  * @template TReturn Return type of the provided/memoized function.
  *
  * @param {(...args: TArgs) => TReturn} func The function, or async function, to memoize
- * @param {MemoOptions<TArgs, TReturn>} [options={}] Configuration options.
+ * @param {MemoOptions<TArgs, TReturn>} [options] Configuration options. See {@link MemoOptions}.
  * @returns Memoized function
  *
  * @throws {Error} If an error occurs during function execution and `cacheErrors` is set to `false`,
@@ -373,18 +385,6 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
       }
     }
   };
-
-  /**
-   * Confirm the value has a memo error marker.
-   *
-   * @param value - The value to inspect.
-   * @returns `true` when the value is a memo error marker; otherwise, `false`.
-   */
-  const isMemoError = (value: unknown): value is { isError: true } & (MemoErrorFunction | Record<string, unknown>) => (
-    (typeof value === 'function' || isReferenceLike(value)) &&
-    'isError' in value &&
-    (value as { isError: unknown }).isError === true
-  );
 
   /**
    * Memoized function.
@@ -583,6 +583,7 @@ const memo = <TArgs extends unknown[], TReturn = unknown>(
 
 export {
   isMapLike,
+  isMemoError,
   memo,
   normalizeMemoCache,
   normalizeMapLike,

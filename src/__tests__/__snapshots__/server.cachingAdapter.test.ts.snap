@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`memoSettledAdapter should handle cacheErrors, delete rejected promise when cacheErrors is false 1`] = `undefined`;
+
+exports[`memoSettledAdapter should handle cacheErrors, delete sync-error wrapper when cacheErrors is false 1`] = `undefined`;
+
+exports[`memoSettledAdapter should handle cacheErrors, persist rejected promise when cacheErrors is true 1`] = `
+{
+  "isPromise": true,
+  "reason": [Error: lorem ipsum],
+  "status": "rejected",
+}
+`;
+
+exports[`memoSettledAdapter should handle cacheErrors, persist sync-error wrapper when cacheErrors is true 1`] = `
+{
+  "reason": [Error: lorem ipsum],
+  "status": "rejected",
+}
+`;

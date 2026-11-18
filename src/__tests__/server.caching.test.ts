@@ -1,4 +1,4 @@
-import { memo, normalizeMemoCache } from '../server.caching';
+import { memo, normalizeMapLike, normalizeMemoCache } from '../server.caching';
 
 describe('memo', () => {
   beforeEach(() => {
@@ -431,16 +431,16 @@ describe('memo', () => {
 
     // cacheErrors: false calls delete() on sync and async errors; the original error must surface
     const syncError = memo((_val: number): number => {
-      throw new Error('sync boom');
+      throw new Error('sync lorem ipsum');
     }, { cache: minimal, cacheErrors: false });
 
-    expect(() => syncError(3)).toThrow('sync boom');
+    expect(() => syncError(3)).toThrow('sync lorem ipsum');
 
     const asyncError = memo(async (_val: number): Promise<number> => {
-      throw new Error('async boom');
+      throw new Error('async dolor sit');
     }, { cache: minimal, cacheErrors: false });
 
-    await expect(asyncError(4)).rejects.toThrow('async boom');
+    await expect(asyncError(4)).rejects.toThrow('async dolor sit');
 
     // memoized.clear() reports false (nothing observable) but does not throw
     expect(expiring.clear()).toBe(false);
@@ -488,6 +488,105 @@ describe('memo', () => {
     expect(factory).toHaveBeenCalledTimes(1);
     expect(factory).toHaveBeenCalledWith({ isFuncPromise: true, cacheErrors: false, cacheLimit: 3, expire: undefined });
   });
+
+  it('should catch and log errors thrown or rejected by cache change handlers without propagating', async () => {
+    const syncHandler = () => {
+      throw new Error('sync handler error');
+    };
+    const asyncHandler = async () => {
+      throw new Error('async handler error');
+    };
+
+    const memoSync = memo((val: number) => val * 2, { onCacheClear: syncHandler });
+    const memoAsync = memo((val: number) => val * 2, { onCacheClear: asyncHandler });
+
+    memoSync(1);
+    expect(() => memoSync.clear()).not.toThrow();
+
+    memoAsync(2);
+    expect(() => memoAsync.clear()).not.toThrow();
+    await Promise.resolve();
+  });
+
+  it('should break early during cacheLimit eviction if keys iterator finishes early', () => {
+    const cache = {
+      has: () => false,
+      get: () => 'val',
+      set: jest.fn(),
+      delete: jest.fn(),
+      keys: () => [][Symbol.iterator](),
+      get size() {
+        return 5;
+      }
+    };
+
+    const memoized = memo((val: number) => val, { cache, cacheLimit: 1 });
+
+    expect(memoized(1)).toBe('val');
+    expect(cache.delete).not.toHaveBeenCalled();
+  });
+});
+
+describe('normalizeMapLike', () => {
+  it('should return a native Map instance as-is', () => {
+    const map = new Map();
+
+    expect(normalizeMapLike(map)).toBe(map);
+  });
+
+  it('should normalize a minimal map-like object with default fallbacks', () => {
+    const minimalCache = {
+      has: jest.fn(() => true),
+      get: jest.fn(() => 'value'),
+      set: jest.fn()
+    };
+
+    const result = normalizeMapLike(minimalCache);
+
+    expect(result.has('k')).toBe(true);
+    expect(minimalCache.has).toHaveBeenCalledWith('k');
+
+    expect(result.get('k')).toBe('value');
+    expect(minimalCache.get).toHaveBeenCalledWith('k');
+
+    result.set('k', 'v');
+    expect(minimalCache.set).toHaveBeenCalledWith('k', 'v');
+
+    expect(result.clear()).toBeUndefined();
+    expect(result.delete('k')).toBeUndefined();
+    expect(Array.from(result.keys())).toEqual([]);
+    expect(Array.from(result.entries())).toEqual([]);
+    expect(result.size).toBeUndefined();
+  });
+
+  it('should delegate optional methods and expose size when size, keys, and delete are present', () => {
+    const fullCache = {
+      has: jest.fn(() => false),
+      get: jest.fn(),
+      set: jest.fn(),
+      clear: jest.fn(),
+      delete: jest.fn(() => true),
+      keys: jest.fn(() => ['k1'][Symbol.iterator]()),
+      entries: jest.fn(() => [['k1', 'v1'] as [unknown, unknown]][Symbol.iterator]()),
+      size: 1
+    };
+
+    const result = normalizeMapLike(fullCache);
+
+    result.clear();
+    expect(fullCache.clear).toHaveBeenCalledTimes(1);
+
+    expect(result.delete('k1')).toBe(true);
+    expect(fullCache.delete).toHaveBeenCalledWith('k1');
+
+    expect(Array.from(result.keys())).toEqual(['k1']);
+    expect(fullCache.keys).toHaveBeenCalledTimes(1);
+
+    expect(Array.from(result.entries())).toEqual([['k1', 'v1']]);
+    expect(fullCache.entries).toHaveBeenCalledTimes(1);
+
+    expect(result.size).toBe(1);
+  });
 });
 
 describe('normalizeMemoCache', () => {
@@ -504,15 +603,6 @@ describe('normalizeMemoCache', () => {
     const cache = { has: jest.fn(), get: jest.fn(), set: jest.fn() };
 
     const result = normalizeMemoCache(cache, { cacheContext: ctx });
-
-    result.has('lorem');
-    expect(cache.has).toHaveBeenCalledWith('lorem');
-
-    result.get('ipsum');
-    expect(cache.get).toHaveBeenCalledWith('ipsum');
-
-    result.set('dolor', 'sit');
-    expect(cache.set).toHaveBeenCalledWith('dolor', 'sit');
 
     expect(result).toMatchSnapshot('normalized');
   });
@@ -532,11 +622,12 @@ describe('normalizeMemoCache', () => {
     const mockDebug = jest.fn();
 
     expect(normalizeMemoCache(() => {
-      throw new Error('boom');
+      throw new Error('lorem ipsum');
     }, { cacheContext: ctx, debug: mockDebug })).toBeInstanceOf(Map);
 
     expect(normalizeMemoCache(async () => new Map(), { cacheContext: ctx, debug: mockDebug })).toBeInstanceOf(Map);
     expect(normalizeMemoCache('nope', { cacheContext: ctx, debug: mockDebug })).toBeInstanceOf(Map);
+    expect(normalizeMemoCache('nope')).toBeInstanceOf(Map);
 
     expect(mockDebug).toHaveBeenCalledTimes(3);
     expect(mockDebug).toHaveBeenCalledWith(expect.objectContaining({ type: 'memo cache error' }));
